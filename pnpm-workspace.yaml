@@ -1,0 +1,52 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+catalog:
+  # React
+  react: ^19.2.0
+  react-dom: ^19.2.0
+  "@types/react": ^19.2.7
+  "@types/react-dom": ^19.2.3
+
+  # Build Tools
+  vite: ^6.4.1
+  "@vitejs/plugin-react": ^5.1.1
+  typescript: ^5.9.3
+
+  # Styling
+  tailwindcss: ^4.1.17
+  "@tailwindcss/vite": ^4.1.17
+
+  # State Management
+  zustand: ^5.0.8
+
+  # Forms & Validation
+  react-hook-form: ^7.66.1
+  zod: ^3.25.76
+  "@hookform/resolvers": ^5.2.2
+
+  # Utilities
+  lodash: ^4.17.21
+  "@types/lodash": ^4.17.21
+
+  # Linting
+  eslint: ^9.39.1
+  "@eslint/js": ^9.39.1
+  typescript-eslint: ^8.48.0
+  eslint-plugin-react-hooks: ^7.0.1
+  eslint-plugin-react-refresh: ^0.4.24
+  globals: ^16.5.0
+
+  # Storybook
+  storybook: ^8.6.14
+  "@storybook/react": ^8.6.14
+  "@storybook/react-vite": ^8.6.14
+  "@storybook/addon-essentials": ^8.6.14
+  "@storybook/addon-interactions": ^8.6.14
+  "@storybook/addon-links": ^8.6.14
+  "@storybook/blocks": ^8.6.14
+  "@storybook/test": ^8.6.14
+
+onlyBuiltDependencies:
+  - esbuild
