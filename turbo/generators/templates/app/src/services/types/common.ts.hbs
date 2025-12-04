@@ -1,0 +1,38 @@
+/**
+ * Common API types
+ */
+
+/** API 응답 래퍼 */
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+  success: boolean;
+}
+
+/** 페이지네이션 정보 */
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+/** 페이지네이션 응답 */
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: Pagination;
+}
+
+/** 기본 엔티티 (timestamps) */
+export interface BaseEntity {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** API 에러 */
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: Record<string, string[]>;
+}

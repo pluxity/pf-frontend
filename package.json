@@ -10,7 +10,9 @@
     "test": "turbo run test",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
-    "clean": "turbo run clean && rimraf node_modules"
+    "clean": "turbo run clean && rimraf node_modules",
+    "gen": "turbo gen",
+    "gen:app": "turbo gen app"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

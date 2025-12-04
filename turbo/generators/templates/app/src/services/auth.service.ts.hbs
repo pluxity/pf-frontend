@@ -1,0 +1,40 @@
+// import { apiClient } from '@pf-dev/api';
+import type {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenResponse,
+} from "./types/auth";
+
+/**
+ * Auth API Service
+ *
+ * TODO: Uncomment apiClient import when @pf-dev/api is ready
+ */
+export const authService = {
+  /** 로그인 */
+  login: async (data: LoginRequest) => {
+    // return apiClient.post<LoginResponse>('/auth/login', data);
+    console.log("login", data);
+    return {} as LoginResponse;
+  },
+
+  /** 로그아웃 */
+  logout: async () => {
+    // return apiClient.post<void>('/auth/logout');
+    console.log("logout");
+  },
+
+  /** 토큰 갱신 */
+  refreshToken: async (refreshToken: string) => {
+    // return apiClient.post<RefreshTokenResponse>('/auth/refresh', { refreshToken });
+    console.log("refreshToken", refreshToken);
+    return {} as RefreshTokenResponse;
+  },
+
+  /** 현재 사용자 정보 */
+  getMe: async () => {
+    // return apiClient.get<UserResponse>('/auth/me');
+    console.log("getMe");
+    return {} as LoginResponse;
+  },
+};

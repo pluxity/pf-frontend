@@ -33,6 +33,7 @@ catalog:
   vite: ^6.4.1
   zod: ^3.25.76
   zustand: ^5.0.8
+  react-router-dom: ^7.1.1
 
 onlyBuiltDependencies:
   - esbuild

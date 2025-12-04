@@ -1,11 +1,14 @@
 {
-  "name": "@pf-dev/test",
+  "name": "@pf-dev/{{ name }}",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port {{ port }}",
+    "dev:staging": "vite --mode staging --port {{ port }}",
     "build": "tsc && vite build",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:production": "tsc && vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint .",
     "clean": "rimraf dist"
@@ -13,17 +16,16 @@
   "dependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-router-dom": "^7.1.1",
     "zustand": "catalog:",
     "react-hook-form": "catalog:",
     "zod": "catalog:",
     "@hookform/resolvers": "catalog:",
-    "lodash": "catalog:",
     "@pf-dev/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/lodash": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "@vitejs/plugin-react": "catalog:",

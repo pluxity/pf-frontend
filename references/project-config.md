@@ -4,6 +4,7 @@
 
 - **Organization**: pluxity
 - **Repository**: pf-dev
+- **Project Name**: PF FrontEnd
 - **Project Number**: 17
 - **Project ID**: PVT_kwDOC1m_S84BJx9K
 - **Project URL**: https://github.com/orgs/pluxity/projects/17
@@ -16,6 +17,14 @@
   - Todo: `f75ad846`
   - In Progress: `47fc9ee4`
   - Done: `98236657`
+
+### App Field
+- **Field ID**: PVTSSF_lADOC1m_S84BJx9Kzg52Qxk
+- **Options**:
+  - packages: `c6737862`
+  - project-a: `fed740c1`
+  - project-b: `511a7ca9`
+  - project-c: `6d5f30ef`
 
 ### Date Fields
 | Field Name | Field ID | Type |
@@ -66,4 +75,9 @@ gh project item-add 17 --owner pluxity --url <ISSUE_URL>
 ### Update item status
 ```bash
 gh project item-edit --project-id PVT_kwDOC1m_S84BJx9K --id <ITEM_ID> --field-id PVTSSF_lADOC1m_S84BJx9Kzg5177k --single-select-option-id <OPTION_ID>
+```
+
+### Update item App field
+```bash
+gh project item-edit --project-id PVT_kwDOC1m_S84BJx9K --id <ITEM_ID> --field-id PVTSSF_lADOC1m_S84BJx9Kzg52Qxk --single-select-option-id <OPTION_ID>
 ```
