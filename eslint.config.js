@@ -27,6 +27,13 @@ export default tseslint.config(
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/no-empty-object-type": "off",
+    },
+  },
+  {
+    files: ["**/*.stories.{ts,tsx}"],
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
     },
   }
 );

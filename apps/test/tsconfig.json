@@ -3,7 +3,6 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
       "@pf-dev/ui": ["../../packages/ui/src/index.ts"]
     }

@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import "../src/styles.css";
+import "../src/globals.css";
 
 const preview: Preview = {
   parameters: {
@@ -7,6 +7,18 @@ const preview: Preview = {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
+      },
+    },
+    options: {
+      storySort: {
+        method: "alphabetical",
+        order: [
+          "Getting Started",
+          "Atoms",
+          "Molecules",
+          "Organisms",
+          "Templates",
+        ],
       },
     },
   },

@@ -1,0 +1,376 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/blocks';
+
+<Meta title="Getting Started" />
+
+# PF-Dev UI
+
+**PLUXITY 프론트엔드 디자인 시스템**
+
+React 19, TypeScript, Tailwind CSS v4로 구축된 재사용 가능한 UI 컴포넌트 라이브러리입니다.
+
+## 디자인 시스템
+
+이 라이브러리는 **Atomic Design** 원칙을 따르며, 복잡도에 따라 컴포넌트를 구성합니다:
+
+- **Atoms** (원자): 기본 빌딩 블록 (Button, Input, Badge 등)
+- **Molecules** (분자): Atom의 간단한 조합
+- **Organisms** (유기체): 복잡하고 기능이 완전한 컴포넌트
+- **Templates** (템플릿): 페이지 레벨 레이아웃
+
+## 기술 스택
+
+- ⚛️ **React 19** - 최신 React 기능 활용
+- 🔷 **TypeScript** - 완전한 타입 안정성
+- 🎨 **Tailwind CSS v4** - 유틸리티 기반 스타일링
+- ♿ **Radix UI** - 접근성 우선 프리미티브
+- 📚 **Storybook 8.6** - 인터랙티브 문서화
+
+---
+
+## 색상 팔레트
+
+디자인 시스템의 브랜드 색상과 시맨틱 변형을 포함한 포괄적인 색상 팔레트입니다. 각 색상은 50-900 단계의 음영을 제공합니다.
+
+<ColorPalette>
+  <ColorItem
+    title="Primary (주요)"
+    subtitle="Professional blue for brand identity & primary actions"
+    colors={{
+      50: '#EDF2FC',
+      100: '#DCE4F9',
+      200: '#B9C9F4',
+      300: '#84A1EB',
+      400: '#5079E2',
+      500: '#2458DB',
+      600: '#1E4AB8',
+      700: '#183C95',
+      800: '#112A69',
+      900: '#0B1C46',
+    }}
+  />
+  <ColorItem
+    title="Success (성공)"
+    subtitle="Natural green for success states & positive feedback"
+    colors={{
+      50: '#EEFBF4',
+      100: '#DEF7E9',
+      200: '#BCF0D4',
+      300: '#8BE5B3',
+      400: '#59D993',
+      500: '#2FD077',
+      600: '#28AF64',
+      700: '#208D51',
+      800: '#176439',
+      900: '#0F4326',
+    }}
+  />
+  <ColorItem
+    title="Warning (경고)"
+    subtitle="Warm orange for warnings & attention-grabbing moments"
+    colors={{
+      50: '#FDF5ED',
+      100: '#FBEBDA',
+      200: '#F6D6B6',
+      300: '#F0B87F',
+      400: '#EA9948',
+      500: '#E4801B',
+      600: '#C06B16',
+      700: '#9B5712',
+      800: '#6E3D0D',
+      900: '#492909',
+    }}
+  />
+  <ColorItem
+    title="Error (오류)"
+    subtitle="Strong red for errors & dangerous actions"
+    colors={{
+      50: '#FCEEEE',
+      100: '#F8DDDD',
+      200: '#F1BBBB',
+      300: '#E78888',
+      400: '#DC5656',
+      500: '#D42B2B',
+      600: '#B22424',
+      700: '#901D1D',
+      800: '#661515',
+      900: '#440E0E',
+    }}
+  />
+  <ColorItem
+    title="Info (정보)"
+    subtitle="Informational states"
+    colors={{
+      50: '#ECF8FD',
+      100: '#D9F0FC',
+      200: '#B4E2F9',
+      300: '#7BCCF4',
+      400: '#42B6F0',
+      500: '#13A4EC',
+      600: '#1089C6',
+      700: '#0D6FA0',
+      800: '#094F71',
+      900: '#06344B',
+    }}
+  />
+  <ColorItem
+    title="Gray (중립)"
+    subtitle="Neutral gray scale for text, borders & backgrounds"
+    colors={{
+      50: '#F5F5F5',
+      100: '#EBEBEB',
+      200: '#D6D6D6',
+      300: '#B8B8B8',
+      400: '#999999',
+      500: '#808080',
+      600: '#6B6B6B',
+      700: '#575757',
+      800: '#3D3D3D',
+      900: '#292929',
+    }}
+  />
+  <ColorItem
+    title="Neutral (중립 블루)"
+    subtitle="Slightly blue-tinted gray for UI elements"
+    colors={{
+      50: '#F4F4F6',
+      100: '#E8EAED',
+      200: '#D1D5DB',
+      300: '#AFB5C0',
+      400: '#8D95A5',
+      500: '#707A8F',
+      600: '#5E6778',
+      700: '#4C5361',
+      800: '#363B45',
+      900: '#24272E',
+    }}
+  />
+</ColorPalette>
+
+### 색상 사용하기
+
+모든 색상은 Tailwind CSS 클래스를 통해 사용할 수 있습니다:
+
+```tsx
+// Primary (Blue)
+<div className="bg-primary-500 text-white">주요 버튼</div>
+
+// Success (Green)
+<div className="bg-success-500 text-white">성공 메시지</div>
+
+// Warning (Orange)
+<div className="bg-warning-500 text-white">경고 알림</div>
+
+// Error (Red)
+<div className="bg-error-500 text-white">오류 메시지</div>
+
+// Info (Cyan)
+<div className="bg-info-500 text-white">정보 메시지</div>
+
+// Gray (Neutral)
+<div className="bg-gray-100 text-gray-900">중립 배경</div>
+```
+
+### 시맨틱 색상 사용법
+
+- **Primary**: 주요 브랜드 액션, 링크, 포커스 상태
+- **Success**: 확인, 성공적인 작업, 긍정적 피드백
+- **Warning**: 주의 메시지, 잠재적 문제, 주의 필요
+- **Error**: 파괴적 액션, 오류 상태, 중요 알림
+- **Info**: 정보 제공, 도움말, 안내
+- **Gray**: 텍스트, 배경, 테두리, 비활성 상태
+- **Neutral**: UI 요소, 약간 푸른빛이 도는 회색
+
+---
+
+## 디자인 토큰
+
+### Border Radius (모서리 둥글기)
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginTop: '1rem', marginBottom: '2rem' }}>
+  <div>
+    <div style={{ width: '100px', height: '100px', backgroundColor: '#B9C9F4', borderRadius: '0.375rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>sm</strong> - 0.375rem (6px)</p>
+    <p style={{ fontSize: '0.75rem', color: '#6B6B6B' }}>작은 요소</p>
+  </div>
+  <div>
+    <div style={{ width: '100px', height: '100px', backgroundColor: '#B9C9F4', borderRadius: '0.5rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>button</strong> - 0.5rem (8px)</p>
+    <p style={{ fontSize: '0.75rem', color: '#6B6B6B' }}>버튼 기본값</p>
+  </div>
+  <div>
+    <div style={{ width: '100px', height: '100px', backgroundColor: '#B9C9F4', borderRadius: '0.75rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>default</strong> - 0.75rem (12px)</p>
+    <p style={{ fontSize: '0.75rem', color: '#6B6B6B' }}>일반 컴포넌트</p>
+  </div>
+  <div>
+    <div style={{ width: '100px', height: '100px', backgroundColor: '#B9C9F4', borderRadius: '0.875rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>card</strong> - 0.875rem (14px)</p>
+    <p style={{ fontSize: '0.75rem', color: '#6B6B6B' }}>카드, 패널</p>
+  </div>
+</div>
+
+### Typography (타이포그래피)
+
+<div style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+  <div style={{ marginBottom: '1rem', padding: '1rem', backgroundColor: '#F5F5F5', borderRadius: '0.5rem' }}>
+    <p style={{ fontFamily: 'Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', fontSize: '1rem', margin: 0 }}>
+      <strong>Arial</strong> - 기본 본문 폰트
+    </p>
+    <p style={{ fontFamily: 'Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', fontSize: '0.875rem', color: '#6B6B6B', margin: '0.5rem 0 0 0' }}>
+      범용 산세리프 서체
+    </p>
+  </div>
+  <div style={{ padding: '1rem', backgroundColor: '#F5F5F5', borderRadius: '0.5rem' }}>
+    <p style={{ fontFamily: 'ui-monospace, "Cascadia Code", monospace', fontSize: '1rem', margin: 0 }}>
+      <strong>Monospace</strong> - 코드 표시용 폰트
+    </p>
+    <p style={{ fontFamily: 'ui-monospace, "Cascadia Code", monospace', fontSize: '0.875rem', color: '#6B6B6B', margin: '0.5rem 0 0 0' }}>
+      코드 블록 및 고정폭 텍스트
+    </p>
+  </div>
+</div>
+
+### Shadow (그림자)
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginTop: '1rem', marginBottom: '2rem' }}>
+  <div style={{ padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.1)' }}>
+    <p style={{ margin: 0, fontWeight: 'bold' }}>Soft</p>
+    <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6B6B6B' }}>가벼운 그림자</p>
+  </div>
+  <div style={{ padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 4px 16px -4px rgba(0, 0, 0, 0.15)' }}>
+    <p style={{ margin: 0, fontWeight: 'bold' }}>Medium</p>
+    <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6B6B6B' }}>중간 그림자</p>
+  </div>
+  <div style={{ padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 0 24px rgba(36, 88, 219, 0.2)' }}>
+    <p style={{ margin: 0, fontWeight: 'bold' }}>Glow</p>
+    <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6B6B6B' }}>발광 효과</p>
+  </div>
+  <div style={{ padding: '1.5rem', backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 8px 24px -4px rgba(36, 88, 219, 0.3)' }}>
+    <p style={{ margin: 0, fontWeight: 'bold' }}>Primary</p>
+    <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.75rem', color: '#6B6B6B' }}>주요 색상 그림자</p>
+  </div>
+</div>
+
+### Gradient (그라데이션)
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem', marginBottom: '2rem' }}>
+  <div>
+    <div style={{ height: '80px', background: 'linear-gradient(135deg, #1E4AB8 0%, #5079E2 100%)', borderRadius: '0.5rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>Primary</strong></p>
+  </div>
+  <div>
+    <div style={{ height: '80px', background: 'linear-gradient(135deg, #28AF64 0%, #59D993 100%)', borderRadius: '0.5rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>Success</strong></p>
+  </div>
+  <div>
+    <div style={{ height: '80px', background: 'linear-gradient(135deg, #C06B16 0%, #EA9948 100%)', borderRadius: '0.5rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>Warning</strong></p>
+  </div>
+  <div>
+    <div style={{ height: '80px', background: 'linear-gradient(135deg, #B22424 0%, #DC5656 100%)', borderRadius: '0.5rem' }}></div>
+    <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}><strong>Error</strong></p>
+  </div>
+</div>
+
+---
+
+## 컴포넌트 카테고리
+
+### Atoms (원자)
+기본 빌딩 블록
+- Button, Input, Textarea, Label
+- Checkbox, Switch, Toggle, Radio
+- Badge, Avatar
+- Progress, Spinner, Skeleton
+- Slider, Separator
+
+### Molecules (분자)
+2-3개의 Atoms 조합
+- Search Bar, Form Field
+- Alert, Toast
+- Tabs, Accordion
+- Dropdown Menu, Breadcrumb
+- Pagination, Tooltip
+- Card, Popover
+
+### Organisms (유기체)
+복잡한 UI 패턴
+- Dialog, Alert Dialog
+- Form, Data Table
+- Navigation, Sidebar
+
+---
+
+## 시작하기
+
+### 설치
+
+```bash
+pnpm add @pf-dev/ui
+```
+
+### 사용법
+
+앱에 전역 스타일을 import합니다:
+
+```tsx
+import '@pf-dev/ui/globals.css';
+```
+
+컴포넌트를 import합니다:
+
+```tsx
+import { Button } from '@pf-dev/ui/atoms';
+
+function App() {
+  return (
+    <Button variant="default" size="md">
+      클릭하세요
+    </Button>
+  );
+}
+```
+
+### 카테고리별 Import
+
+```tsx
+// Atoms
+import { Button, Input, Badge } from '@pf-dev/ui/atoms'
+
+// Molecules
+import { Card, Alert } from '@pf-dev/ui/molecules'
+
+// Organisms
+import { Dialog } from '@pf-dev/ui/organisms'
+```
+
+### 유틸리티
+
+조건부 클래스명을 위한 `cn` 유틸리티:
+
+```tsx
+import { cn } from '@pf-dev/ui/utils';
+
+const className = cn(
+  'base-class',
+  isActive && 'active-class',
+  isDisabled && 'disabled-class'
+);
+```
+
+---
+
+## 디자인 리소스
+
+- [Figma Design](https://www.figma.com/design/kbmp7HXgqTatLLoaevocUK/MCP?node-id=195-1446&p=f&m=draw)
+
+---
+
+## 컴포넌트 탐색
+
+Atomic Design 레벨에 따라 구성된 컴포넌트를 탐색하세요:
+
+- **Atoms** → 기본 UI 요소
+- **Molecules** → 컴포넌트 조합
+- **Organisms** → 복잡한 기능
+- **Templates** → 페이지 레이아웃
