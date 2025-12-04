@@ -90,14 +90,14 @@ function App() {
         <section className="rounded-lg bg-white p-6 shadow">
           <h2 className="mb-4 text-xl font-semibold">UI Components (@pf-dev/ui)</h2>
           <div className="flex flex-wrap gap-4">
-            <Button variant="primary" size="sm">
-              Primary SM
+            <Button variant="default" size="sm">
+              Default SM
             </Button>
-            <Button variant="primary" size="md">
-              Primary MD
+            <Button variant="default" size="md">
+              Default MD
             </Button>
-            <Button variant="primary" size="lg">
-              Primary LG
+            <Button variant="default" size="lg">
+              Default LG
             </Button>
           </div>
           <div className="mt-4 flex flex-wrap gap-4">
