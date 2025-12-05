@@ -1,0 +1,38 @@
+{
+  "name": "@pf-dev/cctv",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./hls": "./src/hls/index.ts",
+    "./whep": "./src/whep/index.ts",
+    "./components": "./src/components/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "clean": "rimraf dist node_modules .turbo"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "dependencies": {
+    "hls.js": "^1.5.18",
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@pf-dev/eslint-config": "workspace:*",
+    "@pf-dev/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "rimraf": "^6.0.1",
+    "typescript": "catalog:"
+  }
+}
