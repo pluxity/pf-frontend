@@ -16,6 +16,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist storybook-static"
   },
