@@ -1,12 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "./Card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./Card";
 import { Button } from "../../atoms/Button";
 import { Input } from "../../atoms/Input";
 import { Label } from "../../atoms/Label";

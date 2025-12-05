@@ -114,11 +114,7 @@ export const WithSelection: Story = {
           selectedId={selectedId}
           onNodeSelect={(node) => setSelectedId(node.id)}
         />
-        {selectedId && (
-          <p className="mt-4 text-sm text-gray-500">
-            Selected: {selectedId}
-          </p>
-        )}
+        {selectedId && <p className="mt-4 text-sm text-gray-500">Selected: {selectedId}</p>}
       </div>
     );
   },
@@ -265,9 +261,7 @@ export const DisabledNodes: Story = {
         id: "2",
         label: "Disabled Folder",
         disabled: true,
-        children: [
-          { id: "2-1", label: "Can't access" },
-        ],
+        children: [{ id: "2-1", label: "Can't access" }],
       },
       {
         id: "3",
@@ -300,9 +294,7 @@ export const WithCheckbox: Story = {
         />
         <div className="mt-4 text-sm text-gray-500">
           <p>체크된 항목: {checkedIds.length}개</p>
-          {checkedIds.length > 0 && (
-            <p className="mt-1 text-xs">{checkedIds.join(", ")}</p>
-          )}
+          {checkedIds.length > 0 && <p className="mt-1 text-xs">{checkedIds.join(", ")}</p>}
         </div>
       </div>
     );

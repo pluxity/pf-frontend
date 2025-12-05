@@ -6,13 +6,7 @@ export interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
 }
 
 function Form({ className, ref, ...props }: FormProps) {
-  return (
-    <form
-      ref={ref}
-      className={cn("space-y-6", className)}
-      {...props}
-    />
-  );
+  return <form ref={ref} className={cn("space-y-6", className)} {...props} />;
 }
 
 export interface FormContainerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -21,24 +15,24 @@ export interface FormContainerProps extends React.HTMLAttributes<HTMLDivElement>
   ref?: Ref<HTMLDivElement>;
 }
 
-function FormContainer({ className, title, description, children, ref, ...props }: FormContainerProps) {
+function FormContainer({
+  className,
+  title,
+  description,
+  children,
+  ref,
+  ...props
+}: FormContainerProps) {
   return (
     <div
       ref={ref}
-      className={cn(
-        "rounded-lg border border-[#E6E6E8] bg-white p-8",
-        className
-      )}
+      className={cn("rounded-lg border border-[#E6E6E8] bg-white p-8", className)}
       {...props}
     >
       {(title || description) && (
         <div className="mb-6">
-          {title && (
-            <h2 className="text-2xl font-bold text-[#1A1A26]">{title}</h2>
-          )}
-          {description && (
-            <p className="mt-2 text-sm text-[#808088]">{description}</p>
-          )}
+          {title && <h2 className="text-2xl font-bold text-[#1A1A26]">{title}</h2>}
+          {description && <p className="mt-2 text-sm text-[#808088]">{description}</p>}
         </div>
       )}
       {children}
@@ -61,12 +55,8 @@ function FormSection({ className, title, description, children, ref, ...props }:
     >
       {(title || description) && (
         <div className="mb-4">
-          {title && (
-            <h3 className="text-base font-bold text-[#333340]">{title}</h3>
-          )}
-          {description && (
-            <p className="mt-1 text-sm text-[#808088]">{description}</p>
-          )}
+          {title && <h3 className="text-base font-bold text-[#333340]">{title}</h3>}
+          {description && <p className="mt-1 text-sm text-[#808088]">{description}</p>}
         </div>
       )}
       {children}
@@ -99,10 +89,7 @@ function FormField({
   return (
     <div
       ref={ref}
-      className={cn(
-        horizontal ? "flex items-start gap-4" : "space-y-2",
-        className
-      )}
+      className={cn(horizontal ? "flex items-start gap-4" : "space-y-2", className)}
       {...props}
     >
       {label && (
@@ -120,12 +107,8 @@ function FormField({
       )}
       <div className={cn("flex-1", horizontal && "min-w-0")}>
         {children}
-        {hint && !error && (
-          <p className="mt-1 text-xs text-[#808088]">{hint}</p>
-        )}
-        {error && (
-          <p className="mt-1 text-xs text-error-brand">{error}</p>
-        )}
+        {hint && !error && <p className="mt-1 text-xs text-[#808088]">{hint}</p>}
+        {error && <p className="mt-1 text-xs text-error-brand">{error}</p>}
       </div>
     </div>
   );
@@ -173,21 +156,10 @@ function FormRow({ className, columns = 2, children, ref, ...props }: FormRowPro
   };
 
   return (
-    <div
-      ref={ref}
-      className={cn("grid gap-4", gridClasses[columns], className)}
-      {...props}
-    >
+    <div ref={ref} className={cn("grid gap-4", gridClasses[columns], className)} {...props}>
       {children}
     </div>
   );
 }
 
-export {
-  Form,
-  FormContainer,
-  FormSection,
-  FormField,
-  FormActions,
-  FormRow,
-};
+export { Form, FormContainer, FormSection, FormField, FormActions, FormRow };

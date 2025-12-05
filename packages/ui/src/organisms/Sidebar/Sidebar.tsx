@@ -27,7 +27,16 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement>;
 }
 
-function SidebarItem({ icon, label, href, active, onClick, children, collapsed, ref }: SidebarItemProps & { collapsed?: boolean; ref?: Ref<HTMLDivElement> }) {
+function SidebarItem({
+  icon,
+  label,
+  href,
+  active,
+  onClick,
+  children,
+  collapsed,
+  ref,
+}: SidebarItemProps & { collapsed?: boolean; ref?: Ref<HTMLDivElement> }) {
   const [expanded, setExpanded] = useState(false);
   const hasChildren = children && children.length > 0;
 
@@ -55,11 +64,7 @@ function SidebarItem({ icon, label, href, active, onClick, children, collapsed, 
           <span className="flex-1 truncate">{label}</span>
           {hasChildren && (
             <span className="flex-shrink-0">
-              {expanded ? (
-                <ChevronDown size="sm" />
-              ) : (
-                <ChevronRight size="sm" />
-              )}
+              {expanded ? <ChevronDown size="sm" /> : <ChevronRight size="sm" />}
             </span>
           )}
         </>
@@ -113,7 +118,12 @@ function SidebarItem({ icon, label, href, active, onClick, children, collapsed, 
   );
 }
 
-function SidebarSection({ label, items, collapsed, ref }: SidebarSectionProps & { collapsed?: boolean; ref?: Ref<HTMLDivElement> }) {
+function SidebarSection({
+  label,
+  items,
+  collapsed,
+  ref,
+}: SidebarSectionProps & { collapsed?: boolean; ref?: Ref<HTMLDivElement> }) {
   return (
     <div ref={ref} className="space-y-1">
       {label && !collapsed && (
@@ -141,90 +151,81 @@ function Sidebar({
   ref,
   ...props
 }: SidebarProps) {
-    const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
 
-    const handleToggleCollapse = () => {
-      const newCollapsed = !collapsed;
-      setCollapsed(newCollapsed);
-      onCollapsedChange?.(newCollapsed);
-    };
+  const handleToggleCollapse = () => {
+    const newCollapsed = !collapsed;
+    setCollapsed(newCollapsed);
+    onCollapsedChange?.(newCollapsed);
+  };
 
-    return (
-      <aside
-        ref={ref}
+  return (
+    <aside
+      ref={ref}
+      className={cn(
+        "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300",
+        collapsed ? "w-16" : "w-[280px]",
+        className
+      )}
+      {...props}
+    >
+      <div
         className={cn(
-          "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300",
-          collapsed ? "w-16" : "w-[280px]",
-          className
+          "flex h-14 items-center border-b border-[#E6E6E8]",
+          collapsed ? "justify-center px-2" : "justify-between px-4"
         )}
-        {...props}
       >
-        <div
-          className={cn(
-            "flex h-14 items-center border-b border-[#E6E6E8]",
-            collapsed ? "justify-center px-2" : "justify-between px-4"
-          )}
-        >
-          {collapsed ? (
-            logo || (
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                {title?.charAt(0) || "D"}
-              </span>
-            )
-          ) : (
-            <>
-              <div className="flex items-center gap-3">
-                {logo || (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                    {title?.charAt(0) || "D"}
-                  </span>
-                )}
-                {title && (
-                  <h2 className="text-lg font-bold text-[#333340]">{title}</h2>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+        {collapsed ? (
+          logo || (
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
+              {title?.charAt(0) || "D"}
+            </span>
+          )
+        ) : (
+          <>
+            <div className="flex items-center gap-3">
+              {logo || (
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
+                  {title?.charAt(0) || "D"}
+                </span>
+              )}
+              {title && <h2 className="text-lg font-bold text-[#333340]">{title}</h2>}
+            </div>
+          </>
+        )}
+      </div>
 
-        <nav className="flex-1 space-y-4 overflow-y-auto p-3">
-          {sections.map((section, index) => (
-            <SidebarSection key={index} {...section} collapsed={collapsed} />
-          ))}
-        </nav>
+      <nav className="flex-1 space-y-4 overflow-y-auto p-3">
+        {sections.map((section, index) => (
+          <SidebarSection key={index} {...section} collapsed={collapsed} />
+        ))}
+      </nav>
 
-        {collapsible && (
-          <div
+      {collapsible && (
+        <div className={cn("border-t border-[#E6E6E8] p-3", collapsed && "flex justify-center")}>
+          <button
+            type="button"
+            onClick={handleToggleCollapse}
             className={cn(
-              "border-t border-[#E6E6E8] p-3",
-              collapsed && "flex justify-center"
+              "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-[#666673] transition-colors hover:bg-[#F5F5F7] hover:text-[#333340]",
+              collapsed ? "w-10 justify-center px-0" : "w-full"
             )}
           >
-            <button
-              type="button"
-              onClick={handleToggleCollapse}
-              className={cn(
-                "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-[#666673] transition-colors hover:bg-[#F5F5F7] hover:text-[#333340]",
-                collapsed ? "w-10 justify-center px-0" : "w-full"
-              )}
-            >
-              {collapsed ? (
-                <Menu size="md" />
-              ) : (
-                <>
-                  <ChevronLeft size="md" />
-                  <span>Collapse</span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
+            {collapsed ? (
+              <Menu size="md" />
+            ) : (
+              <>
+                <ChevronLeft size="md" />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
-        {footer && !collapsed && (
-          <div className="border-t border-[#E6E6E8] p-3">{footer}</div>
-        )}
-      </aside>
-    );
+      {footer && !collapsed && <div className="border-t border-[#E6E6E8] p-3">{footer}</div>}
+    </aside>
+  );
 }
 
 const CollapsibleSidebar = Sidebar;

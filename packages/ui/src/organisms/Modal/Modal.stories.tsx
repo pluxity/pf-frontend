@@ -36,8 +36,7 @@ export const Default: Story = {
         <ModalHeader>
           <ModalTitle>Confirm Action</ModalTitle>
           <ModalDescription>
-            Are you sure you want to proceed with this action?
-            This cannot be undone.
+            Are you sure you want to proceed with this action? This cannot be undone.
           </ModalDescription>
         </ModalHeader>
         <ModalFooter>
@@ -97,7 +96,8 @@ export const Destructive: Story = {
         <ModalHeader>
           <ModalTitle>Delete Account</ModalTitle>
           <ModalDescription>
-            Are you sure you want to delete your account? This action is permanent and cannot be undone.
+            Are you sure you want to delete your account? This action is permanent and cannot be
+            undone.
           </ModalDescription>
         </ModalHeader>
         <ModalFooter>
@@ -120,18 +120,34 @@ export const LongContent: Story = {
       <ModalContent className="max-h-[80vh] overflow-hidden">
         <ModalHeader>
           <ModalTitle>Terms & Conditions</ModalTitle>
-          <ModalDescription>
-            Please read and accept our terms and conditions.
-          </ModalDescription>
+          <ModalDescription>Please read and accept our terms and conditions.</ModalDescription>
         </ModalHeader>
         <ModalBody className="max-h-[400px] overflow-y-auto">
           <div className="space-y-4 text-sm text-gray-600">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </p>
+            <p>
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+              ea commodo consequat.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur.
+            </p>
+            <p>
+              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+              mollit anim id est laborum.
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
+            </p>
+            <p>
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+              ea commodo consequat.
+            </p>
           </div>
         </ModalBody>
         <ModalFooter>

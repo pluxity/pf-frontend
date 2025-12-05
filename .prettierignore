@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.turbo
+storybook-static
+pnpm-lock.yaml
+*.min.js
+*.min.css
+*.hbs

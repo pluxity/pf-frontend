@@ -16,7 +16,15 @@ export interface NavigationBarProps extends React.HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement>;
 }
 
-function NavigationBar({ className, logo, logoText = "Logo", items = [], actions, ref, ...props }: NavigationBarProps) {
+function NavigationBar({
+  className,
+  logo,
+  logoText = "Logo",
+  items = [],
+  actions,
+  ref,
+  ...props
+}: NavigationBarProps) {
   return (
     <nav
       ref={ref}
@@ -27,9 +35,7 @@ function NavigationBar({ className, logo, logoText = "Logo", items = [], actions
       {...props}
     >
       <div className="flex items-center gap-8">
-        {logo || (
-          <span className="text-xl font-bold text-brand">{logoText}</span>
-        )}
+        {logo || <span className="text-xl font-bold text-brand">{logoText}</span>}
 
         {items.length > 0 && (
           <div className="flex items-center gap-6">

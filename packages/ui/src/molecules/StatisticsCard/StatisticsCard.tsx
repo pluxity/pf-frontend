@@ -27,20 +27,12 @@ const StatisticsCard = ({
   };
 
   return (
-    <div
-      className={cn(
-        "rounded-xl border p-6 shadow-sm",
-        variantStyles[variant],
-        className
-      )}
-    >
+    <div className={cn("rounded-xl border p-6 shadow-sm", variantStyles[variant], className)}>
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-500">{title}</p>
           <p className="text-3xl font-bold text-gray-900">{value}</p>
-          {description && (
-            <p className="text-sm text-gray-500">{description}</p>
-          )}
+          {description && <p className="text-sm text-gray-500">{description}</p>}
           {trend && (
             <div className="flex items-center gap-1">
               <span
@@ -84,16 +76,7 @@ const StatisticsCard = ({
             </div>
           )}
         </div>
-        {icon && (
-          <div
-            className={cn(
-              "rounded-lg p-3",
-              iconStyles[variant]
-            )}
-          >
-            {icon}
-          </div>
-        )}
+        {icon && <div className={cn("rounded-lg p-3", iconStyles[variant])}>{icon}</div>}
       </div>
     </div>
   );

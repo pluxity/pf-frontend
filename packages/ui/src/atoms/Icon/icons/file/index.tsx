@@ -15,12 +15,7 @@ export function Upload({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M7 1V9"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M7 1V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path
         d="M3 5L7 1L11 5"
         stroke="currentColor"
@@ -57,12 +52,7 @@ export function File({ size = "md", className, ref, ...props }: IconProps) {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path
-        d="M8 0.5V4.5H12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
+      <path d="M8 0.5V4.5H12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -86,12 +76,7 @@ export function FileText({ size = "md", className, ref, ...props }: IconProps) {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path
-        d="M8 0.5V4.5H12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
+      <path d="M8 0.5V4.5H12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
       <path d="M4.5 7.5H9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M4.5 10H9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -225,12 +210,7 @@ export function Code({ size = "md", className, ref, ...props }: IconProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M8 2L6 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M8 2L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }

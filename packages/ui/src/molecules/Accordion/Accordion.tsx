@@ -19,7 +19,9 @@ function AccordionItem({ className, ref, ...props }: AccordionItemProps) {
   );
 }
 
-interface AccordionTriggerProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> {
+interface AccordionTriggerProps extends ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Trigger
+> {
   ref?: Ref<ComponentRef<typeof AccordionPrimitive.Trigger>>;
 }
 
@@ -42,7 +44,9 @@ function AccordionTrigger({ className, children, ref, ...props }: AccordionTrigg
   );
 }
 
-interface AccordionContentProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> {
+interface AccordionContentProps extends ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Content
+> {
   ref?: Ref<ComponentRef<typeof AccordionPrimitive.Content>>;
 }
 

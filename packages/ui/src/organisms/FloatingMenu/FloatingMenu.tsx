@@ -28,9 +28,7 @@ export interface FloatingMenuProps extends React.HTMLAttributes<HTMLDivElement> 
 function FloatingMenuItem({ label, href, active, onClick, ref }: FloatingMenuItemProps) {
   const itemClasses = cn(
     "flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-sm transition-colors",
-    active
-      ? "bg-[#66B3FF] font-bold text-brand"
-      : "text-[#4D4D59] hover:bg-[#F5F5F7]"
+    active ? "bg-[#66B3FF] font-bold text-brand" : "text-[#4D4D59] hover:bg-[#F5F5F7]"
   );
 
   const content = <span>{label}</span>;

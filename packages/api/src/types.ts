@@ -54,7 +54,7 @@ export interface ErrorResponse {
 /**
  * API 요청 옵션
  */
-export interface RequestOptions extends Omit<RequestInit, 'method' | 'body'> {
+export interface RequestOptions extends Omit<RequestInit, "method" | "body"> {
   params?: Record<string, string | number | boolean | undefined>;
 }
 
@@ -70,7 +70,7 @@ export interface ApiClientConfig {
 /**
  * 파일 업로드 옵션
  */
-export interface UploadOptions extends Omit<RequestOptions, 'params'> {
+export interface UploadOptions extends Omit<RequestOptions, "params"> {
   /**
    * FormData에서 파일 필드 이름 (기본값: 'file')
    */

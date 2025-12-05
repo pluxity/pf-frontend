@@ -14,14 +14,7 @@ interface BreadcrumbPropsWithRef extends BreadcrumbProps {
 }
 
 function Breadcrumb({ className, ref, ...props }: BreadcrumbPropsWithRef) {
-  return (
-    <nav
-      ref={ref}
-      aria-label="breadcrumb"
-      className={cn(className)}
-      {...props}
-    />
-  );
+  return <nav ref={ref} aria-label="breadcrumb" className={cn(className)} {...props} />;
 }
 
 interface BreadcrumbListPropsWithRef extends BreadcrumbListProps {
@@ -46,13 +39,7 @@ interface BreadcrumbItemPropsWithRef extends BreadcrumbItemProps {
 }
 
 function BreadcrumbItem({ className, ref, ...props }: BreadcrumbItemPropsWithRef) {
-  return (
-    <li
-      ref={ref}
-      className={cn("inline-flex items-center gap-1.5", className)}
-      {...props}
-    />
-  );
+  return <li ref={ref} className={cn("inline-flex items-center gap-1.5", className)} {...props} />;
 }
 
 interface BreadcrumbLinkPropsWithRef extends BreadcrumbLinkProps {
@@ -63,10 +50,7 @@ function BreadcrumbLink({ className, ref, ...props }: BreadcrumbLinkPropsWithRef
   return (
     <a
       ref={ref}
-      className={cn(
-        "transition-colors hover:text-gray-900 hover:underline",
-        className
-      )}
+      className={cn("transition-colors hover:text-gray-900 hover:underline", className)}
       {...props}
     />
   );
@@ -76,7 +60,12 @@ interface BreadcrumbSeparatorPropsWithRef extends BreadcrumbSeparatorProps {
   ref?: Ref<HTMLLIElement>;
 }
 
-function BreadcrumbSeparator({ className, children, ref, ...props }: BreadcrumbSeparatorPropsWithRef) {
+function BreadcrumbSeparator({
+  className,
+  children,
+  ref,
+  ...props
+}: BreadcrumbSeparatorPropsWithRef) {
   return (
     <li
       ref={ref}

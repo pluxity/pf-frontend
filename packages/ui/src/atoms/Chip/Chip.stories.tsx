@@ -102,11 +102,21 @@ export const AllSizes: Story = {
 export const RemovableChips: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Chip variant="default" removable>Default</Chip>
-      <Chip variant="primary" removable>Primary</Chip>
-      <Chip variant="success" removable>Success</Chip>
-      <Chip variant="warning" removable>Warning</Chip>
-      <Chip variant="error" removable>Error</Chip>
+      <Chip variant="default" removable>
+        Default
+      </Chip>
+      <Chip variant="primary" removable>
+        Primary
+      </Chip>
+      <Chip variant="success" removable>
+        Success
+      </Chip>
+      <Chip variant="warning" removable>
+        Warning
+      </Chip>
+      <Chip variant="error" removable>
+        Error
+      </Chip>
     </div>
   ),
 };

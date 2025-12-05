@@ -37,9 +37,7 @@ export const Default: Story = {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Settings</SheetTitle>
-          <SheetDescription>
-            Configure your preferences
-          </SheetDescription>
+          <SheetDescription>Configure your preferences</SheetDescription>
         </SheetHeader>
         <SheetBody>
           <SheetSection title="Notifications">
@@ -91,16 +89,22 @@ export const Left: Story = {
       <SheetContent side="left">
         <SheetHeader>
           <SheetTitle>Navigation</SheetTitle>
-          <SheetDescription>
-            Browse through the menu
-          </SheetDescription>
+          <SheetDescription>Browse through the menu</SheetDescription>
         </SheetHeader>
         <SheetBody>
           <div className="space-y-2 pt-4">
-            <Button variant="ghost" className="w-full justify-start">Home</Button>
-            <Button variant="ghost" className="w-full justify-start">Products</Button>
-            <Button variant="ghost" className="w-full justify-start">About</Button>
-            <Button variant="ghost" className="w-full justify-start">Contact</Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Home
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Products
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              About
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Contact
+            </Button>
           </div>
         </SheetBody>
       </SheetContent>
@@ -117,9 +121,7 @@ export const WithForm: Story = {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add User</SheetTitle>
-          <SheetDescription>
-            Fill in the details to create a new user
-          </SheetDescription>
+          <SheetDescription>Fill in the details to create a new user</SheetDescription>
         </SheetHeader>
         <SheetBody>
           <div className="space-y-4 pt-4">
@@ -157,9 +159,7 @@ export const Bottom: Story = {
       <SheetContent side="bottom" className="h-[300px]">
         <SheetHeader>
           <SheetTitle>Quick Actions</SheetTitle>
-          <SheetDescription>
-            Select an action to perform
-          </SheetDescription>
+          <SheetDescription>Select an action to perform</SheetDescription>
         </SheetHeader>
         <SheetBody>
           <div className="grid grid-cols-3 gap-4 pt-4">

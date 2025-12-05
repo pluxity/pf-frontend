@@ -33,11 +33,7 @@ export const Required: Story = {
 
 export const WithDescription: Story = {
   render: () => (
-    <FormField
-      label="Bio"
-      description="Tell us a little about yourself"
-      className="w-[300px]"
-    >
+    <FormField label="Bio" description="Tell us a little about yourself" className="w-[300px]">
       <Textarea placeholder="I'm a..." />
     </FormField>
   ),
@@ -45,11 +41,7 @@ export const WithDescription: Story = {
 
 export const WithError: Story = {
   render: () => (
-    <FormField
-      label="Email"
-      error="Please enter a valid email address"
-      className="w-[300px]"
-    >
+    <FormField label="Email" error="Please enter a valid email address" className="w-[300px]">
       <Input type="email" placeholder="you@example.com" />
     </FormField>
   ),

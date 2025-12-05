@@ -3,16 +3,7 @@ export { iconSizes } from "./types";
 
 export { createIcon } from "./createIcon";
 
-export {
-  Sunny,
-  Cloudy,
-  PartlyCloudy,
-  Rainy,
-  Stormy,
-  Snowy,
-  Foggy,
-  Windy,
-} from "./icons/weather";
+export { Sunny, Cloudy, PartlyCloudy, Rainy, Stormy, Snowy, Foggy, Windy } from "./icons/weather";
 
 export {
   View3D,
@@ -86,22 +77,6 @@ export {
   BarChart,
 } from "./icons/status";
 
-export {
-  Upload,
-  File,
-  FileText,
-  Folder,
-  Image,
-  Music,
-  Video,
-  Code,
-} from "./icons/file";
+export { Upload, File, FileText, Folder, Image, Music, Video, Code } from "./icons/file";
 
-export {
-  Twitter,
-  Github,
-  Linkedin,
-  Youtube,
-  Facebook,
-  Instagram,
-} from "./icons/social";
+export { Twitter, Github, Linkedin, Youtube, Facebook, Instagram } from "./icons/social";

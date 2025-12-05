@@ -17,10 +17,7 @@ function Card({ className, ref, ...props }: CardPropsWithRef) {
   return (
     <div
       ref={ref}
-      className={cn(
-        "rounded-xl border border-border-light bg-white shadow-card",
-        className
-      )}
+      className={cn("rounded-xl border border-border-light bg-white shadow-card", className)}
       {...props}
     />
   );
@@ -31,13 +28,7 @@ interface CardHeaderPropsWithRef extends CardHeaderProps {
 }
 
 function CardHeader({ className, ref, ...props }: CardHeaderPropsWithRef) {
-  return (
-    <div
-      ref={ref}
-      className={cn("flex flex-col space-y-1.5 p-6", className)}
-      {...props}
-    />
-  );
+  return <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />;
 }
 
 interface CardTitlePropsWithRef extends CardTitleProps {
@@ -48,7 +39,10 @@ function CardTitle({ className, ref, ...props }: CardTitlePropsWithRef) {
   return (
     <h3
       ref={ref}
-      className={cn("text-lg font-semibold leading-none tracking-tight text-text-primary", className)}
+      className={cn(
+        "text-lg font-semibold leading-none tracking-tight text-text-primary",
+        className
+      )}
       {...props}
     />
   );
@@ -59,13 +53,7 @@ interface CardDescriptionPropsWithRef extends CardDescriptionProps {
 }
 
 function CardDescription({ className, ref, ...props }: CardDescriptionPropsWithRef) {
-  return (
-    <p
-      ref={ref}
-      className={cn("text-sm text-text-muted", className)}
-      {...props}
-    />
-  );
+  return <p ref={ref} className={cn("text-sm text-text-muted", className)} {...props} />;
 }
 
 interface CardContentPropsWithRef extends CardContentProps {
@@ -81,13 +69,7 @@ interface CardFooterPropsWithRef extends CardFooterProps {
 }
 
 function CardFooter({ className, ref, ...props }: CardFooterPropsWithRef) {
-  return (
-    <div
-      ref={ref}
-      className={cn("flex items-center p-6 pt-0", className)}
-      {...props}
-    />
-  );
+  return <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />;
 }
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

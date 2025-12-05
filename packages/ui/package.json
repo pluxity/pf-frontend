@@ -3,48 +3,20 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./atoms": {
-      "import": "./dist/atoms/index.js",
-      "types": "./dist/atoms/index.d.ts"
-    },
-    "./molecules": {
-      "import": "./dist/molecules/index.js",
-      "types": "./dist/molecules/index.d.ts"
-    },
-    "./organisms": {
-      "import": "./dist/organisms/index.js",
-      "types": "./dist/organisms/index.d.ts"
-    },
-    "./utils": {
-      "import": "./dist/utils/index.js",
-      "types": "./dist/utils/index.d.ts"
-    },
-    "./globals.css": "./dist/globals.css",
-    "./templates": {
-      "import": "./dist/templates/index.js",
-      "types": "./dist/templates/index.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./atoms": "./src/atoms/index.ts",
+    "./molecules": "./src/molecules/index.ts",
+    "./organisms": "./src/organisms/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./templates": "./src/templates/index.ts",
+    "./globals.css": "./src/globals.css"
   },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build && tsc --emitDeclarationOnly",
-    "lint": "eslint .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
     "clean": "rimraf dist storybook-static"
   },
   "peerDependencies": {
@@ -78,7 +50,8 @@
     "tailwind-merge": "^3.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "catalog:",
+    "@pf-dev/eslint-config": "workspace:*",
+    "@pf-dev/typescript-config": "workspace:*",
     "@storybook/addon-essentials": "catalog:",
     "@storybook/addon-interactions": "catalog:",
     "@storybook/addon-links": "catalog:",
@@ -92,16 +65,12 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "eslint": "catalog:",
-    "eslint-plugin-react-hooks": "catalog:",
-    "eslint-plugin-react-refresh": "catalog:",
-    "globals": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "^6.0.1",
     "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "typescript-eslint": "catalog:",
     "vite": "catalog:"
   }
 }

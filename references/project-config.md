@@ -12,6 +12,7 @@
 ## Project Field IDs
 
 ### Status Field
+
 - **Field ID**: PVTSSF_lADOC1m_S84BJx9Kzg5177k
 - **Options**:
   - Todo: `f75ad846`
@@ -19,6 +20,7 @@
   - Done: `98236657`
 
 ### App Field
+
 - **Field ID**: PVTSSF_lADOC1m_S84BJx9Kzg52Qxk
 - **Options**:
   - packages: `c6737862`
@@ -27,39 +29,41 @@
   - project-c: `6d5f30ef`
 
 ### Date Fields
-| Field Name | Field ID | Type |
-|------------|----------|------|
+
+| Field Name | Field ID                     | Type           |
+| ---------- | ---------------------------- | -------------- |
 | start-date | PVTF_lADOC1m_S84BJx9Kzg5187A | ProjectV2Field |
-| due-date | PVTF_lADOC1m_S84BJx9Kzg5187E | ProjectV2Field |
+| due-date   | PVTF_lADOC1m_S84BJx9Kzg5187E | ProjectV2Field |
 
 ### Other Fields
-| Field Name | Field ID | Type |
-|------------|----------|------|
-| Title | PVTF_lADOC1m_S84BJx9Kzg5177c | ProjectV2Field |
-| Assignees | PVTF_lADOC1m_S84BJx9Kzg5177g | ProjectV2Field |
-| Labels | PVTF_lADOC1m_S84BJx9Kzg5177o | ProjectV2Field |
+
+| Field Name           | Field ID                     | Type           |
+| -------------------- | ---------------------------- | -------------- |
+| Title                | PVTF_lADOC1m_S84BJx9Kzg5177c | ProjectV2Field |
+| Assignees            | PVTF_lADOC1m_S84BJx9Kzg5177g | ProjectV2Field |
+| Labels               | PVTF_lADOC1m_S84BJx9Kzg5177o | ProjectV2Field |
 | Linked pull requests | PVTF_lADOC1m_S84BJx9Kzg5177s | ProjectV2Field |
-| Milestone | PVTF_lADOC1m_S84BJx9Kzg5177w | ProjectV2Field |
-| Repository | PVTF_lADOC1m_S84BJx9Kzg51770 | ProjectV2Field |
-| Reviewers | PVTF_lADOC1m_S84BJx9Kzg51778 | ProjectV2Field |
-| Parent issue | PVTF_lADOC1m_S84BJx9Kzg5178A | ProjectV2Field |
-| Sub-issues progress | PVTF_lADOC1m_S84BJx9Kzg5178E | ProjectV2Field |
+| Milestone            | PVTF_lADOC1m_S84BJx9Kzg5177w | ProjectV2Field |
+| Repository           | PVTF_lADOC1m_S84BJx9Kzg51770 | ProjectV2Field |
+| Reviewers            | PVTF_lADOC1m_S84BJx9Kzg51778 | ProjectV2Field |
+| Parent issue         | PVTF_lADOC1m_S84BJx9Kzg5178A | ProjectV2Field |
+| Sub-issues progress  | PVTF_lADOC1m_S84BJx9Kzg5178E | ProjectV2Field |
 
 ## Team Members
 
-| Name | GitHub Handle | Role |
-|------|---------------|------|
-| TBD | @username | Developer |
+| Name | GitHub Handle | Role      |
+| ---- | ------------- | --------- |
+| TBD  | @username     | Developer |
 
 ## Labels
 
-| Label | Color | Description |
-|-------|-------|-------------|
-| feature | `#0E8A16` | New feature |
-| enhancement | `#a2eeef` | New feature or request |
-| bug | `#d73a4a` | Something isn't working |
-| docs | `#0075ca` | Documentation |
-| discussion | `#5319E7` | Discussion |
+| Label       | Color     | Description             |
+| ----------- | --------- | ----------------------- |
+| feature     | `#0E8A16` | New feature             |
+| enhancement | `#a2eeef` | New feature or request  |
+| bug         | `#d73a4a` | Something isn't working |
+| docs        | `#0075ca` | Documentation           |
+| discussion  | `#5319E7` | Discussion              |
 
 ## Issue Templates
 
@@ -68,16 +72,19 @@ Issue templates are defined in the github-project-manager skill.
 ## Commands
 
 ### Add issue to project
+
 ```bash
 gh project item-add 17 --owner pluxity --url <ISSUE_URL>
 ```
 
 ### Update item status
+
 ```bash
 gh project item-edit --project-id PVT_kwDOC1m_S84BJx9K --id <ITEM_ID> --field-id PVTSSF_lADOC1m_S84BJx9Kzg5177k --single-select-option-id <OPTION_ID>
 ```
 
 ### Update item App field
+
 ```bash
 gh project item-edit --project-id PVT_kwDOC1m_S84BJx9K --id <ITEM_ID> --field-id PVTSSF_lADOC1m_S84BJx9Kzg52Qxk --single-select-option-id <OPTION_ID>
 ```

@@ -12,7 +12,13 @@ import type { ToastData } from "./useToast";
 export interface ToasterProps {
   toasts: ToastData[];
   onDismiss: (id: string) => void;
-  position?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
+  position?:
+    | "top-right"
+    | "top-left"
+    | "bottom-right"
+    | "bottom-left"
+    | "top-center"
+    | "bottom-center";
 }
 
 export function Toaster({ toasts, onDismiss, position = "bottom-right" }: ToasterProps) {

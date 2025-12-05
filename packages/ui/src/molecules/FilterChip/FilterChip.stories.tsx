@@ -84,10 +84,7 @@ export const Interactive: Story = {
   render: () => {
     const [selected, setSelected] = useState(false);
     return (
-      <FilterChip
-        selected={selected}
-        onChange={setSelected}
-      >
+      <FilterChip selected={selected} onChange={setSelected}>
         Click me
       </FilterChip>
     );
@@ -100,18 +97,13 @@ export const FilterGroup: Story = {
 
     const toggleFilter = (filter: string) => {
       setSelectedFilters((prev) =>
-        prev.includes(filter)
-          ? prev.filter((f) => f !== filter)
-          : [...prev, filter]
+        prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
       );
     };
 
     return (
       <FilterChipGroup>
-        <FilterChip
-          selected={selectedFilters.includes("all")}
-          onChange={() => toggleFilter("all")}
-        >
+        <FilterChip selected={selectedFilters.includes("all")} onChange={() => toggleFilter("all")}>
           All
         </FilterChip>
         <FilterChip

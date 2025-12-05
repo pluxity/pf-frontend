@@ -26,7 +26,15 @@ interface TimelineItemComponentProps extends TimelineItemProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function TimelineItem({ title, description, time, icon, variant = "default", isLast = false, ref }: TimelineItemComponentProps) {
+function TimelineItem({
+  title,
+  description,
+  time,
+  icon,
+  variant = "default",
+  isLast = false,
+  ref,
+}: TimelineItemComponentProps) {
   return (
     <div ref={ref} className="relative flex gap-4 pb-8 last:pb-0">
       {!isLast && (
@@ -49,13 +57,9 @@ function TimelineItem({ title, description, time, icon, variant = "default", isL
       <div className="flex-1 pt-0.5">
         <div className="flex items-start justify-between gap-2">
           <h4 className="text-sm font-bold text-[#333340]">{title}</h4>
-          {time && (
-            <span className="flex-shrink-0 text-xs text-[#808088]">{time}</span>
-          )}
+          {time && <span className="flex-shrink-0 text-xs text-[#808088]">{time}</span>}
         </div>
-        {description && (
-          <p className="mt-1 text-sm text-[#666673]">{description}</p>
-        )}
+        {description && <p className="mt-1 text-sm text-[#666673]">{description}</p>}
       </div>
     </div>
   );
@@ -65,11 +69,7 @@ function Timeline({ items, className, ref, ...props }: TimelineProps) {
   return (
     <div ref={ref} className={cn("space-y-0", className)} {...props}>
       {items.map((item, index) => (
-        <TimelineItem
-          key={index}
-          {...item}
-          isLast={index === items.length - 1}
-        />
+        <TimelineItem key={index} {...item} isLast={index === items.length - 1} />
       ))}
     </div>
   );

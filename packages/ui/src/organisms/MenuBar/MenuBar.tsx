@@ -1,8 +1,4 @@
-import {
-  type ComponentPropsWithoutRef,
-  type ComponentRef,
-  type Ref,
-} from "react";
+import { type ComponentPropsWithoutRef, type ComponentRef, type Ref } from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
 import { ChevronRight, Check, Circle } from "../../atoms/Icon";
 import { cn } from "../../utils";
@@ -21,10 +17,7 @@ function Menubar({ className, ref, ...props }: MenubarProps) {
   return (
     <MenubarPrimitive.Root
       ref={ref}
-      className={cn(
-        "flex h-10 items-center bg-white px-1",
-        className
-      )}
+      className={cn("flex h-10 items-center bg-white px-1", className)}
       {...props}
     />
   );
@@ -49,18 +42,14 @@ function MenubarTrigger({ className, ref, ...props }: MenubarTriggerProps) {
   );
 }
 
-interface MenubarSubTriggerProps extends ComponentPropsWithoutRef<typeof MenubarPrimitive.SubTrigger> {
+interface MenubarSubTriggerProps extends ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.SubTrigger
+> {
   ref?: Ref<ComponentRef<typeof MenubarPrimitive.SubTrigger>>;
   inset?: boolean;
 }
 
-function MenubarSubTrigger({
-  className,
-  inset,
-  children,
-  ref,
-  ...props
-}: MenubarSubTriggerProps) {
+function MenubarSubTrigger({ className, inset, children, ref, ...props }: MenubarSubTriggerProps) {
   return (
     <MenubarPrimitive.SubTrigger
       ref={ref}
@@ -78,7 +67,9 @@ function MenubarSubTrigger({
   );
 }
 
-interface MenubarSubContentProps extends ComponentPropsWithoutRef<typeof MenubarPrimitive.SubContent> {
+interface MenubarSubContentProps extends ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.SubContent
+> {
   ref?: Ref<ComponentRef<typeof MenubarPrimitive.SubContent>>;
 }
 
@@ -154,15 +145,15 @@ function MenubarItem({ className, inset, shortcut, children, ref, ...props }: Me
     >
       {children}
       {shortcut && (
-        <span className="ml-auto text-xs tracking-widest text-text-muted">
-          {shortcut}
-        </span>
+        <span className="ml-auto text-xs tracking-widest text-text-muted">{shortcut}</span>
       )}
     </MenubarPrimitive.Item>
   );
 }
 
-interface MenubarCheckboxItemProps extends ComponentPropsWithoutRef<typeof MenubarPrimitive.CheckboxItem> {
+interface MenubarCheckboxItemProps extends ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.CheckboxItem
+> {
   ref?: Ref<ComponentRef<typeof MenubarPrimitive.CheckboxItem>>;
 }
 
@@ -195,7 +186,9 @@ function MenubarCheckboxItem({
   );
 }
 
-interface MenubarRadioItemProps extends ComponentPropsWithoutRef<typeof MenubarPrimitive.RadioItem> {
+interface MenubarRadioItemProps extends ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.RadioItem
+> {
   ref?: Ref<ComponentRef<typeof MenubarPrimitive.RadioItem>>;
 }
 
@@ -230,17 +223,15 @@ function MenubarLabel({ className, inset, ref, ...props }: MenubarLabelProps) {
   return (
     <MenubarPrimitive.Label
       ref={ref}
-      className={cn(
-        "px-3 py-2 text-xs font-semibold text-text-muted",
-        inset && "pl-8",
-        className
-      )}
+      className={cn("px-3 py-2 text-xs font-semibold text-text-muted", inset && "pl-8", className)}
       {...props}
     />
   );
 }
 
-interface MenubarSeparatorProps extends ComponentPropsWithoutRef<typeof MenubarPrimitive.Separator> {
+interface MenubarSeparatorProps extends ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.Separator
+> {
   ref?: Ref<ComponentRef<typeof MenubarPrimitive.Separator>>;
 }
 
@@ -254,15 +245,9 @@ function MenubarSeparator({ className, ref, ...props }: MenubarSeparatorProps) {
   );
 }
 
-function MenubarShortcut({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) {
+function MenubarShortcut({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span
-      className={cn("ml-auto text-xs tracking-widest text-text-muted", className)}
-      {...props}
-    />
+    <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
   );
 }
 

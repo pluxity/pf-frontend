@@ -4,19 +4,19 @@ PLUXITY 프론트엔드 모노레포 프로젝트
 
 ## 기술 스택
 
-| 카테고리 | 기술 | 버전 |
-|----------|------|------|
-| Framework | React | ^19.2.0 |
-| Build Tool | Vite | ^6.4.1 |
-| Styling | Tailwind CSS | ^4.1.17 |
-| Language | TypeScript | ^5.9.3 |
-| State Management | Zustand | ^5.0.8 |
-| Form | react-hook-form | ^7.66.1 |
-| Validation | Zod | ^3.25.76 |
-| Linting | ESLint | ^9.39.1 |
-| Documentation | Storybook | ^8.6.14 |
-| Monorepo | Turborepo | ^2.6.1 |
-| Package Manager | pnpm | ^10.15.1 |
+| 카테고리         | 기술            | 버전     |
+| ---------------- | --------------- | -------- |
+| Framework        | React           | ^19.2.0  |
+| Build Tool       | Vite            | ^6.4.1   |
+| Styling          | Tailwind CSS    | ^4.1.17  |
+| Language         | TypeScript      | ^5.9.3   |
+| State Management | Zustand         | ^5.0.8   |
+| Form             | react-hook-form | ^7.66.1  |
+| Validation       | Zod             | ^3.25.76 |
+| Linting          | ESLint          | ^9.39.1  |
+| Documentation    | Storybook       | ^8.6.14  |
+| Monorepo         | Turborepo       | ^2.6.1   |
+| Package Manager  | pnpm            | ^10.15.1 |
 
 ## 프로젝트 구조
 

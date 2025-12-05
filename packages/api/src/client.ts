@@ -1,16 +1,16 @@
-import { ApiError } from './error';
-import type { ApiClientConfig, RequestOptions, UploadOptions } from './types';
+import { ApiError } from "./error";
+import type { ApiClientConfig, RequestOptions, UploadOptions } from "./types";
 
 /**
  * API 클라이언트 생성
  */
 export function createApiClient(config: ApiClientConfig) {
-  const { baseURL, refreshTokenURL = '/auth/refresh-token', onUnauthorized } = config;
+  const { baseURL, refreshTokenURL = "/auth/refresh-token", onUnauthorized } = config;
 
   let isRefreshing = false;
   let refreshPromise: Promise<boolean> | null = null;
 
-  function buildURL(path: string, params?: RequestOptions['params']): string {
+  function buildURL(path: string, params?: RequestOptions["params"]): string {
     const url = new URL(path, baseURL);
 
     if (params) {
@@ -27,8 +27,8 @@ export function createApiClient(config: ApiClientConfig) {
   async function refreshToken(): Promise<boolean> {
     try {
       const response = await fetch(buildURL(refreshTokenURL), {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
       });
 
       return response.ok;
@@ -72,7 +72,7 @@ export function createApiClient(config: ApiClientConfig) {
     const isFormData = body instanceof FormData;
 
     const headers: HeadersInit = {
-      ...(body !== undefined && !isFormData && { 'Content-Type': 'application/json' }),
+      ...(body !== undefined && !isFormData && { "Content-Type": "application/json" }),
       ...customHeaders,
     };
 
@@ -80,7 +80,7 @@ export function createApiClient(config: ApiClientConfig) {
       method,
       headers,
       body: body !== undefined ? (isFormData ? body : JSON.stringify(body)) : undefined,
-      credentials: 'include',
+      credentials: "include",
       ...restOptions,
     });
 
@@ -104,12 +104,12 @@ export function createApiClient(config: ApiClientConfig) {
     }
 
     // JSON 응답 처리
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
       const data = await response.json();
       // 201 Created 시 Location 헤더 포함
       if (response.status === 201) {
-        const location = response.headers.get('Location');
+        const location = response.headers.get("Location");
         return { ...data, location } as T;
       }
       return data as T;
@@ -117,7 +117,7 @@ export function createApiClient(config: ApiClientConfig) {
 
     // 201 Created (JSON 아닌 경우)
     if (response.status === 201) {
-      const location = response.headers.get('Location');
+      const location = response.headers.get("Location");
       return { location } as T;
     }
 
@@ -129,35 +129,35 @@ export function createApiClient(config: ApiClientConfig) {
      * GET 요청
      */
     get<T>(path: string, options?: RequestOptions): Promise<T> {
-      return request<T>('GET', path, undefined, options);
+      return request<T>("GET", path, undefined, options);
     },
 
     /**
      * POST 요청
      */
     post<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-      return request<T>('POST', path, body, options);
+      return request<T>("POST", path, body, options);
     },
 
     /**
      * PUT 요청
      */
     put<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-      return request<T>('PUT', path, body, options);
+      return request<T>("PUT", path, body, options);
     },
 
     /**
      * PATCH 요청
      */
     patch<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
-      return request<T>('PATCH', path, body, options);
+      return request<T>("PATCH", path, body, options);
     },
 
     /**
      * DELETE 요청
      */
     delete<T>(path: string, options?: RequestOptions): Promise<T> {
-      return request<T>('DELETE', path, undefined, options);
+      return request<T>("DELETE", path, undefined, options);
     },
 
     /**
@@ -165,7 +165,7 @@ export function createApiClient(config: ApiClientConfig) {
      * XHR 사용으로 업로드 진행률 추적 가능
      */
     upload<T>(path: string, file: File | File[], options: UploadOptions = {}): Promise<T> {
-      const { fieldName = 'file', onProgress, headers: customHeaders } = options;
+      const { fieldName = "file", onProgress, headers: customHeaders } = options;
 
       const executeUpload = (isRetry = false): Promise<T> => {
         return new Promise((resolve, reject) => {
@@ -181,7 +181,7 @@ export function createApiClient(config: ApiClientConfig) {
 
           // 진행률 이벤트
           if (onProgress) {
-            xhr.upload.addEventListener('progress', (event) => {
+            xhr.upload.addEventListener("progress", (event) => {
               if (event.lengthComputable) {
                 const progress = Math.round((event.loaded / event.total) * 100);
                 onProgress(progress);
@@ -189,7 +189,7 @@ export function createApiClient(config: ApiClientConfig) {
             });
           }
 
-          xhr.addEventListener('load', async () => {
+          xhr.addEventListener("load", async () => {
             // 401 시 토큰 갱신 후 재시도
             if (xhr.status === 401 && !isRetry) {
               const refreshed = await handleUnauthorized();
@@ -203,13 +203,13 @@ export function createApiClient(config: ApiClientConfig) {
               try {
                 const responseData = JSON.parse(xhr.responseText);
                 if (xhr.status === 201) {
-                  const location = xhr.getResponseHeader('Location');
+                  const location = xhr.getResponseHeader("Location");
                   resolve({ ...responseData, location } as T);
                 } else {
                   resolve(responseData as T);
                 }
               } catch {
-                reject(new ApiError(xhr.status, 'Failed to parse JSON response', 'PARSE_ERROR'));
+                reject(new ApiError(xhr.status, "Failed to parse JSON response", "PARSE_ERROR"));
               }
             } else {
               let errorResponse;
@@ -229,16 +229,16 @@ export function createApiClient(config: ApiClientConfig) {
             }
           });
 
-          xhr.addEventListener('error', () => {
-            reject(new ApiError(0, 'Network error', 'NETWORK_ERROR'));
+          xhr.addEventListener("error", () => {
+            reject(new ApiError(0, "Network error", "NETWORK_ERROR"));
           });
 
-          xhr.open('POST', url);
+          xhr.open("POST", url);
           xhr.withCredentials = true;
 
           if (customHeaders) {
             Object.entries(customHeaders).forEach(([key, value]) => {
-              if (typeof value === 'string') {
+              if (typeof value === "string") {
                 xhr.setRequestHeader(key, value);
               }
             });

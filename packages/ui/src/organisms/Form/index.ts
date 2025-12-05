@@ -1,11 +1,4 @@
-export {
-  Form,
-  FormContainer,
-  FormSection,
-  FormField,
-  FormActions,
-  FormRow,
-} from "./Form";
+export { Form, FormContainer, FormSection, FormField, FormActions, FormRow } from "./Form";
 export type {
   FormProps,
   FormContainerProps,

@@ -3,13 +3,7 @@ import { cn } from "../../utils";
 import type { RadioGroupProps, RadioGroupItemProps } from "./types";
 
 function RadioGroup({ className, ref, ...props }: RadioGroupProps) {
-  return (
-    <RadioGroupPrimitive.Root
-      className={cn("grid gap-2", className)}
-      {...props}
-      ref={ref}
-    />
-  );
+  return <RadioGroupPrimitive.Root className={cn("grid gap-2", className)} {...props} ref={ref} />;
 }
 
 function RadioGroupItem({ className, ref, ...props }: RadioGroupItemProps) {

@@ -32,31 +32,23 @@ const CheckboxGroup = ({
 
   return (
     <div className={cn("space-y-2", className)}>
-      {label && (
-        <label className="text-sm font-medium text-gray-900">{label}</label>
-      )}
+      {label && <label className="text-sm font-medium text-gray-900">{label}</label>}
       <div
-        className={cn(
-          "flex gap-3",
-          orientation === "vertical" ? "flex-col" : "flex-row flex-wrap"
-        )}
+        className={cn("flex gap-3", orientation === "vertical" ? "flex-col" : "flex-row flex-wrap")}
       >
         {options.map((option) => (
           <div key={option.value} className="flex items-center space-x-2">
             <Checkbox
               id={option.value}
               checked={selectedValues.includes(option.value)}
-              onCheckedChange={(checked) =>
-                handleChange(option.value, checked === true)
-              }
+              onCheckedChange={(checked) => handleChange(option.value, checked === true)}
               disabled={disabled || option.disabled}
             />
             <label
               htmlFor={option.value}
               className={cn(
                 "text-sm font-medium leading-none text-gray-700",
-                (disabled || option.disabled) &&
-                  "cursor-not-allowed opacity-70"
+                (disabled || option.disabled) && "cursor-not-allowed opacity-70"
               )}
             >
               {option.label}

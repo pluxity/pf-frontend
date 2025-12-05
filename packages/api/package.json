@@ -13,6 +13,7 @@
     "clean": "rimraf dist node_modules .turbo"
   },
   "devDependencies": {
+    "@pf-dev/typescript-config": "workspace:*",
     "typescript": "catalog:"
   }
 }

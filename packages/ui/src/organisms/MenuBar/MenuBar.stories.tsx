@@ -55,7 +55,9 @@ export const Default: Story = {
               <MenubarItem>CSV로 내보내기</MenubarItem>
             </MenubarSubContent>
           </MenubarSub>
-          <MenubarItem disabled shortcut="Ctrl+P">인쇄</MenubarItem>
+          <MenubarItem disabled shortcut="Ctrl+P">
+            인쇄
+          </MenubarItem>
           <MenubarSeparator />
           <MenubarItem shortcut="Alt+F4">종료</MenubarItem>
         </MenubarContent>

@@ -37,13 +37,7 @@ export const Default: Story = {
 export const WithValue: Story = {
   render: () => {
     const [date, setDate] = useState<Date | undefined>(new Date());
-    return (
-      <DateTimePicker
-        value={date}
-        onChange={setDate}
-        placeholder="Select date & time"
-      />
-    );
+    return <DateTimePicker value={date} onChange={setDate} placeholder="Select date & time" />;
   },
 };
 
@@ -91,9 +85,7 @@ export const WithMinMaxDate: Story = {
 
     return (
       <div className="space-y-2">
-        <p className="text-sm text-gray-500">
-          Only dates within 2 months from now are selectable
-        </p>
+        <p className="text-sm text-gray-500">Only dates within 2 months from now are selectable</p>
         <DateTimePicker
           value={date}
           onChange={setDate}
@@ -111,16 +103,18 @@ export const Interactive: Story = {
     const [date, setDate] = useState<Date | undefined>();
     return (
       <div className="space-y-4">
-        <DateTimePicker
-          value={date}
-          onChange={setDate}
-          placeholder="Select date & time"
-        />
+        <DateTimePicker value={date} onChange={setDate} placeholder="Select date & time" />
         {date && (
           <div className="text-sm space-y-1">
-            <p><strong>Date:</strong> {date.toLocaleDateString()}</p>
-            <p><strong>Time:</strong> {date.toLocaleTimeString()}</p>
-            <p><strong>ISO:</strong> {date.toISOString()}</p>
+            <p>
+              <strong>Date:</strong> {date.toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Time:</strong> {date.toLocaleTimeString()}
+            </p>
+            <p>
+              <strong>ISO:</strong> {date.toISOString()}
+            </p>
           </div>
         )}
       </div>

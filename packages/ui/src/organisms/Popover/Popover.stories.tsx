@@ -45,9 +45,7 @@ export const WithHeader: Story = {
       <PopoverContent>
         <PopoverHeader>
           <PopoverTitle>Popover Title</PopoverTitle>
-          <PopoverDescription>
-            This is a description for the popover.
-          </PopoverDescription>
+          <PopoverDescription>This is a description for the popover.</PopoverDescription>
         </PopoverHeader>
         <div className="mt-4">
           <p className="text-sm">Additional content goes here.</p>
@@ -66,9 +64,7 @@ export const WithForm: Story = {
       <PopoverContent className="w-80">
         <PopoverHeader>
           <PopoverTitle>Edit Profile</PopoverTitle>
-          <PopoverDescription>
-            Make changes to your profile here.
-          </PopoverDescription>
+          <PopoverDescription>Make changes to your profile here.</PopoverDescription>
         </PopoverHeader>
         <div className="mt-4 space-y-4">
           <div className="space-y-2">
@@ -143,9 +139,7 @@ export const WithCloseButton: Story = {
         <PopoverHeader>
           <PopoverTitle>Notification</PopoverTitle>
         </PopoverHeader>
-        <p className="mt-2 text-sm">
-          You have 3 new messages in your inbox.
-        </p>
+        <p className="mt-2 text-sm">You have 3 new messages in your inbox.</p>
         <div className="mt-4">
           <PopoverClose asChild>
             <Button className="w-full">Got it</Button>

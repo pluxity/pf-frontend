@@ -1,0 +1,25 @@
+{
+  "name": "@pf-dev/eslint-config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared ESLint configurations",
+  "exports": {
+    "./base": "./base.js",
+    "./react": "./react.js",
+    "./library": "./library.js"
+  },
+  "dependencies": {
+    "@eslint/js": "catalog:",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "typescript-eslint": "catalog:"
+  },
+  "peerDependencies": {
+    "eslint": "catalog:",
+    "prettier": "^3.0.0"
+  }
+}

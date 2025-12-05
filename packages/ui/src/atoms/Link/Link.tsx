@@ -12,15 +12,8 @@ const linkVariants = cva(
         lg: "text-base",
       },
       variant: {
-        default: [
-          "text-brand",
-          "hover:text-blue-700 hover:underline",
-          "visited:text-purple-600",
-        ],
-        muted: [
-          "text-gray-500",
-          "hover:text-gray-700 hover:underline",
-        ],
+        default: ["text-brand", "hover:text-blue-700 hover:underline", "visited:text-purple-600"],
+        muted: ["text-gray-500", "hover:text-gray-700 hover:underline"],
       },
       disabled: {
         true: "text-gray-400 pointer-events-none cursor-not-allowed",
@@ -36,8 +29,7 @@ const linkVariants = cva(
 );
 
 export interface LinkProps
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof linkVariants> {
+  extends AnchorHTMLAttributes<HTMLAnchorElement>, VariantProps<typeof linkVariants> {
   ref?: Ref<HTMLAnchorElement>;
   external?: boolean;
   disabled?: boolean;

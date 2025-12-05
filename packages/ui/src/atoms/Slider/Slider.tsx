@@ -6,10 +6,7 @@ function Slider({ className, ref, ...props }: SliderProps) {
   return (
     <SliderPrimitive.Root
       ref={ref}
-      className={cn(
-        "relative flex w-full touch-none select-none items-center",
-        className
-      )}
+      className={cn("relative flex w-full touch-none select-none items-center", className)}
       {...props}
     >
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-gray-100">

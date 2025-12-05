@@ -16,7 +16,14 @@ interface AlertPropsWithRef extends AlertProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function Alert({ className, variant = "default", icon = true, children, ref, ...props }: AlertPropsWithRef) {
+function Alert({
+  className,
+  variant = "default",
+  icon = true,
+  children,
+  ref,
+  ...props
+}: AlertPropsWithRef) {
   const Icon = iconMap[variant || "default"];
   return (
     <div
@@ -25,9 +32,7 @@ function Alert({ className, variant = "default", icon = true, children, ref, ...
       className={cn(alertVariants({ variant }), icon && "pl-12", className)}
       {...props}
     >
-      {icon && (
-        <Icon size="md" className="absolute left-4 top-4" />
-      )}
+      {icon && <Icon size="md" className="absolute left-4 top-4" />}
       {children}
     </div>
   );
@@ -52,13 +57,7 @@ interface AlertDescriptionPropsWithRef extends AlertDescriptionProps {
 }
 
 function AlertDescription({ className, ref, ...props }: AlertDescriptionPropsWithRef) {
-  return (
-    <div
-      ref={ref}
-      className={cn("text-[13px] text-gray-700", className)}
-      {...props}
-    />
-  );
+  return <div ref={ref} className={cn("text-[13px] text-gray-700", className)} {...props} />;
 }
 
 export { Alert, AlertTitle, AlertDescription };

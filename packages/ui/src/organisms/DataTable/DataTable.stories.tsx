@@ -26,18 +26,114 @@ interface User {
 }
 
 const users: User[] = [
-  { id: 1, name: "John Doe", email: "john@example.com", department: "Engineering", role: "Developer", status: "active", joinDate: "2024-01-15" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", department: "Design", role: "Designer", status: "active", joinDate: "2024-02-20" },
-  { id: 3, name: "Bob Wilson", email: "bob@example.com", department: "Marketing", role: "Manager", status: "inactive", joinDate: "2023-11-10" },
-  { id: 4, name: "Alice Brown", email: "alice@example.com", department: "Engineering", role: "Lead", status: "active", joinDate: "2023-08-05" },
-  { id: 5, name: "Charlie Davis", email: "charlie@example.com", department: "Sales", role: "Executive", status: "pending", joinDate: "2024-03-01" },
-  { id: 6, name: "Eva Green", email: "eva@example.com", department: "HR", role: "Specialist", status: "active", joinDate: "2024-01-08" },
-  { id: 7, name: "Frank Miller", email: "frank@example.com", department: "Engineering", role: "Developer", status: "active", joinDate: "2023-12-12" },
-  { id: 8, name: "Grace Lee", email: "grace@example.com", department: "Design", role: "Senior Designer", status: "inactive", joinDate: "2023-06-22" },
-  { id: 9, name: "Henry Park", email: "henry@example.com", department: "Marketing", role: "Analyst", status: "active", joinDate: "2024-02-14" },
-  { id: 10, name: "Ivy Chen", email: "ivy@example.com", department: "Engineering", role: "Intern", status: "pending", joinDate: "2024-03-10" },
-  { id: 11, name: "Jack Kim", email: "jack@example.com", department: "Sales", role: "Manager", status: "active", joinDate: "2023-09-18" },
-  { id: 12, name: "Kate Wang", email: "kate@example.com", department: "HR", role: "Director", status: "active", joinDate: "2023-04-25" },
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john@example.com",
+    department: "Engineering",
+    role: "Developer",
+    status: "active",
+    joinDate: "2024-01-15",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    department: "Design",
+    role: "Designer",
+    status: "active",
+    joinDate: "2024-02-20",
+  },
+  {
+    id: 3,
+    name: "Bob Wilson",
+    email: "bob@example.com",
+    department: "Marketing",
+    role: "Manager",
+    status: "inactive",
+    joinDate: "2023-11-10",
+  },
+  {
+    id: 4,
+    name: "Alice Brown",
+    email: "alice@example.com",
+    department: "Engineering",
+    role: "Lead",
+    status: "active",
+    joinDate: "2023-08-05",
+  },
+  {
+    id: 5,
+    name: "Charlie Davis",
+    email: "charlie@example.com",
+    department: "Sales",
+    role: "Executive",
+    status: "pending",
+    joinDate: "2024-03-01",
+  },
+  {
+    id: 6,
+    name: "Eva Green",
+    email: "eva@example.com",
+    department: "HR",
+    role: "Specialist",
+    status: "active",
+    joinDate: "2024-01-08",
+  },
+  {
+    id: 7,
+    name: "Frank Miller",
+    email: "frank@example.com",
+    department: "Engineering",
+    role: "Developer",
+    status: "active",
+    joinDate: "2023-12-12",
+  },
+  {
+    id: 8,
+    name: "Grace Lee",
+    email: "grace@example.com",
+    department: "Design",
+    role: "Senior Designer",
+    status: "inactive",
+    joinDate: "2023-06-22",
+  },
+  {
+    id: 9,
+    name: "Henry Park",
+    email: "henry@example.com",
+    department: "Marketing",
+    role: "Analyst",
+    status: "active",
+    joinDate: "2024-02-14",
+  },
+  {
+    id: 10,
+    name: "Ivy Chen",
+    email: "ivy@example.com",
+    department: "Engineering",
+    role: "Intern",
+    status: "pending",
+    joinDate: "2024-03-10",
+  },
+  {
+    id: 11,
+    name: "Jack Kim",
+    email: "jack@example.com",
+    department: "Sales",
+    role: "Manager",
+    status: "active",
+    joinDate: "2023-09-18",
+  },
+  {
+    id: 12,
+    name: "Kate Wang",
+    email: "kate@example.com",
+    department: "HR",
+    role: "Director",
+    status: "active",
+    joinDate: "2023-04-25",
+  },
 ];
 
 const statusColors = {
@@ -81,7 +177,7 @@ export const Default: Story = {
           header: "Status",
           sortable: true,
           render: (row) => (
-            <Badge variant={statusColors[row.status as 'active' | 'inactive' | 'pending']}>
+            <Badge variant={statusColors[row.status as "active" | "inactive" | "pending"]}>
               {(row.status as string).charAt(0).toUpperCase() + (row.status as string).slice(1)}
             </Badge>
           ),
@@ -119,11 +215,15 @@ export const WithoutPagination: Story = {
       columns={[
         { key: "name", header: "Name", sortable: true },
         { key: "email", header: "Email" },
-        { key: "status", header: "Status", render: (row) => (
-          <Badge variant={statusColors[row.status as 'active' | 'inactive' | 'pending']}>
-            {(row.status as string).charAt(0).toUpperCase() + (row.status as string).slice(1)}
-          </Badge>
-        )},
+        {
+          key: "status",
+          header: "Status",
+          render: (row) => (
+            <Badge variant={statusColors[row.status as "active" | "inactive" | "pending"]}>
+              {(row.status as string).charAt(0).toUpperCase() + (row.status as string).slice(1)}
+            </Badge>
+          ),
+        },
       ]}
     />
   ),
@@ -156,7 +256,7 @@ export const LargeDataset: Story = {
             key: "status",
             header: "Status",
             render: (row) => (
-              <Badge variant={statusColors[row.status as 'active' | 'inactive' | 'pending']}>
+              <Badge variant={statusColors[row.status as "active" | "inactive" | "pending"]}>
                 {(row.status as string).charAt(0).toUpperCase() + (row.status as string).slice(1)}
               </Badge>
             ),

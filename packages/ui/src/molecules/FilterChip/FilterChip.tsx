@@ -26,66 +26,62 @@ function FilterChip({
   ref,
   ...props
 }: FilterChipProps) {
-    const handleClick = () => {
-      if (!disabled) {
-        onChange?.(!selected);
-      }
-    };
+  const handleClick = () => {
+    if (!disabled) {
+      onChange?.(!selected);
+    }
+  };
 
-    const handleRemove = (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (!disabled) {
-        onRemove?.();
-      }
-    };
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!disabled) {
+      onRemove?.();
+    }
+  };
 
-    return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={handleClick}
-        disabled={disabled}
-        className={cn(
-          "inline-flex h-9 items-center gap-2 rounded-full px-4 text-[13px] transition-all",
-          selected
-            ? "bg-[#2458DB] font-bold text-white"
-            : disabled
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={handleClick}
+      disabled={disabled}
+      className={cn(
+        "inline-flex h-9 items-center gap-2 rounded-full px-4 text-[13px] transition-all",
+        selected
+          ? "bg-[#2458DB] font-bold text-white"
+          : disabled
             ? "cursor-not-allowed bg-[#F2F2F5] text-[#B3B3B8]"
             : "border border-[#D9D9E0] bg-white text-[#4D4D59] hover:border-[#CCCCCC] hover:bg-[#FAFAFA]",
-          className
-        )}
-        {...props}
-      >
-        {showCheckIcon && selected && (
-          <Check size="sm" className="flex-shrink-0" />
-        )}
+        className
+      )}
+      {...props}
+    >
+      {showCheckIcon && selected && <Check size="sm" className="flex-shrink-0" />}
 
-        {category ? (
-          <span className="flex items-center gap-1">
-            <span className={cn(selected ? "text-white/70" : "text-[#666673]")}>
-              {category}:
-            </span>
-            <span>{children}</span>
-          </span>
-        ) : (
+      {category ? (
+        <span className="flex items-center gap-1">
+          <span className={cn(selected ? "text-white/70" : "text-[#666673]")}>{category}:</span>
           <span>{children}</span>
-        )}
+        </span>
+      ) : (
+        <span>{children}</span>
+      )}
 
-        {removable && selected && (
-          <button
-            type="button"
-            onClick={handleRemove}
-            disabled={disabled}
-            className={cn(
-              "flex-shrink-0 rounded-full p-0.5 transition-colors hover:bg-white/20",
-              disabled && "cursor-not-allowed"
-            )}
-          >
-            <X size="xs" />
-          </button>
-        )}
-      </button>
-    );
+      {removable && selected && (
+        <button
+          type="button"
+          onClick={handleRemove}
+          disabled={disabled}
+          className={cn(
+            "flex-shrink-0 rounded-full p-0.5 transition-colors hover:bg-white/20",
+            disabled && "cursor-not-allowed"
+          )}
+        >
+          <X size="xs" />
+        </button>
+      )}
+    </button>
+  );
 }
 
 export interface FilterChipGroupProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -95,11 +91,7 @@ export interface FilterChipGroupProps extends React.HTMLAttributes<HTMLDivElemen
 
 function FilterChipGroup({ className, children, ref, ...props }: FilterChipGroupProps) {
   return (
-    <div
-      ref={ref}
-      className={cn("flex flex-wrap gap-2", className)}
-      {...props}
-    >
+    <div ref={ref} className={cn("flex flex-wrap gap-2", className)} {...props}>
       {children}
     </div>
   );

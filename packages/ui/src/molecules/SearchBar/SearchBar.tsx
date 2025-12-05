@@ -21,69 +21,69 @@ function SearchBar({
   ref,
   ...props
 }: SearchBarPropsWithRef) {
-    const [internalValue, setInternalValue] = useState("");
-    const currentValue = value !== undefined ? value : internalValue;
+  const [internalValue, setInternalValue] = useState("");
+  const currentValue = value !== undefined ? value : internalValue;
 
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (value === undefined) {
-          setInternalValue(e.target.value);
-        }
-        onChange?.(e);
-      },
-      [value, onChange]
-    );
-
-    const handleClear = useCallback(() => {
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       if (value === undefined) {
-        setInternalValue("");
+        setInternalValue(e.target.value);
       }
-      onClear?.();
-    }, [value, onClear]);
+      onChange?.(e);
+    },
+    [value, onChange]
+  );
 
-    const handleKeyDown = useCallback(
-      (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && onSearch) {
-          onSearch(currentValue as string);
-        }
-        if (e.key === "Escape") {
-          handleClear();
-        }
-      },
-      [currentValue, onSearch, handleClear]
-    );
+  const handleClear = useCallback(() => {
+    if (value === undefined) {
+      setInternalValue("");
+    }
+    onClear?.();
+  }, [value, onClear]);
 
-    const iconSize: IconSize = size === "sm" ? "xs" : size === "lg" ? "md" : "sm";
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && onSearch) {
+        onSearch(currentValue as string);
+      }
+      if (e.key === "Escape") {
+        handleClear();
+      }
+    },
+    [currentValue, onSearch, handleClear]
+  );
 
-    return (
-      <div className={cn(searchBarVariants({ size }), className)}>
-        {loading ? (
-          <Loader size={iconSize} className="text-gray-400" />
-        ) : (
-          <Search size={iconSize} className="text-gray-400" />
-        )}
-        <input
-          ref={ref}
-          type="text"
-          value={currentValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className="flex-1 bg-transparent outline-none placeholder:text-gray-400"
-          {...props}
-        />
-        {currentValue && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            aria-label="Clear search"
-          >
-            <X size={iconSize} />
-          </button>
-        )}
-      </div>
-    );
+  const iconSize: IconSize = size === "sm" ? "xs" : size === "lg" ? "md" : "sm";
+
+  return (
+    <div className={cn(searchBarVariants({ size }), className)}>
+      {loading ? (
+        <Loader size={iconSize} className="text-gray-400" />
+      ) : (
+        <Search size={iconSize} className="text-gray-400" />
+      )}
+      <input
+        ref={ref}
+        type="text"
+        value={currentValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        className="flex-1 bg-transparent outline-none placeholder:text-gray-400"
+        {...props}
+      />
+      {currentValue && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          aria-label="Clear search"
+        >
+          <X size={iconSize} />
+        </button>
+      )}
+    </div>
+  );
 }
 
 export { SearchBar };

@@ -44,9 +44,7 @@ const defaultSections = [
   },
   {
     label: "Support",
-    items: [
-      { icon: <Help size="sm" />, label: "Help Center" },
-    ],
+    items: [{ icon: <Help size="sm" />, label: "Help Center" }],
   },
 ];
 
@@ -86,20 +84,12 @@ export const WithNestedItems: Story = {
           {
             icon: <Users size="sm" />,
             label: "Users",
-            children: [
-              { label: "All Users" },
-              { label: "Add User" },
-              { label: "Roles" },
-            ],
+            children: [{ label: "All Users" }, { label: "Add User" }, { label: "Roles" }],
           },
           {
             icon: <Settings size="sm" />,
             label: "Settings",
-            children: [
-              { label: "General" },
-              { label: "Security" },
-              { label: "Notifications" },
-            ],
+            children: [{ label: "General" }, { label: "Security" }, { label: "Notifications" }],
           },
         ],
       },
@@ -123,7 +113,9 @@ export const WithFooter: Story = {
     collapsible: true,
     footer: (
       <div className="flex items-center gap-3">
-        <Avatar size="sm"><AvatarFallback>JD</AvatarFallback></Avatar>
+        <Avatar size="sm">
+          <AvatarFallback>JD</AvatarFallback>
+        </Avatar>
         <div className="flex-1">
           <div className="text-sm font-medium">John Doe</div>
           <div className="text-xs text-gray-500">john@example.com</div>
@@ -148,10 +140,6 @@ export const WithCustomLogo: Story = {
 
 export const UsingCollapsibleSidebarAlias: Story = {
   render: () => (
-    <CollapsibleSidebar
-      title="Using Alias"
-      sections={defaultSections}
-      collapsible={true}
-    />
+    <CollapsibleSidebar title="Using Alias" sections={defaultSections} collapsible={true} />
   ),
 };

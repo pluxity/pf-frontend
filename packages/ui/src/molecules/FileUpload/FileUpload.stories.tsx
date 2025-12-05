@@ -69,7 +69,6 @@ function InteractiveFileUploadDemo() {
 
   const handleUpload = (newFiles: File[]) => {
     newFiles.forEach((file) => {
-
       let progress = 0;
 
       const interval = setInterval(() => {
@@ -316,13 +315,7 @@ function ImageUploadWithPreloadedDemo() {
 
   return (
     <div className="w-[600px]">
-      <ImageUpload
-        value={images}
-        onChange={setImages}
-        multiple
-        maxFiles={9}
-        thumbnailSize="md"
-      />
+      <ImageUpload value={images} onChange={setImages} multiple maxFiles={9} thumbnailSize="md" />
     </div>
   );
 }

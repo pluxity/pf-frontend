@@ -8,11 +8,7 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 function Table({ className, ref, ...props }: TableProps) {
   return (
     <div className="w-full overflow-auto rounded-lg border border-[#E6E6E8]">
-      <table
-        ref={ref}
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   );
 }
@@ -22,13 +18,7 @@ interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement>
 }
 
 function TableHeader({ className, ref, ...props }: TableHeaderProps) {
-  return (
-    <thead
-      ref={ref}
-      className={cn("bg-[#FAFAFC] [&_tr]:border-b", className)}
-      {...props}
-    />
-  );
+  return <thead ref={ref} className={cn("bg-[#FAFAFC] [&_tr]:border-b", className)} {...props} />;
 }
 
 interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
@@ -36,13 +26,7 @@ interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
 }
 
 function TableBody({ className, ref, ...props }: TableBodyProps) {
-  return (
-    <tbody
-      ref={ref}
-      className={cn("[&_tr:last-child]:border-0", className)}
-      {...props}
-    />
-  );
+  return <tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props} />;
 }
 
 interface TableFooterProps extends React.HTMLAttributes<HTMLTableSectionElement> {
@@ -118,13 +102,7 @@ interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement
 }
 
 function TableCaption({ className, ref, ...props }: TableCaptionProps) {
-  return (
-    <caption
-      ref={ref}
-      className={cn("mt-4 text-sm text-[#808088]", className)}
-      {...props}
-    />
-  );
+  return <caption ref={ref} className={cn("mt-4 text-sm text-[#808088]", className)} {...props} />;
 }
 
 interface TableStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -162,10 +140,7 @@ function TableActionLink({ className, ref, ...props }: TableActionLinkProps) {
   return (
     <button
       ref={ref}
-      className={cn(
-        "text-sm font-medium text-brand hover:underline focus:outline-none",
-        className
-      )}
+      className={cn("text-sm font-medium text-brand hover:underline focus:outline-none", className)}
       {...props}
     />
   );

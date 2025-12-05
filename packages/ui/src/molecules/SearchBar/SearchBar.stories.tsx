@@ -39,9 +39,7 @@ export const Controlled: Story = {
           onChange={(e) => setValue(e.target.value)}
           placeholder="Type to search..."
         />
-        <p className="text-sm text-gray-500">
-          Searching for: {value || "(empty)"}
-        </p>
+        <p className="text-sm text-gray-500">Searching for: {value || "(empty)"}</p>
       </div>
     );
   },

@@ -52,7 +52,13 @@ interface SelectContentPropsWithRef extends SelectContentProps {
   ref?: Ref<ComponentRef<typeof SelectPrimitive.Content>>;
 }
 
-function SelectContent({ className, children, position = "popper", ref, ...props }: SelectContentPropsWithRef) {
+function SelectContent({
+  className,
+  children,
+  position = "popper",
+  ref,
+  ...props
+}: SelectContentPropsWithRef) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content

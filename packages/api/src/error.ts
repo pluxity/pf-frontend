@@ -1,4 +1,4 @@
-import type { ErrorResponse } from './types';
+import type { ErrorResponse } from "./types";
 
 /**
  * API 에러 클래스
@@ -10,7 +10,7 @@ export class ApiError extends Error {
 
   constructor(status: number, message: string, code?: string, response?: ErrorResponse) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
     this.code = code ?? `HTTP_${status}`;
     this.response = response;
@@ -68,8 +68,8 @@ export class ApiError extends Error {
     let code: string | undefined;
 
     try {
-      const contentType = response.headers.get('content-type');
-      if (contentType?.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
         errorResponse = (await response.json()) as ErrorResponse;
         message = errorResponse.message || message;
         code = errorResponse.code;

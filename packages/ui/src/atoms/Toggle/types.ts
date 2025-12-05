@@ -4,7 +4,8 @@ import type { VariantProps } from "class-variance-authority";
 import { toggleVariants } from "./variants";
 
 export interface ToggleProps
-  extends ComponentPropsWithoutRef<typeof TogglePrimitive.Root>,
+  extends
+    ComponentPropsWithoutRef<typeof TogglePrimitive.Root>,
     VariantProps<typeof toggleVariants> {
   ref?: Ref<ComponentRef<typeof TogglePrimitive.Root>>;
 }

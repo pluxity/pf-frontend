@@ -56,28 +56,15 @@ function EmptyState({
   return (
     <div
       ref={ref}
-      className={cn(
-        "flex flex-col items-center justify-center px-4 py-16 text-center",
-        className
-      )}
+      className={cn("flex flex-col items-center justify-center px-4 py-16 text-center", className)}
       {...props}
     >
-      {displayIcon && (
-        <div className="mb-4 text-[#C4C4CC]">{displayIcon}</div>
-      )}
-      {displayTitle && (
-        <h3 className="mb-2 text-lg font-bold text-[#333340]">
-          {displayTitle}
-        </h3>
-      )}
+      {displayIcon && <div className="mb-4 text-[#C4C4CC]">{displayIcon}</div>}
+      {displayTitle && <h3 className="mb-2 text-lg font-bold text-[#333340]">{displayTitle}</h3>}
       {displayDescription && (
-        <p className="mb-6 max-w-sm text-sm text-[#808088]">
-          {displayDescription}
-        </p>
+        <p className="mb-6 max-w-sm text-sm text-[#808088]">{displayDescription}</p>
       )}
-      {action && (
-        <Button onClick={action.onClick}>{action.label}</Button>
-      )}
+      {action && <Button onClick={action.onClick}>{action.label}</Button>}
     </div>
   );
 }

@@ -33,13 +33,7 @@ export const Default: Story = {
 export const WithValue: Story = {
   render: () => {
     const [date, setDate] = useState<Date | undefined>(new Date());
-    return (
-      <DatePicker
-        value={date}
-        onChange={setDate}
-        placeholder="Select a date"
-      />
-    );
+    return <DatePicker value={date} onChange={setDate} placeholder="Select a date" />;
   },
 };
 
@@ -59,9 +53,7 @@ export const WithMinMaxDate: Story = {
 
     return (
       <div className="space-y-2">
-        <p className="text-sm text-gray-500">
-          Only dates in the current month are selectable
-        </p>
+        <p className="text-sm text-gray-500">Only dates in the current month are selectable</p>
         <DatePicker
           value={date}
           onChange={setDate}
@@ -79,16 +71,8 @@ export const Interactive: Story = {
     const [date, setDate] = useState<Date | undefined>();
     return (
       <div className="space-y-4">
-        <DatePicker
-          value={date}
-          onChange={setDate}
-          placeholder="Select a date"
-        />
-        {date && (
-          <p className="text-sm">
-            Selected: {date.toLocaleDateString()}
-          </p>
-        )}
+        <DatePicker value={date} onChange={setDate} placeholder="Select a date" />
+        {date && <p className="text-sm">Selected: {date.toLocaleDateString()}</p>}
       </div>
     );
   },

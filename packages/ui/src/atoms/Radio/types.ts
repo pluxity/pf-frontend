@@ -5,6 +5,8 @@ export interface RadioGroupProps extends ComponentPropsWithoutRef<typeof RadioGr
   ref?: Ref<ComponentRef<typeof RadioGroupPrimitive.Root>>;
 }
 
-export interface RadioGroupItemProps extends ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+export interface RadioGroupItemProps extends ComponentPropsWithoutRef<
+  typeof RadioGroupPrimitive.Item
+> {
   ref?: Ref<ComponentRef<typeof RadioGroupPrimitive.Item>>;
 }

@@ -70,17 +70,12 @@ const Pagination = ({
   const getPageButtonClass = (isActive: boolean) => {
     return cn(
       "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors",
-      isActive
-        ? "bg-blue-50 text-brand"
-        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      isActive ? "bg-blue-50 text-brand" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
     );
   };
 
   return (
-    <nav
-      className={cn("flex items-center gap-1", className)}
-      aria-label="Pagination"
-    >
+    <nav className={cn("flex items-center gap-1", className)} aria-label="Pagination">
       <button
         onClick={onPrevious}
         disabled={currentPage === 1}

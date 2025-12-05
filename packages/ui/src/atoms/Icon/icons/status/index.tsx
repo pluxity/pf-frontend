@@ -166,8 +166,20 @@ export function Mic({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path d="M4 13H10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M11 6.5V7.4286C11 9.4714 9.2 11.1429 7 11.1429M7 11.1429C4.8 11.1429 3 9.4714 3 7.4286V6.5M7 11.1429L7 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M4 13H10"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11 6.5V7.4286C11 9.4714 9.2 11.1429 7 11.1429M7 11.1429C4.8 11.1429 3 9.4714 3 7.4286V6.5M7 11.1429L7 13"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <path
         d="M5 2.8506C4.9989 2.5708 5.0511 2.2935 5.1533 2.0361C5.2555 1.7788 5.4048 1.5465 5.5918 1.3525C5.7795 1.1589 5.9998 1.0071 6.2402 0.9043C6.481 0.8014 6.7384 0.7489 6.9971 0.75H7C8.1019 0.75 8.9998 1.641 9 2.8525V6.8115C8.9999 8.0247 8.0682 8.9487 7.001 8.9492C6.7427 8.9484 6.4864 8.8948 6.2471 8.7891C6.0075 8.6832 5.7891 8.5276 5.6055 8.3301L5.5986 8.3223L5.4639 8.167C5.1674 7.7889 5.0003 7.3105 5 6.8105V2.8506Z"
         fill="currentColor"
@@ -264,12 +276,7 @@ export function AlertCircle({ size = "md", className, ref, ...props }: IconProps
       {...props}
     >
       <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M7 4V7.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M7 4V7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <circle cx="7" cy="10" r="0.75" fill="currentColor" />
     </svg>
   );
@@ -294,12 +301,7 @@ export function AlertTriangle({ size = "md", className, ref, ...props }: IconPro
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path
-        d="M7 5V7.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M7 5V7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <circle cx="7" cy="9.5" r="0.75" fill="currentColor" />
     </svg>
   );
@@ -386,12 +388,7 @@ export function Loader({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0 animate-spin", className)}
       {...props}
     >
-      <path
-        d="M7 1V3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <path d="M7 1V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path
         d="M7 11V13"
         stroke="currentColor"
@@ -489,14 +486,7 @@ export function Database({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0", className)}
       {...props}
     >
-      <ellipse
-        cx="7"
-        cy="3"
-        rx="5.5"
-        ry="2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
+      <ellipse cx="7" cy="3" rx="5.5" ry="2" stroke="currentColor" strokeWidth="1.5" />
       <path
         d="M12.5 3V7C12.5 8.1046 10.0376 9 7 9C3.9624 9 1.5 8.1046 1.5 7V3"
         stroke="currentColor"
@@ -524,25 +514,9 @@ export function SearchX({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0", className)}
       {...props}
     >
-      <circle
-        cx="5.5"
-        cy="5.5"
-        r="4.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M9 9L13 13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M4 4L7 7M7 4L4 7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+      <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M9 9L13 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M4 4L7 7M7 4L4 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -587,22 +561,9 @@ export function Package({ size = "md", className, ref, ...props }: IconProps) {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path
-        d="M7 7V13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M1 4L7 7L13 4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4 2.5L10 5.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
+      <path d="M7 7V13" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M1 4L7 7L13 4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M4 2.5L10 5.5" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }

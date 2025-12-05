@@ -38,12 +38,7 @@ export const With12HourFormat: Story = {
   render: () => {
     const [time, setTime] = useState<string | undefined>("09:30 AM");
     return (
-      <TimePicker
-        value={time}
-        onChange={setTime}
-        use12Hour={true}
-        placeholder="Select time"
-      />
+      <TimePicker value={time} onChange={setTime} use12Hour={true} placeholder="Select time" />
     );
   },
 };
@@ -52,12 +47,7 @@ export const With24HourFormat: Story = {
   render: () => {
     const [time, setTime] = useState<string | undefined>("14:30");
     return (
-      <TimePicker
-        value={time}
-        onChange={setTime}
-        use12Hour={false}
-        placeholder="Select time"
-      />
+      <TimePicker value={time} onChange={setTime} use12Hour={false} placeholder="Select time" />
     );
   },
 };
@@ -74,16 +64,8 @@ export const Interactive: Story = {
     const [time, setTime] = useState<string | undefined>();
     return (
       <div className="space-y-4">
-        <TimePicker
-          value={time}
-          onChange={setTime}
-          placeholder="Select time"
-        />
-        {time && (
-          <p className="text-sm">
-            Selected: {time}
-          </p>
-        )}
+        <TimePicker value={time} onChange={setTime} placeholder="Select time" />
+        {time && <p className="text-sm">Selected: {time}</p>}
       </div>
     );
   },

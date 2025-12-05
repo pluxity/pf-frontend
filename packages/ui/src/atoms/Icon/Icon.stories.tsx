@@ -1,16 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import type { IconProps } from "./types";
 
-import {
-  Sunny,
-  Cloudy,
-  PartlyCloudy,
-  Rainy,
-  Stormy,
-  Snowy,
-  Foggy,
-  Windy,
-} from "./icons/weather";
+import { Sunny, Cloudy, PartlyCloudy, Rainy, Stormy, Snowy, Foggy, Windy } from "./icons/weather";
 
 import {
   View3D,
@@ -57,17 +48,7 @@ import {
   Shrink,
 } from "./icons/action";
 
-import {
-  Info,
-  Help,
-  Calendar,
-  Eye,
-  EyeOff,
-  Bell,
-  User,
-  Mic,
-  Settings,
-} from "./icons/status";
+import { Info, Help, Calendar, Eye, EyeOff, Bell, User, Mic, Settings } from "./icons/status";
 
 const meta = {
   title: "Atoms/Icon",

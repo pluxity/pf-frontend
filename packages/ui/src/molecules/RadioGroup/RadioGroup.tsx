@@ -10,14 +10,8 @@ interface RadioGroupPropsWithRef extends RadioGroupProps {
 function RadioGroup({ className, label, ref, ...props }: RadioGroupPropsWithRef) {
   return (
     <div className="space-y-2">
-      {label && (
-        <label className="text-sm font-medium text-text-primary">{label}</label>
-      )}
-      <RadioGroupPrimitive.Root
-        className={cn("grid gap-2", className)}
-        {...props}
-        ref={ref}
-      />
+      {label && <label className="text-sm font-medium text-text-primary">{label}</label>}
+      <RadioGroupPrimitive.Root className={cn("grid gap-2", className)} {...props} ref={ref} />
     </div>
   );
 }

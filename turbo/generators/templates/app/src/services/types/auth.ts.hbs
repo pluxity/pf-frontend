@@ -1,26 +1,5 @@
-import type { User } from "./user";
-
-/**
- * Auth domain types
- */
-
 /** 로그인 요청 */
-export interface LoginRequest {
-  email: string;
+export interface SignInRequest {
+  username: string;
   password: string;
-}
-
-/** 로그인 응답 */
-export interface LoginResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
-
-/** 토큰 갱신 응답 */
-export interface RefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
 }

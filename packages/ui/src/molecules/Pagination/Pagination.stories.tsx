@@ -16,13 +16,7 @@ type Story = StoryObj<typeof meta>;
 
 const PaginationDemo = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  return (
-    <Pagination
-      currentPage={currentPage}
-      totalPages={10}
-      onPageChange={setCurrentPage}
-    />
-  );
+  return <Pagination currentPage={currentPage} totalPages={10} onPageChange={setCurrentPage} />;
 };
 
 export const Default: Story = {
@@ -32,26 +26,14 @@ export const Default: Story = {
 export const ManyPages: Story = {
   render: () => {
     const [currentPage, setCurrentPage] = useState(5);
-    return (
-      <Pagination
-        currentPage={currentPage}
-        totalPages={20}
-        onPageChange={setCurrentPage}
-      />
-    );
+    return <Pagination currentPage={currentPage} totalPages={20} onPageChange={setCurrentPage} />;
   },
 };
 
 export const FewPages: Story = {
   render: () => {
     const [currentPage, setCurrentPage] = useState(1);
-    return (
-      <Pagination
-        currentPage={currentPage}
-        totalPages={3}
-        onPageChange={setCurrentPage}
-      />
-    );
+    return <Pagination currentPage={currentPage} totalPages={3} onPageChange={setCurrentPage} />;
   },
 };
 

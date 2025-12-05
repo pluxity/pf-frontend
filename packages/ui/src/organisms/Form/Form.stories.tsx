@@ -1,12 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  Form,
-  FormContainer,
-  FormSection,
-  FormField,
-  FormActions,
-  FormRow,
-} from "./Form";
+import { Form, FormContainer, FormSection, FormField, FormActions, FormRow } from "./Form";
 import { Input } from "../../atoms/Input";
 import { Textarea } from "../../atoms/Textarea";
 import { Checkbox } from "../../atoms/Checkbox";
@@ -64,10 +57,7 @@ export const Default: Story = {
 
 export const Horizontal: Story = {
   render: () => (
-    <FormContainer
-      title="Profile Settings"
-      description="Update your profile information"
-    >
+    <FormContainer title="Profile Settings" description="Update your profile information">
       <Form>
         <FormField label="Full Name" required horizontal>
           <Input placeholder="John Doe" />

@@ -77,9 +77,7 @@ export const Controlled: Story = {
           onChange={setValue}
           label="Controlled checkbox group"
         />
-        <p className="text-sm text-gray-600">
-          Selected: {value.join(", ") || "None"}
-        </p>
+        <p className="text-sm text-gray-600">Selected: {value.join(", ") || "None"}</p>
       </div>
     );
   },

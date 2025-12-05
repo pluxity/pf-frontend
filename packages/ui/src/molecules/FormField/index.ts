@@ -1,9 +1,4 @@
-export {
-  FormField,
-  FormFieldLabel,
-  FormFieldDescription,
-  FormFieldError,
-} from "./FormField";
+export { FormField, FormFieldLabel, FormFieldDescription, FormFieldError } from "./FormField";
 export type {
   FormFieldProps,
   FormFieldLabelProps,

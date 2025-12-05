@@ -96,15 +96,11 @@ export const Interactive: Story = {
     const [notifications, setNotifications] = useState(sampleNotifications);
 
     const handleMarkAllRead = () => {
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, read: true }))
-      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     };
 
     const handleNotificationClick = (id: string) => {
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-      );
+      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
     };
 
     return (

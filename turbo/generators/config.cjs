@@ -1,5 +1,26 @@
+const fs = require("fs");
+const path = require("path");
+
 /** @type {import('@turbo/gen').PlopTypes.NodePlopAPI} */
 module.exports = function generator(plop) {
+  // Get the root path (turbo/generators -> root)
+  const rootPath = path.resolve(__dirname, "../..");
+
+  // Custom action to copy binary files
+  plop.setActionType("copyFile", function (answers, config) {
+    const srcPath = path.resolve(__dirname, config.src);
+    const destPath = path.join(rootPath, "apps", answers.name, config.destPath);
+
+    // Ensure destination directory exists
+    const destDir = path.dirname(destPath);
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    fs.copyFileSync(srcPath, destPath);
+    return `Copied ${config.src} to ${destPath}`;
+  });
+
   plop.setGenerator("app", {
     description: "Create a new React application",
     prompts: [
@@ -9,8 +30,7 @@ module.exports = function generator(plop) {
         message: "What is the name of the new app?",
         validate: function (input) {
           if (!input) return "App name is required";
-          if (!/^[a-z0-9-]+$/.test(input))
-            return "App name must be lowercase with hyphens only";
+          if (!/^[a-z0-9-]+$/.test(input)) return "App name must be lowercase with hyphens only";
           return true;
         },
       },
@@ -76,11 +96,6 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/.env.production",
         templateFile: "templates/app/env/.env.production.hbs",
       },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/.env.example",
-        templateFile: "templates/app/env/.env.example.hbs",
-      },
       // Source files
       {
         type: "add",
@@ -102,17 +117,16 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/vite-env.d.ts",
         templateFile: "templates/app/src/vite-env.d.ts.hbs",
       },
-      // Config
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/config/env.ts",
-        templateFile: "templates/app/src/config/env.ts.hbs",
-      },
       // Router
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/index.tsx",
         templateFile: "templates/app/src/routes/index.tsx.hbs",
+      },
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/ProtectedRoute.tsx",
+        templateFile: "templates/app/src/routes/ProtectedRoute.tsx.hbs",
       },
       // Layouts
       {
@@ -131,11 +145,21 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
         templateFile: "templates/app/src/pages/home/index.tsx.hbs",
       },
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/login/index.tsx",
+        templateFile: "templates/app/src/pages/login/index.tsx.hbs",
+      },
       // Services
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/index.ts",
         templateFile: "templates/app/src/services/index.ts.hbs",
+      },
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/client.ts",
+        templateFile: "templates/app/src/services/client.ts.hbs",
       },
       {
         type: "add",
@@ -151,11 +175,6 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/types/index.ts",
         templateFile: "templates/app/src/services/types/index.ts.hbs",
-      },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/types/common.ts",
-        templateFile: "templates/app/src/services/types/common.ts.hbs",
       },
       {
         type: "add",
@@ -178,33 +197,17 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/stores/auth.store.ts",
         templateFile: "templates/app/src/stores/auth.store.ts.hbs",
       },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/stores/ui.store.ts",
-        templateFile: "templates/app/src/stores/ui.store.ts.hbs",
-      },
       // Hooks
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/hooks/index.ts",
         templateFile: "templates/app/src/hooks/index.ts.hbs",
       },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/hooks/use-media-query.ts",
-        templateFile: "templates/app/src/hooks/use-media-query.ts.hbs",
-      },
       // Public assets
       {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/public/.gitkeep",
-        template: "",
-      },
-      // Gitignore
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/.gitignore",
-        templateFile: "templates/app/.gitignore.hbs",
+        type: "copyFile",
+        src: "templates/app/public/favicon.ico",
+        destPath: "public/favicon.ico",
       },
     ],
   });

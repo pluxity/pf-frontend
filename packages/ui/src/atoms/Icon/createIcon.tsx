@@ -8,10 +8,7 @@ interface CreateIconOptions {
   defaultClassName?: string;
 }
 
-export function createIcon(
-  path: React.ReactNode,
-  options: CreateIconOptions
-) {
+export function createIcon(path: React.ReactNode, options: CreateIconOptions) {
   const { displayName, viewBox = "0 0 24 24", defaultClassName } = options;
 
   function Icon({ size = "md", className, ref, ...props }: IconProps) {

@@ -42,76 +42,65 @@ function PasswordChangeCard({
   return (
     <div
       ref={ref}
-      className={cn(
-        "w-full max-w-[400px] rounded-xl bg-white p-6 shadow-lg",
-        className
-      )}
+      className={cn("w-full max-w-[400px] rounded-xl bg-white p-6 shadow-lg", className)}
       {...props}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-xl font-bold text-gray-900">{title}</h1>
-            <p className="text-sm text-gray-500">{subtitle}</p>
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+          <p className="text-sm text-gray-500">{subtitle}</p>
         </div>
 
-        {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-            {error}
+        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-gray-700">{newPasswordLabel}</label>
+          <div className="relative">
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder={newPasswordPlaceholder}
+              className={cn(
+                "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
+                "placeholder:text-gray-400",
+                "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+              )}
+            />
+            <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-gray-700">{confirmPasswordLabel}</label>
+          <div className="relative">
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={confirmPasswordPlaceholder}
+              className={cn(
+                "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
+                "placeholder:text-gray-400",
+                "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+              )}
+            />
+            <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={cn(
+            "h-11 w-full rounded-lg bg-brand text-sm font-bold text-white",
+            "hover:bg-brand-dark transition-colors",
+            "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
+            "disabled:cursor-not-allowed disabled:opacity-50"
           )}
-
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700">
-            {newPasswordLabel}
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={newPasswordPlaceholder}
-                className={cn(
-                  "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
-                  "placeholder:text-gray-400",
-                  "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                )}
-              />
-              <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
-        </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700">
-            {confirmPasswordLabel}
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={confirmPasswordPlaceholder}
-                className={cn(
-                  "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
-                  "placeholder:text-gray-400",
-                  "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-                )}
-              />
-              <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
-        </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={cn(
-              "h-11 w-full rounded-lg bg-brand text-sm font-bold text-white",
-              "hover:bg-brand-dark transition-colors",
-              "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
-              "disabled:cursor-not-allowed disabled:opacity-50"
-            )}
-          >
+        >
           {isLoading ? "처리 중..." : submitButtonText}
-          </button>
+        </button>
       </form>
     </div>
   );

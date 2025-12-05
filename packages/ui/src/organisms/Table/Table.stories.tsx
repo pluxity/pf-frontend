@@ -25,9 +25,27 @@ type Story = StoryObj<typeof Table>;
 
 const users = [
   { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "active" as const },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Editor", status: "active" as const },
-  { id: 3, name: "Bob Wilson", email: "bob@example.com", role: "Viewer", status: "inactive" as const },
-  { id: 4, name: "Alice Brown", email: "alice@example.com", role: "Editor", status: "pending" as const },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "Editor",
+    status: "active" as const,
+  },
+  {
+    id: 3,
+    name: "Bob Wilson",
+    email: "bob@example.com",
+    role: "Viewer",
+    status: "inactive" as const,
+  },
+  {
+    id: 4,
+    name: "Alice Brown",
+    email: "alice@example.com",
+    role: "Editor",
+    status: "pending" as const,
+  },
 ];
 
 export const Default: Story = {

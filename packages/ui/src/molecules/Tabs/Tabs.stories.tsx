@@ -26,10 +26,18 @@ export const UnderlineStyle: Story = {
   render: () => (
     <Tabs defaultValue="all" className="w-[400px]">
       <TabsList variant="underline">
-        <TabsTrigger variant="underline" value="all">전체장비</TabsTrigger>
-        <TabsTrigger variant="underline" value="progress">진행중</TabsTrigger>
-        <TabsTrigger variant="underline" value="complete">완료</TabsTrigger>
-        <TabsTrigger variant="underline" value="error">에러발치</TabsTrigger>
+        <TabsTrigger variant="underline" value="all">
+          전체장비
+        </TabsTrigger>
+        <TabsTrigger variant="underline" value="progress">
+          진행중
+        </TabsTrigger>
+        <TabsTrigger variant="underline" value="complete">
+          완료
+        </TabsTrigger>
+        <TabsTrigger variant="underline" value="error">
+          에러발치
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
@@ -90,10 +98,18 @@ export const FilledStyle: Story = {
   render: () => (
     <Tabs defaultValue="all" className="w-[300px]">
       <TabsList variant="filled">
-        <TabsTrigger variant="filled" value="all">전체장비</TabsTrigger>
-        <TabsTrigger variant="filled" value="progress">진행중</TabsTrigger>
-        <TabsTrigger variant="filled" value="complete">완료</TabsTrigger>
-        <TabsTrigger variant="filled" value="error">에러발치</TabsTrigger>
+        <TabsTrigger variant="filled" value="all">
+          전체장비
+        </TabsTrigger>
+        <TabsTrigger variant="filled" value="progress">
+          진행중
+        </TabsTrigger>
+        <TabsTrigger variant="filled" value="complete">
+          완료
+        </TabsTrigger>
+        <TabsTrigger variant="filled" value="error">
+          에러발치
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
@@ -157,9 +173,15 @@ export const AllVariants: Story = {
         <h3 className="text-lg font-bold mb-4">기본스타일 (Underline)</h3>
         <Tabs defaultValue="tab1" className="w-[300px]">
           <TabsList variant="underline">
-            <TabsTrigger variant="underline" value="tab1">탭 메뉴</TabsTrigger>
-            <TabsTrigger variant="underline" value="tab2">탭 메뉴</TabsTrigger>
-            <TabsTrigger variant="underline" value="tab3">탭 메뉴</TabsTrigger>
+            <TabsTrigger variant="underline" value="tab1">
+              탭 메뉴
+            </TabsTrigger>
+            <TabsTrigger variant="underline" value="tab2">
+              탭 메뉴
+            </TabsTrigger>
+            <TabsTrigger variant="underline" value="tab3">
+              탭 메뉴
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -167,9 +189,15 @@ export const AllVariants: Story = {
         <h3 className="text-lg font-bold mb-4">볼드스타일 (Filled)</h3>
         <Tabs defaultValue="tab1" className="w-[250px]">
           <TabsList variant="filled">
-            <TabsTrigger variant="filled" value="tab1">탭 메뉴</TabsTrigger>
-            <TabsTrigger variant="filled" value="tab2">탭 메뉴</TabsTrigger>
-            <TabsTrigger variant="filled" value="tab3">탭 메뉴</TabsTrigger>
+            <TabsTrigger variant="filled" value="tab1">
+              탭 메뉴
+            </TabsTrigger>
+            <TabsTrigger variant="filled" value="tab2">
+              탭 메뉴
+            </TabsTrigger>
+            <TabsTrigger variant="filled" value="tab3">
+              탭 메뉴
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

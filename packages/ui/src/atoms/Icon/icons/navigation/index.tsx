@@ -174,10 +174,7 @@ export function ChevronLeftSmall({ size = "md", className, ref, ...props }: Icon
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M6 7.2848L5.242 8L1 4L5.242 0L6 0.7152L2.517 4L6 7.2848Z"
-        fill="currentColor"
-      />
+      <path d="M6 7.2848L5.242 8L1 4L5.242 0L6 0.7152L2.517 4L6 7.2848Z" fill="currentColor" />
     </svg>
   );
 }
@@ -195,10 +192,7 @@ export function ChevronRightSmall({ size = "md", className, ref, ...props }: Ico
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M4 7.2848L4.758 8L9 4L4.758 0L4 0.7152L7.483 4L4 7.2848Z"
-        fill="currentColor"
-      />
+      <path d="M4 7.2848L4.758 8L9 4L4.758 0L4 0.7152L7.483 4L4 7.2848Z" fill="currentColor" />
     </svg>
   );
 }
@@ -216,10 +210,7 @@ export function ChevronUpSmall({ size = "md", className, ref, ...props }: IconPr
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M7.285 6L8 5.2416L4 1L0 5.2416L0.715 6L4 2.5167L7.285 6Z"
-        fill="currentColor"
-      />
+      <path d="M7.285 6L8 5.2416L4 1L0 5.2416L0.715 6L4 2.5167L7.285 6Z" fill="currentColor" />
     </svg>
   );
 }
@@ -237,10 +228,7 @@ export function ChevronDownSmall({ size = "md", className, ref, ...props }: Icon
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M7.285 2L8 2.7584L4 7L0 2.7584L0.715 2L4 5.4833L7.285 2Z"
-        fill="currentColor"
-      />
+      <path d="M7.285 2L8 2.7584L4 7L0 2.7584L0.715 2L4 5.4833L7.285 2Z" fill="currentColor" />
     </svg>
   );
 }
@@ -258,14 +246,8 @@ export function ChevronUpDownSmall({ size = "md", className, ref, ...props }: Ic
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M7.285 7L8 7.7584L4 12L0 7.7584L0.715 7L4 10.4833L7.285 7Z"
-        fill="currentColor"
-      />
-      <path
-        d="M7.285 5L8 4.2416L4 0L0 4.2416L0.715 5L4 1.5167L7.285 5Z"
-        fill="currentColor"
-      />
+      <path d="M7.285 7L8 7.7584L4 12L0 7.7584L0.715 7L4 10.4833L7.285 7Z" fill="currentColor" />
+      <path d="M7.285 5L8 4.2416L4 0L0 4.2416L0.715 5L4 1.5167L7.285 5Z" fill="currentColor" />
     </svg>
   );
 }
@@ -283,10 +265,7 @@ export function Home({ size = "md", className, ref, ...props }: IconProps) {
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path
-        d="M7 0.5L1 4.8333V13.5H5.5V8.4444H8.5V13.5H13V4.8333L7 0.5Z"
-        fill="currentColor"
-      />
+      <path d="M7 0.5L1 4.8333V13.5H5.5V8.4444H8.5V13.5H13V4.8333L7 0.5Z" fill="currentColor" />
     </svg>
   );
 }

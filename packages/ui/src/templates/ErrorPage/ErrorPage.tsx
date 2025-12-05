@@ -73,28 +73,16 @@ function ErrorPage({
           <div className="mb-8">{illustration}</div>
         ) : (
           <div className="mb-8">
-            <span className="text-8xl font-black text-gray-200">
-              {displayCode}
-            </span>
+            <span className="text-8xl font-black text-gray-200">{displayCode}</span>
           </div>
         )}
 
-        {displayTitle && (
-          <h1 className="mb-4 text-2xl font-bold text-gray-900">
-            {displayTitle}
-          </h1>
-        )}
+        {displayTitle && <h1 className="mb-4 text-2xl font-bold text-gray-900">{displayTitle}</h1>}
 
-        {displayDescription && (
-          <p className="mb-8 text-gray-500">{displayDescription}</p>
-        )}
+        {displayDescription && <p className="mb-8 text-gray-500">{displayDescription}</p>}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          {primaryAction && (
-            <Button onClick={primaryAction.onClick}>
-              {primaryAction.label}
-            </Button>
-          )}
+          {primaryAction && <Button onClick={primaryAction.onClick}>{primaryAction.label}</Button>}
           {secondaryAction && (
             <Button variant="outline" onClick={secondaryAction.onClick}>
               {secondaryAction.label}

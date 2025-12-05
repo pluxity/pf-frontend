@@ -32,7 +32,14 @@ interface DataTableBulkActionBarProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function DataTableBulkActionBar({ selectedCount, onDelete, onExport, onCancel, children, ref }: DataTableBulkActionBarProps) {
+function DataTableBulkActionBar({
+  selectedCount,
+  onDelete,
+  onExport,
+  onCancel,
+  children,
+  ref,
+}: DataTableBulkActionBarProps) {
   if (selectedCount === 0) return null;
 
   return (
@@ -89,7 +96,14 @@ interface DataTablePaginationProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function DataTablePagination({ currentPage, totalPages, onPageChange, pageSize, totalItems, ref }: DataTablePaginationProps) {
+function DataTablePagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+  pageSize,
+  totalItems,
+  ref,
+}: DataTablePaginationProps) {
   const startItem = (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
@@ -229,10 +243,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
             <tr className="border-b border-[#E6E6E8]">
               {selectable && (
                 <th className="h-11 w-12 px-4">
-                  <Checkbox
-                    checked={isAllSelected}
-                    onCheckedChange={handleSelectAll}
-                  />
+                  <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                 </th>
               )}
               {columns.map((column) => (
@@ -247,13 +258,13 @@ function DataTableComponent<T extends Record<string, unknown>>({
                 >
                   <div className="flex items-center gap-1">
                     {column.header}
-                    {column.sortable && sortColumn === column.key && (
-                      sortDirection === "asc" ? (
+                    {column.sortable &&
+                      sortColumn === column.key &&
+                      (sortDirection === "asc" ? (
                         <ChevronUp size="sm" />
                       ) : (
                         <ChevronDown size="sm" />
-                      )
-                    )}
+                      ))}
                   </div>
                 </th>
               ))}
@@ -261,9 +272,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
           </thead>
           <tbody>
             {paginatedData.map((row, rowIndex) => {
-              const actualIndex = pagination
-                ? (currentPage - 1) * pageSize + rowIndex
-                : rowIndex;
+              const actualIndex = pagination ? (currentPage - 1) * pageSize + rowIndex : rowIndex;
               return (
                 <tr
                   key={actualIndex}
@@ -285,10 +294,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                   {columns.map((column) => (
                     <td
                       key={String(column.key)}
-                      className={cn(
-                        "px-4 py-3 text-sm text-[#333340]",
-                        column.className
-                      )}
+                      className={cn("px-4 py-3 text-sm text-[#333340]", column.className)}
                     >
                       {column.render
                         ? column.render(row, actualIndex)

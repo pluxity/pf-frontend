@@ -1,34 +1,38 @@
-import type { BaseEntity, ApiResponse, PaginatedResponse } from "./common";
-
-/**
- * User domain types
- */
-
-/** 사용자 엔티티 */
-export interface User extends BaseEntity {
-  email: string;
+/** 역할 */
+export interface Role {
+  id: number;
   name: string;
-  role: "admin" | "user";
-  profileImage?: string;
+  description: string;
 }
 
-/** 사용자 목록 응답 */
-export type UserListResponse = PaginatedResponse<User>;
-
-/** 사용자 단일 응답 */
-export type UserResponse = ApiResponse<User>;
+/** 사용자 */
+export interface User {
+  id: number;
+  username: string;
+  name: string;
+  code: string;
+  phoneNumber: string;
+  department: string;
+  shouldChangePassword: boolean;
+  roles: Role[];
+}
 
 /** 사용자 생성 요청 */
 export interface CreateUserRequest {
-  email: string;
-  name: string;
+  username: string;
   password: string;
-  role?: "admin" | "user";
+  name: string;
+  code?: string;
+  phoneNumber?: string;
+  department?: string;
+  roleIds?: number[];
 }
 
 /** 사용자 수정 요청 */
 export interface UpdateUserRequest {
   name?: string;
-  role?: "admin" | "user";
-  profileImage?: string;
+  code?: string;
+  phoneNumber?: string;
+  department?: string;
+  roleIds?: number[];
 }

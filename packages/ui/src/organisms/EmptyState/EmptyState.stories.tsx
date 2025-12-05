@@ -61,11 +61,7 @@ export const CustomIcon: Story = {
     variant: "custom",
     title: "환영합니다!",
     description: "사용자 정의 아이콘을 사용한 빈 상태입니다.",
-    icon: (
-      <div className="text-6xl">
-        🎉
-      </div>
-    ),
+    icon: <div className="text-6xl">🎉</div>,
   },
 };
 

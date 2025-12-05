@@ -44,9 +44,15 @@ export const Sizes: Story = {
   name: "크기별 링크",
   render: () => (
     <div className="flex flex-col gap-4">
-      <Link href="#" size="sm">Small Link →</Link>
-      <Link href="#" size="md">Medium Link →</Link>
-      <Link href="#" size="lg">Large Link →</Link>
+      <Link href="#" size="sm">
+        Small Link →
+      </Link>
+      <Link href="#" size="md">
+        Medium Link →
+      </Link>
+      <Link href="#" size="lg">
+        Large Link →
+      </Link>
     </div>
   ),
 };
@@ -61,15 +67,21 @@ export const States: Story = {
       </div>
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-500 w-16">Hover</span>
-        <Link href="#" className="text-blue-700 underline">Click here →</Link>
+        <Link href="#" className="text-blue-700 underline">
+          Click here →
+        </Link>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-500 w-16">Visited</span>
-        <Link href="#" className="text-purple-600">Click here →</Link>
+        <Link href="#" className="text-purple-600">
+          Click here →
+        </Link>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-xs text-gray-500 w-16">Disabled</span>
-        <Link href="#" disabled>Click here →</Link>
+        <Link href="#" disabled>
+          Click here →
+        </Link>
       </div>
     </div>
   ),
@@ -97,8 +109,8 @@ export const InlineText: Story = {
   name: "텍스트 내 링크",
   render: () => (
     <p className="text-sm text-gray-700 max-w-md">
-      자세한 내용은 <Link href="#">이용약관</Link>과{" "}
-      <Link href="#">개인정보처리방침</Link>을 확인해주세요.
+      자세한 내용은 <Link href="#">이용약관</Link>과 <Link href="#">개인정보처리방침</Link>을
+      확인해주세요.
     </p>
   ),
 };

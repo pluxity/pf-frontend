@@ -1,7 +1,5 @@
 import { Button } from "@pf-dev/ui";
 
-import { env } from "@/config/env";
-
 export function HomePage() {
   return (
     <div className="container py-10">
@@ -17,17 +15,6 @@ export function HomePage() {
           <Button>Get Started</Button>
           <Button variant="outline">Learn More</Button>
         </div>
-
-        {env.isDev && (
-          <div className="mt-8 p-4 rounded-lg bg-muted text-sm text-left font-mono">
-            <p className="text-muted-foreground mb-2">Environment Info:</p>
-            <ul className="space-y-1">
-              <li>App: {env.appName}</li>
-              <li>Env: {env.appEnv}</li>
-              <li>API: {env.apiUrl}</li>
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

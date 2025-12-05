@@ -1,6 +1,6 @@
 // Client
-export { createApiClient } from './client';
-export type { ApiClient } from './client';
+export { createApiClient } from "./client";
+export type { ApiClient } from "./client";
 
 // Types
 export type {
@@ -13,7 +13,7 @@ export type {
   ApiClientConfig,
   UploadOptions,
   FileResponse,
-} from './types';
+} from "./types";
 
 // Error
-export { ApiError, isApiError } from './error';
+export { ApiError, isApiError } from "./error";

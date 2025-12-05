@@ -1,5 +1,13 @@
 import { type Ref } from "react";
-import { Twitter, Github, Linkedin, Youtube, Facebook, Instagram, type IconProps } from "../../atoms/Icon";
+import {
+  Twitter,
+  Github,
+  Linkedin,
+  Youtube,
+  Facebook,
+  Instagram,
+  type IconProps,
+} from "../../atoms/Icon";
 import { cn } from "../../utils";
 
 export interface FooterLinkProps {
@@ -12,7 +20,13 @@ export interface FooterColumnProps {
   links: FooterLinkProps[];
 }
 
-export type SocialPlatform = "twitter" | "github" | "linkedin" | "youtube" | "facebook" | "instagram";
+export type SocialPlatform =
+  | "twitter"
+  | "github"
+  | "linkedin"
+  | "youtube"
+  | "facebook"
+  | "instagram";
 
 export interface SocialLinkProps {
   platform: SocialPlatform;
@@ -50,22 +64,14 @@ function Footer({
   ...props
 }: FooterProps) {
   return (
-    <footer
-      ref={ref}
-      className={cn("border-t border-[#E6E6E8] bg-white", className)}
-      {...props}
-    >
+    <footer ref={ref} className={cn("border-t border-[#E6E6E8] bg-white", className)} {...props}>
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <div className="mb-4 flex items-center gap-2">
-              {logo || (
-                <span className="text-xl font-bold text-brand">{logoText}</span>
-              )}
+              {logo || <span className="text-xl font-bold text-brand">{logoText}</span>}
             </div>
-            {tagline && (
-              <p className="mb-4 max-w-xs text-sm text-[#666673]">{tagline}</p>
-            )}
+            {tagline && <p className="mb-4 max-w-xs text-sm text-[#666673]">{tagline}</p>}
             {socialLinks && socialLinks.length > 0 && (
               <div className="flex gap-4">
                 {socialLinks.map((social, index) => {
@@ -88,9 +94,7 @@ function Footer({
 
           {columns.map((column, index) => (
             <div key={index}>
-              <h4 className="mb-4 text-sm font-bold text-[#333340]">
-                {column.title}
-              </h4>
+              <h4 className="mb-4 text-sm font-bold text-[#333340]">{column.title}</h4>
               <ul className="space-y-3">
                 {column.links.map((link, linkIndex) => (
                   <li key={linkIndex}>

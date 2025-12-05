@@ -8,7 +8,13 @@ import type { VariantProps } from "class-variance-authority";
 const ToastProvider = ToastPrimitives.Provider;
 
 type ToastViewportProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport> & {
-  position?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
+  position?:
+    | "top-right"
+    | "top-left"
+    | "bottom-right"
+    | "bottom-left"
+    | "top-center"
+    | "bottom-center";
   ref?: Ref<ComponentRef<typeof ToastPrimitives.Viewport>>;
 };
 
@@ -21,7 +27,12 @@ const positionClasses = {
   "bottom-center": "bottom-0 left-1/2 -translate-x-1/2",
 };
 
-function ToastViewport({ className, position = "bottom-right", ref, ...props }: ToastViewportProps) {
+function ToastViewport({
+  className,
+  position = "bottom-right",
+  ref,
+  ...props
+}: ToastViewportProps) {
   return (
     <ToastPrimitives.Viewport
       ref={ref}
@@ -44,7 +55,8 @@ const iconMap = {
 };
 
 export interface ToastProps
-  extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>,
+  extends
+    React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>,
     VariantProps<typeof toastVariants> {
   ref?: Ref<ComponentRef<typeof ToastPrimitives.Root>>;
 }
@@ -87,7 +99,9 @@ function ToastTitle({ className, ref, ...props }: ToastTitleProps) {
   );
 }
 
-interface ToastDescriptionProps extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description> {
+interface ToastDescriptionProps extends React.ComponentPropsWithoutRef<
+  typeof ToastPrimitives.Description
+> {
   ref?: Ref<ComponentRef<typeof ToastPrimitives.Description>>;
 }
 

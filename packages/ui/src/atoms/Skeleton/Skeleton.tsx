@@ -4,11 +4,7 @@ import type { SkeletonProps } from "./types";
 
 function Skeleton({ className, variant, size, ref, ...props }: SkeletonProps) {
   return (
-    <div
-      ref={ref}
-      className={cn(skeletonVariants({ variant, size, className }))}
-      {...props}
-    />
+    <div ref={ref} className={cn(skeletonVariants({ variant, size, className }))} {...props} />
   );
 }
 

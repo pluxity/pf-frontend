@@ -121,9 +121,7 @@ const TreeNodeItem = ({
         }}
         className={cn(
           "flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-sm transition-colors",
-          isSelected
-            ? "bg-[#EBF2FF] text-brand"
-            : "text-[#333340] hover:bg-[#F5F5F5]",
+          isSelected ? "bg-[#EBF2FF] text-brand" : "text-[#333340] hover:bg-[#F5F5F5]",
           node.disabled && "cursor-not-allowed opacity-50"
         )}
         style={{ paddingLeft: `${level * indentSize + 8}px` }}
@@ -137,13 +135,12 @@ const TreeNodeItem = ({
           )}
           tabIndex={-1}
         >
-          {hasChildren && (
-            isExpanded ? (
+          {hasChildren &&
+            (isExpanded ? (
               <ChevronDown size="sm" className="text-[#808088]" />
             ) : (
               <ChevronRight size="sm" className="text-[#808088]" />
-            )
-          )}
+            ))}
         </button>
 
         {showCheckbox && (
@@ -155,8 +152,8 @@ const TreeNodeItem = ({
               checkState === "checked"
                 ? "border-brand bg-brand text-white"
                 : checkState === "indeterminate"
-                ? "border-brand bg-brand text-white"
-                : "border-[#D9D9D9] bg-white"
+                  ? "border-brand bg-brand text-white"
+                  : "border-[#D9D9D9] bg-white"
             )}
             tabIndex={-1}
           >
@@ -165,13 +162,9 @@ const TreeNodeItem = ({
           </button>
         )}
 
-        {showIcons && (
-          <span className="flex-shrink-0">{renderIcon()}</span>
-        )}
+        {showIcons && <span className="flex-shrink-0">{renderIcon()}</span>}
 
-        <span className={cn("truncate", isSelected && "font-medium")}>
-          {node.label}
-        </span>
+        <span className={cn("truncate", isSelected && "font-medium")}>{node.label}</span>
       </div>
 
       {hasChildren && isExpanded && (
@@ -222,7 +215,7 @@ const _getParentIds = (nodes: TreeNode[], targetId: string, parents: string[] = 
     if (node.id === targetId) return parents;
     if (node.children) {
       const result = _getParentIds(node.children, targetId, [...parents, node.id]);
-      if (result.length > 0 || node.children.some(c => c.id === targetId)) {
+      if (result.length > 0 || node.children.some((c) => c.id === targetId)) {
         return result.length > 0 ? result : [...parents, node.id];
       }
     }
@@ -250,100 +243,97 @@ function TreeView({
   ref,
   ...props
 }: TreeViewProps) {
-    const [internalExpandedIds, setInternalExpandedIds] = useState<string[]>(defaultExpandedIds);
-    const [internalCheckedIds, setInternalCheckedIds] = useState<string[]>(defaultCheckedIds);
+  const [internalExpandedIds, setInternalExpandedIds] = useState<string[]>(defaultExpandedIds);
+  const [internalCheckedIds, setInternalCheckedIds] = useState<string[]>(defaultCheckedIds);
 
-    const expandedIds = controlledExpandedIds ?? internalExpandedIds;
-    const checkedIds = controlledCheckedIds ?? internalCheckedIds;
+  const expandedIds = controlledExpandedIds ?? internalExpandedIds;
+  const checkedIds = controlledCheckedIds ?? internalCheckedIds;
 
-    const handleToggle = useCallback(
-      (id: string) => {
-        const newExpandedIds = expandedIds.includes(id)
-          ? expandedIds.filter((eid) => eid !== id)
-          : [...expandedIds, id];
+  const handleToggle = useCallback(
+    (id: string) => {
+      const newExpandedIds = expandedIds.includes(id)
+        ? expandedIds.filter((eid) => eid !== id)
+        : [...expandedIds, id];
 
-        if (controlledExpandedIds === undefined) {
-          setInternalExpandedIds(newExpandedIds);
-        }
-        onExpandedChange?.(newExpandedIds);
-      },
-      [expandedIds, controlledExpandedIds, onExpandedChange]
-    );
+      if (controlledExpandedIds === undefined) {
+        setInternalExpandedIds(newExpandedIds);
+      }
+      onExpandedChange?.(newExpandedIds);
+    },
+    [expandedIds, controlledExpandedIds, onExpandedChange]
+  );
 
-    const getCheckState = useCallback(
-      (id: string): CheckState => {
-        const node = findNodeById(data, id);
-        if (!node) return "unchecked";
+  const getCheckState = useCallback(
+    (id: string): CheckState => {
+      const node = findNodeById(data, id);
+      if (!node) return "unchecked";
 
-        if (!node.children || node.children.length === 0) {
-          return checkedIds.includes(id) ? "checked" : "unchecked";
-        }
+      if (!node.children || node.children.length === 0) {
+        return checkedIds.includes(id) ? "checked" : "unchecked";
+      }
 
-        const descendantIds = getAllDescendantIds(node);
-        const checkedDescendants = descendantIds.filter((did) => checkedIds.includes(did));
+      const descendantIds = getAllDescendantIds(node);
+      const checkedDescendants = descendantIds.filter((did) => checkedIds.includes(did));
 
-        if (checkedDescendants.length === 0) return "unchecked";
-        if (checkedDescendants.length === descendantIds.length) return "checked";
-        return "indeterminate";
-      },
-      [data, checkedIds]
-    );
+      if (checkedDescendants.length === 0) return "unchecked";
+      if (checkedDescendants.length === descendantIds.length) return "checked";
+      return "indeterminate";
+    },
+    [data, checkedIds]
+  );
 
-    const handleCheckChange = useCallback(
-      (node: TreeNode, checked: boolean) => {
-        let newCheckedIds = [...checkedIds];
+  const handleCheckChange = useCallback(
+    (node: TreeNode, checked: boolean) => {
+      let newCheckedIds = [...checkedIds];
 
-        const descendantIds = getAllDescendantIds(node);
-        const allIds = [node.id, ...descendantIds];
+      const descendantIds = getAllDescendantIds(node);
+      const allIds = [node.id, ...descendantIds];
 
-        if (checked) {
-          allIds.forEach((id) => {
-            if (!newCheckedIds.includes(id)) {
-              newCheckedIds.push(id);
-            }
-          });
-        } else {
-          newCheckedIds = newCheckedIds.filter((id) => !allIds.includes(id));
-        }
+      if (checked) {
+        allIds.forEach((id) => {
+          if (!newCheckedIds.includes(id)) {
+            newCheckedIds.push(id);
+          }
+        });
+      } else {
+        newCheckedIds = newCheckedIds.filter((id) => !allIds.includes(id));
+      }
 
-        if (controlledCheckedIds === undefined) {
-          setInternalCheckedIds(newCheckedIds);
-        }
-        onCheckedChange?.(newCheckedIds);
-      },
-      [checkedIds, controlledCheckedIds, onCheckedChange]
-    );
+      if (controlledCheckedIds === undefined) {
+        setInternalCheckedIds(newCheckedIds);
+      }
+      onCheckedChange?.(newCheckedIds);
+    },
+    [checkedIds, controlledCheckedIds, onCheckedChange]
+  );
 
-    return (
-      <div
-        ref={ref}
-        role="tree"
-        className={cn(
-          "w-full overflow-auto rounded-md border border-[#D9D9D9] p-2",
-          className
-        )}
-        style={{ height, ...style }}
-        {...props}
-      >
-        {data.map((node) => (
-          <TreeNodeItem
-            key={node.id}
-            node={node}
-            level={0}
-            expandedIds={expandedIds}
-            onToggle={handleToggle}
-            selectedId={selectedId}
-            onNodeSelect={onNodeSelect}
-            showIcons={showIcons}
-            defaultIcon={defaultIcon}
-            indentSize={indentSize}
-            showCheckbox={showCheckbox}
-            getCheckState={getCheckState}
-            onCheckChange={handleCheckChange}
-          />
-        ))}
-      </div>
-    );
+  return (
+    <div
+      ref={ref}
+      role="tree"
+      className={cn("w-full overflow-auto rounded-md border border-[#D9D9D9] p-2", className)}
+      style={{ height, ...style }}
+      {...props}
+    >
+      {data.map((node) => (
+        <TreeNodeItem
+          key={node.id}
+          node={node}
+          level={0}
+          expandedIds={expandedIds}
+          onToggle={handleToggle}
+          selectedId={selectedId}
+          onNodeSelect={onNodeSelect}
+          showIcons={showIcons}
+          defaultIcon={defaultIcon}
+          indentSize={indentSize}
+          showCheckbox={showCheckbox}
+          getCheckState={getCheckState}
+          onCheckChange={handleCheckChange}
+        />
+      ))}
+    </div>
+  );
 }
 
 export { TreeView };
