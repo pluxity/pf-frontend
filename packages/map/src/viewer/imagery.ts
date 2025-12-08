@@ -20,10 +20,9 @@ export async function setupImagery(viewer: Viewer, config: ImageryConfig): Promi
       break;
 
     case "osm":
-      // @ts-expect-error - Cesium API
       imageryProvider = new OpenStreetMapImageryProvider({
         url: "https://tile.openstreetmap.org/",
-      });
+      } as ConstructorParameters<typeof OpenStreetMapImageryProvider>[0]);
       break;
 
     case "bing":

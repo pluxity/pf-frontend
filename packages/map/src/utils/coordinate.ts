@@ -1,4 +1,4 @@
-import { Cartesian3, Math as CesiumMath } from "cesium";
+import { Cartesian3, Cartographic, Ellipsoid, Math as CesiumMath } from "cesium";
 import type { Coordinate } from "../types.ts";
 
 /**
@@ -12,8 +12,7 @@ export function coordinateToCartesian3(coord: Coordinate): Cartesian3 {
  * Cartesian3를 Coordinate로 변환
  */
 export function cartesian3ToCoordinate(cartesian: Cartesian3): Coordinate {
-  // @ts-expect-error - Cesium API
-  const cartographic = Cartesian3.Ellipsoid.WGS84.cartesianToCartographic(cartesian);
+  const cartographic = Ellipsoid.WGS84.cartesianToCartographic(cartesian) as Cartographic;
 
   return {
     longitude: CesiumMath.toDegrees(cartographic.longitude),

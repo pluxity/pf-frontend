@@ -1,4 +1,4 @@
-import type { Viewer, Entity, CustomDataSource } from "cesium";
+import type { Viewer, Entity, CustomDataSource, ScreenSpaceEventHandler } from "cesium";
 
 // 좌표 타입
 export interface Coordinate {
@@ -57,14 +57,14 @@ export interface ClusterConfig {
   minimumClusterSize?: number;
 }
 
-// Camera 설정
+// Camera 설정 (각도는 모두 degree 단위, 내부적으로 radian으로 변환)
 export interface CameraDestination {
-  longitude: number;
-  latitude: number;
-  height: number;
-  heading?: number;
-  pitch?: number;
-  roll?: number;
+  longitude: number; // 경도 (degree)
+  latitude: number; // 위도 (degree)
+  height: number; // 높이 (meters)
+  heading?: number; // 방향 (degree, 0-360)
+  pitch?: number; // 피치 (degree, -90 to 90)
+  roll?: number; // 롤 (degree, -180 to 180)
 }
 
 export interface FlyToOptions {
@@ -79,6 +79,8 @@ export interface ViewerStore {
   viewer: Viewer | null;
   markers: Map<string, Entity>;
   clusters: Map<string, CustomDataSource>;
+  eventHandler: ScreenSpaceEventHandler | null;
+  markerClickHandlers: Map<string, (entity: Entity) => void>;
   setViewer: (viewer: Viewer | null) => void;
   addMarker: (id: string, entity: Entity) => void;
   removeMarker: (id: string) => void;
@@ -86,5 +88,7 @@ export interface ViewerStore {
   addCluster: (id: string, dataSource: CustomDataSource) => void;
   removeCluster: (id: string) => void;
   getCluster: (id: string) => CustomDataSource | undefined;
+  setMarkerClickHandler: (id: string, handler: (entity: Entity) => void) => void;
+  removeMarkerClickHandler: (id: string) => void;
   clear: () => void;
 }

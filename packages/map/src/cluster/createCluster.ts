@@ -64,21 +64,41 @@ export async function createCluster(
     dataSource.clustering.minimumClusterSize = config.minimumClusterSize ?? 2;
 
     // 클러스터 스타일 커스터마이징
-    // @ts-expect-error - Cesium clustering event typing
-    dataSource.clustering.clusterEvent.addEventListener((entities, cluster) => {
-      cluster.billboard.show = true;
-      cluster.billboard.image = createClusterIcon(entities.length);
-      cluster.billboard.verticalOrigin = VerticalOrigin.BOTTOM;
+    dataSource.clustering.clusterEvent.addEventListener(
+      (
+        entities: unknown[],
+        cluster: { billboard: unknown; label: unknown } & Record<string, unknown>
+      ) => {
+        const billboard = cluster.billboard as {
+          show: boolean;
+          image: string;
+          verticalOrigin: unknown;
+        };
+        const label = cluster.label as {
+          show: boolean;
+          text: string;
+          font: string;
+          fillColor: unknown;
+          outlineColor: unknown;
+          outlineWidth: number;
+          style: number;
+          verticalOrigin: unknown;
+        };
 
-      cluster.label.show = true;
-      cluster.label.text = entities.length.toString();
-      cluster.label.font = "bold 16px sans-serif";
-      cluster.label.fillColor = Color.WHITE;
-      cluster.label.outlineColor = Color.BLACK;
-      cluster.label.outlineWidth = 2;
-      cluster.label.style = 2; // LabelStyle.FILL_AND_OUTLINE
-      cluster.label.verticalOrigin = VerticalOrigin.CENTER;
-    });
+        billboard.show = true;
+        billboard.image = createClusterIcon(entities.length);
+        billboard.verticalOrigin = VerticalOrigin.BOTTOM;
+
+        label.show = true;
+        label.text = entities.length.toString();
+        label.font = "bold 16px sans-serif";
+        label.fillColor = Color.WHITE;
+        label.outlineColor = Color.BLACK;
+        label.outlineWidth = 2;
+        label.style = 2; // LabelStyle.FILL_AND_OUTLINE
+        label.verticalOrigin = VerticalOrigin.CENTER;
+      }
+    );
   }
 
   await viewer.dataSources.add(dataSource);
@@ -99,7 +119,11 @@ function createClusterIcon(count: number): string {
   canvas.height = size;
   const ctx = canvas.getContext("2d");
 
-  if (!ctx) return "";
+  if (!ctx) {
+    console.warn("Failed to get 2D context for canvas. Returning default transparent icon.");
+    // 1x1 투명 PNG (기본 fallback)
+    return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+  }
 
   // 원 그리기
   ctx.beginPath();

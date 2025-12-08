@@ -1,13 +1,36 @@
 import { create } from "zustand";
+import { ScreenSpaceEventHandler, ScreenSpaceEventType, defined, Cartesian2 } from "cesium";
 import type { ViewerStore } from "../types.ts";
 
 export const useViewerStore = create<ViewerStore>((set, get) => ({
   viewer: null,
   markers: new Map(),
   clusters: new Map(),
+  eventHandler: null,
+  markerClickHandlers: new Map(),
 
   setViewer: (viewer) => {
-    set({ viewer });
+    const currentHandler = get().eventHandler;
+    if (currentHandler && !currentHandler.isDestroyed()) {
+      currentHandler.destroy();
+    }
+
+    let newHandler: ScreenSpaceEventHandler | null = null;
+    if (viewer) {
+      newHandler = new ScreenSpaceEventHandler(viewer.scene.canvas);
+      newHandler.setInputAction((movement: { position: Cartesian2 }) => {
+        const pickedObject = viewer.scene.pick(movement.position);
+        if (defined(pickedObject) && defined(pickedObject.id)) {
+          const entityId = pickedObject.id.id as string;
+          const handler = get().markerClickHandlers.get(entityId);
+          if (handler) {
+            handler(pickedObject.id);
+          }
+        }
+      }, ScreenSpaceEventType.LEFT_CLICK);
+    }
+
+    set({ viewer, eventHandler: newHandler });
   },
 
   addMarker: (id, entity) => {
@@ -17,7 +40,7 @@ export const useViewerStore = create<ViewerStore>((set, get) => ({
   },
 
   removeMarker: (id) => {
-    const { viewer, markers } = get();
+    const { viewer, markers, markerClickHandlers } = get();
     const marker = markers.get(id);
 
     if (marker && viewer) {
@@ -26,7 +49,11 @@ export const useViewerStore = create<ViewerStore>((set, get) => ({
 
     const newMarkers = new Map(markers);
     newMarkers.delete(id);
-    set({ markers: newMarkers });
+
+    const newHandlers = new Map(markerClickHandlers);
+    newHandlers.delete(id);
+
+    set({ markers: newMarkers, markerClickHandlers: newHandlers });
   },
 
   getMarker: (id) => {
@@ -56,8 +83,20 @@ export const useViewerStore = create<ViewerStore>((set, get) => ({
     return get().clusters.get(id);
   },
 
+  setMarkerClickHandler: (id, handler) => {
+    const handlers = new Map(get().markerClickHandlers);
+    handlers.set(id, handler);
+    set({ markerClickHandlers: handlers });
+  },
+
+  removeMarkerClickHandler: (id) => {
+    const handlers = new Map(get().markerClickHandlers);
+    handlers.delete(id);
+    set({ markerClickHandlers: handlers });
+  },
+
   clear: () => {
-    const { viewer, markers, clusters } = get();
+    const { viewer, markers, clusters, eventHandler } = get();
 
     if (viewer) {
       // Remove all markers
@@ -71,6 +110,15 @@ export const useViewerStore = create<ViewerStore>((set, get) => ({
       });
     }
 
-    set({ markers: new Map(), clusters: new Map() });
+    if (eventHandler && !eventHandler.isDestroyed()) {
+      eventHandler.destroy();
+    }
+
+    set({
+      markers: new Map(),
+      clusters: new Map(),
+      markerClickHandlers: new Map(),
+      eventHandler: null,
+    });
   },
 }));

@@ -1,13 +1,4 @@
-import {
-  Viewer,
-  Entity,
-  Color,
-  Cartesian3,
-  VerticalOrigin,
-  HorizontalOrigin,
-  ScreenSpaceEventType,
-  ScreenSpaceEventHandler,
-} from "cesium";
+import { Viewer, Entity, Color, Cartesian3, VerticalOrigin, HorizontalOrigin } from "cesium";
 import { coordinateToCartesian3 } from "../utils/coordinate.ts";
 import { useViewerStore } from "../viewer/store.ts";
 import type { MarkerConfig } from "../types.ts";
@@ -51,20 +42,13 @@ export function createMarker(viewer: Viewer, config: MarkerConfig): Entity {
 
   const entity = viewer.entities.add(entityConfig);
 
-  // 클릭 이벤트 핸들러
-  if (config.onClick) {
-    const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
-    // @ts-expect-error - Cesium event handler typing
-    handler.setInputAction((click) => {
-      const pickedObject = viewer.scene.pick(click.position);
-      if (pickedObject && pickedObject.id === entity) {
-        config.onClick!(entity);
-      }
-    }, ScreenSpaceEventType.LEFT_CLICK);
-  }
-
   // Store에 추가
   useViewerStore.getState().addMarker(config.id, entity);
+
+  // 클릭 이벤트 핸들러 등록 (전역 핸들러 사용)
+  if (config.onClick) {
+    useViewerStore.getState().setMarkerClickHandler(config.id, config.onClick);
+  }
 
   return entity;
 }
