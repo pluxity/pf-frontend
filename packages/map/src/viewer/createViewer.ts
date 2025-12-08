@@ -1,4 +1,5 @@
 import { Viewer, Ion } from "cesium";
+import { useViewerStore } from "./store.ts";
 import type { ViewerConfig } from "../types.ts";
 
 export function createViewer(container: HTMLElement | string, config: ViewerConfig = {}): Viewer {
@@ -27,6 +28,9 @@ export function createViewer(container: HTMLElement | string, config: ViewerConf
 
   // 기본 설정
   viewer.scene.globe.depthTestAgainstTerrain = true;
+
+  // Store에 viewer 등록 (전역 이벤트 핸들러 초기화)
+  useViewerStore.getState().setViewer(viewer);
 
   return viewer;
 }

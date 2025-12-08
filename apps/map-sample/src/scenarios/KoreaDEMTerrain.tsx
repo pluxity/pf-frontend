@@ -31,10 +31,16 @@ export default function KoreaDEMTerrain() {
         const bbox = image.getBoundingBox();
         const data = await image.readRasters();
 
-        // DEM 데이터 통계
-        const elevationData = data[0] as Float32Array;
-        const min = Math.min(...Array.from(elevationData));
-        const max = Math.max(...Array.from(elevationData));
+        // DEM 데이터 통계 (큰 배열이므로 반복문으로 처리)
+        const elevationData = data[0] as Float32Array | Int16Array | Uint16Array;
+        let min = Infinity;
+        let max = -Infinity;
+
+        for (let i = 0; i < elevationData.length; i++) {
+          const value = elevationData[i];
+          if (value < min) min = value;
+          if (value > max) max = value;
+        }
 
         setDemInfo({
           width,
