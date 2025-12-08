@@ -1,0 +1,35 @@
+{
+  "name": "@pf-dev/map",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./viewer": "./src/viewer/index.ts",
+    "./marker": "./src/marker/index.ts",
+    "./cluster": "./src/cluster/index.ts",
+    "./camera": "./src/camera/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "clean": "rimraf dist node_modules .turbo"
+  },
+  "peerDependencies": {
+    "cesium": "^1.121.0"
+  },
+  "dependencies": {
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@pf-dev/eslint-config": "workspace:*",
+    "@pf-dev/typescript-config": "workspace:*",
+    "cesium": "^1.121.0",
+    "rimraf": "^6.0.1",
+    "typescript": "catalog:"
+  }
+}
