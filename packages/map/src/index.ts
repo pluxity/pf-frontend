@@ -2,7 +2,14 @@
 export { MapViewer, Imagery, Terrain, Tiles3D } from "./components/index.ts";
 
 // Store
-export { useMapStore, mapStore, useFeatureStore, featureStore } from "./store/index.ts";
+export {
+  useMapStore,
+  mapStore,
+  useCameraStore,
+  cameraStore,
+  useFeatureStore,
+  featureStore,
+} from "./store/index.ts";
 
 // Types
 export type {
@@ -11,6 +18,8 @@ export type {
   FlyToOptions,
   LookAtOptions,
   SetViewOptions,
+  ZoomToOptions,
+  FeatureRef,
   // Viewer
   MapViewerProps,
   // Imagery
@@ -30,4 +39,13 @@ export type {
   FeatureGroup,
   FeatureState,
   FeatureActions,
+} from "./types/index.ts";
+
+// Type Guards
+export {
+  isLookAtFeature,
+  isZoomToCoordinates,
+  isZoomToFeatures,
+  isZoomToGroup,
+  isZoomToBoundary,
 } from "./types/index.ts";

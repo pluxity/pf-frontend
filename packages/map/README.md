@@ -15,7 +15,7 @@ pnpm add @pf-dev/map cesium
 - **Terrain** - Ellipsoid, Ion, Custom 터레인 지원
 - **Tiles3D** - 3D Tiles 로딩 컴포넌트
 - **Feature Store** - 그룹 기반 Entity 관리 및 검색
-- **Map Store** - 카메라 제어 (flyTo, lookAt, setView)
+- **Camera Store** - 카메라 제어 (flyTo, lookAt, setView, zoomTo)
 
 ## 기본 사용법
 
@@ -87,12 +87,15 @@ function App() {
 
 ### 5. Camera 제어
 
+카메라 제어는 `useCameraStore`를 사용합니다.
+
 ```tsx
-import { useMapStore } from "@pf-dev/map";
+import { useCameraStore } from "@pf-dev/map";
 
 function CameraControls() {
-  const { flyTo, lookAt, setView, cameraPosition } = useMapStore();
+  const { flyTo, lookAt, setView, zoomTo, cameraPosition } = useCameraStore();
 
+  // flyTo: 특정 좌표로 카메라 이동
   const handleFlyTo = () => {
     flyTo({
       longitude: 127.1,
@@ -102,16 +105,26 @@ function CameraControls() {
     });
   };
 
-  const handleLookAt = () => {
+  // lookAt: 좌표 기반 - 대상을 바라보며 거리 유지
+  const handleLookAtCoordinate = () => {
     lookAt({
       longitude: 127.1,
       latitude: 37.5,
-      height: 100,
       distance: 500,
       pitch: -45,
     });
   };
 
+  // lookAt: Feature 기반 - Feature ID로 바라보기
+  const handleLookAtFeature = () => {
+    lookAt({
+      feature: { groupId: "sensors", featureId: "sensor-001" },
+      distance: 300,
+      pitch: -30,
+    });
+  };
+
+  // setView: 즉시 카메라 설정 (애니메이션 없음)
   const handleSetView = () => {
     setView({
       longitude: 127.1,
@@ -125,7 +138,8 @@ function CameraControls() {
   return (
     <div>
       <button onClick={handleFlyTo}>Fly To</button>
-      <button onClick={handleLookAt}>Look At</button>
+      <button onClick={handleLookAtCoordinate}>Look At (좌표)</button>
+      <button onClick={handleLookAtFeature}>Look At (Feature)</button>
       <button onClick={handleSetView}>Set View</button>
       <p>Current: {JSON.stringify(cameraPosition)}</p>
     </div>
@@ -133,7 +147,67 @@ function CameraControls() {
 }
 ```
 
-### 6. Feature Store 사용
+### 6. zoomTo: 여러 대상 한눈에 보기
+
+```tsx
+import { useCameraStore } from "@pf-dev/map";
+
+function ZoomControls() {
+  const { zoomTo } = useCameraStore();
+
+  // 좌표 배열로 zoomTo
+  const handleZoomToCoordinates = () => {
+    zoomTo({
+      coordinates: [
+        { longitude: 127.0, latitude: 37.5 },
+        { longitude: 127.1, latitude: 37.4 },
+        { longitude: 127.05, latitude: 37.55 },
+      ],
+      pitch: -45,
+      duration: 1.5,
+    });
+  };
+
+  // Feature 배열로 zoomTo
+  const handleZoomToFeatures = () => {
+    zoomTo({
+      features: [
+        { groupId: "sensors", featureId: "sensor-001" },
+        { groupId: "sensors", featureId: "sensor-002" },
+        { groupId: "sensors", featureId: "sensor-003" },
+      ],
+      pitch: -45,
+    });
+  };
+
+  // 그룹 전체 zoomTo
+  const handleZoomToGroup = () => {
+    zoomTo({
+      groupId: "sensors",
+      pitch: -60,
+    });
+  };
+
+  // WKT Boundary로 zoomTo
+  const handleZoomToBoundary = () => {
+    zoomTo({
+      boundary: "POLYGON((126.9 37.4, 127.1 37.4, 127.1 37.6, 126.9 37.6, 126.9 37.4))",
+      pitch: -45,
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleZoomToCoordinates}>좌표 배열</button>
+      <button onClick={handleZoomToFeatures}>Feature 배열</button>
+      <button onClick={handleZoomToGroup}>그룹 전체</button>
+      <button onClick={handleZoomToBoundary}>WKT 영역</button>
+    </div>
+  );
+}
+```
+
+### 7. Feature Store 사용
 
 Feature Store는 그룹 기반으로 Entity를 관리합니다.
 
@@ -193,6 +267,26 @@ function FeatureManager() {
 | `getFeatureCount(groupId?)`                 | Feature 개수               |
 | `clearAll()`                                | 전체 삭제                  |
 
+## Store 구조
+
+```
+useMapStore      - Viewer 관리
+├── viewer       - Cesium Viewer 인스턴스
+├── setViewer()  - Viewer 설정
+└── getViewer()  - Viewer 조회
+
+useCameraStore   - 카메라 제어
+├── cameraPosition - 현재 카메라 위치
+├── flyTo()        - 좌표로 이동
+├── lookAt()       - 대상 바라보기 (좌표 or Feature)
+├── setView()      - 즉시 설정
+└── zoomTo()       - 영역/다중 대상 맞춤 보기
+
+useFeatureStore  - Entity 관리
+├── groups       - 그룹별 Entity 관리
+└── CRUD + 검색 메서드
+```
+
 ## 타입 정의
 
 ```typescript
@@ -201,6 +295,12 @@ interface Coordinate {
   longitude: number;
   latitude: number;
   height?: number;
+}
+
+// Feature 참조 (lookAt, zoomTo에서 사용)
+interface FeatureRef {
+  groupId: string;
+  featureId: string;
 }
 
 // Feature 옵션
@@ -212,7 +312,7 @@ interface FeatureOptions {
 // Property 필터
 type PropertyFilter = Record<string, unknown> | ((properties: Record<string, unknown>) => boolean);
 
-// Camera
+// Camera - flyTo
 interface FlyToOptions {
   longitude: number;
   latitude: number;
@@ -222,7 +322,8 @@ interface FlyToOptions {
   duration?: number;
 }
 
-interface LookAtOptions {
+// Camera - lookAt (좌표 기반)
+interface LookAtCoordinateOptions {
   longitude: number;
   latitude: number;
   height?: number;
@@ -231,6 +332,24 @@ interface LookAtOptions {
   pitch?: number;
   duration?: number;
 }
+
+// Camera - lookAt (Feature 기반)
+interface LookAtFeatureOptions {
+  feature: FeatureRef;
+  distance?: number;
+  heading?: number;
+  pitch?: number;
+  duration?: number;
+}
+
+type LookAtOptions = LookAtCoordinateOptions | LookAtFeatureOptions;
+
+// Camera - zoomTo
+type ZoomToOptions =
+  | { coordinates: Coordinate[]; heading?: number; pitch?: number; duration?: number }
+  | { features: FeatureRef[]; heading?: number; pitch?: number; duration?: number }
+  | { groupId: string; heading?: number; pitch?: number; duration?: number }
+  | { boundary: string; heading?: number; pitch?: number; duration?: number }; // WKT Polygon
 ```
 
 ## License

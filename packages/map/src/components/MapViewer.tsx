@@ -1,9 +1,17 @@
 import { useEffect, useRef } from "react";
-import { Viewer, Ion } from "cesium";
+import { Viewer, Ion, Cartesian3, Math as CesiumMath } from "cesium";
 import { mapStore, useMapStore } from "../store/index.ts";
 import type { MapViewerProps } from "../types/index.ts";
 
 export type { MapViewerProps };
+
+// 초기 카메라 위치 (수원)
+const DEFAULT_CAMERA_POSITION = {
+  longitude: 126.970445,
+  latitude: 37.394434,
+  height: 500,
+  pitch: -45,
+};
 
 const DEFAULT_VIEWER_OPTIONS: Viewer.ConstructorOptions = {
   timeline: false,
@@ -47,6 +55,20 @@ export function MapViewer({ children, className, ionToken }: MapViewerProps) {
     const viewerInstance = new Viewer(containerRef.current, {
       ...DEFAULT_VIEWER_OPTIONS,
       creditContainer: getHiddenCreditContainer(),
+    });
+
+    // 초기 카메라 위치 설정
+    viewerInstance.camera.setView({
+      destination: Cartesian3.fromDegrees(
+        DEFAULT_CAMERA_POSITION.longitude,
+        DEFAULT_CAMERA_POSITION.latitude,
+        DEFAULT_CAMERA_POSITION.height
+      ),
+      orientation: {
+        heading: CesiumMath.toRadians(0),
+        pitch: CesiumMath.toRadians(DEFAULT_CAMERA_POSITION.pitch),
+        roll: 0,
+      },
     });
 
     mapStore.getState().setViewer(viewerInstance);

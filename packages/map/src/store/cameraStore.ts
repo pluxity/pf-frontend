@@ -1,0 +1,284 @@
+import { create } from "zustand";
+import {
+  Cartesian3,
+  Math as CesiumMath,
+  HeadingPitchRange,
+  BoundingSphere,
+  Ellipsoid,
+  JulianDate,
+} from "cesium";
+import type {
+  CameraPosition,
+  FlyToOptions,
+  LookAtOptions,
+  SetViewOptions,
+  ZoomToOptions,
+  Coordinate,
+} from "../types/index.ts";
+import {
+  isLookAtFeature,
+  isZoomToCoordinates,
+  isZoomToFeatures,
+  isZoomToGroup,
+  isZoomToBoundary,
+} from "../types/index.ts";
+import { useMapStore } from "./mapStore.ts";
+import { useFeatureStore } from "./featureStore.ts";
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+function coordinateToCartesian3(coord: Coordinate): Cartesian3 {
+  return Cartesian3.fromDegrees(coord.longitude, coord.latitude, coord.height ?? 0);
+}
+
+function parseWKTPolygon(wkt: string): Coordinate[] {
+  // POLYGON((lon1 lat1, lon2 lat2, ...)) 파싱
+  const match = wkt.match(/POLYGON\s*\(\s*\(\s*(.+?)\s*\)\s*\)/i);
+  if (!match || !match[1]) return [];
+
+  const coordPairs = match[1].split(",").map((s) => s.trim());
+  const coordinates: Coordinate[] = [];
+
+  for (const pair of coordPairs) {
+    const parts = pair.split(/\s+/).map(Number);
+    const lon = parts[0];
+    const lat = parts[1];
+    const height = parts[2] ?? 0;
+
+    if (lon !== undefined && lat !== undefined && !isNaN(lon) && !isNaN(lat)) {
+      coordinates.push({ longitude: lon, latitude: lat, height });
+    }
+  }
+
+  return coordinates;
+}
+
+function getEntityCoordinate(entity: {
+  position?: { getValue: (time: JulianDate) => Cartesian3 | undefined };
+}): Coordinate | null {
+  if (!entity.position) return null;
+  const cartesian = entity.position.getValue(JulianDate.now());
+  if (!cartesian) return null;
+
+  const cartographic = Ellipsoid.WGS84.cartesianToCartographic(cartesian);
+  return {
+    longitude: CesiumMath.toDegrees(cartographic.longitude),
+    latitude: CesiumMath.toDegrees(cartographic.latitude),
+    height: cartographic.height,
+  };
+}
+
+// ============================================================================
+// State & Actions
+// ============================================================================
+
+interface CameraState {
+  cameraPosition: CameraPosition | null;
+}
+
+interface CameraActions {
+  flyTo: (options: FlyToOptions) => void;
+  lookAt: (options: LookAtOptions) => void;
+  setView: (options: SetViewOptions) => void;
+  zoomTo: (options: ZoomToOptions) => void;
+  // Internal
+  _updateCameraPosition: () => void;
+  _resetCameraPosition: () => void;
+}
+
+// ============================================================================
+// Store
+// ============================================================================
+
+export const useCameraStore = create<CameraState & CameraActions>((set) => {
+  // Private: BoundingSphere로 카메라 이동
+  const flyToBoundingSphere = (
+    boundingSphere: BoundingSphere,
+    heading: number,
+    pitch: number,
+    duration: number
+  ) => {
+    const viewer = useMapStore.getState().viewer;
+    if (!viewer || viewer.isDestroyed()) return;
+
+    viewer.camera.flyToBoundingSphere(boundingSphere, {
+      offset: new HeadingPitchRange(
+        CesiumMath.toRadians(heading),
+        CesiumMath.toRadians(pitch),
+        0 // 자동 계산
+      ),
+      duration,
+    });
+  };
+
+  return {
+    // State
+    cameraPosition: null,
+
+    // Actions
+    _updateCameraPosition: () => {
+      const viewer = useMapStore.getState().viewer;
+      if (!viewer || viewer.isDestroyed()) return;
+
+      const cartographic = viewer.camera.positionCartographic;
+      set({
+        cameraPosition: {
+          longitude: CesiumMath.toDegrees(cartographic.longitude),
+          latitude: CesiumMath.toDegrees(cartographic.latitude),
+          height: cartographic.height,
+          heading: CesiumMath.toDegrees(viewer.camera.heading),
+          pitch: CesiumMath.toDegrees(viewer.camera.pitch),
+        },
+      });
+    },
+
+    _resetCameraPosition: () => {
+      set({ cameraPosition: null });
+    },
+
+    flyTo: ({ longitude, latitude, height = 1000, heading = 0, pitch = -45, duration = 1 }) => {
+      const viewer = useMapStore.getState().viewer;
+      if (!viewer || viewer.isDestroyed()) return;
+
+      viewer.camera.flyTo({
+        destination: Cartesian3.fromDegrees(longitude, latitude, height),
+        orientation: {
+          heading: CesiumMath.toRadians(heading),
+          pitch: CesiumMath.toRadians(pitch),
+          roll: 0,
+        },
+        duration,
+      });
+    },
+
+    lookAt: (options) => {
+      const viewer = useMapStore.getState().viewer;
+      if (!viewer || viewer.isDestroyed()) return;
+
+      const { distance = 1000, heading = 0, pitch = -45, duration = 1 } = options;
+
+      // Feature 기반
+      if (isLookAtFeature(options)) {
+        const entity = useFeatureStore
+          .getState()
+          .getFeature(options.feature.groupId, options.feature.featureId);
+        if (!entity) return;
+
+        const coord = getEntityCoordinate(entity);
+        if (!coord) return;
+
+        const target = coordinateToCartesian3(coord);
+        const offset = new HeadingPitchRange(
+          CesiumMath.toRadians(heading),
+          CesiumMath.toRadians(pitch),
+          distance
+        );
+
+        viewer.camera.flyToBoundingSphere(new BoundingSphere(target, 0), {
+          offset,
+          duration,
+        });
+        return;
+      }
+
+      // 좌표 기반
+      const { longitude, latitude, height = 0 } = options;
+      const target = Cartesian3.fromDegrees(longitude, latitude, height);
+      const offset = new HeadingPitchRange(
+        CesiumMath.toRadians(heading),
+        CesiumMath.toRadians(pitch),
+        distance
+      );
+
+      viewer.camera.flyToBoundingSphere(new BoundingSphere(target, 0), {
+        offset,
+        duration,
+      });
+    },
+
+    setView: ({ longitude, latitude, height = 1000, heading = 0, pitch = -45 }) => {
+      const viewer = useMapStore.getState().viewer;
+      if (!viewer || viewer.isDestroyed()) return;
+
+      viewer.camera.setView({
+        destination: Cartesian3.fromDegrees(longitude, latitude, height),
+        orientation: {
+          heading: CesiumMath.toRadians(heading),
+          pitch: CesiumMath.toRadians(pitch),
+          roll: 0,
+        },
+      });
+    },
+
+    zoomTo: (options) => {
+      const viewer = useMapStore.getState().viewer;
+      if (!viewer || viewer.isDestroyed()) return;
+
+      const { heading = 0, pitch = -45, duration = 1 } = options;
+
+      // 좌표 배열
+      if (isZoomToCoordinates(options)) {
+        const points = options.coordinates.map(coordinateToCartesian3);
+        if (points.length === 0) return;
+
+        const boundingSphere = BoundingSphere.fromPoints(points);
+        flyToBoundingSphere(boundingSphere, heading, pitch, duration);
+        return;
+      }
+
+      // Feature 배열
+      if (isZoomToFeatures(options)) {
+        const coordinates: Coordinate[] = [];
+
+        for (const ref of options.features) {
+          const entity = useFeatureStore.getState().getFeature(ref.groupId, ref.featureId);
+          if (entity) {
+            const coord = getEntityCoordinate(entity);
+            if (coord) coordinates.push(coord);
+          }
+        }
+
+        if (coordinates.length === 0) return;
+
+        const points = coordinates.map(coordinateToCartesian3);
+        const boundingSphere = BoundingSphere.fromPoints(points);
+        flyToBoundingSphere(boundingSphere, heading, pitch, duration);
+        return;
+      }
+
+      // 그룹 전체
+      if (isZoomToGroup(options)) {
+        const group = useFeatureStore.getState().getGroup(options.groupId);
+        if (!group) return;
+
+        const coordinates: Coordinate[] = [];
+        group.forEach((entity) => {
+          const coord = getEntityCoordinate(entity);
+          if (coord) coordinates.push(coord);
+        });
+
+        if (coordinates.length === 0) return;
+
+        const points = coordinates.map(coordinateToCartesian3);
+        const boundingSphere = BoundingSphere.fromPoints(points);
+        flyToBoundingSphere(boundingSphere, heading, pitch, duration);
+        return;
+      }
+
+      // WKT Boundary
+      if (isZoomToBoundary(options)) {
+        const coordinates = parseWKTPolygon(options.boundary);
+        if (coordinates.length === 0) return;
+
+        const points = coordinates.map(coordinateToCartesian3);
+        const boundingSphere = BoundingSphere.fromPoints(points);
+        flyToBoundingSphere(boundingSphere, heading, pitch, duration);
+      }
+    },
+  };
+});
+
+// 컴포넌트 외부에서 사용할 때 편의를 위한 alias
+export const cameraStore = useCameraStore;
