@@ -28,8 +28,8 @@ const DEFAULT_VIEWER_OPTIONS: Viewer.ConstructorOptions = {
   skyBox: false,
   skyAtmosphere: false,
   baseLayer: false,
-  requestRenderMode: true,
-  maximumRenderTimeChange: Infinity,
+  requestRenderMode: false,
+  maximumRenderTimeChange: 0,
 };
 
 let hiddenCreditContainer: HTMLDivElement | null = null;
@@ -41,7 +41,13 @@ function getHiddenCreditContainer() {
   return hiddenCreditContainer;
 }
 
-export function MapViewer({ children, className, ionToken }: MapViewerProps) {
+export function MapViewer({
+  children,
+  className,
+  ionToken,
+  requestRenderMode,
+  maximumRenderTimeChange,
+}: MapViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewer = useMapStore((state) => state.viewer);
 
@@ -54,6 +60,14 @@ export function MapViewer({ children, className, ionToken }: MapViewerProps) {
 
     const viewerInstance = new Viewer(containerRef.current, {
       ...DEFAULT_VIEWER_OPTIONS,
+      requestRenderMode:
+        typeof requestRenderMode === "boolean"
+          ? requestRenderMode
+          : DEFAULT_VIEWER_OPTIONS.requestRenderMode,
+      maximumRenderTimeChange:
+        typeof maximumRenderTimeChange === "number"
+          ? maximumRenderTimeChange
+          : DEFAULT_VIEWER_OPTIONS.maximumRenderTimeChange,
       creditContainer: getHiddenCreditContainer(),
     });
 
@@ -79,7 +93,7 @@ export function MapViewer({ children, className, ionToken }: MapViewerProps) {
         viewerInstance.destroy();
       }
     };
-  }, []);
+  }, [ionToken, requestRenderMode, maximumRenderTimeChange]);
 
   useEffect(() => {
     if (ionToken) {

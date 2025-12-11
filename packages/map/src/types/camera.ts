@@ -1,3 +1,4 @@
+import type { Entity } from "cesium";
 import type { Coordinate } from "./feature.ts";
 
 // ============================================================================
@@ -13,16 +14,7 @@ export interface CameraPosition {
 }
 
 // ============================================================================
-// Feature Reference (Feature ID로 참조)
-// ============================================================================
-
-export interface FeatureRef {
-  groupId: string;
-  featureId: string;
-}
-
-// ============================================================================
-// FlyTo - 특정 좌표로 카메라 이동
+// FlyTo - 특정 좌표로 카메라 이동 (duration: 0 = 즉시)
 // ============================================================================
 
 export interface FlyToOptions {
@@ -32,18 +24,6 @@ export interface FlyToOptions {
   heading?: number;
   pitch?: number;
   duration?: number;
-}
-
-// ============================================================================
-// SetView - 즉시 카메라 설정
-// ============================================================================
-
-export interface SetViewOptions {
-  longitude: number;
-  latitude: number;
-  height?: number;
-  heading?: number;
-  pitch?: number;
 }
 
 // ============================================================================
@@ -61,9 +41,9 @@ interface LookAtCoordinateOptions {
   duration?: number;
 }
 
-// Feature 기반
+// Feature ID 기반
 interface LookAtFeatureOptions {
-  feature: FeatureRef;
+  feature: string; // featureId
   distance?: number;
   heading?: number;
   pitch?: number;
@@ -76,6 +56,9 @@ export type LookAtOptions = LookAtCoordinateOptions | LookAtFeatureOptions;
 // ZoomTo - 영역/다중 대상 맞춤 보기
 // ============================================================================
 
+// Feature 필터 타입 (ID 배열 또는 필터 함수)
+export type FeatureSelector = string[] | ((entity: Entity) => boolean);
+
 // 좌표 배열
 interface ZoomToCoordinatesOptions {
   coordinates: Coordinate[];
@@ -84,17 +67,9 @@ interface ZoomToCoordinatesOptions {
   duration?: number;
 }
 
-// Feature 배열
+// Feature 배열 또는 필터 함수
 interface ZoomToFeaturesOptions {
-  features: FeatureRef[];
-  heading?: number;
-  pitch?: number;
-  duration?: number;
-}
-
-// 그룹 전체
-interface ZoomToGroupOptions {
-  groupId: string;
+  features: FeatureSelector;
   heading?: number;
   pitch?: number;
   duration?: number;
@@ -111,7 +86,6 @@ interface ZoomToBoundaryOptions {
 export type ZoomToOptions =
   | ZoomToCoordinatesOptions
   | ZoomToFeaturesOptions
-  | ZoomToGroupOptions
   | ZoomToBoundaryOptions;
 
 // ============================================================================
@@ -128,10 +102,6 @@ export function isZoomToCoordinates(options: ZoomToOptions): options is ZoomToCo
 
 export function isZoomToFeatures(options: ZoomToOptions): options is ZoomToFeaturesOptions {
   return "features" in options;
-}
-
-export function isZoomToGroup(options: ZoomToOptions): options is ZoomToGroupOptions {
-  return "groupId" in options;
 }
 
 export function isZoomToBoundary(options: ZoomToOptions): options is ZoomToBoundaryOptions {

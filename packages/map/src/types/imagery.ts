@@ -1,4 +1,4 @@
-export type ImageryProviderType = "ion" | "osm" | "bing" | "arcgis" | "vworld" | "kakao";
+export type ImageryProviderType = "ion" | "osm" | "bing" | "arcgis" | "vworld";
 
 export type VWorldLayer = "Base" | "Satellite" | "Hybrid" | "white" | "midnight";
 

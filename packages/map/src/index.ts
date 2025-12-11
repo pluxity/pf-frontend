@@ -17,9 +17,8 @@ export type {
   CameraPosition,
   FlyToOptions,
   LookAtOptions,
-  SetViewOptions,
   ZoomToOptions,
-  FeatureRef,
+  FeatureSelector,
   // Viewer
   MapViewerProps,
   // Imagery
@@ -34,9 +33,15 @@ export type {
   Tiles3DSource,
   // Feature
   Coordinate,
+  Feature,
   FeatureOptions,
+  FeaturePatch,
+  FeatureVisual,
+  FeatureRenderType,
+  FeatureMeta,
   PropertyFilter,
-  FeatureGroup,
+  FeatureFilter,
+  FeatureSelectorType,
   FeatureState,
   FeatureActions,
 } from "./types/index.ts";
@@ -46,6 +51,5 @@ export {
   isLookAtFeature,
   isZoomToCoordinates,
   isZoomToFeatures,
-  isZoomToGroup,
   isZoomToBoundary,
 } from "./types/index.ts";

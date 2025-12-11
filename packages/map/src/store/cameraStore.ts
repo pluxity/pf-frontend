@@ -11,7 +11,6 @@ import type {
   CameraPosition,
   FlyToOptions,
   LookAtOptions,
-  SetViewOptions,
   ZoomToOptions,
   Coordinate,
 } from "../types/index.ts";
@@ -19,7 +18,6 @@ import {
   isLookAtFeature,
   isZoomToCoordinates,
   isZoomToFeatures,
-  isZoomToGroup,
   isZoomToBoundary,
 } from "../types/index.ts";
 import { useMapStore } from "./mapStore.ts";
@@ -81,7 +79,6 @@ interface CameraState {
 interface CameraActions {
   flyTo: (options: FlyToOptions) => void;
   lookAt: (options: LookAtOptions) => void;
-  setView: (options: SetViewOptions) => void;
   zoomTo: (options: ZoomToOptions) => void;
   // Internal
   _updateCameraPosition: () => void;
@@ -159,11 +156,9 @@ export const useCameraStore = create<CameraState & CameraActions>((set) => {
 
       const { distance = 1000, heading = 0, pitch = -45, duration = 1 } = options;
 
-      // Feature 기반
+      // Feature ID 기반
       if (isLookAtFeature(options)) {
-        const entity = useFeatureStore
-          .getState()
-          .getFeature(options.feature.groupId, options.feature.featureId);
+        const entity = useFeatureStore.getState().getFeature(options.feature);
         if (!entity) return;
 
         const coord = getEntityCoordinate(entity);
@@ -198,20 +193,6 @@ export const useCameraStore = create<CameraState & CameraActions>((set) => {
       });
     },
 
-    setView: ({ longitude, latitude, height = 1000, heading = 0, pitch = -45 }) => {
-      const viewer = useMapStore.getState().viewer;
-      if (!viewer || viewer.isDestroyed()) return;
-
-      viewer.camera.setView({
-        destination: Cartesian3.fromDegrees(longitude, latitude, height),
-        orientation: {
-          heading: CesiumMath.toRadians(heading),
-          pitch: CesiumMath.toRadians(pitch),
-          roll: 0,
-        },
-      });
-    },
-
     zoomTo: (options) => {
       const viewer = useMapStore.getState().viewer;
       if (!viewer || viewer.isDestroyed()) return;
@@ -228,36 +209,28 @@ export const useCameraStore = create<CameraState & CameraActions>((set) => {
         return;
       }
 
-      // Feature 배열
+      // Feature 배열 또는 필터 함수
       if (isZoomToFeatures(options)) {
+        const { features } = options;
         const coordinates: Coordinate[] = [];
 
-        for (const ref of options.features) {
-          const entity = useFeatureStore.getState().getFeature(ref.groupId, ref.featureId);
-          if (entity) {
+        if (Array.isArray(features)) {
+          // ID 배열
+          for (const featureId of features) {
+            const entity = useFeatureStore.getState().getFeature(featureId);
+            if (entity) {
+              const coord = getEntityCoordinate(entity);
+              if (coord) coordinates.push(coord);
+            }
+          }
+        } else {
+          // 필터 함수
+          const entities = useFeatureStore.getState().getFeatures(features);
+          for (const entity of entities) {
             const coord = getEntityCoordinate(entity);
             if (coord) coordinates.push(coord);
           }
         }
-
-        if (coordinates.length === 0) return;
-
-        const points = coordinates.map(coordinateToCartesian3);
-        const boundingSphere = BoundingSphere.fromPoints(points);
-        flyToBoundingSphere(boundingSphere, heading, pitch, duration);
-        return;
-      }
-
-      // 그룹 전체
-      if (isZoomToGroup(options)) {
-        const group = useFeatureStore.getState().getGroup(options.groupId);
-        if (!group) return;
-
-        const coordinates: Coordinate[] = [];
-        group.forEach((entity) => {
-          const coord = getEntityCoordinate(entity);
-          if (coord) coordinates.push(coord);
-        });
 
         if (coordinates.length === 0) return;
 

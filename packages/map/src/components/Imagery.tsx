@@ -4,9 +4,7 @@ import {
   ArcGisMapServerImageryProvider,
   IonImageryProvider,
   BingMapsImageryProvider,
-  UrlTemplateImageryProvider,
   WebMapTileServiceImageryProvider,
-  WebMercatorTilingScheme,
   ImageryLayer,
   Credit,
 } from "cesium";
@@ -52,15 +50,6 @@ async function createImageryProvider(
         credit: new Credit("VWorld"),
       });
     }
-
-    case "kakao":
-      return new UrlTemplateImageryProvider({
-        url: "https://map{s}.daumcdn.net/map_2d_hd/2403cok/{z}/{x}/{y}.png",
-        subdomains: ["tile1", "tile2", "tile3", "tile4"],
-        tilingScheme: new WebMercatorTilingScheme(),
-        maximumLevel: 14,
-        credit: "© Kakao",
-      });
 
     default:
       throw new Error(`Unknown imagery provider: ${provider}`);
