@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 
 /** @type {import('@turbo/gen').PlopTypes.NodePlopAPI} */
 module.exports = function generator(plop) {
@@ -208,6 +209,23 @@ module.exports = function generator(plop) {
         type: "copyFile",
         src: "templates/app/public/favicon.ico",
         destPath: "public/favicon.ico",
+      },
+      // Format generated files with prettier
+      function (answers) {
+        const appPath = path.join(rootPath, "apps", answers.name);
+        // Windows 경로 구분자(\)를 POSIX 스타일(/)로 정규화하여 glob 패턴 문제를 방지합니다.
+        const normalizedAppPath = appPath.replace(/\\/g, "/");
+        try {
+          console.log(`\nFormatting generated files with prettier...`);
+          execSync(`pnpm prettier --write "${normalizedAppPath}/**/*"`, {
+            cwd: rootPath,
+            stdio: "inherit",
+          });
+          return `✓ Formatted all files in apps/${answers.name}`;
+        } catch (error) {
+          console.error("Warning: Failed to format files with prettier");
+          return "⚠ Prettier formatting failed, you may need to run 'pnpm lint --fix' manually";
+        }
       },
     ],
   });
