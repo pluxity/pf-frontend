@@ -9,9 +9,6 @@ catalogs:
     '@eslint/js':
       specifier: ^9.39.1
       version: 9.39.1
-    '@hookform/resolvers':
-      specifier: ^5.2.2
-      version: 5.2.2
     '@storybook/addon-essentials':
       specifier: ^8.6.14
       version: 8.6.14
@@ -66,12 +63,6 @@ catalogs:
     react-dom:
       specifier: ^19.2.0
       version: 19.2.0
-    react-hook-form:
-      specifier: ^7.66.1
-      version: 7.68.0
-    react-router-dom:
-      specifier: ^7.1.1
-      version: 7.10.1
     storybook:
       specifier: ^8.6.14
       version: 8.6.14
@@ -87,9 +78,6 @@ catalogs:
     vite:
       specifier: ^6.4.1
       version: 6.4.1
-    zod:
-      specifier: ^3.25.76
-      version: 3.25.76
     zustand:
       specifier: 5.0.9
       version: 5.0.9
@@ -137,70 +125,6 @@ importers:
       typescript-eslint:
         specifier: ^8.48.0
         version: 8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-
-  apps/map-test:
-    dependencies:
-      '@hookform/resolvers':
-        specifier: 'catalog:'
-        version: 5.2.2(react-hook-form@7.68.0(react@19.2.0))
-      '@pf-dev/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@pf-dev/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      react:
-        specifier: 'catalog:'
-        version: 19.2.0
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.2.0(react@19.2.0)
-      react-hook-form:
-        specifier: 'catalog:'
-        version: 7.68.0(react@19.2.0)
-      react-router-dom:
-        specifier: 'catalog:'
-        version: 7.10.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      zod:
-        specifier: 'catalog:'
-        version: 3.25.76
-      zustand:
-        specifier: 'catalog:'
-        version: 5.0.9(@types/react@19.2.7)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
-    devDependencies:
-      '@pf-dev/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint-config
-      '@pf-dev/typescript-config':
-        specifier: workspace:*
-        version: link:../../tooling/typescript-config
-      '@tailwindcss/vite':
-        specifier: 'catalog:'
-        version: 4.1.17(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.7
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.7)
-      '@vitejs/plugin-react':
-        specifier: 'catalog:'
-        version: 5.1.1(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
-      eslint:
-        specifier: 'catalog:'
-        version: 9.39.1(jiti@2.6.1)
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.2
-      tailwindcss:
-        specifier: 'catalog:'
-        version: 4.1.17
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vite:
-        specifier: 'catalog:'
-        version: 6.4.1(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
   packages/api:
     devDependencies:
@@ -819,11 +743,6 @@ packages:
 
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
-
-  '@hookform/resolvers@5.2.2':
-    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
-    peerDependencies:
-      react-hook-form: ^7.55.0
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1666,9 +1585,6 @@ packages:
     resolution: {integrity: sha512-sbStwMHb/MIE29st7rRuMYWqhX1UmLSFzdpyGtUZUXLkFNIuYKblzjQdtiet8bau8sUf21uL1DQ451zuySGmcA==}
     engines: {node: '>=16', pnpm: '>=8'}
 
-  '@standard-schema/utils@0.3.0':
-    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
-
   '@storybook/addon-actions@8.6.14':
     resolution: {integrity: sha512-mDQxylxGGCQSK7tJPkD144J8jWh9IU9ziJMHfB84PKpI/V5ZgqMDnpr2bssTrUaGDqU5e1/z8KcRF+Melhs9pQ==}
     peerDependencies:
@@ -2284,10 +2200,6 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
-
-  cookie@1.1.1:
-    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
-    engines: {node: '>=18'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -3260,12 +3172,6 @@ packages:
     peerDependencies:
       react: ^19.2.0
 
-  react-hook-form@7.68.0:
-    resolution: {integrity: sha512-oNN3fjrZ/Xo40SWlHf1yCjlMK417JxoSJVUXQjGdvdRCU07NTFei1i1f8ApUAts+IVh14e4EdakeLEA+BEAs/Q==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      react: ^16.8.0 || ^17 || ^18 || ^19
-
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
@@ -3291,23 +3197,6 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
-        optional: true
-
-  react-router-dom@7.10.1:
-    resolution: {integrity: sha512-JNBANI6ChGVjA5bwsUIwJk7LHKmqB4JYnYfzFwyp2t12Izva11elds2jx7Yfoup2zssedntwU0oZ5DEmk5Sdaw==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-
-  react-router@7.10.1:
-    resolution: {integrity: sha512-gHL89dRa3kwlUYtRQ+m8NmxGI6CgqN+k4XyGjwcFoQwwCWF6xXpOCUlDovkXClS0d0XJN/5q7kc5W3kiFEd0Yw==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-    peerDependenciesMeta:
-      react-dom:
         optional: true
 
   react-style-singleton@2.2.3:
@@ -3391,9 +3280,6 @@ packages:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
-
-  set-cookie-parser@2.7.2:
-    resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -4214,11 +4100,6 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.68.0(react@19.2.0))':
-    dependencies:
-      '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.68.0(react@19.2.0)
-
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.7':
@@ -5036,8 +4917,6 @@ snapshots:
 
   '@spz-loader/core@0.3.0': {}
 
-  '@standard-schema/utils@0.3.0': {}
-
   '@storybook/addon-actions@8.6.14(storybook@8.6.14(prettier@3.7.4))':
     dependencies:
       '@storybook/global': 5.0.0
@@ -5726,8 +5605,6 @@ snapshots:
   concat-map@0.0.1: {}
 
   convert-source-map@2.0.0: {}
-
-  cookie@1.1.1: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -6641,10 +6518,6 @@ snapshots:
       react: 19.2.0
       scheduler: 0.27.0
 
-  react-hook-form@7.68.0(react@19.2.0):
-    dependencies:
-      react: 19.2.0
-
   react-is@17.0.2: {}
 
   react-refresh@0.18.0: {}
@@ -6667,20 +6540,6 @@ snapshots:
       use-sidecar: 1.1.3(@types/react@19.2.7)(react@19.2.0)
     optionalDependencies:
       '@types/react': 19.2.7
-
-  react-router-dom@7.10.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      react: 19.2.0
-      react-dom: 19.2.0(react@19.2.0)
-      react-router: 7.10.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-
-  react-router@7.10.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      cookie: 1.1.1
-      react: 19.2.0
-      set-cookie-parser: 2.7.2
-    optionalDependencies:
-      react-dom: 19.2.0(react@19.2.0)
 
   react-style-singleton@2.2.3(@types/react@19.2.7)(react@19.2.0):
     dependencies:
@@ -6781,8 +6640,6 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.3: {}
-
-  set-cookie-parser@2.7.2: {}
 
   set-function-length@1.2.2:
     dependencies:
