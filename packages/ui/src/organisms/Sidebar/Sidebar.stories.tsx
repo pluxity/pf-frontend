@@ -4,7 +4,7 @@ import { Sidebar, CollapsibleSidebar } from "./Sidebar";
 import { Avatar, AvatarFallback } from "../../atoms/Avatar";
 
 const meta: Meta<typeof Sidebar> = {
-  title: "Organisms/CollapsibleSidebar",
+  title: "Organisms/Sidebar",
   component: Sidebar,
   parameters: {
     layout: "fullscreen",
