@@ -28,6 +28,10 @@ pnpm-debug.log*
 # Environment
 .env
 .env.local
+.env.development
+.env.staging
+.env.production
+.env.test
 .env.*.local
 
 # Testing
@@ -35,7 +39,6 @@ coverage
 
 # Misc
 *.tsbuildinfo
-apps/map-sample/public/korea.tif
 
 # Claude
 nul
