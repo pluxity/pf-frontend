@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FloatingMenu } from "./FloatingMenu";
+import { Home, Settings, Users, BarChart, Upload, Box, Layers } from "../../atoms/Icon";
+import { Badge } from "../../atoms/Badge";
+import { Slider } from "../../molecules/Slider";
+import { useState } from "react";
 
 const meta: Meta<typeof FloatingMenu> = {
   title: "Organisms/FloatingMenu",
@@ -20,86 +24,277 @@ const meta: Meta<typeof FloatingMenu> = {
 export default meta;
 type Story = StoryObj<typeof FloatingMenu>;
 
-const defaultItems = [
-  { label: "Dashboard", active: true },
-  { label: "Analytics" },
-  { label: "Users" },
-  { label: "Settings" },
-];
+// ============================================================================
+// Composition Pattern Examples
+// ============================================================================
 
-export const Collapsed: Story = {
-  args: {
-    logo: "PLUXITY",
-    items: defaultItems,
-    defaultExpanded: false,
-  },
+export const Default: Story = {
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
-export const Expanded: Story = {
-  args: {
-    logo: "PLUXITY",
-    items: defaultItems,
-    defaultExpanded: true,
-  },
+export const Collapsed: Story = {
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded={false}>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
 export const Compact: Story = {
-  args: {
-    logo: "P",
-    items: defaultItems,
-    compact: true,
-    defaultExpanded: false,
-  },
+  render: () => (
+    <FloatingMenu logo="P" compact defaultExpanded={false}>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
 export const CompactExpanded: Story = {
-  args: {
-    logo: "P",
-    items: defaultItems,
-    compact: true,
-    defaultExpanded: true,
-  },
+  render: () => (
+    <FloatingMenu logo="P" compact defaultExpanded>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
 export const WithCustomLogo: Story = {
-  args: {
-    logo: (
-      <div className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded bg-brand text-xs font-bold text-white">
-          P
+  render: () => (
+    <FloatingMenu
+      logo={
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded bg-brand text-xs font-bold text-white">
+            P
+          </div>
+          <span>PLUXITY</span>
         </div>
-        <span>PLUXITY</span>
-      </div>
-    ),
-    items: defaultItems,
-    defaultExpanded: false,
-  },
+      }
+      defaultExpanded
+    >
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
-export const ManyItems: Story = {
-  args: {
-    logo: "PLUXITY",
-    items: [
-      { label: "Dashboard", active: true },
-      { label: "Analytics" },
-      { label: "Users" },
-      { label: "Products" },
-      { label: "Orders" },
-      { label: "Settings" },
-    ],
-    defaultExpanded: true,
-  },
+export const WithGroups: Story = {
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded>
+      <FloatingMenu.Group label="Main">
+        <FloatingMenu.Item icon={<Home size="sm" />} active>
+          Dashboard
+        </FloatingMenu.Item>
+        <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+      </FloatingMenu.Group>
+
+      <FloatingMenu.Separator />
+
+      <FloatingMenu.Group label="Settings">
+        <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+        <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+      </FloatingMenu.Group>
+    </FloatingMenu>
+  ),
+};
+
+export const WithSeparators: Story = {
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>Analytics</FloatingMenu.Item>
+
+      <FloatingMenu.Separator />
+
+      <FloatingMenu.Item icon={<Users size="sm" />}>Users</FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+
+      <FloatingMenu.Separator />
+
+      <FloatingMenu.Item icon={<Box size="sm" />}>Products</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
+};
+
+export const WithBadges: Story = {
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded>
+      <FloatingMenu.Item icon={<Home size="sm" />} active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />}>
+        <div className="flex w-full items-center justify-between">
+          <span>Analytics</span>
+          <Badge variant="primary" size="sm">
+            New
+          </Badge>
+        </div>
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />}>
+        <div className="flex w-full items-center justify-between">
+          <span>Users</span>
+          <Badge variant="secondary" size="sm">
+            23
+          </Badge>
+        </div>
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
+    </FloatingMenu>
+  ),
 };
 
 export const WithLinks: Story = {
-  args: {
-    logo: "PLUXITY",
-    items: [
-      { label: "Dashboard", href: "/dashboard", active: true },
-      { label: "Analytics", href: "/analytics" },
-      { label: "Users", href: "/users" },
-      { label: "Settings", href: "/settings" },
-    ],
-    defaultExpanded: true,
+  render: () => (
+    <FloatingMenu logo="PLUXITY" defaultExpanded>
+      <FloatingMenu.Item icon={<Home size="sm" />} href="/dashboard" active>
+        Dashboard
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<BarChart size="sm" />} href="/analytics">
+        Analytics
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Users size="sm" />} href="/users">
+        Users
+      </FloatingMenu.Item>
+      <FloatingMenu.Item icon={<Settings size="sm" />} href="/settings">
+        Settings
+      </FloatingMenu.Item>
+    </FloatingMenu>
+  ),
+};
+
+export const WithCustomContent: Story = {
+  render: () => {
+    const [scale, setScale] = useState(1.0);
+
+    return (
+      <FloatingMenu logo="3D Tools" defaultExpanded>
+        <FloatingMenu.Group label="Model">
+          <FloatingMenu.Item icon={<Upload size="sm" />}>Upload GLB</FloatingMenu.Item>
+          <FloatingMenu.Item icon={<Layers size="sm" />} active>
+            Adjust Position
+          </FloatingMenu.Item>
+        </FloatingMenu.Group>
+
+        <FloatingMenu.Separator />
+
+        <FloatingMenu.Group label="Transform">
+          <FloatingMenu.Custom>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#666673]">Scale</span>
+                <span className="font-medium text-[#333340]">{scale.toFixed(2)}</span>
+              </div>
+              <Slider
+                value={[scale]}
+                onValueChange={([value]) => setScale(value)}
+                min={0.1}
+                max={5.0}
+                step={0.1}
+              />
+            </div>
+          </FloatingMenu.Custom>
+        </FloatingMenu.Group>
+
+        <FloatingMenu.Separator />
+
+        <FloatingMenu.Item icon={<Box size="sm" />}>Preview</FloatingMenu.Item>
+      </FloatingMenu>
+    );
+  },
+};
+
+export const ComplexExample: Story = {
+  render: () => {
+    const [quality, setQuality] = useState(75);
+
+    return (
+      <FloatingMenu
+        logo={
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-gradient-to-br from-blue-500 to-purple-500 text-xs font-bold text-white">
+              3D
+            </div>
+            <span>Editor</span>
+          </div>
+        }
+        defaultExpanded
+      >
+        <FloatingMenu.Group label="File">
+          <FloatingMenu.Item icon={<Upload size="sm" />}>
+            <div className="flex w-full items-center justify-between">
+              <span>Import Model</span>
+              <Badge variant="success" size="sm">
+                GLB
+              </Badge>
+            </div>
+          </FloatingMenu.Item>
+          <FloatingMenu.Item icon={<Box size="sm" />}>Export</FloatingMenu.Item>
+        </FloatingMenu.Group>
+
+        <FloatingMenu.Separator />
+
+        <FloatingMenu.Group label="Settings">
+          <FloatingMenu.Item icon={<Layers size="sm" />} active>
+            Layers
+          </FloatingMenu.Item>
+
+          <FloatingMenu.Custom>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#666673]">Quality</span>
+                  <span className="font-medium text-[#333340]">{quality}%</span>
+                </div>
+                <Slider
+                  value={[quality]}
+                  onValueChange={([value]) => setQuality(value)}
+                  min={0}
+                  max={100}
+                  step={5}
+                />
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg bg-[#F5F5F7] p-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded bg-yellow-500 text-xs">
+                  ⚠
+                </div>
+                <div className="text-xs text-[#666673]">High quality uses more memory</div>
+              </div>
+            </div>
+          </FloatingMenu.Custom>
+        </FloatingMenu.Group>
+
+        <FloatingMenu.Separator />
+
+        <FloatingMenu.Item icon={<Settings size="sm" />}>Preferences</FloatingMenu.Item>
+      </FloatingMenu>
+    );
   },
 };
