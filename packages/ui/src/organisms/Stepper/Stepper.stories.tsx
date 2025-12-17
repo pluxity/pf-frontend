@@ -26,82 +26,86 @@ const meta = {
 export default meta;
 type Story = StoryObj;
 
-const defaultSteps = [
-  { title: "Account", description: "Create your account" },
-  { title: "Profile", description: "Set up your profile" },
-  { title: "Review", description: "Review and confirm" },
-];
+// ============================================================================
+// Composition Pattern Examples
+// ============================================================================
 
 export const Default: Story = {
-  args: {
-    steps: defaultSteps,
-    currentStep: 1,
-  },
+  render: () => (
+    <Stepper currentStep={1}>
+      <Stepper.Step title="Account" description="Create your account" />
+      <Stepper.Step title="Profile" description="Set up your profile" />
+      <Stepper.Step title="Review" description="Review and confirm" />
+    </Stepper>
+  ),
 };
 
 export const Horizontal: Story = {
-  args: {
-    steps: defaultSteps,
-    currentStep: 1,
-    orientation: "horizontal",
-  },
+  render: () => (
+    <Stepper currentStep={1} orientation="horizontal">
+      <Stepper.Step title="Account" description="Create your account" />
+      <Stepper.Step title="Profile" description="Set up your profile" />
+      <Stepper.Step title="Review" description="Review and confirm" />
+    </Stepper>
+  ),
 };
 
 export const Vertical: Story = {
-  args: {
-    steps: defaultSteps,
-    currentStep: 1,
-    orientation: "vertical",
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 300 }}>
-        <Story />
-      </div>
-    ),
-  ],
+  render: () => (
+    <div style={{ width: 300 }}>
+      <Stepper currentStep={1} orientation="vertical">
+        <Stepper.Step title="Account" description="Create your account" />
+        <Stepper.Step title="Profile" description="Set up your profile" />
+        <Stepper.Step title="Review" description="Review and confirm" />
+      </Stepper>
+    </div>
+  ),
 };
 
 export const FirstStep: Story = {
-  args: {
-    steps: defaultSteps,
-    currentStep: 0,
-  },
+  render: () => (
+    <Stepper currentStep={0}>
+      <Stepper.Step title="Account" description="Create your account" />
+      <Stepper.Step title="Profile" description="Set up your profile" />
+      <Stepper.Step title="Review" description="Review and confirm" />
+    </Stepper>
+  ),
 };
 
 export const LastStep: Story = {
-  args: {
-    steps: defaultSteps,
-    currentStep: 2,
-  },
+  render: () => (
+    <Stepper currentStep={2}>
+      <Stepper.Step title="Account" description="Create your account" />
+      <Stepper.Step title="Profile" description="Set up your profile" />
+      <Stepper.Step title="Review" description="Review and confirm" />
+    </Stepper>
+  ),
 };
 
 export const ManySteps: Story = {
-  args: {
-    steps: [
-      { title: "Cart", description: "Review items" },
-      { title: "Shipping", description: "Enter address" },
-      { title: "Payment", description: "Payment method" },
-      { title: "Review", description: "Review order" },
-      { title: "Confirm", description: "Place order" },
-    ],
-    currentStep: 2,
-  },
+  render: () => (
+    <Stepper currentStep={2}>
+      <Stepper.Step title="Cart" description="Review items" />
+      <Stepper.Step title="Shipping" description="Enter address" />
+      <Stepper.Step title="Payment" description="Payment method" />
+      <Stepper.Step title="Review" description="Review order" />
+      <Stepper.Step title="Confirm" description="Place order" />
+    </Stepper>
+  ),
 };
 
 export const Interactive: Story = {
   render: () => {
     const [step, setStep] = useState(0);
-    const steps = [
-      { title: "Step 1", description: "First step" },
-      { title: "Step 2", description: "Second step" },
-      { title: "Step 3", description: "Third step" },
-      { title: "Step 4", description: "Final step" },
-    ];
 
     return (
       <div className="space-y-8">
-        <Stepper steps={steps} currentStep={step} />
+        <Stepper currentStep={step}>
+          <Stepper.Step title="Step 1" description="First step" />
+          <Stepper.Step title="Step 2" description="Second step" />
+          <Stepper.Step title="Step 3" description="Third step" />
+          <Stepper.Step title="Step 4" description="Final step" />
+        </Stepper>
         <div className="flex justify-center gap-2">
           <Button
             variant="outline"
@@ -110,14 +114,36 @@ export const Interactive: Story = {
           >
             Previous
           </Button>
-          <Button
-            onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
-            disabled={step === steps.length - 1}
-          >
+          <Button onClick={() => setStep((s) => Math.min(3, s + 1))} disabled={step === 3}>
             Next
           </Button>
         </div>
       </div>
     );
   },
+};
+
+export const VerticalManySteps: Story = {
+  render: () => (
+    <div style={{ width: 350 }}>
+      <Stepper currentStep={2} orientation="vertical">
+        <Stepper.Step title="Registration" description="Create your account" />
+        <Stepper.Step title="Verification" description="Verify your email" />
+        <Stepper.Step title="Profile Setup" description="Complete your profile" />
+        <Stepper.Step title="Preferences" description="Set your preferences" />
+        <Stepper.Step title="Complete" description="All set!" />
+      </Stepper>
+    </div>
+  ),
+};
+
+export const MinimalLabels: Story = {
+  render: () => (
+    <Stepper currentStep={1}>
+      <Stepper.Step title="1" />
+      <Stepper.Step title="2" />
+      <Stepper.Step title="3" />
+      <Stepper.Step title="4" />
+    </Stepper>
+  ),
 };
