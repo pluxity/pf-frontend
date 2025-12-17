@@ -1,17 +1,28 @@
-import { type Ref } from "react";
+import { Children } from "react";
 import { cn } from "../../utils";
 
-export interface TimelineItemProps {
+export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Children (composition pattern) */
+  children?: React.ReactNode;
+}
+
+export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Item title */
   title: string;
+  /** Item description */
   description?: string;
+  /** Time label */
   time?: string;
+  /** Icon element */
   icon?: React.ReactNode;
+  /** Item variant */
   variant?: "default" | "success" | "warning" | "error";
 }
 
-export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
-  items: TimelineItemProps[];
-  ref?: Ref<HTMLDivElement>;
+export interface TimelineCustomProps {
+  /** Custom content */
+  children: React.ReactNode;
+  className?: string;
 }
 
 const variantStyles = {
@@ -21,26 +32,17 @@ const variantStyles = {
   error: "bg-error-brand",
 };
 
-interface TimelineItemComponentProps extends TimelineItemProps {
-  isLast?: boolean;
-  ref?: Ref<HTMLDivElement>;
-}
-
 function TimelineItem({
   title,
   description,
   time,
   icon,
   variant = "default",
-  isLast = false,
-  ref,
-}: TimelineItemComponentProps) {
+  className,
+  ...props
+}: TimelineItemProps) {
   return (
-    <div ref={ref} className="relative flex gap-4 pb-8 last:pb-0">
-      {!isLast && (
-        <div className="absolute left-[11px] top-6 h-[calc(100%-24px)] w-0.5 bg-[#E6E6E8]" />
-      )}
-
+    <div className={cn("relative flex gap-4 pb-8 last:pb-0", className)} {...props}>
       <div
         className={cn(
           "relative z-10 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full",
@@ -65,14 +67,22 @@ function TimelineItem({
   );
 }
 
-function Timeline({ items, className, ref, ...props }: TimelineProps) {
+function TimelineCustom({ children, className }: TimelineCustomProps) {
+  return <div className={cn("relative flex gap-4 pb-8 last:pb-0", className)}>{children}</div>;
+}
+
+function Timeline({ children, className, ...props }: TimelineProps) {
+  const childrenArray = Children.toArray(children);
+
   return (
-    <div ref={ref} className={cn("space-y-0", className)} {...props}>
-      {items.map((item, index) => (
-        <TimelineItem key={index} {...item} isLast={index === items.length - 1} />
-      ))}
+    <div className={cn("relative space-y-0", className)} {...props}>
+      <div className="absolute left-[11px] top-6 h-[calc(100%-48px)] w-0.5 bg-[#E6E6E8]" />
+      {childrenArray}
     </div>
   );
 }
 
-export { Timeline, TimelineItem };
+Timeline.Item = TimelineItem;
+Timeline.Custom = TimelineCustom;
+
+export { Timeline };
