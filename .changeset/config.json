@@ -7,7 +7,7 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@pf-dev/eslint-config", "@pf-dev/typescript-config"],
+  "ignore": [],
   "privatePackages": {
     "version": true,
     "tag": true
