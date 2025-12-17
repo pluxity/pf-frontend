@@ -1,14 +1,9 @@
-import { Children, type Ref } from "react";
+import { Children } from "react";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Types
-// ============================================================================
 
 export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Children (composition pattern) */
   children?: React.ReactNode;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -22,7 +17,6 @@ export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> 
   icon?: React.ReactNode;
   /** Item variant */
   variant?: "default" | "success" | "warning" | "error";
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface TimelineCustomProps {
@@ -31,10 +25,6 @@ export interface TimelineCustomProps {
   className?: string;
 }
 
-// ============================================================================
-// Constants
-// ============================================================================
-
 const variantStyles = {
   default: "bg-brand",
   success: "bg-success-brand",
@@ -42,23 +32,17 @@ const variantStyles = {
   error: "bg-error-brand",
 };
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// Timeline.Item
-function Item({
+function TimelineItem({
   title,
   description,
   time,
   icon,
   variant = "default",
   className,
-  ref,
   ...props
 }: TimelineItemProps) {
   return (
-    <div ref={ref} className={cn("relative flex gap-4 pb-8 last:pb-0", className)} {...props}>
+    <div className={cn("relative flex gap-4 pb-8 last:pb-0", className)} {...props}>
       <div
         className={cn(
           "relative z-10 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full",
@@ -83,26 +67,22 @@ function Item({
   );
 }
 
-// Timeline.Custom
-function Custom({ children, className }: TimelineCustomProps) {
+function TimelineCustom({ children, className }: TimelineCustomProps) {
   return <div className={cn("relative flex gap-4 pb-8 last:pb-0", className)}>{children}</div>;
 }
 
-// Main component
-function Timeline({ children, className, ref, ...props }: TimelineProps) {
+function Timeline({ children, className, ...props }: TimelineProps) {
   const childrenArray = Children.toArray(children);
 
   return (
-    <div ref={ref} className={cn("relative space-y-0", className)} {...props}>
-      {/* Connecting line */}
+    <div className={cn("relative space-y-0", className)} {...props}>
       <div className="absolute left-[11px] top-6 h-[calc(100%-48px)] w-0.5 bg-[#E6E6E8]" />
       {childrenArray}
     </div>
   );
 }
 
-// Attach sub-components
-Timeline.Item = Item;
-Timeline.Custom = Custom;
+Timeline.Item = TimelineItem;
+Timeline.Custom = TimelineCustom;
 
 export { Timeline };

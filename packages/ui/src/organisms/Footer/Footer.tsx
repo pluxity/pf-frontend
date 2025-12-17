@@ -1,4 +1,3 @@
-import { type Ref } from "react";
 import {
   Twitter,
   Github,
@@ -9,10 +8,6 @@ import {
   type IconProps,
 } from "../../atoms/Icon";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Types
-// ============================================================================
 
 export type SocialPlatform =
   | "twitter"
@@ -25,7 +20,6 @@ export type SocialPlatform =
 export interface FooterProps extends React.HTMLAttributes<HTMLElement> {
   /** Children (composition pattern) */
   children?: React.ReactNode;
-  ref?: Ref<HTMLElement>;
 }
 
 export interface FooterBrandProps {
@@ -81,10 +75,6 @@ export interface FooterCustomProps {
   className?: string;
 }
 
-// ============================================================================
-// Constants
-// ============================================================================
-
 const socialIcons: Record<SocialPlatform, React.ComponentType<IconProps>> = {
   twitter: Twitter,
   github: Github,
@@ -94,12 +84,13 @@ const socialIcons: Record<SocialPlatform, React.ComponentType<IconProps>> = {
   instagram: Instagram,
 };
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// Footer.Brand
-function Brand({ logo, logoText = "PLUXITY", tagline, children, className }: FooterBrandProps) {
+function FooterBrand({
+  logo,
+  logoText = "PLUXITY",
+  tagline,
+  children,
+  className,
+}: FooterBrandProps) {
   return (
     <div className={cn("lg:col-span-2", className)}>
       <div className="mb-4 flex items-center gap-2">
@@ -111,8 +102,7 @@ function Brand({ logo, logoText = "PLUXITY", tagline, children, className }: Foo
   );
 }
 
-// Footer.Column
-function Column({ title, children, className }: FooterColumnProps) {
+function FooterColumn({ title, children, className }: FooterColumnProps) {
   return (
     <div className={className}>
       <h4 className="mb-4 text-sm font-bold text-[#333340]">{title}</h4>
@@ -121,8 +111,7 @@ function Column({ title, children, className }: FooterColumnProps) {
   );
 }
 
-// Footer.Link
-function Link({ children, href, className, ...props }: FooterLinkProps) {
+function FooterLink({ children, href, className, ...props }: FooterLinkProps) {
   return (
     <li>
       <a
@@ -136,13 +125,11 @@ function Link({ children, href, className, ...props }: FooterLinkProps) {
   );
 }
 
-// Footer.SocialLinks
-function SocialLinks({ children, className }: FooterSocialLinksProps) {
+function FooterSocialLinks({ children, className }: FooterSocialLinksProps) {
   return <div className={cn("flex gap-4", className)}>{children}</div>;
 }
 
-// Footer.SocialLink
-function SocialLink({ platform, href, className }: FooterSocialLinkProps) {
+function FooterSocialLink({ platform, href, className }: FooterSocialLinkProps) {
   const Icon = socialIcons[platform];
   return (
     <a
@@ -156,8 +143,7 @@ function SocialLink({ platform, href, className }: FooterSocialLinkProps) {
   );
 }
 
-// Footer.Copyright
-function Copyright({ children, className }: FooterCopyrightProps) {
+function FooterCopyright({ children, className }: FooterCopyrightProps) {
   return (
     <div className={cn("mt-12 border-t border-[#E6E6E8] pt-8", className)}>
       <p className="text-center text-sm text-[#808088]">{children}</p>
@@ -165,15 +151,13 @@ function Copyright({ children, className }: FooterCopyrightProps) {
   );
 }
 
-// Footer.Custom
-function Custom({ children, className }: FooterCustomProps) {
+function FooterCustom({ children, className }: FooterCustomProps) {
   return <div className={className}>{children}</div>;
 }
 
-// Main component
-function Footer({ className, children, ref, ...props }: FooterProps) {
+function Footer({ className, children, ...props }: FooterProps) {
   return (
-    <footer ref={ref} className={cn("border-t border-[#E6E6E8] bg-white", className)} {...props}>
+    <footer className={cn("border-t border-[#E6E6E8] bg-white", className)} {...props}>
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">{children}</div>
       </div>
@@ -181,13 +165,12 @@ function Footer({ className, children, ref, ...props }: FooterProps) {
   );
 }
 
-// Attach sub-components
-Footer.Brand = Brand;
-Footer.Column = Column;
-Footer.Link = Link;
-Footer.SocialLinks = SocialLinks;
-Footer.SocialLink = SocialLink;
-Footer.Copyright = Copyright;
-Footer.Custom = Custom;
+Footer.Brand = FooterBrand;
+Footer.Column = FooterColumn;
+Footer.Link = FooterLink;
+Footer.SocialLinks = FooterSocialLinks;
+Footer.SocialLink = FooterSocialLink;
+Footer.Copyright = FooterCopyright;
+Footer.Custom = FooterCustom;
 
 export { Footer };

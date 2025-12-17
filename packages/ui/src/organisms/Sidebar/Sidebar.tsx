@@ -1,10 +1,6 @@
-import { useState, createContext, useContext, type Ref } from "react";
+import { useState, createContext, useContext } from "react";
 import { ChevronDown, ChevronRight, ChevronLeft, Menu } from "../../atoms/Icon";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Icons
-// ============================================================================
 
 const ToggleIcon = ({ className }: { className?: string }) => (
   <svg
@@ -29,13 +25,11 @@ const ToggleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// ============================================================================
-// Context
-// ============================================================================
-
 interface SidebarContextValue {
   collapsed: boolean;
   handleToggleCollapse: () => void;
+  ariaLabelCollapse: string;
+  ariaLabelExpand: string;
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null);
@@ -48,10 +42,6 @@ const useSidebarContext = () => {
   return context;
 };
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   /** Children (composition pattern) */
   children?: React.ReactNode;
@@ -61,7 +51,10 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   collapsed?: boolean;
   /** Callback when collapsed state changes */
   onCollapsedChange?: (collapsed: boolean) => void;
-  ref?: Ref<HTMLElement>;
+  /** Aria label for collapse button */
+  ariaLabelCollapse?: string;
+  /** Aria label for expand button */
+  ariaLabelExpand?: string;
 }
 
 export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -71,13 +64,11 @@ export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement>
   logo?: React.ReactNode;
   /** Additional content (e.g., CollapseButton) */
   children?: React.ReactNode;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface SidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Footer content */
   children: React.ReactNode;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface SidebarCollapseButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
@@ -85,7 +76,6 @@ export interface SidebarCollapseButtonProps extends React.HTMLAttributes<HTMLBut
   children?: React.ReactNode;
   /** Show only icon (FloatingMenu style for header) */
   iconOnly?: boolean;
-  ref?: Ref<HTMLButtonElement>;
 }
 
 export interface SidebarItemProps extends React.HTMLAttributes<HTMLElement> {
@@ -101,7 +91,6 @@ export interface SidebarItemProps extends React.HTMLAttributes<HTMLElement> {
   onClick?: () => void;
   /** Default expanded state for nested items */
   defaultExpanded?: boolean;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface SidebarSectionProps {
@@ -110,7 +99,6 @@ export interface SidebarSectionProps {
   /** Section items */
   children: React.ReactNode;
   className?: string;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface SidebarSeparatorProps {
@@ -123,12 +111,7 @@ export interface SidebarCustomProps {
   className?: string;
 }
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// Sidebar.Item
-function Item({
+function SidebarItem({
   children,
   icon,
   href,
@@ -136,7 +119,6 @@ function Item({
   onClick,
   className,
   defaultExpanded = false,
-  ref,
   ...props
 }: SidebarItemProps) {
   const { collapsed } = useSidebarContext();
@@ -197,9 +179,9 @@ function Item({
   const label = Array.isArray(children) ? children.find((c) => typeof c === "string") : children;
 
   return (
-    <div ref={ref} {...props}>
+    <div>
       {href ? (
-        <a href={href} className={itemClasses} onClick={handleClick}>
+        <a href={href} className={itemClasses} onClick={handleClick} {...props}>
           {active && !collapsed && (
             <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
@@ -211,7 +193,7 @@ function Item({
           )}
         </a>
       ) : (
-        <button type="button" className={itemClasses} onClick={handleClick}>
+        <button type="button" className={itemClasses} onClick={handleClick} {...props}>
           {active && !collapsed && (
             <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
@@ -230,12 +212,11 @@ function Item({
   );
 }
 
-// Sidebar.Section
-function Section({ label, children, className, ref }: SidebarSectionProps) {
+function SidebarSection({ label, children, className }: SidebarSectionProps) {
   const { collapsed } = useSidebarContext();
 
   return (
-    <div ref={ref} className={cn("space-y-1", className)}>
+    <div className={cn("space-y-1", className)}>
       {label && !collapsed && (
         <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#808088]">
           {label}
@@ -247,23 +228,19 @@ function Section({ label, children, className, ref }: SidebarSectionProps) {
   );
 }
 
-// Sidebar.Separator
-function Separator({ className }: SidebarSeparatorProps) {
+function SidebarSeparator({ className }: SidebarSeparatorProps) {
   return <div className={cn("my-2 h-px bg-[#E6E6E8]", className)} />;
 }
 
-// Sidebar.Custom
-function Custom({ children, className }: SidebarCustomProps) {
+function SidebarCustom({ children, className }: SidebarCustomProps) {
   return <div className={cn("px-3 py-2", className)}>{children}</div>;
 }
 
-// Sidebar.Header
-function Header({ title, logo, children, className, ref, ...props }: SidebarHeaderProps) {
+function SidebarHeader({ title, logo, children, className, ...props }: SidebarHeaderProps) {
   const { collapsed } = useSidebarContext();
 
   return (
     <div
-      ref={ref}
       className={cn(
         "flex items-center border-b border-[#E6E6E8]",
         collapsed ? "flex-col justify-center gap-3 py-3 px-2" : "h-14 justify-between px-4",
@@ -311,13 +288,11 @@ function Header({ title, logo, children, className, ref, ...props }: SidebarHead
   );
 }
 
-// Sidebar.Footer
-function Footer({ children, className, ref, ...props }: SidebarFooterProps) {
+function SidebarFooter({ children, className, ...props }: SidebarFooterProps) {
   const { collapsed } = useSidebarContext();
 
   return (
     <div
-      ref={ref}
       className={cn("border-t border-[#E6E6E8] p-3", collapsed && "flex justify-center", className)}
       {...props}
     >
@@ -326,35 +301,26 @@ function Footer({ children, className, ref, ...props }: SidebarFooterProps) {
   );
 }
 
-// Sidebar.CollapseButton
-function CollapseButton({
+function SidebarCollapseButton({
   children,
   iconOnly = false,
   className,
-  ref,
   ...props
 }: SidebarCollapseButtonProps) {
-  const { collapsed, handleToggleCollapse } = useSidebarContext();
+  const { collapsed, handleToggleCollapse, ariaLabelCollapse, ariaLabelExpand } =
+    useSidebarContext();
 
   if (children) {
     return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={handleToggleCollapse}
-        className={className}
-        {...props}
-      >
+      <button type="button" onClick={handleToggleCollapse} className={className} {...props}>
         {children}
       </button>
     );
   }
 
-  // iconOnly mode - FloatingMenu style (for header)
   if (iconOnly) {
     return (
       <button
-        ref={ref}
         type="button"
         onClick={handleToggleCollapse}
         className={cn(
@@ -362,7 +328,7 @@ function CollapseButton({
           className
         )}
         aria-expanded={!collapsed}
-        aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"}
+        aria-label={collapsed ? ariaLabelExpand : ariaLabelCollapse}
         {...props}
       >
         <ToggleIcon className="h-5 w-6" />
@@ -370,10 +336,8 @@ function CollapseButton({
     );
   }
 
-  // Default mode - Text button with icon (for footer)
   return (
     <button
-      ref={ref}
       type="button"
       onClick={handleToggleCollapse}
       className={cn(
@@ -395,14 +359,14 @@ function CollapseButton({
   );
 }
 
-// Main component
 function Sidebar({
   className,
   children,
   defaultCollapsed = false,
   collapsed: controlledCollapsed,
   onCollapsedChange,
-  ref,
+  ariaLabelCollapse = "사이드바 접기",
+  ariaLabelExpand = "사이드바 펼치기",
   ...props
 }: SidebarProps) {
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
@@ -417,12 +381,16 @@ function Sidebar({
     onCollapsedChange?.(newCollapsed);
   };
 
-  const contextValue: SidebarContextValue = { collapsed, handleToggleCollapse };
+  const contextValue: SidebarContextValue = {
+    collapsed,
+    handleToggleCollapse,
+    ariaLabelCollapse,
+    ariaLabelExpand,
+  };
 
   return (
     <SidebarContext.Provider value={contextValue}>
       <aside
-        ref={ref}
         className={cn(
           "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300",
           collapsed ? "w-16" : "w-[280px]",
@@ -436,13 +404,12 @@ function Sidebar({
   );
 }
 
-// Attach sub-components
-Sidebar.Header = Header;
-Sidebar.Item = Item;
-Sidebar.Section = Section;
-Sidebar.Separator = Separator;
-Sidebar.Custom = Custom;
-Sidebar.Footer = Footer;
-Sidebar.CollapseButton = CollapseButton;
+Sidebar.Header = SidebarHeader;
+Sidebar.Item = SidebarItem;
+Sidebar.Section = SidebarSection;
+Sidebar.Separator = SidebarSeparator;
+Sidebar.Custom = SidebarCustom;
+Sidebar.Footer = SidebarFooter;
+Sidebar.CollapseButton = SidebarCollapseButton;
 
 export { Sidebar, useSidebarContext };

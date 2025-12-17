@@ -1,9 +1,4 @@
-import { type Ref } from "react";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Types
-// ============================================================================
 
 export interface NavigationBarProps extends React.HTMLAttributes<HTMLElement> {
   /** Logo element (or use logoText for default) */
@@ -14,7 +9,6 @@ export interface NavigationBarProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
   /** Actions element (buttons, user menu, etc) */
   actions?: React.ReactNode;
-  ref?: Ref<HTMLElement>;
 }
 
 export interface NavigationBarItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
@@ -40,12 +34,14 @@ export interface NavigationBarActionsProps {
   className?: string;
 }
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// NavigationBar.Item
-function Item({ children, href, active, onClick, className, ...props }: NavigationBarItemProps) {
+function NavigationBarItem({
+  children,
+  href,
+  active,
+  onClick,
+  className,
+  ...props
+}: NavigationBarItemProps) {
   return (
     <a
       href={href}
@@ -62,29 +58,24 @@ function Item({ children, href, active, onClick, className, ...props }: Navigati
   );
 }
 
-// NavigationBar.Logo
-function Logo({ children, className }: NavigationBarLogoProps) {
+function NavigationBarLogo({ children, className }: NavigationBarLogoProps) {
   return <div className={cn("flex items-center", className)}>{children}</div>;
 }
 
-// NavigationBar.Actions
-function Actions({ children, className }: NavigationBarActionsProps) {
+function NavigationBarActions({ children, className }: NavigationBarActionsProps) {
   return <div className={cn("flex items-center gap-3", className)}>{children}</div>;
 }
 
-// Main component
 function NavigationBar({
   className,
   logo,
   logoText = "Logo",
   children,
   actions,
-  ref,
   ...props
 }: NavigationBarProps) {
   return (
     <nav
-      ref={ref}
       className={cn(
         "flex h-16 w-full items-center justify-between border-b border-[#E6E6E8] bg-white px-6",
         className
@@ -102,9 +93,8 @@ function NavigationBar({
   );
 }
 
-// Attach sub-components
-NavigationBar.Item = Item;
-NavigationBar.Logo = Logo;
-NavigationBar.Actions = Actions;
+NavigationBar.Item = NavigationBarItem;
+NavigationBar.Logo = NavigationBarLogo;
+NavigationBar.Actions = NavigationBarActions;
 
 export { NavigationBar };

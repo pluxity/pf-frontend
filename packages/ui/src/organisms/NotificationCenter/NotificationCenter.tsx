@@ -1,9 +1,5 @@
-import { createContext, useContext, type Ref } from "react";
+import { createContext, useContext } from "react";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Context
-// ============================================================================
 
 interface NotificationCenterContextValue {
   onNotificationClick?: (id: string) => void;
@@ -21,10 +17,6 @@ const useNotificationCenterContext = () => {
   return context;
 };
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export interface NotificationCenterProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Children (composition pattern) */
   children?: React.ReactNode;
@@ -32,7 +24,6 @@ export interface NotificationCenterProps extends React.HTMLAttributes<HTMLDivEle
   onNotificationClick?: (id: string) => void;
   /** Maximum height of notification list */
   maxHeight?: number | string;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface NotificationCenterHeaderProps {
@@ -70,7 +61,6 @@ export interface NotificationCenterItemProps extends React.HTMLAttributes<HTMLDi
   read?: boolean;
   /** Click handler */
   onClick?: () => void;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface NotificationCenterEmptyProps {
@@ -85,12 +75,7 @@ export interface NotificationCenterCustomProps {
   className?: string;
 }
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// NotificationCenter.Header
-function Header({ children, className }: NotificationCenterHeaderProps) {
+function NotificationCenterHeader({ children, className }: NotificationCenterHeaderProps) {
   return (
     <div className={cn("flex items-center justify-between px-5 py-4", className)}>
       <div className="flex items-center gap-2">
@@ -101,8 +86,7 @@ function Header({ children, className }: NotificationCenterHeaderProps) {
   );
 }
 
-// NotificationCenter.UnreadBadge
-function UnreadBadge({ count, className }: NotificationCenterUnreadBadgeProps) {
+function NotificationCenterUnreadBadge({ count, className }: NotificationCenterUnreadBadgeProps) {
   if (count === 0) return null;
   return (
     <span
@@ -116,8 +100,7 @@ function UnreadBadge({ count, className }: NotificationCenterUnreadBadgeProps) {
   );
 }
 
-// NotificationCenter.MarkAllRead
-function MarkAllRead({
+function NotificationCenterMarkAllRead({
   onClick,
   children = "Mark all read",
   className,
@@ -133,8 +116,7 @@ function MarkAllRead({
   );
 }
 
-// NotificationCenter.Item
-function Item({
+function NotificationCenterItem({
   id,
   icon,
   title,
@@ -143,7 +125,6 @@ function Item({
   read = false,
   onClick,
   className,
-  ref,
   ...props
 }: NotificationCenterItemProps) {
   const { onNotificationClick } = useNotificationCenterContext();
@@ -155,7 +136,6 @@ function Item({
 
   return (
     <div
-      ref={ref}
       role="button"
       tabIndex={0}
       onClick={handleClick}
@@ -190,8 +170,10 @@ function Item({
   );
 }
 
-// NotificationCenter.Empty
-function Empty({ children = "No notifications", className }: NotificationCenterEmptyProps) {
+function NotificationCenterEmpty({
+  children = "No notifications",
+  className,
+}: NotificationCenterEmptyProps) {
   return (
     <div className={cn("flex h-32 items-center justify-center text-sm text-[#808088]", className)}>
       {children}
@@ -199,18 +181,15 @@ function Empty({ children = "No notifications", className }: NotificationCenterE
   );
 }
 
-// NotificationCenter.Custom
-function Custom({ children, className }: NotificationCenterCustomProps) {
+function NotificationCenterCustom({ children, className }: NotificationCenterCustomProps) {
   return <div className={className}>{children}</div>;
 }
 
-// Main component
 function NotificationCenter({
   children,
   onNotificationClick,
   maxHeight = 400,
   className,
-  ref,
   ...props
 }: NotificationCenterProps) {
   const contextValue: NotificationCenterContextValue = {
@@ -220,7 +199,6 @@ function NotificationCenter({
   return (
     <NotificationCenterContext.Provider value={contextValue}>
       <div
-        ref={ref}
         className={cn(
           "w-[380px] overflow-hidden rounded-xl border border-[#E6E6E8] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.10)]",
           className
@@ -238,12 +216,11 @@ function NotificationCenter({
   );
 }
 
-// Attach sub-components
-NotificationCenter.Header = Header;
-NotificationCenter.UnreadBadge = UnreadBadge;
-NotificationCenter.MarkAllRead = MarkAllRead;
-NotificationCenter.Item = Item;
-NotificationCenter.Empty = Empty;
-NotificationCenter.Custom = Custom;
+NotificationCenter.Header = NotificationCenterHeader;
+NotificationCenter.UnreadBadge = NotificationCenterUnreadBadge;
+NotificationCenter.MarkAllRead = NotificationCenterMarkAllRead;
+NotificationCenter.Item = NotificationCenterItem;
+NotificationCenter.Empty = NotificationCenterEmpty;
+NotificationCenter.Custom = NotificationCenterCustom;
 
 export { NotificationCenter, useNotificationCenterContext };

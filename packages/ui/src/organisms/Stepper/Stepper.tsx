@@ -1,10 +1,6 @@
-import { Children, type Ref, createContext, useContext } from "react";
+import { Children, createContext, useContext } from "react";
 import { Check } from "../../atoms/Icon";
 import { cn } from "../../utils";
-
-// ============================================================================
-// Context
-// ============================================================================
 
 interface StepperContextValue {
   currentStep: number;
@@ -22,10 +18,6 @@ const useStepperContext = () => {
   return context;
 };
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Children (composition pattern) */
   children?: React.ReactNode;
@@ -33,7 +25,6 @@ export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   currentStep: number;
   /** Stepper orientation */
   orientation?: "horizontal" | "vertical";
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface StepperStepProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,7 +32,6 @@ export interface StepperStepProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   /** Step description */
   description?: string;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface StepperCustomProps {
@@ -50,12 +40,7 @@ export interface StepperCustomProps {
   className?: string;
 }
 
-// ============================================================================
-// Components
-// ============================================================================
-
-// Stepper.Custom
-function Custom({ children, className }: StepperCustomProps) {
+function StepperCustom({ children, className }: StepperCustomProps) {
   const { orientation } = useStepperContext();
   const isHorizontal = orientation === "horizontal";
 
@@ -72,13 +57,11 @@ function Custom({ children, className }: StepperCustomProps) {
   );
 }
 
-// Main component
 function Stepper({
   children,
   currentStep,
   orientation = "horizontal",
   className,
-  ref,
   ...props
 }: StepperProps) {
   const isHorizontal = orientation === "horizontal";
@@ -94,12 +77,10 @@ function Stepper({
   return (
     <StepperContext.Provider value={contextValue}>
       <div
-        ref={ref}
         className={cn("flex", isHorizontal ? "flex-row items-start" : "flex-col", className)}
         {...props}
       >
         {childrenArray.map((child, index) => {
-          // Clone child and inject stepIndex
           if (child && typeof child === "object" && "type" in child) {
             return (
               <StepContext.Provider key={index} value={index}>
@@ -114,10 +95,8 @@ function Stepper({
   );
 }
 
-// Step index context (internal use)
 const StepContext = createContext<number>(0);
 
-// Update Step component to use StepContext
 function StepWithContext(props: StepperStepProps) {
   const stepIndex = useContext(StepContext);
   const { currentStep, totalSteps, orientation } = useStepperContext();
@@ -127,11 +106,10 @@ function StepWithContext(props: StepperStepProps) {
   const isLast = stepIndex === totalSteps - 1;
   const isHorizontal = orientation === "horizontal";
 
-  const { title, description, className, ref, ...rest } = props;
+  const { title, description, className, ...rest } = props;
 
   return (
     <div
-      ref={ref}
       className={cn(
         "flex",
         isHorizontal ? "flex-1 flex-col items-center" : "flex-row gap-4",
@@ -179,8 +157,7 @@ function StepWithContext(props: StepperStepProps) {
   );
 }
 
-// Attach sub-components
 Stepper.Step = StepWithContext;
-Stepper.Custom = Custom;
+Stepper.Custom = StepperCustom;
 
 export { Stepper, useStepperContext };

@@ -1,10 +1,6 @@
 import { useState, createContext, useContext, type Ref } from "react";
 import { cn } from "../../utils";
 
-// ============================================================================
-// Context
-// ============================================================================
-
 interface FloatingMenuContextValue {
   expanded: boolean;
 }
@@ -19,10 +15,6 @@ const useFloatingMenuContext = () => {
   return context;
 };
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export interface FloatingMenuProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Logo text or element */
   logo?: React.ReactNode;
@@ -36,6 +28,10 @@ export interface FloatingMenuProps extends React.HTMLAttributes<HTMLDivElement> 
   expanded?: boolean;
   /** Callback when expanded state changes */
   onExpandedChange?: (expanded: boolean) => void;
+  /** Aria label for collapse button */
+  ariaLabelCollapse?: string;
+  /** Aria label for expand button */
+  ariaLabelExpand?: string;
   ref?: Ref<HTMLDivElement>;
 }
 
@@ -50,7 +46,6 @@ export interface FloatingMenuItemProps extends React.HTMLAttributes<HTMLElement>
   active?: boolean;
   /** Click handler */
   onClick?: () => void;
-  ref?: Ref<HTMLDivElement>;
 }
 
 export interface FloatingMenuSeparatorProps {
@@ -70,10 +65,6 @@ export interface FloatingMenuCustomProps {
   children: React.ReactNode;
   className?: string;
 }
-
-// ============================================================================
-// Components
-// ============================================================================
 
 const ToggleIcon = ({ className }: { className?: string }) => (
   <svg
@@ -98,15 +89,13 @@ const ToggleIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// FloatingMenu.Item
-function Item({
+function FloatingMenuItem({
   children,
   icon,
   href,
   active,
   onClick,
   className,
-  ref,
   ...props
 }: FloatingMenuItemProps) {
   const itemClasses = cn(
@@ -122,28 +111,26 @@ function Item({
     </>
   );
 
+  if (href) {
+    return (
+      <a href={href} className={itemClasses} onClick={onClick} {...props}>
+        {content}
+      </a>
+    );
+  }
+
   return (
-    <div ref={ref} {...props}>
-      {href ? (
-        <a href={href} className={itemClasses} onClick={onClick}>
-          {content}
-        </a>
-      ) : (
-        <button type="button" className={itemClasses} onClick={onClick}>
-          {content}
-        </button>
-      )}
-    </div>
+    <button type="button" className={itemClasses} onClick={onClick} {...props}>
+      {content}
+    </button>
   );
 }
 
-// FloatingMenu.Separator
-function Separator({ className }: FloatingMenuSeparatorProps) {
+function FloatingMenuSeparator({ className }: FloatingMenuSeparatorProps) {
   return <div className={cn("mx-2 my-1 h-px bg-[#EDEDED]", className)} />;
 }
 
-// FloatingMenu.Group
-function Group({ label, children, className }: FloatingMenuGroupProps) {
+function FloatingMenuGroup({ label, children, className }: FloatingMenuGroupProps) {
   return (
     <div className={cn("space-y-1", className)}>
       <div className="px-3 py-1.5 text-xs font-semibold text-[#999999]">{label}</div>
@@ -152,12 +139,10 @@ function Group({ label, children, className }: FloatingMenuGroupProps) {
   );
 }
 
-// FloatingMenu.Custom
-function Custom({ children, className }: FloatingMenuCustomProps) {
+function FloatingMenuCustom({ children, className }: FloatingMenuCustomProps) {
   return <div className={cn("px-3 py-2", className)}>{children}</div>;
 }
 
-// Main component
 function FloatingMenu({
   className,
   logo = "PLUXITY",
@@ -166,6 +151,8 @@ function FloatingMenu({
   defaultExpanded = false,
   expanded: controlledExpanded,
   onExpandedChange,
+  ariaLabelCollapse = "메뉴 접기",
+  ariaLabelExpand = "메뉴 펼치기",
   ref,
   ...props
 }: FloatingMenuProps) {
@@ -210,7 +197,7 @@ function FloatingMenu({
               onClick={handleToggle}
               className="flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340]"
               aria-expanded={expanded}
-              aria-label={expanded ? "메뉴 접기" : "메뉴 펼치기"}
+              aria-label={expanded ? ariaLabelCollapse : ariaLabelExpand}
             >
               <ToggleIcon className="h-5 w-6" />
             </button>
@@ -229,10 +216,9 @@ function FloatingMenu({
   );
 }
 
-// Attach sub-components
-FloatingMenu.Item = Item;
-FloatingMenu.Separator = Separator;
-FloatingMenu.Group = Group;
-FloatingMenu.Custom = Custom;
+FloatingMenu.Item = FloatingMenuItem;
+FloatingMenu.Separator = FloatingMenuSeparator;
+FloatingMenu.Group = FloatingMenuGroup;
+FloatingMenu.Custom = FloatingMenuCustom;
 
 export { FloatingMenu, useFloatingMenuContext };
