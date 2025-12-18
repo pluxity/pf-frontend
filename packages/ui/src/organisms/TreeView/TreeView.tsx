@@ -5,7 +5,7 @@ import { cn } from "../../utils";
 
 export interface TreeNode {
   id: string;
-  label: string;
+  label: string | React.ReactNode;
   icon?: React.ReactNode;
   children?: TreeNode[];
   disabled?: boolean;

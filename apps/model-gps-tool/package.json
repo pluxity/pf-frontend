@@ -1,0 +1,43 @@
+{
+  "name": "@pf-dev/model-gps-tool",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "dev:staging": "vite --mode staging --port 3000",
+    "build": "tsc && vite build",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:production": "tsc && vite build --mode production",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "catalog:",
+    "zustand": "catalog:",
+    "react-hook-form": "catalog:",
+    "zod": "catalog:",
+    "cesium": "^1.121.0",
+    "@hookform/resolvers": "catalog:",
+    "@pf-dev/api": "workspace:*",
+    "@pf-dev/ui": "workspace:*",
+    "@pf-dev/map": "workspace:*"
+  },
+  "devDependencies": {
+    "@pf-dev/eslint-config": "workspace:*",
+    "@pf-dev/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "tailwindcss": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "eslint": "catalog:",
+    "rimraf": "^6.0.1",
+    "vite-plugin-cesium": "^1.2.23"
+  }
+}
