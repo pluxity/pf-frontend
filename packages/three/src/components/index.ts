@@ -7,6 +7,11 @@ export type { SceneLightingProps, DirectionalLightConfig } from "./SceneLighting
 export { CameraControls } from "./CameraControls";
 export type { CameraControlsProps } from "./CameraControls";
 
+export { SceneGrid } from "./SceneGrid";
+
+export { Stats } from "./Stats";
+export type { StatsProps } from "./Stats";
+
 export { GLTFModel } from "./GLTFModel";
 export type { GLTFModelProps } from "./GLTFModel";
 

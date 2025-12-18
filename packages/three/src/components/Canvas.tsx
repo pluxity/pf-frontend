@@ -1,21 +1,14 @@
 import type { ReactNode, ComponentProps } from "react";
 import { Canvas as R3FCanvas } from "@react-three/fiber";
-import { Grid } from "@react-three/drei";
 
 import { SceneLighting, type LightingPreset } from "./SceneLighting";
 import { CameraControls, type CameraControlsProps } from "./CameraControls";
+import { SceneGrid, type SceneGridProps } from "./SceneGrid";
 
 type R3FCanvasProps = ComponentProps<typeof R3FCanvas>;
 
-// Re-export LightingPreset for convenience
-export type { LightingPreset };
-
-export interface SceneGridProps {
-  size?: number;
-  divisions?: number;
-  color?: string;
-  sectionColor?: string;
-}
+// Re-export LightingPreset and SceneGridProps for convenience
+export type { LightingPreset, SceneGridProps };
 
 export interface CanvasProps extends Omit<R3FCanvasProps, "children"> {
   children: ReactNode;
@@ -88,34 +81,5 @@ export function Canvas({
       {/* 사용자 children */}
       {children}
     </R3FCanvas>
-  );
-}
-
-/**
- * 내부 그리드 컴포넌트
- */
-function SceneGrid({
-  size = 100,
-  divisions = 100,
-  color = "#6b7280",
-  sectionColor,
-}: SceneGridProps) {
-  const cellSize = size / divisions;
-
-  return (
-    <Grid
-      args={[size, size]}
-      cellSize={cellSize}
-      cellThickness={1}
-      cellColor={color}
-      sectionSize={size / 10}
-      sectionThickness={1.5}
-      sectionColor={sectionColor ?? color}
-      fadeDistance={400}
-      fadeStrength={1}
-      followCamera={false}
-      infiniteGrid={false}
-      position={[0, -0.01, 0]}
-    />
   );
 }
