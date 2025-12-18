@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { useGLTFLoader } from "../loaders/useGLTFLoader";
-import type { Group } from "three";
+import type { Group, Mesh } from "three";
 import type { GLTF } from "three-stdlib";
 
 export interface GLTFModelProps {
@@ -12,6 +13,10 @@ export interface GLTFModelProps {
   position?: [number, number, number];
   rotation?: [number, number, number];
   scale?: number | [number, number, number];
+
+  // Shadow
+  castShadow?: boolean;
+  receiveShadow?: boolean;
 
   // Callbacks
   onProgress?: (progress: number) => void;
@@ -29,6 +34,8 @@ export function GLTFModel({
   position,
   rotation,
   scale,
+  castShadow = false,
+  receiveShadow = false,
   onProgress,
   onLoaded,
   onError,
@@ -41,6 +48,19 @@ export function GLTFModel({
     onLoaded,
     onError,
   });
+
+  // Apply shadow settings to all meshes
+  useEffect(() => {
+    if (!scene) return;
+
+    scene.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
+        mesh.castShadow = castShadow;
+        mesh.receiveShadow = receiveShadow;
+      }
+    });
+  }, [scene, castShadow, receiveShadow]);
 
   if (isLoading || !scene) return null;
   if (error) return null;

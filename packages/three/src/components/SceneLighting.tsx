@@ -77,7 +77,7 @@ const PRESET_CONFIGS: Record<LightingPreset, PresetConfig> = {
         type: "directional",
         position: [10, 10, 5],
         intensity: 1,
-        castShadow: false,
+        castShadow: true,
       },
     ],
   },
@@ -133,6 +133,12 @@ export function SceneLighting({ preset = "default", ambient, directional }: Scen
           position={light.position}
           intensity={light.intensity}
           castShadow={light.castShadow}
+          shadow-mapSize={[1024, 1024]}
+          shadow-camera-far={500}
+          shadow-camera-left={-100}
+          shadow-camera-right={100}
+          shadow-camera-top={100}
+          shadow-camera-bottom={-100}
         />
       ))}
     </>

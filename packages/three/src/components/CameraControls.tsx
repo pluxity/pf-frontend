@@ -24,7 +24,7 @@ export interface CameraControlsProps extends Omit<OrbitControlsProps, "makeDefau
 
   /**
    * 최대 거리
-   * @default 100
+   * @default 500
    */
   maxDistance?: number;
 
@@ -72,7 +72,7 @@ export function CameraControls({
   enableDamping = true,
   dampingFactor = 0.05,
   minDistance = 1,
-  maxDistance = 100,
+  maxDistance = 500,
   enablePan = true,
   enableZoom = true,
   enableRotate = true,

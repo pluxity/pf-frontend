@@ -1,6 +1,6 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useFBXLoader } from "../loaders/useFBXLoader";
-import type { Group } from "three";
+import type { Group, Mesh } from "three";
 
 export interface FBXModelProps {
   url: string;
@@ -11,6 +11,10 @@ export interface FBXModelProps {
   position?: [number, number, number];
   rotation?: [number, number, number];
   scale?: number | [number, number, number];
+
+  // Shadow
+  castShadow?: boolean;
+  receiveShadow?: boolean;
 
   // Callbacks
   onProgress?: (progress: number) => void;
@@ -28,6 +32,8 @@ export function FBXModel({
   position,
   rotation,
   scale,
+  castShadow = false,
+  receiveShadow = false,
   onProgress,
   onLoaded,
   onError,
@@ -40,6 +46,19 @@ export function FBXModel({
     onLoaded,
     onError,
   });
+
+  // Apply shadow settings to all meshes
+  useEffect(() => {
+    if (!object) return;
+
+    object.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
+        mesh.castShadow = castShadow;
+        mesh.receiveShadow = receiveShadow;
+      }
+    });
+  }, [object, castShadow, receiveShadow]);
 
   if (isLoading || !object) return null;
   if (error) return null;
