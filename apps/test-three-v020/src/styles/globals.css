@@ -1,4 +1,0 @@
-@import "tailwindcss";
-@source "../../../../packages/ui/src/**/*.{ts,tsx}";
-
-@import "@pf-dev/ui/globals.css";
