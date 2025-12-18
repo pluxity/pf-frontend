@@ -1,6 +1,7 @@
 export {
   Canvas,
   SceneLighting,
+  CameraControls,
   GLTFModel,
   FBXModel,
   CSS2DOverlay,
@@ -15,6 +16,7 @@ export type {
   SceneGridProps,
   SceneLightingProps,
   DirectionalLightConfig,
+  CameraControlsProps,
   GLTFModelProps,
   FBXModelProps,
   MeshInfoProps,
