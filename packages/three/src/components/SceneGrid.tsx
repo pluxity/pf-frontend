@@ -46,7 +46,7 @@ export function SceneGrid({
   color = "#6b7280",
   sectionColor,
 }: SceneGridProps) {
-  const cellSize = size / divisions;
+  const cellSize = size / (divisions > 0 ? divisions : 1);
 
   return (
     <Grid
