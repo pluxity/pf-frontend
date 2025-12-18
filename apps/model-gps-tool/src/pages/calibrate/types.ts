@@ -4,6 +4,7 @@ export type InputFieldProps = {
   slider?: boolean;
   value?: number;
   onChange?: (value: number) => void;
+  step?: number;
 };
 
 export type SectionFieldProps = {

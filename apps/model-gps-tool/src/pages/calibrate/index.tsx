@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Input, Button, useToast, Toaster, Slider } from "@pf-dev/ui";
-import { MapViewer, Terrain, Imagery, useFeatureStore, useCameraStore } from "@pf-dev/map";
+import { MapViewer, Terrain, Imagery, useFeatureStore } from "@pf-dev/map";
 import { HeightReference } from "cesium";
 import type { InputFieldProps, SectionFieldProps, Position } from "./types";
 
@@ -10,7 +10,7 @@ const DEFAULT_POSITION: Position = {
   height: 1,
 };
 
-const InputFields = ({ id: inputId, label, slider, value, onChange }: InputFieldProps) => {
+const InputFields = ({ id: inputId, label, slider, value, onChange, step }: InputFieldProps) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = parseFloat(event.target.value);
     if (!isNaN(inputValue)) {
@@ -30,6 +30,7 @@ const InputFields = ({ id: inputId, label, slider, value, onChange }: InputField
             type="number"
             value={value}
             onChange={handleInputChange}
+            step={step}
           />
         </div>
       ) : (
@@ -39,6 +40,7 @@ const InputFields = ({ id: inputId, label, slider, value, onChange }: InputField
           type="number"
           value={value}
           onChange={handleInputChange}
+          step={step}
         />
       )}
     </div>
@@ -68,6 +70,7 @@ const SectionFields = ({
           slider={field.slider}
           value={values?.[field.id]}
           onChange={(newValue) => handleFieldChange(field.id, newValue)}
+          step={field.step}
         />
       ))}
     </div>
@@ -79,8 +82,8 @@ const SectionFieldsData: SectionFieldProps[] = [
     id: "position",
     title: "Position",
     fields: [
-      { id: "longitude", label: "Longitude" },
-      { id: "latitude", label: "Latitude" },
+      { id: "longitude", label: "Longitude", step: 0.000001 },
+      { id: "latitude", label: "Latitude", step: 0.000001 },
       { id: "height", label: "Height" },
     ],
   },
@@ -110,7 +113,6 @@ export function CalibratePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toasts, toast, dismissToast } = useToast();
   const { addFeature, removeFeature, updateFeature } = useFeatureStore();
-  const { flyTo } = useCameraStore();
 
   const [featureId, setFeatureId] = useState<string | null>(null);
   const [position, setPosition] = useState<Position>(DEFAULT_POSITION);
@@ -173,7 +175,7 @@ export function CalibratePage() {
 
     const currentPosition = positionRef.current;
 
-    const newFeature = addFeature(featureId, {
+    addFeature(featureId, {
       position: currentPosition,
       visual: {
         type: "model",
@@ -181,14 +183,6 @@ export function CalibratePage() {
         heightReference: HeightReference.RELATIVE_TO_GROUND,
       },
     });
-
-    if (newFeature) {
-      flyTo({
-        longitude: currentPosition.longitude,
-        latitude: currentPosition.latitude,
-        height: currentPosition.height,
-      });
-    }
 
     return () => {
       if (featureId) {
@@ -198,7 +192,7 @@ export function CalibratePage() {
         URL.revokeObjectURL(fileUrl);
       }
     };
-  }, [fileUrl, featureId, addFeature, removeFeature, flyTo]);
+  }, [fileUrl, featureId, addFeature, removeFeature]);
 
   const getSectionValues = (sectionId: string): Record<string, number> | undefined => {
     if (sectionId === "position") {
