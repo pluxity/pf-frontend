@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 export type LightingPreset = "default" | "studio" | "outdoor";
 
 export interface DirectionalLightConfig {
@@ -37,6 +39,51 @@ interface PresetConfig {
 }
 
 /**
+ * 조명 프리셋 설정 상수
+ */
+const PRESET_CONFIGS: Record<LightingPreset, PresetConfig> = {
+  studio: {
+    ambient: 0.4,
+    lights: [
+      {
+        type: "directional",
+        position: [10, 10, 5],
+        intensity: 1,
+        castShadow: true,
+      },
+      {
+        type: "directional",
+        position: [-10, -10, -5],
+        intensity: 0.5,
+        castShadow: false,
+      },
+    ],
+  },
+  outdoor: {
+    ambient: 0.6,
+    lights: [
+      {
+        type: "directional",
+        position: [10, 10, 5],
+        intensity: 2,
+        castShadow: true,
+      },
+    ],
+  },
+  default: {
+    ambient: 0.5,
+    lights: [
+      {
+        type: "directional",
+        position: [10, 10, 5],
+        intensity: 1,
+        castShadow: false,
+      },
+    ],
+  },
+};
+
+/**
  * SceneLighting 컴포넌트
  *
  * 씬 조명을 설정하는 컴포넌트입니다. 프리셋 시스템과 세밀한 커스터마이징을 모두 지원합니다.
@@ -55,23 +102,27 @@ interface PresetConfig {
  * ```
  */
 export function SceneLighting({ preset = "default", ambient, directional }: SceneLightingProps) {
-  const presetConfig = getPresetConfig(preset);
+  const { ambientIntensity, lights } = useMemo(() => {
+    const presetConfig = getPresetConfig(preset);
 
-  // Ambient 조명 강도 (오버라이드 또는 프리셋 값)
-  const ambientIntensity = ambient ?? presetConfig.ambient;
+    // Ambient 조명 강도 (오버라이드 또는 프리셋 값)
+    const finalAmbientIntensity = ambient ?? presetConfig.ambient;
 
-  // Directional 조명 설정 (첫 번째 조명에만 오버라이드 적용)
-  const lights = presetConfig.lights.map((light, index) => {
-    if (index === 0 && directional) {
-      return {
-        ...light,
-        position: directional.position ?? light.position,
-        intensity: directional.intensity ?? light.intensity,
-        castShadow: directional.castShadow ?? light.castShadow,
-      };
-    }
-    return light;
-  });
+    // Directional 조명 설정 (첫 번째 조명에만 오버라이드 적용)
+    const finalLights = presetConfig.lights.map((light, index) => {
+      if (index === 0 && directional) {
+        return {
+          ...light,
+          position: directional.position ?? light.position,
+          intensity: directional.intensity ?? light.intensity,
+          castShadow: directional.castShadow ?? light.castShadow,
+        };
+      }
+      return light;
+    });
+
+    return { ambientIntensity: finalAmbientIntensity, lights: finalLights };
+  }, [preset, ambient, directional]);
 
   return (
     <>
@@ -92,51 +143,5 @@ export function SceneLighting({ preset = "default", ambient, directional }: Scen
  * 조명 프리셋 설정 반환
  */
 function getPresetConfig(preset: LightingPreset): PresetConfig {
-  switch (preset) {
-    case "studio":
-      return {
-        ambient: 0.4,
-        lights: [
-          {
-            type: "directional",
-            position: [10, 10, 5],
-            intensity: 1,
-            castShadow: true,
-          },
-          {
-            type: "directional",
-            position: [-10, -10, -5],
-            intensity: 0.5,
-            castShadow: false,
-          },
-        ],
-      };
-
-    case "outdoor":
-      return {
-        ambient: 0.6,
-        lights: [
-          {
-            type: "directional",
-            position: [10, 10, 5],
-            intensity: 2,
-            castShadow: true,
-          },
-        ],
-      };
-
-    case "default":
-    default:
-      return {
-        ambient: 0.5,
-        lights: [
-          {
-            type: "directional",
-            position: [10, 10, 5],
-            intensity: 1,
-            castShadow: false,
-          },
-        ],
-      };
-  }
+  return PRESET_CONFIGS[preset];
 }
