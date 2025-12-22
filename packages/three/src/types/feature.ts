@@ -28,6 +28,7 @@ export interface AssetState {
 
 export interface AssetActions {
   addAsset: (asset: Asset) => void;
+  addAssets: (assets: Asset[]) => Promise<void>;
   getAsset: (id: string) => Asset | null;
   removeAsset: (id: string) => void;
   updateAsset: (id: string, updates: Partial<Asset>) => void;
