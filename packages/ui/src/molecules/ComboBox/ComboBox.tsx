@@ -67,9 +67,6 @@ const defaultFilter: ComboBoxFilterFn<unknown> = (query, textValue) => {
 type HeadlessValue<TValue, TMultiple extends boolean | undefined> = TMultiple extends true
   ? EnsureArray<TValue>
   : TValue | undefined;
-type HeadlessOnChange<TValue, TMultiple extends boolean | undefined> = (
-  val: TMultiple extends true ? EnsureArray<TValue> : TValue | null
-) => void;
 
 function getTextContent(node: ReactNode): string {
   if (typeof node === "string" || typeof node === "number") {
@@ -99,6 +96,13 @@ function ComboBoxRoot<TValue, TMultiple extends boolean | undefined = false>({
 }: ComboBoxProps<TValue, TMultiple>) {
   const [query, setQuery] = useState("");
   const [matchCount, setMatchCount] = useState(0);
+
+  const handleChange = (val: unknown) => {
+    setQuery("");
+    (onValueChange as ((value: ComboBoxValueType<TValue, TMultiple>) => void) | undefined)?.(
+      val as ComboBoxValueType<TValue, TMultiple>
+    );
+  };
 
   const providerValue = useMemo(
     () => ({
@@ -132,8 +136,7 @@ function ComboBoxRoot<TValue, TMultiple extends boolean | undefined = false>({
     <HeadlessCombobox
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       value={headlessValue as any}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onChange={onValueChange as HeadlessOnChange<TValue, TMultiple> as any}
+      onChange={handleChange}
       multiple={multiple}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       by={headlessBy as any}
@@ -258,21 +261,7 @@ function ComboBoxInput({
   placeholder = "Type to search...",
   ...props
 }: ComboBoxInputProps) {
-  const { setQuery, renderValue, multiple, query } = useComboBoxContext<unknown>();
-
-  const displayValue = (val: ComboBoxValueType<unknown>) => {
-    if (multiple) return query;
-    const asString = (node: ReactNode) => (typeof node === "string" ? node : "");
-    if (renderValue) {
-      const rendered = renderValue(val);
-      return asString(rendered);
-    }
-    if (Array.isArray(val)) {
-      return val.map((item) => (item === null ? "" : String(item))).join(", ");
-    }
-    if (val === null) return "";
-    return String(val);
-  };
+  const { setQuery, query } = useComboBoxContext<unknown>();
 
   return (
     <div className="p-2">
@@ -283,7 +272,7 @@ function ComboBoxInput({
           className
         )}
         placeholder={placeholder}
-        displayValue={(val: ComboBoxValueType<unknown>) => displayValue(val)}
+        displayValue={() => query}
         onChange={(event) => {
           setQuery(event.target.value);
           onChange?.(event);

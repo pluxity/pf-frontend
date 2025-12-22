@@ -29,10 +29,6 @@ const meta: Meta<typeof ComboBox> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const StoryContainer = ({ height, children }: { height: number; children: React.ReactNode }) => (
-  <div style={{ minHeight: height }}>{children}</div>
-);
-
 const countries = [
   "Argentina",
   "Australia",
@@ -66,25 +62,23 @@ export const Default: Story = {
     const [value, setValue] = useState<string | null>(null);
 
     return (
-      <StoryContainer height={330}>
-        <ComboBox value={value} onValueChange={setValue}>
-          <ComboBoxTrigger className="w-[260px]">
-            <ComboBoxValue placeholder="Search countries" />
-            <ComboBoxIcon />
-          </ComboBoxTrigger>
-          <ComboBoxContent>
-            <ComboBoxInput placeholder="Type to search..." />
-            <ComboBoxList>
-              <ComboBoxEmpty>No countries found</ComboBoxEmpty>
-              {countries.map((country) => (
-                <ComboBoxItem key={country} value={country}>
-                  {country}
-                </ComboBoxItem>
-              ))}
-            </ComboBoxList>
-          </ComboBoxContent>
-        </ComboBox>
-      </StoryContainer>
+      <ComboBox value={value} onValueChange={setValue}>
+        <ComboBoxTrigger className="w-[260px]">
+          <ComboBoxValue placeholder="Search countries" />
+          <ComboBoxIcon />
+        </ComboBoxTrigger>
+        <ComboBoxContent>
+          <ComboBoxInput placeholder="Type to search..." />
+          <ComboBoxList>
+            <ComboBoxEmpty>No countries found</ComboBoxEmpty>
+            {countries.map((country) => (
+              <ComboBoxItem key={country} value={country}>
+                {country}
+              </ComboBoxItem>
+            ))}
+          </ComboBoxList>
+        </ComboBoxContent>
+      </ComboBox>
     );
   },
 };
@@ -103,40 +97,38 @@ export const WithGroupsAndIcons: Story = {
     ];
 
     return (
-      <StoryContainer height={330}>
-        <ComboBox value={value} onValueChange={setValue}>
-          <ComboBoxTrigger className="w-[320px]">
-            <ComboBoxValue placeholder="Search teammates" />
-            <ComboBoxIcon />
-          </ComboBoxTrigger>
-          <ComboBoxContent>
-            <ComboBoxInput placeholder="Mention someone..." />
-            <ComboBoxList>
-              <ComboBoxGroup label="Suggestions">
-                {suggestions.map((item) => (
-                  <ComboBoxItem key={item.id} value={item.name} textValue={item.name}>
-                    <ComboBoxItemIcon>
-                      <User size="sm" />
-                    </ComboBoxItemIcon>
-                    <span className="truncate">{item.name}</span>
-                  </ComboBoxItem>
-                ))}
-              </ComboBoxGroup>
-              <ComboBoxSeparator />
-              <ComboBoxGroup label="Recent">
-                {recent.map((item) => (
-                  <ComboBoxItem key={item.id} value={item.name} textValue={item.name}>
-                    <ComboBoxItemIcon>
-                      <User size="sm" />
-                    </ComboBoxItemIcon>
-                    <span className="truncate">{item.name}</span>
-                  </ComboBoxItem>
-                ))}
-              </ComboBoxGroup>
-            </ComboBoxList>
-          </ComboBoxContent>
-        </ComboBox>
-      </StoryContainer>
+      <ComboBox value={value} onValueChange={setValue}>
+        <ComboBoxTrigger className="w-[320px]">
+          <ComboBoxValue placeholder="Search teammates" />
+          <ComboBoxIcon />
+        </ComboBoxTrigger>
+        <ComboBoxContent>
+          <ComboBoxInput placeholder="Mention someone..." />
+          <ComboBoxList>
+            <ComboBoxGroup label="Suggestions">
+              {suggestions.map((item) => (
+                <ComboBoxItem key={item.id} value={item.name} textValue={item.name}>
+                  <ComboBoxItemIcon>
+                    <User size="sm" />
+                  </ComboBoxItemIcon>
+                  <span className="truncate">{item.name}</span>
+                </ComboBoxItem>
+              ))}
+            </ComboBoxGroup>
+            <ComboBoxSeparator />
+            <ComboBoxGroup label="Recent">
+              {recent.map((item) => (
+                <ComboBoxItem key={item.id} value={item.name} textValue={item.name}>
+                  <ComboBoxItemIcon>
+                    <User size="sm" />
+                  </ComboBoxItemIcon>
+                  <span className="truncate">{item.name}</span>
+                </ComboBoxItem>
+              ))}
+            </ComboBoxGroup>
+          </ComboBoxList>
+        </ComboBoxContent>
+      </ComboBox>
     );
   },
 };
@@ -145,20 +137,18 @@ export const LoadingState: Story = {
   render: () => {
     const [value, setValue] = useState<string | null>(null);
     return (
-      <StoryContainer height={330}>
-        <ComboBox value={value} onValueChange={setValue} isLoading>
-          <ComboBoxTrigger className="w-[260px]">
-            <ComboBoxValue placeholder="Fetching data..." />
-            <ComboBoxIcon />
-          </ComboBoxTrigger>
-          <ComboBoxContent>
-            <ComboBoxInput placeholder="Type to search..." />
-            <ComboBoxList>
-              <ComboBoxLoading label="Loading options..." />
-            </ComboBoxList>
-          </ComboBoxContent>
-        </ComboBox>
-      </StoryContainer>
+      <ComboBox value={value} onValueChange={setValue} isLoading>
+        <ComboBoxTrigger className="w-[260px]">
+          <ComboBoxValue placeholder="Fetching data..." />
+          <ComboBoxIcon />
+        </ComboBoxTrigger>
+        <ComboBoxContent>
+          <ComboBoxInput placeholder="Type to search..." />
+          <ComboBoxList>
+            <ComboBoxLoading label="Loading options..." />
+          </ComboBoxList>
+        </ComboBoxContent>
+      </ComboBox>
     );
   },
 };
@@ -168,32 +158,30 @@ export const MultiSelect: Story = {
     const [value, setValue] = useState<string[]>([]);
 
     return (
-      <StoryContainer height={330}>
-        <ComboBox
-          value={value}
-          multiple
-          onValueChange={(next) => setValue(Array.isArray(next) ? next : [])}
-        >
-          <ComboBoxTrigger className="w-[360px]">
-            <ComboBoxValue placeholder="Select multiple countries" />
-            <ComboBoxIcon />
-          </ComboBoxTrigger>
-          <ComboBoxContent>
-            <ComboBoxInput placeholder="Search countries..." />
-            <ComboBoxList>
-              <ComboBoxEmpty>No matches</ComboBoxEmpty>
-              {countries.map((country) => (
-                <ComboBoxItem key={country} value={country}>
-                  <span className="flex items-center gap-2">
-                    <Search size="sm" className="text-gray-400" />
-                    <span className="truncate">{country}</span>
-                  </span>
-                </ComboBoxItem>
-              ))}
-            </ComboBoxList>
-          </ComboBoxContent>
-        </ComboBox>
-      </StoryContainer>
+      <ComboBox
+        value={value}
+        multiple
+        onValueChange={(next) => setValue(Array.isArray(next) ? next : [])}
+      >
+        <ComboBoxTrigger className="w-[360px]">
+          <ComboBoxValue placeholder="Select multiple countries" />
+          <ComboBoxIcon />
+        </ComboBoxTrigger>
+        <ComboBoxContent>
+          <ComboBoxInput placeholder="Search countries..." />
+          <ComboBoxList>
+            <ComboBoxEmpty>No matches</ComboBoxEmpty>
+            {countries.map((country) => (
+              <ComboBoxItem key={country} value={country}>
+                <span className="flex items-center gap-2">
+                  <Search size="sm" className="text-gray-400" />
+                  <span className="truncate">{country}</span>
+                </span>
+              </ComboBoxItem>
+            ))}
+          </ComboBoxList>
+        </ComboBoxContent>
+      </ComboBox>
     );
   },
 };
