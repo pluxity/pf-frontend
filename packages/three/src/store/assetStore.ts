@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { GLTFLoader } from "three-stdlib";
-import type { AssetState, AssetActions, AssetType, Asset } from "../types/feature";
+import type { AssetState, AssetActions, AssetType } from "../types/feature";
 import { disposeScene } from "../utils/dispose";
 
 const loader = new GLTFLoader();
@@ -19,13 +19,7 @@ export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
 
   addAssets: async (newAssets) => {
     const currentAssets = get().assets;
-    const assetsToLoad: Asset[] = [];
-
-    newAssets.forEach((asset) => {
-      if (!currentAssets.has(asset.id)) {
-        assetsToLoad.push(asset);
-      }
-    });
+    const assetsToLoad = newAssets.filter((asset) => !currentAssets.has(asset.id));
 
     if (assetsToLoad.length === 0) return;
 
@@ -42,7 +36,14 @@ export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
             loader.load(
               asset.modelUrl,
               (gltf) => {
-                get().updateAsset(asset.id, { object: gltf.scene });
+                set((state) => {
+                  const assets = new Map(state.assets);
+                  const currentAsset = assets.get(asset.id);
+                  if (currentAsset) {
+                    assets.set(asset.id, { ...currentAsset, object: gltf.scene });
+                  }
+                  return { assets };
+                });
                 resolve();
               },
               undefined,
