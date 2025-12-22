@@ -1,6 +1,9 @@
 import { create } from "zustand";
-import type { AssetState, AssetActions, AssetType } from "../types/feature";
+import { GLTFLoader } from "three-stdlib";
+import type { AssetState, AssetActions, AssetType, Asset } from "../types/feature";
 import { disposeScene } from "../utils/dispose";
+
+const loader = new GLTFLoader();
 
 export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
   assets: new Map(),
@@ -12,6 +15,45 @@ export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
     const assets = new Map(currentAssets);
     assets.set(asset.id, { ...asset, loadedAt: Date.now() });
     set({ assets });
+  },
+
+  addAssets: async (newAssets) => {
+    const currentAssets = get().assets;
+    const assetsToLoad: Asset[] = [];
+
+    newAssets.forEach((asset) => {
+      if (!currentAssets.has(asset.id)) {
+        assetsToLoad.push(asset);
+      }
+    });
+
+    if (assetsToLoad.length === 0) return;
+
+    const assets = new Map(currentAssets);
+    assetsToLoad.forEach((asset) => {
+      assets.set(asset.id, { ...asset, loadedAt: Date.now() });
+    });
+    set({ assets });
+
+    await Promise.all(
+      assetsToLoad.map(
+        (asset) =>
+          new Promise<void>((resolve) => {
+            loader.load(
+              asset.modelUrl,
+              (gltf) => {
+                get().updateAsset(asset.id, { object: gltf.scene });
+                resolve();
+              },
+              undefined,
+              (error) => {
+                console.warn(`[Asset] Failed to load asset.`, { assetId: asset.id, error });
+                resolve();
+              }
+            );
+          })
+      )
+    );
   },
 
   getAsset: (id) => {
