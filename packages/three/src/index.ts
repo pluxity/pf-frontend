@@ -104,3 +104,6 @@ export type {
   Asset,
   Feature,
 } from "./types/index";
+
+export { initializeScene } from "./initialize";
+export type { InitializeOptions } from "./initialize";
