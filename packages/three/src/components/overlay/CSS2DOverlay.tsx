@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
 import { CSS2DObject } from "three-stdlib";
-import type { CSS2DOverlayProps } from "../types/overlay";
+import type { CSS2DOverlayProps } from "../../types/overlay";
 
 export function CSS2DOverlay({ position, children, className }: CSS2DOverlayProps) {
   const { scene } = useThree();

@@ -1,8 +1,10 @@
-import { type ReactNode, useEffect } from "react";
-import { useFBXLoader } from "../loaders/useFBXLoader";
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { useGLTFLoader } from "../../loaders/useGLTFLoader";
 import type { Group, Mesh } from "three";
+import type { GLTF } from "three-stdlib";
 
-export interface FBXModelProps {
+export interface GLTFModelProps {
   url: string;
   modelId?: string;
   autoAddToStore?: boolean;
@@ -18,14 +20,14 @@ export interface FBXModelProps {
 
   // Callbacks
   onProgress?: (progress: number) => void;
-  onLoaded?: (object: Group) => void;
+  onLoaded?: (gltf: GLTF) => void;
   onError?: (error: Error) => void;
 
   // Children: render props pattern or regular children
-  children?: ReactNode | ((object: Group) => ReactNode);
+  children?: ReactNode | ((scene: Group) => ReactNode);
 }
 
-export function FBXModel({
+export function GLTFModel({
   url,
   modelId,
   autoAddToStore = true,
@@ -38,8 +40,8 @@ export function FBXModel({
   onLoaded,
   onError,
   children,
-}: FBXModelProps) {
-  const { object, isLoading, error } = useFBXLoader(url, {
+}: GLTFModelProps) {
+  const { scene, isLoading, error } = useGLTFLoader(url, {
     modelId,
     autoAddToStore,
     onProgress,
@@ -49,23 +51,23 @@ export function FBXModel({
 
   // Apply shadow settings to all meshes
   useEffect(() => {
-    if (!object) return;
+    if (!scene) return;
 
-    object.traverse((child) => {
+    scene.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         mesh.castShadow = castShadow;
         mesh.receiveShadow = receiveShadow;
       }
     });
-  }, [object, castShadow, receiveShadow]);
+  }, [scene, castShadow, receiveShadow]);
 
-  if (isLoading || !object) return null;
+  if (isLoading || !scene) return null;
   if (error) return null;
 
   return (
-    <primitive object={object} position={position} rotation={rotation} scale={scale}>
-      {typeof children === "function" ? children(object) : children}
+    <primitive object={scene} position={position} rotation={rotation} scale={scale}>
+      {typeof children === "function" ? children(scene) : children}
     </primitive>
   );
 }

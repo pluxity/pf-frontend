@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { GLTFLoader } from "three-stdlib";
-import { useAssetStore } from "../store/assetStore";
-import type { Asset } from "../types/feature";
+import { useAssetStore } from "../store";
+import type { Asset } from "../types";
 
 export function useAssetLoader(assets: Asset[]) {
   const updateAsset = useAssetStore((s) => s.updateAsset);

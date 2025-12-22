@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
-import { useInteractionStore } from "../store/interactionStore";
+import { useInteractionStore } from "../../store/interactionStore";
 import type { Mesh, MeshStandardMaterial, Color as ColorType } from "three";
 import {
   Matrix4,

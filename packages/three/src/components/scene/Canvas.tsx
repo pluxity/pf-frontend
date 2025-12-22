@@ -3,7 +3,7 @@ import { Canvas as R3FCanvas } from "@react-three/fiber";
 
 import { SceneLighting, type LightingPreset } from "./SceneLighting";
 import { CameraControls, type CameraControlsProps } from "./CameraControls";
-import { SceneGrid, type SceneGridProps } from "./SceneGrid";
+import { SceneGrid, type SceneGridProps } from "../debug/SceneGrid";
 
 type R3FCanvasProps = ComponentProps<typeof R3FCanvas>;
 

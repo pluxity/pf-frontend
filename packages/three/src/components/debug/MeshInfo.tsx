@@ -1,4 +1,4 @@
-import { useInteractionStore } from "../store/interactionStore";
+import { useInteractionStore } from "../../store/interactionStore";
 
 export interface MeshInfoProps {
   className?: string;
