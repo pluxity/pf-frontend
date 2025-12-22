@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { Input, Button, useToast, Toaster, Slider } from "@pf-dev/ui";
-import { MapViewer, Terrain, Imagery, useFeatureStore, useMapStore } from "@pf-dev/map";
+import { Input, Button, useToast, Toaster, Slider, Toggle } from "@pf-dev/ui";
+import {
+  MapViewer,
+  Terrain,
+  Imagery,
+  useFeatureStore,
+  useMapStore,
+  useCameraStore,
+} from "@pf-dev/map";
 import {
   HeightReference,
   HeadingPitchRoll,
@@ -164,6 +171,42 @@ export function CalibratePage() {
   const positionRef = useRef<Position>(position);
   const [rotation, setRotation] = useState<Rotation>(DEFAULT_ROTATION);
   const [scale, setScale] = useState<Scale>(DEFAULT_SCALE);
+
+  const { flyTo, cameraPosition } = useCameraStore();
+  const [topView, setTopView] = useState<boolean>(false);
+
+  const handleToggleTopView = () => {
+    if (!viewer || viewer.isDestroyed()) return;
+
+    const newTopViewState = !topView;
+    const cartographic = viewer.camera.positionCartographic;
+    setTopView(newTopViewState);
+
+    const currentState = cameraPosition || {
+      longitude: CesiumMath.toDegrees(cartographic.longitude),
+      latitude: CesiumMath.toDegrees(cartographic.latitude),
+      height: cartographic.height,
+      heading: CesiumMath.toDegrees(viewer.camera.heading),
+    };
+
+    if (newTopViewState) {
+      flyTo({
+        longitude: currentState.longitude,
+        latitude: currentState.latitude,
+        height: Math.max(currentState.height, 1000),
+        heading: currentState.heading,
+        pitch: -90,
+      });
+    } else {
+      flyTo({
+        longitude: currentState.longitude,
+        latitude: currentState.latitude,
+        height: currentState.height,
+        heading: currentState.heading,
+        pitch: -45,
+      });
+    }
+  };
 
   useEffect(() => {
     positionRef.current = position;
@@ -423,6 +466,14 @@ export function CalibratePage() {
       </div>
 
       <div className="flex-1 relative">
+        <div className="absolute top-3 left-3 z-1">
+          <div className="flex items-center gap-2">
+            <Toggle size="sm" pressed={topView} onPressedChange={handleToggleTopView}>
+              Top View
+            </Toggle>
+            <Toggle size="sm">Bounding Box</Toggle>
+          </div>
+        </div>
         <MapViewer className="w-full h-screen" ionToken={ionToken}>
           <Imagery provider="ion" assetId={imageryAssetId} />
           <Terrain provider="ion" assetId={terrainAssetId} />
