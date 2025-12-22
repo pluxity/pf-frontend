@@ -42,3 +42,8 @@ coverage
 
 # Claude
 nul
+
+# TestApp
+/apps/demo-*
+/apps/playground-*
+/apps/sandbox-*
