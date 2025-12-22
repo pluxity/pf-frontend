@@ -4,7 +4,7 @@ import { useFeatureStore } from "./store/featureStore";
 import { useFacilityStore } from "./store/facilityStore";
 
 export interface InitializeOptions {
-  facility?: Promise<Facility>;
+  facility?: Promise<Omit<Facility, "loadedAt">>;
   assets: Promise<Asset[]>;
   features: Promise<Feature[]>;
 }
@@ -29,8 +29,15 @@ export async function initializeScene({
   assets,
   features,
 }: InitializeOptions): Promise<void> {
-  // 모든 Promise 병렬 대기
-  const [assetsData, featuresData, facilityData] = await Promise.all([assets, features, facility]);
+  // assets, features는 필수, facility는 선택적으로 병렬 대기
+  const [assetsData, featuresData, facilityData] = await Promise.all([
+    assets,
+    features,
+    facility?.catch((error) => {
+      console.warn("[initializeScene] Facility 로드 실패. 초기화는 계속됩니다.", { error });
+      return undefined;
+    }),
+  ]);
 
   // Facility 등록 (독립적)
   if (facilityData) {
