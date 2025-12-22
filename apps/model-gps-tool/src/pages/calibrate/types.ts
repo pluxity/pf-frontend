@@ -5,6 +5,8 @@ export type InputFieldProps = {
   value?: number;
   onChange?: (value: number) => void;
   step?: number;
+  min?: number;
+  max?: number;
 };
 
 export type SectionFieldProps = {
@@ -19,4 +21,14 @@ export type Position = {
   longitude: number;
   latitude: number;
   height: number;
+};
+
+export type Rotation = {
+  heading: number;
+  pitch: number;
+  roll: number;
+};
+
+export type Scale = {
+  scale: number;
 };

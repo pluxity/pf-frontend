@@ -5,6 +5,7 @@ import type {
   VerticalOrigin,
   Resource,
   MaterialProperty,
+  Quaternion,
 } from "cesium";
 
 // ============================================================================
@@ -108,6 +109,7 @@ export interface FeaturePatch {
   properties?: Record<string, unknown>;
   visual?: FeatureVisual;
   meta?: FeatureMeta;
+  orientation?: Quaternion;
 }
 
 // ============================================================================

@@ -1,8 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Input, Button, useToast, Toaster, Slider } from "@pf-dev/ui";
-import { MapViewer, Terrain, Imagery, useFeatureStore } from "@pf-dev/map";
-import { HeightReference } from "cesium";
-import type { InputFieldProps, SectionFieldProps, Position } from "./types";
+import { MapViewer, Terrain, Imagery, useFeatureStore, useMapStore } from "@pf-dev/map";
+import {
+  HeightReference,
+  HeadingPitchRoll,
+  Transforms,
+  Cartesian3,
+  Math as CesiumMath,
+} from "cesium";
+import type { InputFieldProps, SectionFieldProps, Position, Rotation, Scale } from "./types";
+import { useModelDrag } from "../../hooks";
 
 const DEFAULT_POSITION: Position = {
   longitude: 126.970198,
@@ -10,25 +17,58 @@ const DEFAULT_POSITION: Position = {
   height: 1,
 };
 
-const InputFields = ({ id: inputId, label, slider, value, onChange, step }: InputFieldProps) => {
+const DEFAULT_ROTATION: Rotation = {
+  heading: 0,
+  pitch: 0,
+  roll: 0,
+};
+
+const DEFAULT_SCALE: Scale = {
+  scale: 1,
+};
+
+const InputFields = ({
+  id: inputId,
+  label,
+  slider,
+  value,
+  onChange,
+  step,
+  min,
+  max,
+}: InputFieldProps) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = parseFloat(event.target.value);
     if (!isNaN(inputValue)) {
       onChange?.(inputValue);
     }
   };
+
+  const handleSliderChange = (values: number[]) => {
+    onChange?.(values[0] ?? 0);
+  };
+
   return (
     <div className="flex items-center gap-2">
       <strong className="w-28 text-sm">{label}</strong>
       {slider ? (
         <div className="flex items-center justify-between gap-2">
-          <Slider className="w-40" />
+          <Slider
+            className="w-40"
+            value={[value ?? 0]}
+            onValueChange={handleSliderChange}
+            min={min}
+            max={max}
+            step={step ?? 0.1}
+          />
           <Input
             id={inputId}
             inputSize="sm"
             className="w-20"
             type="number"
             value={value}
+            min={min}
+            max={max}
             onChange={handleInputChange}
             step={step}
           />
@@ -39,6 +79,8 @@ const InputFields = ({ id: inputId, label, slider, value, onChange, step }: Inpu
           inputSize="sm"
           type="number"
           value={value}
+          min={min}
+          max={max}
           onChange={handleInputChange}
           step={step}
         />
@@ -71,6 +113,8 @@ const SectionFields = ({
           value={values?.[field.id]}
           onChange={(newValue) => handleFieldChange(field.id, newValue)}
           step={field.step}
+          min={field.min}
+          max={field.max}
         />
       ))}
     </div>
@@ -91,40 +135,46 @@ const SectionFieldsData: SectionFieldProps[] = [
     id: "rotation",
     title: "Rotation",
     fields: [
-      { id: "heading", label: "Heading", slider: true },
-      { id: "pitch", label: "Pitch", slider: true },
-      { id: "roll", label: "Roll", slider: true },
+      { id: "heading", label: "Heading", slider: true, step: 0.1, min: 0, max: 360 },
+      { id: "pitch", label: "Pitch", slider: true, step: 0.1, min: 0, max: 360 },
+      { id: "roll", label: "Roll", slider: true, step: 0.1, min: 0, max: 360 },
     ],
   },
   {
     id: "scale",
     title: "Scale",
-    fields: [
-      { id: "scaleX", label: "Scale X" },
-      { id: "scaleY", label: "Scale Y" },
-      { id: "scaleZ", label: "Scale Z" },
-    ],
+    fields: [{ id: "scale", label: "Scale", step: 0.1 }],
   },
 ];
 
 export function CalibratePage() {
+  const ionToken = import.meta.env.VITE_ION_CESIUM_ACCESS_TOKEN;
+  const imageryAssetId = Number(import.meta.env.VITE_ION_CESIUM_MAP_ASSET_ID);
+  const terrainAssetId = Number(import.meta.env.VITE_ION_CESIUM_TERRAIN_ASSET_ID);
+
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toasts, toast, dismissToast } = useToast();
   const { addFeature, removeFeature, updateFeature } = useFeatureStore();
+  const viewer = useMapStore((state) => state.viewer);
 
   const [featureId, setFeatureId] = useState<string | null>(null);
   const [position, setPosition] = useState<Position>(DEFAULT_POSITION);
   const positionRef = useRef<Position>(position);
+  const [rotation, setRotation] = useState<Rotation>(DEFAULT_ROTATION);
+  const [scale, setScale] = useState<Scale>(DEFAULT_SCALE);
 
   useEffect(() => {
     positionRef.current = position;
   }, [position]);
 
-  const ionToken = import.meta.env.VITE_ION_CESIUM_ACCESS_TOKEN;
-  const imageryAssetId = Number(import.meta.env.VITE_ION_CESIUM_MAP_ASSET_ID);
-  const terrainAssetId = Number(import.meta.env.VITE_ION_CESIUM_TERRAIN_ASSET_ID);
+  useModelDrag({
+    viewer,
+    featureId,
+    positionRef,
+    setPosition,
+  });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -154,6 +204,10 @@ export function CalibratePage() {
 
     setFeatureId(null);
     toast.success("파일이 제거되었습니다.");
+
+    setPosition(DEFAULT_POSITION);
+    setRotation(DEFAULT_ROTATION);
+    setScale(DEFAULT_SCALE);
   };
 
   const handleFieldsChange = (sectionId: string, values: Record<string, number>) => {
@@ -165,7 +219,46 @@ export function CalibratePage() {
         });
       }
     }
-    // rotation, scale은 나중에 구현
+
+    if (sectionId === "rotation") {
+      setRotation(values as Rotation);
+      if (featureId) {
+        const rotationValues = values as Rotation;
+        const headingPitchRoll = new HeadingPitchRoll(
+          CesiumMath.toRadians(rotationValues.heading),
+          CesiumMath.toRadians(rotationValues.pitch),
+          CesiumMath.toRadians(rotationValues.roll)
+        );
+        const currentPosition = positionRef.current;
+        const orientation = Transforms.headingPitchRollQuaternion(
+          Cartesian3.fromDegrees(
+            currentPosition.longitude,
+            currentPosition.latitude,
+            currentPosition.height
+          ),
+          headingPitchRoll
+        );
+
+        updateFeature(featureId, {
+          orientation,
+        });
+      }
+    }
+
+    if (sectionId === "scale") {
+      setScale(values as Scale);
+      if (featureId && fileUrl) {
+        const scaleValue = values as Scale;
+        updateFeature(featureId, {
+          visual: {
+            type: "model",
+            scale: scaleValue.scale,
+            uri: fileUrl,
+            heightReference: HeightReference.RELATIVE_TO_GROUND,
+          },
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -181,6 +274,7 @@ export function CalibratePage() {
         type: "model",
         uri: fileUrl,
         heightReference: HeightReference.RELATIVE_TO_GROUND,
+        scale: scale.scale,
       },
     });
 
@@ -202,8 +296,57 @@ export function CalibratePage() {
         height: position.height,
       };
     }
-    // rotation, scale은 나중에 구현
+    if (sectionId === "rotation") {
+      return {
+        heading: rotation.heading,
+        pitch: rotation.pitch,
+        roll: rotation.roll,
+      };
+    }
+    if (sectionId === "scale") {
+      return {
+        scale: scale.scale,
+      };
+    }
     return undefined;
+  };
+
+  const handleReset = () => {
+    setPosition(DEFAULT_POSITION);
+    setRotation(DEFAULT_ROTATION);
+    setScale(DEFAULT_SCALE);
+
+    if (featureId) {
+      const headingPitchRoll = new HeadingPitchRoll(
+        CesiumMath.toRadians(DEFAULT_ROTATION.heading),
+        CesiumMath.toRadians(DEFAULT_ROTATION.pitch),
+        CesiumMath.toRadians(DEFAULT_ROTATION.roll)
+      );
+      const orientation = Transforms.headingPitchRollQuaternion(
+        Cartesian3.fromDegrees(
+          DEFAULT_POSITION.longitude,
+          DEFAULT_POSITION.latitude,
+          DEFAULT_POSITION.height
+        ),
+        headingPitchRoll
+      );
+
+      updateFeature(featureId, {
+        position: DEFAULT_POSITION,
+        orientation,
+      });
+
+      if (fileUrl) {
+        updateFeature(featureId, {
+          visual: {
+            type: "model",
+            scale: DEFAULT_SCALE.scale,
+            uri: fileUrl,
+            heightReference: HeightReference.RELATIVE_TO_GROUND,
+          },
+        });
+      }
+    }
   };
 
   return (
@@ -268,10 +411,12 @@ export function CalibratePage() {
           ))}
         </div>
         <div className="flex gap-2 mt-4">
-          <Button size="sm" className="w-full cursor-pointer">
-            Save
-          </Button>
-          <Button size="sm" variant="outline" className="w-full cursor-pointer">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full cursor-pointer"
+            onClick={handleReset}
+          >
             Reset
           </Button>
         </div>

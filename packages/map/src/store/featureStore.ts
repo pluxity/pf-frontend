@@ -3,6 +3,7 @@ import {
   Cartesian3,
   Cartographic,
   ConstantPositionProperty,
+  ConstantProperty,
   DistanceDisplayCondition,
   JulianDate,
   BillboardGraphics,
@@ -267,6 +268,10 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
     if (patch.position) {
       const cartesian = coordinateToCartesian3(patch.position);
       entity.position = new ConstantPositionProperty(cartesian);
+    }
+
+    if (patch.orientation !== undefined) {
+      entity.orientation = new ConstantProperty(patch.orientation);
     }
 
     if (patch.properties) {
