@@ -1,42 +1,59 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ComponentRef, Ref } from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
 
-export type ListboxValue<TValue> = TValue | TValue[] | null;
+// Radix Select primitive types
+export type ListboxRootProps = ComponentPropsWithoutRef<typeof SelectPrimitive.Root>;
 
-export interface ListboxProps<TValue> {
-  value: ListboxValue<TValue>;
-  onChange: (value: ListboxValue<TValue>) => void;
-  multiple?: boolean;
-  disabled?: boolean;
-  by?: ((a: TValue, b: TValue) => boolean) | string;
-  renderValue?: (value: ListboxValue<TValue>) => ReactNode;
-  className?: string;
-  children: ReactNode;
+export interface ListboxTriggerProps extends ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Trigger
+> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Trigger>>;
 }
 
-export type ListboxButtonProps = ComponentPropsWithoutRef<"button">;
-
-export type ListboxOptionsProps = ComponentPropsWithoutRef<"ul">;
-
-export interface ListboxOptionProps<TValue> extends Omit<ComponentPropsWithoutRef<"li">, "value"> {
-  value: TValue;
-  disabled?: boolean;
+export interface ListboxValueProps extends ComponentPropsWithoutRef<typeof SelectPrimitive.Value> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Value>>;
 }
 
-export type ListboxOptionIconProps = ComponentPropsWithoutRef<"span">;
-
-export type ListboxOptionTextProps = ComponentPropsWithoutRef<"span">;
-
-export type ListboxOptionDescriptionProps = ComponentPropsWithoutRef<"p">;
-
-export interface ListboxSelectedValueProps extends ComponentPropsWithoutRef<"span"> {
-  placeholder?: string;
-  maxVisible?: number;
+export interface ListboxContentProps extends ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Content
+> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Content>>;
 }
 
-export type ListboxIconProps = ComponentPropsWithoutRef<"span">;
-
-export interface ListboxGroupProps extends ComponentPropsWithoutRef<"div"> {
-  label?: ReactNode;
+export interface ListboxViewportProps extends ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Viewport
+> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Viewport>>;
 }
 
-export type ListboxSeparatorProps = ComponentPropsWithoutRef<"div">;
+export interface ListboxItemProps extends ComponentPropsWithoutRef<typeof SelectPrimitive.Item> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Item>>;
+}
+
+export interface ListboxGroupProps extends ComponentPropsWithoutRef<typeof SelectPrimitive.Group> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Group>>;
+}
+
+export interface ListboxLabelProps extends ComponentPropsWithoutRef<typeof SelectPrimitive.Label> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Label>>;
+}
+
+export interface ListboxSeparatorProps extends ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Separator
+> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.Separator>>;
+}
+
+export type ListboxIconProps = ComponentPropsWithoutRef<"span"> & {
+  ref?: Ref<HTMLSpanElement>;
+};
+
+export interface ListboxItemTextProps extends ComponentPropsWithoutRef<
+  typeof SelectPrimitive.ItemText
+> {
+  ref?: Ref<ComponentRef<typeof SelectPrimitive.ItemText>>;
+}
+
+export type ListboxItemDescriptionProps = ComponentPropsWithoutRef<"p"> & {
+  ref?: Ref<HTMLParagraphElement>;
+};

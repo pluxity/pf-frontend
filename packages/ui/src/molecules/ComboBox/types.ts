@@ -1,66 +1,78 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode, Ref } from "react";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
-export type EnsureArray<T> = T extends unknown[] ? T : Expand<T>[];
+export type ComboBoxValueType<TValue, TMultiple extends boolean = false> = TMultiple extends true
+  ? TValue[]
+  : TValue | null;
 
-export type ComboBoxValueType<
-  TValue,
-  TMultiple extends boolean | undefined = false,
-> = TMultiple extends true ? EnsureArray<TValue> : TValue | null;
+export interface ComboBoxContextValue<TValue, TMultiple extends boolean = false> {
+  value: ComboBoxValueType<TValue, TMultiple>;
+  onValueChange: (value: ComboBoxValueType<TValue, TMultiple>) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  search: string;
+  onSearchChange: (search: string) => void;
+  disabled?: boolean;
+  multiple?: TMultiple;
+}
 
-export type ComboBoxFilterFn<TValue> = (
-  query: string,
-  textValue: string,
-  itemProps: ComboBoxItemProps<TValue>
-) => boolean;
-
-export interface ComboBoxProps<TValue, TMultiple extends boolean | undefined = false> {
+export interface ComboBoxProps<TValue, TMultiple extends boolean = false> {
   value: ComboBoxValueType<TValue, TMultiple>;
   onValueChange: (value: ComboBoxValueType<TValue, TMultiple>) => void;
   multiple?: TMultiple;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
-  nullable?: boolean;
-  by?: ((a: TValue, b: TValue) => boolean) | string;
-  renderValue?: (value: ComboBoxValueType<TValue, TMultiple>) => ReactNode;
-  filter?: ComboBoxFilterFn<TValue>;
-  isLoading?: boolean;
-  className?: string;
   children: ReactNode;
 }
 
-export type ComboBoxTriggerProps = ComponentPropsWithoutRef<"button">;
-
-export type ComboBoxContentProps = ComponentPropsWithoutRef<"div">;
-
-export type ComboBoxInputProps = ComponentPropsWithoutRef<"input">;
-
-export interface ComboBoxListProps extends ComponentPropsWithoutRef<"div"> {
-  children: ReactNode;
-}
-
-export interface ComboBoxGroupProps extends ComponentPropsWithoutRef<"div"> {
-  label?: ReactNode;
-}
-
-export interface ComboBoxItemProps<TValue> extends Omit<ComponentPropsWithoutRef<"li">, "value"> {
-  value: TValue;
-  textValue?: string;
-  disabled?: boolean;
-}
-
-export type ComboBoxSeparatorProps = ComponentPropsWithoutRef<"div">;
-
-export type ComboBoxEmptyProps = ComponentPropsWithoutRef<"div">;
-
-export interface ComboBoxLoadingProps extends ComponentPropsWithoutRef<"div"> {
-  label?: ReactNode;
+export interface ComboBoxTriggerProps extends ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Trigger
+> {
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export interface ComboBoxValueProps extends ComponentPropsWithoutRef<"span"> {
   placeholder?: string;
-  maxVisible?: number;
+  ref?: Ref<HTMLSpanElement>;
 }
 
-export type ComboBoxIconProps = ComponentPropsWithoutRef<"span">;
+export type ComboBoxIconProps = ComponentPropsWithoutRef<"span"> & {
+  ref?: Ref<HTMLSpanElement>;
+};
 
-export type ComboBoxItemIconProps = ComponentPropsWithoutRef<"span">;
+export interface ComboBoxContentProps extends ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Content
+> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+export interface ComboBoxInputProps extends ComponentPropsWithoutRef<"input"> {
+  ref?: Ref<HTMLInputElement>;
+}
+
+export interface ComboBoxListProps extends ComponentPropsWithoutRef<"div"> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+export interface ComboBoxEmptyProps extends ComponentPropsWithoutRef<"div"> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+export interface ComboBoxGroupProps extends ComponentPropsWithoutRef<"div"> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+export interface ComboBoxLabelProps extends ComponentPropsWithoutRef<"div"> {
+  ref?: Ref<HTMLDivElement>;
+}
+
+export interface ComboBoxItemProps<TValue> extends ComponentPropsWithoutRef<"div"> {
+  value: TValue;
+  disabled?: boolean;
+  ref?: Ref<HTMLDivElement>;
+}
+
+export type ComboBoxSeparatorProps = ComponentPropsWithoutRef<"div"> & {
+  ref?: Ref<HTMLDivElement>;
+};

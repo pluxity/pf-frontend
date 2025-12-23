@@ -8,8 +8,8 @@
     "./atoms": "./src/atoms/index.ts",
     "./molecules": "./src/molecules/index.ts",
     "./organisms": "./src/organisms/index.ts",
-    "./utils": "./src/utils/index.ts",
     "./templates": "./src/templates/index.ts",
+    "./utils": "./src/utils/index.ts",
     "./globals.css": "./src/globals.css"
   },
   "scripts": {
@@ -27,7 +27,6 @@
     "react-dom": "catalog:"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.4",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-avatar": "^1.1.3",

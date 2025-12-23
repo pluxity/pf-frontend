@@ -1,356 +1,208 @@
-import {
-  Combobox as HeadlessCombobox,
-  ComboboxButton as HeadlessComboboxButton,
-  ComboboxOption as HeadlessComboboxOption,
-  ComboboxOptions as HeadlessComboboxOptions,
-  Transition,
-} from "@headlessui/react";
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  type JSX,
-  type ReactElement,
-  type ReactNode,
-} from "react";
-import { Check, ChevronDownSmall, Loader } from "../../atoms/Icon";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
+import { createContext, useCallback, useContext, useMemo, useState, type JSX } from "react";
+import { Check, ChevronDownSmall, Search } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import type {
   ComboBoxContentProps,
+  ComboBoxContextValue,
   ComboBoxEmptyProps,
+  ComboBoxGroupProps,
   ComboBoxIconProps,
   ComboBoxInputProps,
-  ComboBoxItemIconProps,
   ComboBoxItemProps,
+  ComboBoxLabelProps,
   ComboBoxListProps,
-  ComboBoxLoadingProps,
   ComboBoxProps,
   ComboBoxSeparatorProps,
   ComboBoxTriggerProps,
-  EnsureArray,
-  ComboBoxValueType,
   ComboBoxValueProps,
-  ComboBoxFilterFn,
-  ComboBoxGroupProps,
 } from "./types";
 
-interface ComboBoxContextValue<TValue, TMultiple extends boolean | undefined> {
-  value: ComboBoxValueType<TValue, TMultiple>;
-  multiple?: TMultiple;
-  open: boolean;
-  query: string;
-  setQuery: (value: string) => void;
-  filter: ComboBoxFilterFn<TValue>;
-  matchCount: number;
-  setMatchCount: (count: number) => void;
-  renderValue?: (value: ComboBoxValueType<TValue, TMultiple>) => React.ReactNode;
-  isLoading?: boolean;
-}
+const ComboBoxContext = createContext<ComboBoxContextValue<unknown, boolean> | null>(null);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ComboBoxContext = createContext<ComboBoxContextValue<any, boolean | undefined> | null>(null);
-
-function useComboBoxContext<TValue, TMultiple extends boolean | undefined = boolean | undefined>() {
+function useComboBox<TValue, TMultiple extends boolean = false>() {
   const context = useContext(ComboBoxContext);
   if (!context) {
-    throw new Error("ComboBox components must be used within a ComboBox root.");
+    throw new Error("ComboBox components must be used within a ComboBox");
   }
   return context as ComboBoxContextValue<TValue, TMultiple>;
 }
 
-const defaultFilter: ComboBoxFilterFn<unknown> = (query, textValue) => {
-  if (!query) return true;
-  return textValue.toLowerCase().includes(query.toLowerCase());
-};
-
-type HeadlessValue<TValue, TMultiple extends boolean | undefined> = TMultiple extends true
-  ? EnsureArray<TValue>
-  : TValue | undefined;
-
-function getTextContent(node: ReactNode): string {
-  if (typeof node === "string" || typeof node === "number") {
-    return String(node);
-  }
-  if (Array.isArray(node)) {
-    return node.map(getTextContent).join(" ");
-  }
-  if (React.isValidElement<{ children?: ReactNode }>(node)) {
-    return getTextContent(node.props.children);
-  }
-  return "";
-}
-
-function ComboBoxRoot<TValue, TMultiple extends boolean | undefined = false>({
-  children,
+function ComboBoxRoot<TValue, TMultiple extends boolean = false>({
   value,
   onValueChange,
   multiple,
-  by,
-  className,
-  renderValue,
-  filter = defaultFilter,
-  isLoading,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
   disabled,
-  ...props
+  children,
 }: ComboBoxProps<TValue, TMultiple>) {
-  const [query, setQuery] = useState("");
-  const [matchCount, setMatchCount] = useState(0);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
-  const handleChange = (val: unknown) => {
-    setQuery("");
-    (onValueChange as ((value: ComboBoxValueType<TValue, TMultiple>) => void) | undefined)?.(
-      val as ComboBoxValueType<TValue, TMultiple>
-    );
-  };
+  const open = controlledOpen ?? uncontrolledOpen;
+  const onOpenChange = controlledOnOpenChange ?? setUncontrolledOpen;
 
-  const providerValue = useMemo(
-    () => ({
-      value,
-      multiple,
-      query,
-      setQuery,
-      filter: filter as ComboBoxFilterFn<TValue>,
-      matchCount,
-      setMatchCount,
-      renderValue,
-      isLoading,
-      open: false, // placeholder, overwritten in render prop below
-    }),
-    [filter, isLoading, matchCount, multiple, query, renderValue, value]
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      onOpenChange(nextOpen);
+      if (!nextOpen) {
+        setSearch("");
+      }
+    },
+    [onOpenChange]
   );
 
-  const headlessValue = (
-    multiple
-      ? (value as EnsureArray<TValue> | undefined)
-      : ((value ?? undefined) as TValue | undefined)
-  ) as HeadlessValue<TValue, TMultiple>;
-
-  const headlessBy: ((a: TValue, b: TValue) => boolean) | undefined =
-    typeof by === "string"
-      ? (a: TValue, b: TValue) =>
-          (a as Record<string, unknown>)[by] === (b as Record<string, unknown>)[by]
-      : by;
+  const contextValue = useMemo(
+    () => ({
+      value,
+      onValueChange: onValueChange as (value: unknown) => void,
+      open,
+      onOpenChange: handleOpenChange,
+      search,
+      onSearchChange: setSearch,
+      disabled,
+      multiple,
+    }),
+    [value, onValueChange, open, handleOpenChange, search, disabled, multiple]
+  );
 
   return (
-    <HeadlessCombobox
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      value={headlessValue as any}
-      onChange={handleChange}
-      multiple={multiple}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      by={headlessBy as any}
-      disabled={disabled}
-      {...props}
-    >
-      {({ open }) => (
-        <ComboBoxContext.Provider value={{ ...providerValue, open }}>
-          <div className={cn("relative w-full", className)}>{children}</div>
-        </ComboBoxContext.Provider>
-      )}
-    </HeadlessCombobox>
+    <ComboBoxContext.Provider value={contextValue}>
+      <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+        {children}
+      </PopoverPrimitive.Root>
+    </ComboBoxContext.Provider>
   );
 }
 
-function ComboBoxTrigger({ className, children, ...props }: ComboBoxTriggerProps) {
+function ComboBoxTrigger({ className, children, ref, ...props }: ComboBoxTriggerProps) {
+  const { disabled } = useComboBox();
+
   return (
-    <HeadlessComboboxButton
+    <PopoverPrimitive.Trigger
+      ref={ref}
+      disabled={disabled}
       className={cn(
         "flex h-10 w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 text-sm",
-        "placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+        "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
+        "[&>span]:line-clamp-1",
         className
       )}
       {...props}
     >
       {children}
-    </HeadlessComboboxButton>
+    </PopoverPrimitive.Trigger>
   );
 }
 
-function ComboBoxValueComponent<TValue>({
+function ComboBoxValue({
   placeholder = "Select...",
   className,
-  maxVisible = 3,
+  ref,
   ...props
 }: ComboBoxValueProps) {
-  const { value, renderValue } = useComboBoxContext<TValue>();
-  const isEmpty = value === null || (Array.isArray(value) && value.length === 0);
-  const isArrayValue = Array.isArray(value);
+  const { value, multiple } = useComboBox();
 
-  const defaultRenderValue = () => {
-    if (Array.isArray(value)) {
-      const visible = value.slice(0, maxVisible).map((item) => (item === null ? "" : String(item)));
-      const remaining = value.length - maxVisible;
-      return (
-        <>
-          {visible.map((item, idx) => (
-            <span
-              key={`${item}-${idx}`}
-              className="inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-1 text-xs text-primary-700"
-            >
-              {item}
-            </span>
-          ))}
-          {remaining > 0 ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
-              +{remaining} more
-            </span>
-          ) : null}
-        </>
-      );
+  const getDisplayValue = () => {
+    if (multiple && Array.isArray(value)) {
+      if (value.length === 0) return null;
+      return value.map((v) => String(v)).join(", ");
     }
-    if (value === null) return "";
-    return String(value);
+    return value;
   };
 
-  const rendered = renderValue ? renderValue(value) : defaultRenderValue();
+  const displayValue = getDisplayValue();
+  const hasValue = displayValue !== null && displayValue !== undefined && displayValue !== "";
 
   return (
     <span
+      ref={ref}
       className={cn(
-        "flex-1 text-left",
-        isArrayValue && "flex flex-wrap items-center gap-1",
-        isEmpty ? "text-gray-500" : "text-gray-900",
+        "flex-1 truncate text-left",
+        hasValue ? "text-gray-900" : "text-gray-500",
         className
       )}
       {...props}
     >
-      {isEmpty ? placeholder : rendered}
+      {hasValue ? String(displayValue) : placeholder}
     </span>
   );
 }
 
-function ComboBoxIcon({ className, ...props }: ComboBoxIconProps) {
+function ComboBoxIcon({ className, ref, ...props }: ComboBoxIconProps) {
   return (
-    <span className={cn("ml-2 text-gray-500", className)} aria-hidden="true" {...props}>
+    <span ref={ref} className={cn("ml-2 text-gray-500", className)} aria-hidden {...props}>
       <ChevronDownSmall />
     </span>
   );
 }
 
-function ComboBoxContent({ className, children }: ComboBoxContentProps) {
-  const { open } = useComboBoxContext<unknown>();
-
+function ComboBoxContent({
+  className,
+  children,
+  sideOffset = 4,
+  ref,
+  ...props
+}: ComboBoxContentProps) {
   return (
-    <Transition
-      show={open}
-      enter="transition ease-out duration-100"
-      enterFrom="opacity-0 translate-y-1 scale-95"
-      enterTo="opacity-100 translate-y-0 scale-100"
-      leave="transition ease-in duration-75"
-      leaveFrom="opacity-100 translate-y-0 scale-100"
-      leaveTo="opacity-0 translate-y-1 scale-95"
-    >
-      <div
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        ref={ref}
+        sideOffset={sideOffset}
         className={cn(
-          "absolute left-0 right-0 z-50 mt-2 rounded-lg border border-gray-200 bg-white shadow-lg",
-          "focus:outline-none",
+          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           className
         )}
+        align="start"
+        {...props}
       >
         {children}
-      </div>
-    </Transition>
+      </PopoverPrimitive.Content>
+    </PopoverPrimitive.Portal>
   );
 }
 
 function ComboBoxInput({
   className,
-  onChange,
-  placeholder = "Type to search...",
+  placeholder = "Search...",
+  ref,
   ...props
 }: ComboBoxInputProps) {
-  const { setQuery, query } = useComboBoxContext<unknown>();
+  const { search, onSearchChange } = useComboBox();
 
   return (
-    <div className="p-2">
-      <HeadlessCombobox.Input
+    <div className="flex items-center border-b border-gray-200 px-3">
+      <Search size="sm" className="text-gray-400" />
+      <input
+        ref={ref}
+        type="text"
         className={cn(
-          "w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm",
-          "placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20",
+          "flex-1 bg-transparent py-2.5 pl-2 text-sm outline-none",
+          "placeholder:text-gray-500",
           className
         )}
         placeholder={placeholder}
-        displayValue={() => query}
-        onChange={(event) => {
-          setQuery(event.target.value);
-          onChange?.(event);
-        }}
+        value={search}
+        onChange={(e) => onSearchChange(e.target.value)}
         {...props}
       />
     </div>
   );
 }
 
-function ComboBoxGroup({ label, className, children, ...props }: ComboBoxGroupProps) {
-  return (
-    <div className={cn("px-1 py-1.5", className)} role="group" {...props}>
-      {label ? <div className="px-2 pb-1 text-xs font-semibold text-gray-500">{label}</div> : null}
-      <div className="space-y-0.5">{children}</div>
-    </div>
-  );
-}
-
-function ComboBoxItem<TValue>({
-  value,
-  className,
-  children,
-  disabled,
-  ...props
-}: ComboBoxItemProps<TValue>) {
-  return (
-    <HeadlessComboboxOption
-      value={value}
-      disabled={disabled}
-      as="li"
-      className={({ focus, disabled: optionDisabled, selected }) =>
-        cn(
-          "flex w-full cursor-default select-none items-center gap-2 rounded-md px-3 py-2 text-sm",
-          focus && "bg-gray-50",
-          selected && "text-primary-600",
-          (disabled || optionDisabled) && "cursor-not-allowed opacity-50",
-          className
-        )
-      }
-      {...props}
-    >
-      {({ selected }) => (
-        <>
-          <span className="flex min-w-0 items-center gap-2 text-gray-900">{children}</span>
-          {selected ? <Check size="sm" className="ml-auto text-primary-500" /> : null}
-        </>
-      )}
-    </HeadlessComboboxOption>
-  );
-}
-
-function ComboBoxItemIcon({ className, ...props }: ComboBoxItemIconProps) {
-  return (
-    <span
-      className={cn("flex h-4 w-4 items-center justify-center text-gray-500", className)}
-      {...props}
-    />
-  );
-}
-
-function ComboBoxSeparator({ className, ...props }: ComboBoxSeparatorProps) {
-  return (
-    <div className={cn("my-1 border-t border-gray-200", className)} role="separator" {...props} />
-  );
-}
-
-function ComboBoxEmpty({ className, children = "No results found", ...props }: ComboBoxEmptyProps) {
-  const { matchCount, isLoading } = useComboBoxContext<unknown>();
-  if (isLoading || matchCount !== 0) return null;
-
+function ComboBoxList({ className, children, ref, ...props }: ComboBoxListProps) {
   return (
     <div
-      className={cn(
-        "px-3 py-2 text-sm text-gray-500",
-        "flex items-center justify-between",
-        className
-      )}
+      ref={ref}
+      className={cn("max-h-64 overflow-auto p-1", className)}
+      role="listbox"
       {...props}
     >
       {children}
@@ -358,129 +210,135 @@ function ComboBoxEmpty({ className, children = "No results found", ...props }: C
   );
 }
 
-function ComboBoxLoading({ className, children, label = "Loading..." }: ComboBoxLoadingProps) {
-  const { isLoading } = useComboBoxContext<unknown>();
-  if (!isLoading) return null;
-
+function ComboBoxEmpty({
+  className,
+  children = "No results found",
+  ref,
+  ...props
+}: ComboBoxEmptyProps) {
   return (
-    <div className={cn("flex items-center gap-2 px-3 py-2 text-sm text-gray-500", className)}>
-      <Loader size="sm" className="animate-spin text-gray-400" />
-      <span>{children ?? label}</span>
+    <div
+      ref={ref}
+      className={cn("px-3 py-6 text-center text-sm text-gray-500", className)}
+      {...props}
+    >
+      {children}
     </div>
   );
 }
 
-function filterListChildren<TValue>(
-  children: ReactNode,
-  filter: ComboBoxFilterFn<TValue>,
-  query: string
-): {
-  filtered: ReactNode[];
-  matchCount: number;
-  empties: ReactElement<unknown>[];
-  loadings: ReactElement<unknown>[];
-} {
-  const filtered: ReactNode[] = [];
-  const empties: ReactElement<unknown>[] = [];
-  const loadings: ReactElement<unknown>[] = [];
-  let matchCount = 0;
-
-  React.Children.forEach(children, (child) => {
-    if (!React.isValidElement(child)) {
-      filtered.push(child);
-      return;
-    }
-    const element = child as React.ReactElement<{
-      children?: ReactNode;
-      value?: TValue;
-      textValue?: string;
-    }>;
-
-    if (element.type === ComboBoxEmpty) {
-      empties.push(element as ReactElement<unknown>);
-      return;
-    }
-
-    if (element.type === ComboBoxLoading) {
-      loadings.push(element as ReactElement<unknown>);
-      return;
-    }
-
-    if (element.type === ComboBoxGroup) {
-      const result = filterListChildren(element.props.children, filter, query);
-      matchCount += result.matchCount;
-      if (result.filtered.length > 0) {
-        filtered.push(React.cloneElement(element, {}, result.filtered));
-      }
-      empties.push(...result.empties);
-      loadings.push(...result.loadings);
-      return;
-    }
-
-    if (element.type === ComboBoxItem) {
-      const itemProps = element.props as ComboBoxItemProps<TValue>;
-      const textValue =
-        itemProps.textValue ?? getTextContent(itemProps.children) ?? String(itemProps.value ?? "");
-      const matched = filter(query, textValue, itemProps);
-      if (matched) {
-        matchCount += 1;
-        filtered.push(element);
-      }
-      return;
-    }
-
-    filtered.push(element);
-  });
-
-  return { filtered, matchCount, empties, loadings };
-}
-
-function ComboBoxList<TValue>({ className, children, ...props }: ComboBoxListProps) {
-  const { filter, query, setMatchCount, isLoading } = useComboBoxContext<TValue>();
-
-  const {
-    filtered,
-    matchCount: nextMatchCount,
-    empties,
-    loadings,
-  } = useMemo(() => filterListChildren(children, filter, query), [children, filter, query]);
-
-  React.useEffect(() => {
-    setMatchCount(nextMatchCount);
-  }, [nextMatchCount, setMatchCount]);
-
-  const showEmpty = !isLoading && nextMatchCount === 0;
-
+function ComboBoxGroup({ className, children, ref, ...props }: ComboBoxGroupProps) {
   return (
-    <HeadlessComboboxOptions
-      static
-      as="div"
-      className={cn("max-h-64 w-full overflow-auto p-1 focus:outline-none", className)}
-      {...props}
-    >
-      {isLoading ? loadings.length > 0 ? loadings : <ComboBoxLoading /> : filtered}
-      {showEmpty ? empties.length > 0 ? empties : <ComboBoxEmpty /> : null}
-    </HeadlessComboboxOptions>
+    <div ref={ref} className={cn("py-1", className)} role="group" {...props}>
+      {children}
+    </div>
   );
 }
 
-const ComboBox = ComboBoxRoot as <TValue, TMultiple extends boolean | undefined = false>(
+function ComboBoxLabel({ className, children, ref, ...props }: ComboBoxLabelProps) {
+  return (
+    <div
+      ref={ref}
+      className={cn("px-2 py-1.5 text-xs font-semibold text-gray-500", className)}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function ComboBoxItemComponent<TValue>({
+  value: itemValue,
+  disabled,
+  className,
+  children,
+  ref,
+  ...props
+}: ComboBoxItemProps<TValue>) {
+  const { value, onValueChange, onOpenChange, multiple } = useComboBox<TValue, boolean>();
+
+  const isSelected =
+    multiple && Array.isArray(value) ? value.includes(itemValue) : value === itemValue;
+
+  const handleSelect = () => {
+    if (disabled) return;
+
+    if (multiple && Array.isArray(value)) {
+      // Toggle selection for multiple mode
+      const newValue = isSelected ? value.filter((v) => v !== itemValue) : [...value, itemValue];
+      onValueChange(newValue as typeof value);
+      // Don't close on multiple selection
+    } else {
+      // Single selection
+      onValueChange(itemValue as typeof value);
+      onOpenChange(false);
+    }
+  };
+
+  return (
+    <div
+      ref={ref}
+      role="option"
+      aria-selected={isSelected}
+      aria-disabled={disabled}
+      data-disabled={disabled ? "" : undefined}
+      data-selected={isSelected ? "" : undefined}
+      className={cn(
+        "relative flex w-full cursor-default select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none",
+        "hover:bg-gray-50 focus:bg-gray-50",
+        isSelected && "bg-primary-50 text-primary-600",
+        disabled && "pointer-events-none opacity-50",
+        className
+      )}
+      onClick={handleSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleSelect();
+        }
+      }}
+      tabIndex={disabled ? -1 : 0}
+      {...props}
+    >
+      <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+        {isSelected && <Check size="sm" className="text-primary-500" />}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+function ComboBoxSeparator({ className, ref, ...props }: ComboBoxSeparatorProps) {
+  return (
+    <div
+      ref={ref}
+      className={cn("-mx-1 my-1 h-px bg-gray-200", className)}
+      role="separator"
+      {...props}
+    />
+  );
+}
+
+const ComboBox = ComboBoxRoot as <TValue, TMultiple extends boolean = false>(
   props: ComboBoxProps<TValue, TMultiple>
 ) => JSX.Element;
-const ComboBoxValue = ComboBoxValueComponent;
+
+const ComboBoxItem = ComboBoxItemComponent as <TValue>(
+  props: ComboBoxItemProps<TValue>
+) => JSX.Element;
 
 export {
   ComboBox,
   ComboBoxTrigger,
+  ComboBoxValue,
+  ComboBoxIcon,
   ComboBoxContent,
   ComboBoxInput,
   ComboBoxList,
-  ComboBoxGroup,
-  ComboBoxItem,
-  ComboBoxItemIcon,
-  ComboBoxSeparator,
   ComboBoxEmpty,
-  ComboBoxLoading,
-  ComboBoxValue,
-  ComboBoxIcon,
+  ComboBoxGroup,
+  ComboBoxLabel,
+  ComboBoxItem,
+  ComboBoxSeparator,
+  useComboBox,
 };

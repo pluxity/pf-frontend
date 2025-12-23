@@ -1,18 +1,17 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { CheckCircle, Cloudy, Sunny, Users } from "../../atoms/Icon";
 import {
   Listbox,
-  ListboxButton,
+  ListboxContent,
   ListboxGroup,
   ListboxIcon,
-  ListboxOption,
-  ListboxOptionDescription,
-  ListboxOptionIcon,
-  ListboxOptionText,
-  ListboxOptions,
-  ListboxSelectedValue,
+  ListboxItem,
+  ListboxItemDescription,
+  ListboxItemText,
+  ListboxLabel,
   ListboxSeparator,
+  ListboxTrigger,
+  ListboxValue,
 } from "./Listbox";
 
 const meta: Meta<typeof Listbox> = {
@@ -38,111 +37,121 @@ const languages = [
 
 export const Default: Story = {
   render: () => {
-    const [value, setValue] = useState<string | null>(null);
+    const [value, setValue] = useState<string>("");
 
     return (
-      <Listbox
-        value={value}
-        onChange={(next) => setValue(Array.isArray(next) ? (next[0] ?? null) : next)}
-      >
-        <ListboxButton className="w-[220px]">
-          <ListboxSelectedValue placeholder="Choose a language" />
+      <Listbox value={value} onValueChange={setValue}>
+        <ListboxTrigger className="w-[220px]">
+          <ListboxValue placeholder="Choose a language" />
           <ListboxIcon />
-        </ListboxButton>
-        <ListboxOptions>
+        </ListboxTrigger>
+        <ListboxContent>
           {languages.map((lang) => (
-            <ListboxOption key={lang.id} value={lang.name}>
-              <ListboxOptionIcon>
-                <Users size="sm" />
-              </ListboxOptionIcon>
-              <ListboxOptionText>{lang.name}</ListboxOptionText>
-            </ListboxOption>
+            <ListboxItem key={lang.id} value={lang.id}>
+              {lang.name}
+            </ListboxItem>
           ))}
-        </ListboxOptions>
+        </ListboxContent>
       </Listbox>
     );
   },
 };
 
-export const WithDescriptions: Story = {
+export const WithGroups: Story = {
   render: () => {
-    const [value, setValue] = useState<string | null>(null);
+    const [value, setValue] = useState<string>("");
 
     const themes = [
-      {
-        id: "light",
-        name: "Light",
-        description: "Bright UI with clear contrast",
-        icon: <Sunny size="sm" />,
-      },
-      {
-        id: "dark",
-        name: "Dark",
-        description: "Dimmed UI for low light",
-        icon: <Cloudy size="sm" />,
-      },
-      {
-        id: "system",
-        name: "System",
-        description: "Follow OS preference",
-        icon: <CheckCircle size="sm" />,
-      },
+      { id: "light", name: "Light", description: "Bright UI with clear contrast" },
+      { id: "dark", name: "Dark", description: "Dimmed UI for low light" },
+      { id: "system", name: "System", description: "Follow OS preference" },
     ];
 
     return (
-      <Listbox
-        value={value}
-        onChange={(next) => setValue(Array.isArray(next) ? (next[0] ?? null) : next)}
-      >
-        <ListboxButton className="w-[280px]">
-          <ListboxSelectedValue placeholder="Pick a theme" />
+      <Listbox value={value} onValueChange={setValue}>
+        <ListboxTrigger className="w-[280px]">
+          <ListboxValue placeholder="Pick a theme" />
           <ListboxIcon />
-        </ListboxButton>
-        <ListboxOptions>
-          <ListboxGroup label="Themes">
+        </ListboxTrigger>
+        <ListboxContent>
+          <ListboxGroup>
+            <ListboxLabel>Themes</ListboxLabel>
             {themes.map((theme) => (
-              <ListboxOption key={theme.id} value={theme.name}>
-                <ListboxOptionIcon>{theme.icon}</ListboxOptionIcon>
+              <ListboxItem key={theme.id} value={theme.id}>
                 <div className="flex flex-col">
-                  <ListboxOptionText>{theme.name}</ListboxOptionText>
-                  <ListboxOptionDescription>{theme.description}</ListboxOptionDescription>
+                  <ListboxItemText>{theme.name}</ListboxItemText>
+                  <ListboxItemDescription>{theme.description}</ListboxItemDescription>
                 </div>
-              </ListboxOption>
+              </ListboxItem>
             ))}
           </ListboxGroup>
-        </ListboxOptions>
+        </ListboxContent>
       </Listbox>
     );
   },
 };
 
-export const MultiSelect: Story = {
+export const WithSeparator: Story = {
   render: () => {
-    const [value, setValue] = useState<string[]>([]);
+    const [value, setValue] = useState<string>("");
 
     return (
-      <Listbox
-        value={value}
-        multiple
-        onChange={(next) => setValue(Array.isArray(next) ? next : [])}
-      >
-        <ListboxButton className="w-[320px]">
-          <ListboxSelectedValue placeholder="Select languages" />
+      <Listbox value={value} onValueChange={setValue}>
+        <ListboxTrigger className="w-[220px]">
+          <ListboxValue placeholder="Select option" />
           <ListboxIcon />
-        </ListboxButton>
-        <ListboxOptions>
-          <ListboxGroup label="Languages">
-            {languages.map((lang) => (
-              <ListboxOption key={lang.id} value={lang.name}>
-                <ListboxOptionIcon>
-                  <Users size="sm" />
-                </ListboxOptionIcon>
-                <ListboxOptionText>{lang.name}</ListboxOptionText>
-              </ListboxOption>
-            ))}
+        </ListboxTrigger>
+        <ListboxContent>
+          <ListboxGroup>
+            <ListboxLabel>Popular</ListboxLabel>
+            <ListboxItem value="react">React</ListboxItem>
+            <ListboxItem value="vue">Vue</ListboxItem>
           </ListboxGroup>
           <ListboxSeparator />
-        </ListboxOptions>
+          <ListboxGroup>
+            <ListboxLabel>Others</ListboxLabel>
+            <ListboxItem value="angular">Angular</ListboxItem>
+            <ListboxItem value="svelte">Svelte</ListboxItem>
+          </ListboxGroup>
+        </ListboxContent>
+      </Listbox>
+    );
+  },
+};
+
+export const Disabled: Story = {
+  render: () => {
+    return (
+      <Listbox value="" disabled>
+        <ListboxTrigger className="w-[220px]">
+          <ListboxValue placeholder="Disabled" />
+          <ListboxIcon />
+        </ListboxTrigger>
+        <ListboxContent>
+          <ListboxItem value="option1">Option 1</ListboxItem>
+        </ListboxContent>
+      </Listbox>
+    );
+  },
+};
+
+export const DisabledItem: Story = {
+  render: () => {
+    const [value, setValue] = useState<string>("");
+
+    return (
+      <Listbox value={value} onValueChange={setValue}>
+        <ListboxTrigger className="w-[220px]">
+          <ListboxValue placeholder="Select option" />
+          <ListboxIcon />
+        </ListboxTrigger>
+        <ListboxContent>
+          <ListboxItem value="option1">Available</ListboxItem>
+          <ListboxItem value="option2" disabled>
+            Disabled
+          </ListboxItem>
+          <ListboxItem value="option3">Available</ListboxItem>
+        </ListboxContent>
       </Listbox>
     );
   },
