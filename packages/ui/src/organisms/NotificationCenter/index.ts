@@ -1,2 +1,10 @@
-export { NotificationCenter } from "./NotificationCenter";
-export type { NotificationCenterProps, NotificationItem } from "./NotificationCenter";
+export { NotificationCenter, useNotificationCenterContext } from "./NotificationCenter";
+export type {
+  NotificationCenterProps,
+  NotificationCenterHeaderProps,
+  NotificationCenterUnreadBadgeProps,
+  NotificationCenterMarkAllReadProps,
+  NotificationCenterItemProps,
+  NotificationCenterEmptyProps,
+  NotificationCenterCustomProps,
+} from "./NotificationCenter";

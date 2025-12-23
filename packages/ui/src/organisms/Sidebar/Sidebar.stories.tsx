@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Home, Users, Settings, BarChart, FileText, Bell, Help } from "../../atoms/Icon";
-import { Sidebar, CollapsibleSidebar } from "./Sidebar";
+import { Sidebar } from "./Sidebar";
 import { Avatar, AvatarFallback } from "../../atoms/Avatar";
 
 const meta: Meta<typeof Sidebar> = {
-  title: "Organisms/CollapsibleSidebar",
+  title: "Organisms/Sidebar",
   component: Sidebar,
   parameters: {
     layout: "fullscreen",
@@ -25,121 +25,284 @@ const meta: Meta<typeof Sidebar> = {
 export default meta;
 type Story = StoryObj<typeof Sidebar>;
 
-const defaultSections = [
-  {
-    label: "General",
-    items: [
-      { icon: <Home size="sm" />, label: "Home", active: true },
-      { icon: <BarChart size="sm" />, label: "Analytics" },
-      { icon: <FileText size="sm" />, label: "Reports" },
-    ],
-  },
-  {
-    label: "Management",
-    items: [
-      { icon: <Users size="sm" />, label: "Users" },
-      { icon: <Bell size="sm" />, label: "Notifications" },
-      { icon: <Settings size="sm" />, label: "Settings" },
-    ],
-  },
-  {
-    label: "Support",
-    items: [{ icon: <Help size="sm" />, label: "Help Center" }],
-  },
-];
+// ============================================================================
+// Composition Pattern Examples
+// ============================================================================
 
 export const Default: Story = {
-  args: {
-    title: "Dashboard",
-    sections: defaultSections,
-    collapsible: true,
-  },
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Section label="General">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Management">
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Support">
+        <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
+};
+
+export const CollapseButtonInHeader: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard">
+        <Sidebar.CollapseButton iconOnly />
+      </Sidebar.Header>
+
+      <Sidebar.Section label="General">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Management">
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Section>
+    </Sidebar>
+  ),
 };
 
 export const DefaultCollapsed: Story = {
-  args: {
-    title: "Dashboard",
-    sections: defaultSections,
-    collapsible: true,
-    defaultCollapsed: true,
-  },
+  render: () => (
+    <Sidebar defaultCollapsed>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Section label="General">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Management">
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
 };
 
-export const NonCollapsible: Story = {
-  args: {
-    title: "Dashboard",
-    sections: defaultSections,
-    collapsible: false,
-  },
+export const WithoutCollapseButton: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Section label="General">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Management">
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Section>
+    </Sidebar>
+  ),
 };
 
 export const WithNestedItems: Story = {
-  args: {
-    title: "Admin Panel",
-    sections: [
-      {
-        label: "Navigation",
-        items: [
-          { icon: <Home size="sm" />, label: "Dashboard", active: true },
-          {
-            icon: <Users size="sm" />,
-            label: "Users",
-            children: [{ label: "All Users" }, { label: "Add User" }, { label: "Roles" }],
-          },
-          {
-            icon: <Settings size="sm" />,
-            label: "Settings",
-            children: [{ label: "General" }, { label: "Security" }, { label: "Notifications" }],
-          },
-        ],
-      },
-    ],
-    collapsible: true,
-  },
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Admin Panel" />
+
+      <Sidebar.Section label="Navigation">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Dashboard
+        </Sidebar.Item>
+        <Sidebar.Item icon={<Users size="sm" />}>
+          Users
+          <Sidebar.Item>All Users</Sidebar.Item>
+          <Sidebar.Item>Add User</Sidebar.Item>
+          <Sidebar.Item>Roles</Sidebar.Item>
+        </Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>
+          Settings
+          <Sidebar.Item>General</Sidebar.Item>
+          <Sidebar.Item>Security</Sidebar.Item>
+          <Sidebar.Item>Notifications</Sidebar.Item>
+        </Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
 };
 
-export const WithFooter: Story = {
-  args: {
-    title: "Dashboard",
-    sections: [
-      {
-        items: [
-          { icon: <Home size="sm" />, label: "Home", active: true },
-          { icon: <BarChart size="sm" />, label: "Analytics" },
-          { icon: <Settings size="sm" />, label: "Settings" },
-        ],
-      },
-    ],
-    collapsible: true,
-    footer: (
-      <div className="flex items-center gap-3">
-        <Avatar size="sm">
-          <AvatarFallback>JD</AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="text-sm font-medium">John Doe</div>
-          <div className="text-xs text-gray-500">john@example.com</div>
+export const WithUserProfile: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Item icon={<Home size="sm" />} active>
+        Home
+      </Sidebar.Item>
+      <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+      <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+
+      <Sidebar.Footer>
+        <div className="flex items-center gap-3 pb-3">
+          <Avatar size="sm">
+            <AvatarFallback>JD</AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <div className="text-sm font-medium">John Doe</div>
+            <div className="text-xs text-gray-500">john@example.com</div>
+          </div>
         </div>
-      </div>
-    ),
-  },
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
 };
 
 export const WithCustomLogo: Story = {
-  args: {
-    title: "My App",
-    logo: (
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
-        <span className="text-sm font-bold text-white">M</span>
-      </div>
-    ),
-    sections: defaultSections,
-    collapsible: true,
-  },
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header
+        title="My App"
+        logo={
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
+            <span className="text-sm font-bold text-white">M</span>
+          </div>
+        }
+      />
+
+      <Sidebar.Section label="General">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Section label="Management">
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
 };
 
-export const UsingCollapsibleSidebarAlias: Story = {
+export const WithSeparators: Story = {
   render: () => (
-    <CollapsibleSidebar title="Using Alias" sections={defaultSections} collapsible={true} />
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Item icon={<Home size="sm" />} active>
+        Home
+      </Sidebar.Item>
+      <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+
+      <Sidebar.Separator />
+
+      <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+      <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+
+      <Sidebar.Separator />
+
+      <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
+};
+
+export const WithCustomContent: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Section label="Navigation">
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Custom>
+        <div className="rounded-lg bg-blue-50 p-3">
+          <div className="text-xs font-semibold text-blue-900">Pro Tip</div>
+          <div className="mt-1 text-xs text-blue-700">
+            Use keyboard shortcuts to navigate faster
+          </div>
+        </div>
+      </Sidebar.Custom>
+
+      <Sidebar.Section label="Settings">
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        <Sidebar.Item icon={<Help size="sm" />}>Help</Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
+  ),
+};
+
+export const WithLinks: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header title="Dashboard" />
+
+      <Sidebar.Section label="Pages">
+        <Sidebar.Item icon={<Home size="sm" />} href="/dashboard" active>
+          Dashboard
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />} href="/analytics">
+          Analytics
+        </Sidebar.Item>
+        <Sidebar.Item icon={<Users size="sm" />} href="/users">
+          Users
+        </Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />} href="/settings">
+          Settings
+        </Sidebar.Item>
+      </Sidebar.Section>
+
+      <Sidebar.Footer>
+        <Sidebar.CollapseButton />
+      </Sidebar.Footer>
+    </Sidebar>
   ),
 };

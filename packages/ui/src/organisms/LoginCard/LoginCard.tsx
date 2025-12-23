@@ -8,7 +8,7 @@ export interface LoginCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   logo?: React.ReactNode;
   title?: string;
   subtitle?: string;
-  onLoginSubmit?: (data: { email: string; password: string; remember: boolean }) => void;
+  onLoginSubmit?: (data: { username: string; password: string; remember: boolean }) => void;
   forgotPasswordHref?: string;
   signUpHref?: string;
   loading?: boolean;
@@ -31,7 +31,7 @@ function LoginCard({
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     onLoginSubmit?.({
-      email: formData.get("email") as string,
+      username: formData.get("username") as string,
       password: formData.get("password") as string,
       remember: formData.get("remember") === "on",
     });
@@ -56,14 +56,14 @@ function LoginCard({
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-[#333340]">
-              Email
+            <label htmlFor="username" className="text-sm font-medium text-[#333340]">
+              Username
             </label>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
+              id="username"
+              name="username"
+              type="text"
+              placeholder="Enter your username"
               required
               disabled={loading}
             />

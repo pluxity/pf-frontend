@@ -33,7 +33,7 @@ export const Default: Story = {
     subtitle: "Sign in to your account",
     onLoginSubmit: (data) => {
       console.log("Login data:", data);
-      alert(`Email: ${data.email}\nRemember: ${data.remember}`);
+      alert(`Username: ${data.username}\nRemember: ${data.remember}`);
     },
   },
 };

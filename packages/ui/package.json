@@ -8,8 +8,8 @@
     "./atoms": "./src/atoms/index.ts",
     "./molecules": "./src/molecules/index.ts",
     "./organisms": "./src/organisms/index.ts",
-    "./utils": "./src/utils/index.ts",
     "./templates": "./src/templates/index.ts",
+    "./utils": "./src/utils/index.ts",
     "./globals.css": "./src/globals.css"
   },
   "scripts": {
