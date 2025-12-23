@@ -73,7 +73,7 @@ function Chip({
           onClick={handleRemove}
           disabled={disabled}
           className={cn(
-            "flex-shrink-0 rounded-full p-0.5 transition-colors",
+            "flex-shrink-0 cursor-pointer rounded-full p-0.5 transition-colors",
             removeButtonStyles[variant],
             disabled && "cursor-not-allowed"
           )}

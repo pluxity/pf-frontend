@@ -11,7 +11,7 @@ function RadioGroupItem({ className, ref, ...props }: RadioGroupItemProps) {
     <RadioGroupPrimitive.Item
       ref={ref}
       className={cn(
-        "aspect-square h-4 w-4 rounded-full border border-border-default text-brand transition-colors",
+        "aspect-square h-4 w-4 cursor-pointer rounded-full border border-border-default text-brand transition-colors",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/20 focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[state=checked]:border-brand data-[state=checked]:bg-brand",
