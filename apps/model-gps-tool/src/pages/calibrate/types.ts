@@ -32,3 +32,17 @@ export type Rotation = {
 export type Scale = {
   scale: number;
 };
+
+export type BoundingBoxInfo = {
+  south: number;
+  east: number;
+  north: number;
+  west: number;
+};
+
+export type GLTFJson = {
+  scenes?: Array<{ nodes?: number[] }>;
+  nodes?: Array<{ mesh?: number; children?: number[] }>;
+  meshes?: Array<{ primitives?: Array<{ attributes: { POSITION?: number } }> }>;
+  accessors?: Array<{ min?: number[]; max?: number[] }>;
+};

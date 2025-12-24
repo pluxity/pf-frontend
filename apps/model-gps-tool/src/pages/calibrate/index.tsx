@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Input, Button, useToast, Toaster, Slider, Toggle } from "@pf-dev/ui";
 import {
   MapViewer,
@@ -14,8 +14,22 @@ import {
   Transforms,
   Cartesian3,
   Math as CesiumMath,
+  Cartographic,
+  Color,
+  ColorMaterialProperty,
+  Model,
+  PolygonGraphics,
+  PolygonHierarchy,
 } from "cesium";
-import type { InputFieldProps, SectionFieldProps, Position, Rotation, Scale } from "./types";
+import type {
+  InputFieldProps,
+  SectionFieldProps,
+  Position,
+  Rotation,
+  Scale,
+  BoundingBoxInfo,
+  GLTFJson,
+} from "./types";
 import { useModelDrag } from "../../hooks";
 
 const DEFAULT_POSITION: Position = {
@@ -163,7 +177,8 @@ export function CalibratePage() {
   const [fileName, setFileName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toasts, toast, dismissToast } = useToast();
-  const { addFeature, removeFeature, updateFeature } = useFeatureStore();
+  const { addFeature, removeFeature, updateFeature, getFeature, hasFeature, setVisibility } =
+    useFeatureStore();
   const viewer = useMapStore((state) => state.viewer);
 
   const [featureId, setFeatureId] = useState<string | null>(null);
@@ -171,9 +186,13 @@ export function CalibratePage() {
   const positionRef = useRef<Position>(position);
   const [rotation, setRotation] = useState<Rotation>(DEFAULT_ROTATION);
   const [scale, setScale] = useState<Scale>(DEFAULT_SCALE);
+  const [parsedBBox, setParsedBBox] = useState<{ width: number; depth: number } | null>(null);
 
   const { flyTo, cameraPosition } = useCameraStore();
   const [topView, setTopView] = useState<boolean>(false);
+  const [showBoundingBox, setShowBoundingBox] = useState<boolean>(false);
+  const [boundingBoxInfo, setBoundingBoxInfo] = useState<BoundingBoxInfo | null>(null);
+  const boundingBoxFeatureIdRef = useRef<string | null>(null);
 
   const handleToggleTopView = () => {
     if (!viewer || viewer.isDestroyed()) return;
@@ -219,7 +238,72 @@ export function CalibratePage() {
     setPosition,
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const parseGLTFBoundingBox = async (file: File) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+    let gltfJson: GLTFJson | undefined;
+
+    // GLB 여부 확인
+    const isGLB =
+      uint8Array[0] === 0x67 &&
+      uint8Array[1] === 0x6c &&
+      uint8Array[2] === 0x54 &&
+      uint8Array[3] === 0x46;
+    if (isGLB) {
+      const view = new DataView(arrayBuffer);
+      const jsonChunkLength = view.getUint32(12, true);
+      const jsonChunkType = view.getUint32(16, true);
+      if (jsonChunkType === 0x4e4f534a) {
+        gltfJson = JSON.parse(
+          new TextDecoder().decode(uint8Array.slice(20, 20 + jsonChunkLength))
+        ) as GLTFJson;
+      }
+    } else {
+      gltfJson = JSON.parse(new TextDecoder().decode(uint8Array)) as GLTFJson;
+    }
+
+    if (!gltfJson?.scenes?.[0]?.nodes || !gltfJson.nodes || !gltfJson.meshes || !gltfJson.accessors)
+      return null;
+
+    let minX = Infinity,
+      maxX = -Infinity;
+    let minZ = Infinity,
+      maxZ = -Infinity;
+
+    const traverseNode = (nodeIndex: number) => {
+      const node = gltfJson.nodes?.[nodeIndex];
+      if (!node) return;
+
+      if (node.mesh !== undefined) {
+        const mesh = gltfJson.meshes?.[node.mesh];
+        if (mesh) {
+          mesh.primitives?.forEach((primitive) => {
+            const accessor = gltfJson.accessors?.[primitive.attributes.POSITION ?? -1];
+            if (
+              accessor?.min &&
+              accessor?.max &&
+              accessor.min.length >= 3 &&
+              accessor.max.length >= 3
+            ) {
+              minX = Math.min(minX, accessor.min[0] ?? Infinity);
+              maxX = Math.max(maxX, accessor.max[0] ?? -Infinity);
+              minZ = Math.min(minZ, accessor.min[2] ?? Infinity);
+              maxZ = Math.max(maxZ, accessor.max[2] ?? -Infinity);
+            }
+          });
+        }
+      }
+
+      node.children?.forEach(traverseNode);
+    };
+
+    gltfJson.scenes[0].nodes?.forEach(traverseNode);
+
+    if (minX === Infinity || minZ === Infinity) return null;
+    return { width: maxX - minX, depth: maxZ - minZ };
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const file = event.target.files[0];
 
@@ -231,6 +315,14 @@ export function CalibratePage() {
       setFileUrl(url);
       setFileName(file.name);
       setFeatureId(crypto.randomUUID());
+
+      const parsedBBox = await parseGLTFBoundingBox(file);
+      if (parsedBBox) {
+        setParsedBBox(parsedBBox);
+      } else {
+        setParsedBBox(null);
+      }
+
       toast.success("파일이 업로드되었습니다.");
     } else {
       toast.error("파일 형식이 올바르지 않습니다. GLB 또는 GLTF 파일을 선택해주세요.");
@@ -238,19 +330,26 @@ export function CalibratePage() {
   };
 
   const handleRemoveFile = () => {
+    setPosition(DEFAULT_POSITION);
+    setRotation(DEFAULT_ROTATION);
+    setScale(DEFAULT_SCALE);
+    setShowBoundingBox(false);
     setFileUrl(null);
     setFileName("");
+    setParsedBBox(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
 
+    if (boundingBoxFeatureIdRef.current) {
+      removeFeature(boundingBoxFeatureIdRef.current);
+      boundingBoxFeatureIdRef.current = null;
+      setBoundingBoxInfo(null);
+    }
+
     setFeatureId(null);
     toast.success("파일이 제거되었습니다.");
-
-    setPosition(DEFAULT_POSITION);
-    setRotation(DEFAULT_ROTATION);
-    setScale(DEFAULT_SCALE);
   };
 
   const handleFieldsChange = (sectionId: string, values: Record<string, number>) => {
@@ -358,39 +457,199 @@ export function CalibratePage() {
     setPosition(DEFAULT_POSITION);
     setRotation(DEFAULT_ROTATION);
     setScale(DEFAULT_SCALE);
+    setShowBoundingBox(false);
+    setFileUrl(null);
+    setFileName("");
 
-    if (featureId) {
-      const headingPitchRoll = new HeadingPitchRoll(
-        CesiumMath.toRadians(DEFAULT_ROTATION.heading),
-        CesiumMath.toRadians(DEFAULT_ROTATION.pitch),
-        CesiumMath.toRadians(DEFAULT_ROTATION.roll)
-      );
-      const orientation = Transforms.headingPitchRollQuaternion(
-        Cartesian3.fromDegrees(
-          DEFAULT_POSITION.longitude,
-          DEFAULT_POSITION.latitude,
-          DEFAULT_POSITION.height
-        ),
-        headingPitchRoll
-      );
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setFeatureId(null);
 
-      updateFeature(featureId, {
-        position: DEFAULT_POSITION,
-        orientation,
+    if (boundingBoxFeatureIdRef.current) {
+      removeFeature(boundingBoxFeatureIdRef.current);
+      boundingBoxFeatureIdRef.current = null;
+      setBoundingBoxInfo(null);
+    }
+
+    if (topView && viewer && !viewer.isDestroyed()) {
+      setTopView(false);
+      const cartographic = viewer.camera.positionCartographic;
+      const currentState = cameraPosition || {
+        longitude: CesiumMath.toDegrees(cartographic.longitude),
+        latitude: CesiumMath.toDegrees(cartographic.latitude),
+        height: cartographic.height,
+        heading: CesiumMath.toDegrees(viewer.camera.heading),
+      };
+
+      flyTo({
+        longitude: currentState.longitude,
+        latitude: currentState.latitude,
+        height: currentState.height,
+        heading: currentState.heading,
+        pitch: -45,
+      });
+    }
+  };
+
+  const updateBoundingBoxVisual = useCallback((): BoundingBoxInfo | null => {
+    if (!viewer || viewer.isDestroyed() || !featureId || !parsedBBox || !showBoundingBox)
+      return null;
+
+    const entity = getFeature(featureId);
+    if (!entity?.position) return null;
+
+    let centerPosition = entity.position.getValue(viewer.clock.currentTime);
+    let scaleRatio = 1;
+
+    if (entity.model) {
+      const modelScale = entity.model.scale?.getValue(viewer.clock.currentTime) ?? 1;
+      for (let i = 0; i < viewer.scene.primitives.length; i++) {
+        const primitive = viewer.scene.primitives.get(i);
+        if (primitive instanceof Model && primitive.ready) {
+          const boundingSphere = primitive.boundingSphere;
+          if (boundingSphere && boundingSphere.radius > 0 && boundingSphere.center) {
+            centerPosition = boundingSphere.center;
+
+            const actualRadius = boundingSphere.radius / modelScale;
+            const parsedDiagonal = Math.sqrt(parsedBBox.width ** 2 + parsedBBox.depth ** 2);
+            if (parsedDiagonal > 0 && actualRadius > 0) {
+              // 지름 (반지름 × 2) / 파싱한 대각선 길이
+              scaleRatio = (actualRadius * 2) / parsedDiagonal;
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    if (!centerPosition) return null;
+
+    const carto = Cartographic.fromCartesian(centerPosition);
+    const lon = CesiumMath.toDegrees(carto.longitude);
+    const lat = CesiumMath.toDegrees(carto.latitude);
+    const height = carto.height;
+
+    const width = parsedBBox.width * scale.scale * scaleRatio;
+    const depth = parsedBBox.depth * scale.scale * scaleRatio;
+
+    const metersPerLat = 111320;
+    const metersPerLon = metersPerLat * Math.cos(CesiumMath.toRadians(lat));
+
+    const halfLat = width / 2 / metersPerLat;
+    const halfLon = depth / 2 / metersPerLon;
+
+    const headingRadians = CesiumMath.toRadians(-rotation.heading);
+    const cos = Math.cos(headingRadians);
+    const sin = Math.sin(headingRadians);
+
+    const rotate = (x: number, y: number) => ({
+      x: x * cos - y * sin,
+      y: x * sin + y * cos,
+    });
+
+    const local = [
+      { x: -halfLon, y: -halfLat }, // 왼쪽 위
+      { x: halfLon, y: -halfLat }, // 오른쪽 위
+      { x: halfLon, y: halfLat }, // 오른쪽 아래
+      { x: -halfLon, y: halfLat }, // 왼쪽 아래
+    ];
+
+    // 회전된 모서리 좌표를 3D Cartesian 좌표로 변환 = 지리좌표 -> 3D Cartesian 좌표 변환
+    const corners = local.map((p) => {
+      const r = rotate(p.x, p.y);
+      return Cartesian3.fromDegrees(lon + r.x, lat + r.y, height);
+    });
+
+    // 3D Cartesian 좌표를 지리좌표로 변환 = 3D Cartesian 좌표 -> 지리좌표 변환
+    const lats = corners.map((c) => {
+      const cornerCarto = Cartographic.fromCartesian(c);
+      return CesiumMath.toDegrees(cornerCarto.latitude);
+    });
+    const lons = corners.map((c) => {
+      const cornerCarto = Cartographic.fromCartesian(c);
+      return CesiumMath.toDegrees(cornerCarto.longitude);
+    });
+
+    const boundingBoxInfo: BoundingBoxInfo = {
+      north: Math.max(...lats),
+      south: Math.min(...lats),
+      east: Math.max(...lons),
+      west: Math.min(...lons),
+    };
+
+    const boundingBoxFeatureId = boundingBoxFeatureIdRef.current ?? `bbox-${featureId}`;
+    boundingBoxFeatureIdRef.current = boundingBoxFeatureId;
+
+    if (hasFeature(boundingBoxFeatureId)) {
+      const entity = getFeature(boundingBoxFeatureId);
+      if (entity) {
+        updateFeature(boundingBoxFeatureId, {
+          position: { longitude: lon, latitude: lat, height },
+        });
+        entity.polygon = new PolygonGraphics({
+          hierarchy: new PolygonHierarchy(corners),
+          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
+          fill: true,
+          outline: false,
+          show: true,
+        });
+      }
+    } else {
+      const entity = addFeature(boundingBoxFeatureId, {
+        position: { longitude: lon, latitude: lat, height },
       });
 
-      if (fileUrl) {
-        updateFeature(featureId, {
-          visual: {
-            type: "model",
-            scale: DEFAULT_SCALE.scale,
-            uri: fileUrl,
-            heightReference: HeightReference.RELATIVE_TO_GROUND,
-          },
+      if (entity) {
+        entity.polygon = new PolygonGraphics({
+          hierarchy: new PolygonHierarchy(corners),
+          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
+          fill: true,
+          outline: false,
+          show: true,
         });
       }
     }
+
+    return boundingBoxInfo;
+  }, [
+    viewer,
+    featureId,
+    parsedBBox,
+    showBoundingBox,
+    scale,
+    rotation.heading,
+    position,
+    getFeature,
+    addFeature,
+    updateFeature,
+    hasFeature,
+  ]);
+
+  const handleToggleBoundingBox = () => {
+    setShowBoundingBox(!showBoundingBox);
+
+    if (!showBoundingBox && featureId) {
+      if (boundingBoxFeatureIdRef.current) {
+        setVisibility([boundingBoxFeatureIdRef.current], true);
+      }
+    } else {
+      if (boundingBoxFeatureIdRef.current) {
+        setVisibility([boundingBoxFeatureIdRef.current], false);
+      }
+      setBoundingBoxInfo(null);
+    }
   };
+
+  useEffect(() => {
+    if (showBoundingBox && featureId) {
+      const boundingBoxInfo = updateBoundingBoxVisual();
+      if (boundingBoxInfo) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setBoundingBoxInfo(boundingBoxInfo);
+      }
+    }
+  }, [showBoundingBox, featureId, updateBoundingBoxVisual]);
 
   return (
     <div className="flex h-screen">
@@ -466,14 +725,59 @@ export function CalibratePage() {
       </div>
 
       <div className="flex-1 relative">
-        <div className="absolute top-3 left-3 z-1">
+        <div className="absolute top-3 left-3 z-10">
           <div className="flex items-center gap-2">
             <Toggle size="sm" pressed={topView} onPressedChange={handleToggleTopView}>
               Top View
             </Toggle>
-            <Toggle size="sm">Bounding Box</Toggle>
+            <Toggle
+              size="sm"
+              pressed={showBoundingBox}
+              onPressedChange={handleToggleBoundingBox}
+              disabled={!featureId}
+            >
+              Bounding Box
+            </Toggle>
           </div>
         </div>
+
+        {showBoundingBox && boundingBoxInfo && (
+          <div className="absolute bottom-3 right-3 z-10 bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
+            <div className="space-y-4">
+              <div>
+                <strong className="block mb-2 text-sm font-semibold">Bounding Box</strong>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">North:</span>
+                    <span>{boundingBoxInfo.north.toFixed(6)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">South:</span>
+                    <span>{boundingBoxInfo.south.toFixed(6)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">East:</span>
+                    <span>{boundingBoxInfo.east.toFixed(6)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">West:</span>
+                    <span>{boundingBoxInfo.west.toFixed(6)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <strong className="block text-sm font-semibold">JSON</strong>
+                </div>
+                <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
+                  {JSON.stringify(boundingBoxInfo, null, 2)}
+                </pre>
+              </div>
+            </div>
+          </div>
+        )}
+
         <MapViewer className="w-full h-screen" ionToken={ionToken}>
           <Imagery provider="ion" assetId={imageryAssetId} />
           <Terrain provider="ion" assetId={terrainAssetId} />
