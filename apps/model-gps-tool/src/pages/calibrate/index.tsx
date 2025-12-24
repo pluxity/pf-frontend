@@ -460,6 +460,7 @@ export function CalibratePage() {
     setShowBoundingBox(false);
     setFileUrl(null);
     setFileName("");
+    setParsedBBox(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -536,8 +537,8 @@ export function CalibratePage() {
     const metersPerLat = 111320;
     const metersPerLon = metersPerLat * Math.cos(CesiumMath.toRadians(lat));
 
-    const halfLat = width / 2 / metersPerLat;
-    const halfLon = depth / 2 / metersPerLon;
+    const halfLat = width / 2 / metersPerLat; // X축 → 위도
+    const halfLon = depth / 2 / metersPerLon; // Z축 → 경도
 
     const headingRadians = CesiumMath.toRadians(-rotation.heading);
     const cos = Math.cos(headingRadians);
@@ -548,6 +549,7 @@ export function CalibratePage() {
       y: x * sin + y * cos,
     });
 
+    // x=경도, y=위도
     const local = [
       { x: -halfLon, y: -halfLat }, // 왼쪽 위
       { x: halfLon, y: -halfLat }, // 오른쪽 위
@@ -561,15 +563,9 @@ export function CalibratePage() {
       return Cartesian3.fromDegrees(lon + r.x, lat + r.y, height);
     });
 
-    // 3D Cartesian 좌표를 지리좌표로 변환 = 3D Cartesian 좌표 -> 지리좌표 변환
-    const lats = corners.map((c) => {
-      const cornerCarto = Cartographic.fromCartesian(c);
-      return CesiumMath.toDegrees(cornerCarto.latitude);
-    });
-    const lons = corners.map((c) => {
-      const cornerCarto = Cartographic.fromCartesian(c);
-      return CesiumMath.toDegrees(cornerCarto.longitude);
-    });
+    const cornerCartos = corners.map((c) => Cartographic.fromCartesian(c));
+    const lats = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.latitude));
+    const lons = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.longitude));
 
     const boundingBoxInfo: BoundingBoxInfo = {
       north: Math.max(...lats),
