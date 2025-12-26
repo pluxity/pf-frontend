@@ -47,11 +47,11 @@ export interface CameraActions {
 
   // Deprecated aliases for backward compatibility
   /** @deprecated setState를 사용하세요 */
-  setPosition: (state: CameraState) => void;
+  setPosition: (position: CameraState) => void;
   /** @deprecated getState를 사용하세요 */
   getPosition: () => CameraState | null;
   /** @deprecated _updateState를 사용하세요 */
-  _updatePosition: (state: CameraState) => void;
+  _updatePosition: (position: CameraState) => void;
 }
 
 export type CameraStore = CameraStoreState & CameraActions;

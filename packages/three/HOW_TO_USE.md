@@ -333,6 +333,57 @@ function InteractiveScene() {
 }
 ```
 
+## 📷 카메라 상태 관리 (v0.4.0)
+
+씬의 카메라 상태(위치, 회전, 타겟)를 저장하고 복원할 수 있습니다.
+
+### CameraState 타입
+
+```typescript
+interface CameraState {
+  position: [number, number, number]; // 카메라 위치
+  rotation: [number, number, number]; // 카메라 회전 (Euler angles)
+  target?: [number, number, number]; // 바라보는 지점 (optional)
+}
+```
+
+### 사용 예시
+
+```tsx
+import { useCameraStore, type CameraState } from "@pf-dev/three";
+
+function CameraController() {
+  const { setState, getState, saveState, restoreState } = useCameraStore();
+
+  // 카메라 상태 저장
+  const handleSave = () => {
+    saveState("viewpoint-1");
+  };
+
+  // 저장된 상태로 복원
+  const handleRestore = () => {
+    restoreState("viewpoint-1");
+  };
+
+  // 특정 위치로 카메라 이동
+  const handleMoveTo = () => {
+    setState({
+      position: [10, 5, 10],
+      rotation: [0, Math.PI / 4, 0],
+      target: [0, 0, 0],
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleSave}>현재 위치 저장</button>
+      <button onClick={handleRestore}>저장된 위치로 이동</button>
+      <button onClick={handleMoveTo}>특정 위치로 이동</button>
+    </div>
+  );
+}
+```
+
 ## 🏷️ Mesh UserData 활용
 
 Three.js의 모든 Mesh는 `userData` 속성을 제공합니다. 이를 통해 3D 모델에 사용자 정의 데이터를 저장하고 활용할 수 있습니다.
@@ -436,7 +487,11 @@ mesh.userData = {
   - `addAssets(assets[])` - 배치 등록 + 병렬 로드 (v0.3.0)
 - `useFeatureStore` - Feature 관리
   - `addFeatures(features[])` - 배치 등록 (Asset 검증 포함, v0.3.0)
-- `useCameraStore` - 카메라 상태 관리
+- `useCameraStore` - 카메라 상태 관리 (v0.4.0 개선)
+  - `setState(state)` - 카메라 상태 설정 (position, rotation, target)
+  - `getState()` - 현재 카메라 상태 조회
+  - `saveState(name)` - 현재 상태 저장
+  - `restoreState(name)` - 저장된 상태 복원
 - `useInteractionStore` - 인터랙션 상태 관리
 
 ### Hooks

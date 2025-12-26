@@ -52,17 +52,9 @@ export const useCameraStore = create<CameraStoreState & CameraActions>((set, get
   },
 
   // Deprecated aliases for backward compatibility
-  setPosition: (state: CameraState) => {
-    set({ currentState: state });
-  },
-
-  getPosition: () => {
-    return get().currentState;
-  },
-
-  _updatePosition: (state: CameraState) => {
-    set({ currentState: state });
-  },
+  setPosition: (position: CameraState) => get().setState(position),
+  getPosition: () => get().getState(),
+  _updatePosition: (position: CameraState) => get()._updateState(position),
 }));
 
 export const cameraStore = useCameraStore;
