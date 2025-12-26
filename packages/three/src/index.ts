@@ -40,6 +40,7 @@ export type {
   FacilityActions,
   FacilityStore,
   CameraState,
+  CameraStoreState,
   CameraActions,
   CameraStore,
   InteractionState,

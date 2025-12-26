@@ -7,9 +7,10 @@ export type {
 } from "./facility";
 
 export type {
+  CameraState,
   CameraPosition,
   CameraConfig,
-  CameraState,
+  CameraStoreState,
   CameraActions,
   CameraStore,
 } from "./camera";

@@ -5,7 +5,7 @@ export { useAssetStore, assetStore } from "./assetStore";
 export { useFeatureStore, featureStore } from "./featureStore";
 
 export type { FacilityState, FacilityActions, FacilityStore } from "../types/facility";
-export type { CameraState, CameraActions, CameraStore } from "../types/camera";
+export type { CameraState, CameraStoreState, CameraActions, CameraStore } from "../types/camera";
 export type { InteractionState, InteractionActions } from "../types/interaction";
 export type { AssetState, AssetActions, AssetStore } from "../types/feature";
 export type { FeatureState, FeatureActions, FeatureStore } from "../types/feature";

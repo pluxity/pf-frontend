@@ -1,17 +1,18 @@
 import { create } from "zustand";
-import type { CameraState, CameraActions } from "../types/camera";
+import type { CameraStoreState, CameraActions, CameraState } from "../types/camera";
 
-export const useCameraStore = create<CameraState & CameraActions>((set, get) => ({
-  currentPosition: null,
+export const useCameraStore = create<CameraStoreState & CameraActions>((set, get) => ({
+  currentState: null,
   config: {},
   savedStates: new Map(),
 
-  setPosition: (position) => {
-    set({ currentPosition: position });
+  // New API
+  setState: (state: CameraState) => {
+    set({ currentState: state });
   },
 
-  getPosition: () => {
-    return get().currentPosition;
+  getState: () => {
+    return get().currentState;
   },
 
   updateConfig: (newConfig) => {
@@ -19,18 +20,18 @@ export const useCameraStore = create<CameraState & CameraActions>((set, get) => 
   },
 
   saveState: (name) => {
-    const position = get().currentPosition;
-    if (position) {
+    const state = get().currentState;
+    if (state) {
       const savedStates = new Map(get().savedStates);
-      savedStates.set(name, position);
+      savedStates.set(name, state);
       set({ savedStates });
     }
   },
 
   restoreState: (name) => {
-    const position = get().savedStates.get(name);
-    if (position) {
-      set({ currentPosition: position });
+    const state = get().savedStates.get(name);
+    if (state) {
+      set({ currentState: state });
       return true;
     }
     return false;
@@ -46,8 +47,21 @@ export const useCameraStore = create<CameraState & CameraActions>((set, get) => 
     return Array.from(get().savedStates.keys());
   },
 
-  _updatePosition: (position) => {
-    set({ currentPosition: position });
+  _updateState: (state: CameraState) => {
+    set({ currentState: state });
+  },
+
+  // Deprecated aliases for backward compatibility
+  setPosition: (state: CameraState) => {
+    set({ currentState: state });
+  },
+
+  getPosition: () => {
+    return get().currentState;
+  },
+
+  _updatePosition: (state: CameraState) => {
+    set({ currentState: state });
   },
 }));
 
