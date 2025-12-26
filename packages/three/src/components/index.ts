@@ -1,11 +1,10 @@
 // Scene components
-export { Canvas, SceneLighting, CameraControls } from "./scene";
+export { Canvas, SceneLighting } from "./scene";
 export type {
   CanvasProps,
   LightingPreset,
   SceneLightingProps,
   DirectionalLightConfig,
-  CameraControlsProps,
 } from "./scene";
 
 // Model components

@@ -14,9 +14,8 @@
 
 ### 🎨 렌더링 컴포넌트
 
-- ✅ **Canvas** - WebGL 렌더러와 기본 씬 설정 제공
+- ✅ **Canvas** - WebGL 렌더러와 기본 씬 설정 제공 (OrbitControls 내장)
 - ✅ **SceneLighting** - 조명 프리셋 시스템 (default/studio/outdoor)
-- ✅ **CameraControls** - 카메라 컨트롤 (OrbitControls 래핑)
 - ✅ **SceneGrid** - 바닥 그리드 헬퍼
 - ✅ **Stats** - FPS 및 메모리 모니터링
 
@@ -38,19 +37,18 @@
 ### 기본 사용
 
 ```tsx
-import { Canvas, GLTFModel, CameraControls } from "@pf-dev/three";
+import { Canvas, GLTFModel } from "@pf-dev/three";
 
 function App() {
   return (
     <Canvas lighting="default" grid>
       <GLTFModel url="/model.glb" castShadow receiveShadow />
-      <CameraControls />
     </Canvas>
   );
 }
 ```
 
-단 **5줄**로 3D 씬 완성!
+단 **4줄**로 3D 씬 완성! (Canvas에 OrbitControls 기본 포함)
 
 ### Before & After
 
@@ -75,16 +73,15 @@ function App() {
 }
 ```
 
-**After (v0.2.0)** - 간결한 코드:
+**After (v0.4.0)** - 간결한 코드:
 
 ```tsx
-import { Canvas, GLTFModel, CameraControls } from "@pf-dev/three";
+import { Canvas, GLTFModel } from "@pf-dev/three";
 
 function App() {
   return (
     <Canvas lighting="default" grid>
       <GLTFModel url="/model.glb" />
-      <CameraControls />
     </Canvas>
   );
 }
@@ -121,7 +118,7 @@ WebGL 렌더러와 기본 씬 설정을 제공하는 메인 컴포넌트입니�
 - `grid?: boolean | SceneGridProps` - 그리드 표시 (기본값: false)
 - `background?: string | null` - 배경색 (기본값: "#1a1a1a")
 - `camera?: { position?, fov? }` - 카메라 설정
-- `controls?: boolean | CameraControlsProps` - 카메라 컨트롤 (기본값: true)
+- `controls?: boolean | OrbitControlsProps` - 카메라 컨트롤 (기본값: true, OrbitControls 사용)
 
 ### SceneLighting
 
@@ -144,24 +141,6 @@ WebGL 렌더러와 기본 씬 설정을 제공하는 메인 컴포넌트입니�
 - `default` - 일반적인 실내 조명
 - `studio` - 스튜디오 조명 (다중 조명, 그림자)
 - `outdoor` - 야외 조명 (강한 directional, 그림자)
-
-### CameraControls
-
-OrbitControls를 래핑한 카메라 컨트롤 컴포넌트입니다.
-
-```tsx
-<CameraControls minDistance={5} maxDistance={50} enablePan={false} />
-```
-
-**Props:**
-
-- `enableDamping?: boolean` - 부드러운 움직임 (기본값: true)
-- `dampingFactor?: number` - 감쇠 계수 (기본값: 0.05)
-- `minDistance?: number` - 최소 거리 (기본값: 1)
-- `maxDistance?: number` - 최대 거리 (기본값: 500)
-- `enablePan?: boolean` - 패닝 활성화 (기본값: true)
-- `enableZoom?: boolean` - 줌 활성화 (기본값: true)
-- `enableRotate?: boolean` - 회전 활성화 (기본값: true)
 
 ### SceneGrid
 
@@ -442,7 +421,6 @@ mesh.userData = {
 
 - `<Canvas />` - WebGL 렌더러
 - `<SceneLighting />` - 조명 프리셋
-- `<CameraControls />` - 카메라 컨트롤
 - `<SceneGrid />` - 바닥 그리드
 - `<Stats />` - FPS 모니터
 - `<GLTFModel />` - GLTF/GLB 로더
