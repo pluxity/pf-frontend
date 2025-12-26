@@ -378,6 +378,33 @@ useCameraStore.getState().setState({ position: [10, 5, 10], target: [0, 0, 0] })
 useCameraStore.getState().setState({ position: [20, 10, 20] }, true);
 ```
 
+### Feature 바라보기 (lookAtFeature)
+
+특정 Feature를 바라보도록 카메라를 이동합니다:
+
+```tsx
+import { useCameraStore } from "@pf-dev/three";
+
+// 기본 사용 (애니메이션 이동, 거리 10)
+useCameraStore.getState().lookAtFeature("cctv-001");
+
+// 옵션 지정
+useCameraStore.getState().lookAtFeature("sensor-001", {
+  distance: 15, // Feature로부터의 거리 (기본값: 10)
+  animate: true, // 애니메이션 여부 (기본값: true)
+  duration: 800, // 애니메이션 시간 ms (기본값: 500)
+});
+
+// 즉시 이동 (애니메이션 없이)
+useCameraStore.getState().lookAtFeature("light-001", { animate: false });
+```
+
+**사용 사례:**
+
+- 씬 실행 시 특정 CCTV/센서로 카메라 이동
+- 시설물 선택 시 해당 위치로 포커스
+- 가상순찰 시나리오에서 순차적 카메라 이동
+
 ### 상태 저장/복원 (앱 레벨 구현)
 
 ```tsx

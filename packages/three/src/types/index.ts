@@ -10,6 +10,7 @@ export type {
   CameraState,
   CameraPosition,
   CameraConfig,
+  LookAtFeatureOptions,
   CameraStoreState,
   CameraActions,
   CameraStore,

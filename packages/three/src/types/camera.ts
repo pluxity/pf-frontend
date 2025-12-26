@@ -28,6 +28,16 @@ export interface CameraConfig {
   maxPolarAngle?: number;
 }
 
+/** lookAtFeature 함수의 옵션 */
+export interface LookAtFeatureOptions {
+  /** Feature로부터의 거리 (기본값: 10) */
+  distance?: number;
+  /** 애니메이션 여부 (기본값: true) */
+  animate?: boolean;
+  /** 애니메이션 시간 ms (기본값: 500) */
+  duration?: number;
+}
+
 /** OrbitControls 인터페이스 (drei의 OrbitControls 타입) */
 export interface OrbitControlsRef {
   target: { x: number; y: number; z: number; set: (x: number, y: number, z: number) => void };
@@ -60,6 +70,13 @@ export interface CameraActions {
    * @param animate - 애니메이션 여부 (기본값: false)
    */
   setState: (state: Partial<CameraState>, animate?: boolean) => void;
+
+  /**
+   * 특정 Feature를 바라보도록 카메라 이동
+   * @param featureId - 바라볼 Feature의 ID
+   * @param options - 이동 옵션 (distance, animate, duration)
+   */
+  lookAtFeature: (featureId: string, options?: LookAtFeatureOptions) => void;
 
   /**
    * 카메라 설정 업데이트
