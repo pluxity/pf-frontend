@@ -24,6 +24,12 @@ export interface CameraConfig {
   maxPolarAngle?: number;
 }
 
+export interface LookAtFeatureOptions {
+  distance?: number;
+  animate?: boolean;
+  duration?: number;
+}
+
 export interface OrbitControlsRef {
   target: { x: number; y: number; z: number; set: (x: number, y: number, z: number) => void };
   update: () => void;
@@ -39,6 +45,7 @@ export interface CameraStoreState {
 export interface CameraActions {
   getState: () => CameraState | null;
   setState: (state: Partial<CameraState>, animate?: boolean) => void;
+  lookAtFeature: (featureId: string, options?: LookAtFeatureOptions) => void;
   updateConfig: (config: Partial<CameraConfig>) => void;
   _setCamera: (camera: Camera | null) => void;
   _setControls: (controls: OrbitControlsRef | null) => void;

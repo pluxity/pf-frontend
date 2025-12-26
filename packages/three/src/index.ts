@@ -93,6 +93,7 @@ export type {
   Facility,
   CameraPosition,
   CameraConfig,
+  LookAtFeatureOptions,
   OrbitControlsRef,
   LoaderState,
   LoaderProgress,
