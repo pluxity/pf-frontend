@@ -13,6 +13,7 @@ export type {
   CameraStoreState,
   CameraActions,
   CameraStore,
+  OrbitControlsRef,
 } from "./camera";
 
 export type {

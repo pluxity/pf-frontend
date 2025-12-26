@@ -335,7 +335,23 @@ function InteractiveScene() {
 
 ## 📷 카메라 상태 관리 (v0.4.0)
 
-씬의 카메라 상태(위치, 회전, 타겟)를 저장하고 복원할 수 있습니다.
+실제 Three.js 카메라와 동기화된 상태 관리를 제공합니다.
+
+### 설정 (필수)
+
+Canvas 내부에서 `useCameraSync` 훅을 사용해야 합니다:
+
+```tsx
+import { useRef } from "react";
+import { Canvas, useCameraSync } from "@pf-dev/three";
+import { OrbitControls } from "@react-three/drei";
+
+function Scene() {
+  const controlsRef = useRef<OrbitControls>(null);
+  useCameraSync(controlsRef); // 카메라 스토어와 실제 카메라 동기화
+  return <OrbitControls ref={controlsRef} makeDefault />;
+}
+```
 
 ### CameraState 타입
 
@@ -343,45 +359,35 @@ function InteractiveScene() {
 interface CameraState {
   position: [number, number, number]; // 카메라 위치
   rotation: [number, number, number]; // 카메라 회전 (Euler angles)
-  target?: [number, number, number]; // 바라보는 지점 (optional)
+  target?: [number, number, number]; // OrbitControls 타겟 (optional)
 }
 ```
 
-### 사용 예시
+### 카메라 제어
 
 ```tsx
-import { useCameraStore, type CameraState } from "@pf-dev/three";
+import { useCameraStore } from "@pf-dev/three";
 
-function CameraController() {
-  const { setState, getState, saveState, restoreState } = useCameraStore();
+// 현재 카메라 상태 조회 (실제 카메라에서 읽어옴)
+const state = useCameraStore.getState().getState();
 
-  // 카메라 상태 저장
-  const handleSave = () => {
-    saveState("viewpoint-1");
-  };
+// 카메라 즉시 이동
+useCameraStore.getState().setState({ position: [10, 5, 10], target: [0, 0, 0] });
 
-  // 저장된 상태로 복원
-  const handleRestore = () => {
-    restoreState("viewpoint-1");
-  };
+// 카메라 애니메이션 이동
+useCameraStore.getState().setState({ position: [20, 10, 20] }, true);
+```
 
-  // 특정 위치로 카메라 이동
-  const handleMoveTo = () => {
-    setState({
-      position: [10, 5, 10],
-      rotation: [0, Math.PI / 4, 0],
-      target: [0, 0, 0],
-    });
-  };
+### 상태 저장/복원 (앱 레벨 구현)
 
-  return (
-    <div>
-      <button onClick={handleSave}>현재 위치 저장</button>
-      <button onClick={handleRestore}>저장된 위치로 이동</button>
-      <button onClick={handleMoveTo}>특정 위치로 이동</button>
-    </div>
-  );
-}
+```tsx
+// 저장
+const state = useCameraStore.getState().getState();
+localStorage.setItem("viewpoint-1", JSON.stringify(state));
+
+// 복원
+const saved = JSON.parse(localStorage.getItem("viewpoint-1") || "null");
+if (saved) useCameraStore.getState().setState(saved);
 ```
 
 ## 🏷️ Mesh UserData 활용
@@ -488,15 +494,15 @@ mesh.userData = {
 - `useFeatureStore` - Feature 관리
   - `addFeatures(features[])` - 배치 등록 (Asset 검증 포함, v0.3.0)
 - `useCameraStore` - 카메라 상태 관리 (v0.4.0 개선)
-  - `setState(state)` - 카메라 상태 설정 (position, rotation, target)
-  - `getState()` - 현재 카메라 상태 조회
-  - `saveState(name)` - 현재 상태 저장
-  - `restoreState(name)` - 저장된 상태 복원
+  - `getState()` - 현재 카메라 상태 조회 (실제 카메라에서 읽어옴)
+  - `setState(state, animate?)` - 카메라 상태 설정 (실제 카메라 이동)
+  - `updateConfig(config)` - 카메라 설정 업데이트
 - `useInteractionStore` - 인터랙션 상태 관리
 
 ### Hooks
 
 - `useAssetLoader(assets)` - Asset 로딩
+- `useCameraSync(controlsRef?)` - 카메라 스토어와 실제 카메라 동기화 (v0.4.0)
 - `useMeshHover(targets, options)` - Mesh 호버 감지
 - `useModelTraverse(object, callback)` - 모델 순회
 - `useRaycast(pointer, options)` - 레이캐스팅

@@ -61,6 +61,7 @@ export {
   useMeshFinderAll,
   useMeshHover,
   useAssetLoader,
+  useCameraSync,
 } from "./hooks/index";
 export type { UseRaycastOptions, UseRaycastReturn, MeshPredicate } from "./hooks/index";
 
@@ -92,6 +93,7 @@ export type {
   Facility,
   CameraPosition,
   CameraConfig,
+  OrbitControlsRef,
   LoaderState,
   LoaderProgress,
   LoaderOptions,

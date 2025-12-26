@@ -1,60 +1,146 @@
 import { create } from "zustand";
-import type { CameraStoreState, CameraActions, CameraState } from "../types/camera";
+import type {
+  CameraStoreState,
+  CameraActions,
+  CameraState,
+  OrbitControlsRef,
+} from "../types/camera";
+import type { Camera } from "three";
+
+/** 카메라 상태를 실제 카메라에서 읽어오는 헬퍼 */
+function readCameraState(
+  camera: Camera | null,
+  controls: OrbitControlsRef | null
+): CameraState | null {
+  if (!camera) return null;
+
+  const state: CameraState = {
+    position: [camera.position.x, camera.position.y, camera.position.z],
+    rotation: [camera.rotation.x, camera.rotation.y, camera.rotation.z],
+  };
+
+  if (controls) {
+    state.target = [controls.target.x, controls.target.y, controls.target.z];
+  }
+
+  return state;
+}
+
+/** 애니메이션 없이 카메라 이동 */
+function applyCameraState(
+  camera: Camera,
+  controls: OrbitControlsRef | null,
+  state: Partial<CameraState>
+) {
+  if (state.position) {
+    camera.position.set(state.position[0], state.position[1], state.position[2]);
+  }
+
+  if (state.rotation) {
+    camera.rotation.set(state.rotation[0], state.rotation[1], state.rotation[2]);
+  }
+
+  if (state.target && controls) {
+    controls.target.set(state.target[0], state.target[1], state.target[2]);
+    controls.update();
+  }
+}
+
+/** 애니메이션으로 카메라 이동 */
+function animateCameraState(
+  camera: Camera,
+  controls: OrbitControlsRef | null,
+  state: Partial<CameraState>,
+  duration: number = 500
+) {
+  const startTime = performance.now();
+  const startPosition = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+  const startTarget = controls
+    ? { x: controls.target.x, y: controls.target.y, z: controls.target.z }
+    : null;
+
+  const endPosition = state.position
+    ? { x: state.position[0], y: state.position[1], z: state.position[2] }
+    : startPosition;
+  const endTarget =
+    state.target && controls
+      ? { x: state.target[0], y: state.target[1], z: state.target[2] }
+      : startTarget;
+
+  function animate() {
+    const elapsed = performance.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // easeOutCubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+
+    camera.position.set(
+      startPosition.x + (endPosition.x - startPosition.x) * eased,
+      startPosition.y + (endPosition.y - startPosition.y) * eased,
+      startPosition.z + (endPosition.z - startPosition.z) * eased
+    );
+
+    if (endTarget && controls && startTarget) {
+      controls.target.set(
+        startTarget.x + (endTarget.x - startTarget.x) * eased,
+        startTarget.y + (endTarget.y - startTarget.y) * eased,
+        startTarget.z + (endTarget.z - startTarget.z) * eased
+      );
+      controls.update();
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
 
 export const useCameraStore = create<CameraStoreState & CameraActions>((set, get) => ({
   currentState: null,
   config: {},
-  savedStates: new Map(),
-
-  // New API
-  setState: (state: CameraState) => {
-    set({ currentState: state });
-  },
+  _camera: null,
+  _controls: null,
 
   getState: () => {
-    return get().currentState;
+    const { _camera, _controls } = get();
+    return readCameraState(_camera, _controls);
+  },
+
+  setState: (state: Partial<CameraState>, animate: boolean = false) => {
+    const { _camera, _controls } = get();
+    if (!_camera) {
+      console.warn("[useCameraStore] Camera not initialized. Use useCameraSync inside Canvas.");
+      return;
+    }
+
+    if (animate) {
+      animateCameraState(_camera, _controls, state);
+    } else {
+      applyCameraState(_camera, _controls, state);
+    }
+
+    // 상태 캐시 업데이트
+    get()._syncState();
   },
 
   updateConfig: (newConfig) => {
     set({ config: { ...get().config, ...newConfig } });
   },
 
-  saveState: (name) => {
-    const state = get().currentState;
-    if (state) {
-      const savedStates = new Map(get().savedStates);
-      savedStates.set(name, state);
-      set({ savedStates });
-    }
+  _setCamera: (camera: Camera | null) => {
+    set({ _camera: camera });
   },
 
-  restoreState: (name) => {
-    const state = get().savedStates.get(name);
-    if (state) {
-      set({ currentState: state });
-      return true;
-    }
-    return false;
+  _setControls: (controls: OrbitControlsRef | null) => {
+    set({ _controls: controls });
   },
 
-  clearState: (name) => {
-    const savedStates = new Map(get().savedStates);
-    savedStates.delete(name);
-    set({ savedStates });
+  _syncState: () => {
+    const { _camera, _controls } = get();
+    const currentState = readCameraState(_camera, _controls);
+    set({ currentState });
   },
-
-  getAllSavedStates: () => {
-    return Array.from(get().savedStates.keys());
-  },
-
-  _updateState: (state: CameraState) => {
-    set({ currentState: state });
-  },
-
-  // Deprecated aliases for backward compatibility
-  setPosition: (position: CameraState) => get().setState(position),
-  getPosition: () => get().getState(),
-  _updatePosition: (position: CameraState) => get()._updateState(position),
 }));
 
 export const cameraStore = useCameraStore;
