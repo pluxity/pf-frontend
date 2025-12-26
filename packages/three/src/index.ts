@@ -1,7 +1,6 @@
 export {
   Canvas,
   SceneLighting,
-  CameraControls,
   SceneGrid,
   Stats,
   GLTFModel,
@@ -18,7 +17,6 @@ export type {
   SceneGridProps,
   SceneLightingProps,
   DirectionalLightConfig,
-  CameraControlsProps,
   StatsProps,
   GLTFModelProps,
   FBXModelProps,
@@ -42,6 +40,7 @@ export type {
   FacilityActions,
   FacilityStore,
   CameraState,
+  CameraStoreState,
   CameraActions,
   CameraStore,
   InteractionState,
@@ -62,6 +61,7 @@ export {
   useMeshFinderAll,
   useMeshHover,
   useAssetLoader,
+  useCameraSync,
 } from "./hooks/index";
 export type { UseRaycastOptions, UseRaycastReturn, MeshPredicate } from "./hooks/index";
 
@@ -93,6 +93,8 @@ export type {
   Facility,
   CameraPosition,
   CameraConfig,
+  LookAtFeatureOptions,
+  OrbitControlsRef,
   LoaderState,
   LoaderProgress,
   LoaderOptions,

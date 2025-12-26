@@ -19,7 +19,6 @@ export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
 
   addAssets: async (newAssets) => {
     if (!Array.isArray(newAssets)) {
-      console.warn("[Asset] addAssets received non-array input, skipping.", { newAssets });
       return;
     }
 
@@ -56,8 +55,7 @@ export const useAssetStore = create<AssetState & AssetActions>((set, get) => ({
                 resolve();
               },
               undefined,
-              (error) => {
-                console.warn(`[Asset] Failed to load asset.`, { assetId: asset.id, error });
+              () => {
                 resolve();
               }
             );

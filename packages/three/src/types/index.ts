@@ -7,11 +7,14 @@ export type {
 } from "./facility";
 
 export type {
+  CameraState,
   CameraPosition,
   CameraConfig,
-  CameraState,
+  LookAtFeatureOptions,
+  CameraStoreState,
   CameraActions,
   CameraStore,
+  OrbitControlsRef,
 } from "./camera";
 
 export type {

@@ -2,19 +2,11 @@ import { create } from "zustand";
 import type { FeatureState, FeatureActions, Feature } from "../types/feature";
 import { useAssetStore } from "./assetStore";
 
-function validateAsset(assetId: string, featureId: string): boolean {
+function validateAsset(assetId: string): boolean {
   const asset = useAssetStore.getState().assets.get(assetId);
-
-  if (!asset) {
-    console.warn(`[Feature] Asset not found. Skipping feature.`, { assetId, featureId });
+  if (!asset || !asset.object) {
     return false;
   }
-
-  if (!asset.object) {
-    console.warn(`[Feature] Asset not loaded yet. Skipping feature.`, { assetId, featureId });
-    return false;
-  }
-
   return true;
 }
 
@@ -26,7 +18,7 @@ export const useFeatureStore = create<FeatureState & FeatureActions>((set, get) 
     const currentFeatures = get().features;
     if (currentFeatures.has(feature.id)) return;
 
-    if (!validateAsset(feature.assetId, feature.id)) return;
+    if (!validateAsset(feature.assetId)) return;
 
     const features = new Map(currentFeatures);
     const featuresByAsset = new Map(get().featuresByAsset);
@@ -43,7 +35,6 @@ export const useFeatureStore = create<FeatureState & FeatureActions>((set, get) 
 
   addFeatures: (newFeatures) => {
     if (!Array.isArray(newFeatures)) {
-      console.warn("[Feature] addFeatures received non-array input, skipping.", { newFeatures });
       return;
     }
 
@@ -60,7 +51,7 @@ export const useFeatureStore = create<FeatureState & FeatureActions>((set, get) 
     uniqueNewFeatures.forEach((feature) => {
       if (currentFeatures.has(feature.id)) return;
 
-      if (!validateAsset(feature.assetId, feature.id)) return;
+      if (!validateAsset(feature.assetId)) return;
 
       hasChanges = true;
       features.set(feature.id, feature);

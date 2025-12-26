@@ -6,7 +6,7 @@
 
 ## ✨ 주요 기능
 
-- 🎨 **렌더링 컴포넌트**: Canvas, SceneLighting, CameraControls, SceneGrid, Stats
+- 🎨 **렌더링 컴포넌트**: Canvas, SceneLighting, SceneGrid, Stats
 - 🏗️ **모델 로딩**: GLTFModel, FBXModel
 - 🚀 **씬 초기화**: `initializeScene` Promise 기반 초기화 API
 - 🎯 **GPU Instancing**: Feature Domain으로 수천 개 인스턴스 최적 렌더링
@@ -23,19 +23,18 @@ pnpm add @pf-dev/three
 ## 🚀 빠른 시작
 
 ```tsx
-import { Canvas, GLTFModel, CameraControls } from "@pf-dev/three";
+import { Canvas, GLTFModel } from "@pf-dev/three";
 
 function App() {
   return (
     <Canvas lighting="default" grid>
       <GLTFModel url="/model.glb" castShadow receiveShadow />
-      <CameraControls />
     </Canvas>
   );
 }
 ```
 
-단 **5줄**로 3D 씬 완성!
+단 **4줄**로 3D 씬 완성! (Canvas에 OrbitControls 기본 포함)
 
 ## 📖 상세 사용법
 
