@@ -7,10 +7,8 @@ import type {
 } from "../types/camera";
 import type { Camera } from "three";
 
-/** 현재 진행 중인 애니메이션 ID */
 let animationFrameId: number | null = null;
 
-/** 두 상태가 동일한지 비교 (부동소수점 오차 고려) */
 function isCameraStateEqual(
   a: CameraState | null,
   b: CameraState | null,
@@ -39,7 +37,6 @@ function isCameraStateEqual(
   return true;
 }
 
-/** 카메라 상태를 실제 카메라에서 읽어오는 헬퍼 */
 function readCameraState(
   camera: Camera | null,
   controls: OrbitControlsRef | null
@@ -58,7 +55,6 @@ function readCameraState(
   return state;
 }
 
-/** 애니메이션 없이 카메라 이동 */
 function applyCameraState(
   camera: Camera,
   controls: OrbitControlsRef | null,
@@ -78,14 +74,12 @@ function applyCameraState(
   }
 }
 
-/** 애니메이션으로 카메라 이동 */
 function animateCameraState(
   camera: Camera,
   controls: OrbitControlsRef | null,
   state: Partial<CameraState>,
   duration: number = 500
 ) {
-  // 진행 중인 애니메이션 취소
   if (animationFrameId !== null) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
@@ -108,7 +102,6 @@ function animateCameraState(
   function animate() {
     const elapsed = performance.now() - startTime;
     const progress = Math.min(elapsed / duration, 1);
-    // easeOutCubic
     const eased = 1 - Math.pow(1 - progress, 3);
 
     camera.position.set(
@@ -150,7 +143,6 @@ export const useCameraStore = create<CameraStoreState & CameraActions>((set, get
   setState: (state: Partial<CameraState>, animate: boolean = false) => {
     const { _camera, _controls } = get();
     if (!_camera) {
-      console.warn("[useCameraStore] Camera not initialized. Use useCameraSync inside Canvas.");
       return;
     }
 
@@ -177,7 +169,6 @@ export const useCameraStore = create<CameraStoreState & CameraActions>((set, get
     const { _camera, _controls, currentState } = get();
     const newState = readCameraState(_camera, _controls);
 
-    // 상태가 변경되었을 때만 업데이트 (불필요한 리렌더링 방지)
     if (!isCameraStateEqual(currentState, newState)) {
       set({ currentState: newState });
     }
