@@ -9,8 +9,6 @@ import type {
 import type { Camera } from "three";
 import { useFeatureStore } from "./featureStore";
 
-let animationFrameId: number | null = null;
-
 function isCameraStateEqual(
   a: CameraState | null,
   b: CameraState | null,
@@ -76,19 +74,28 @@ function applyCameraState(
   }
 }
 
+interface AnimationState {
+  animationFrameId: number | null;
+}
+
+const animationState: AnimationState = {
+  animationFrameId: null,
+};
+
 function animateCameraState(
   camera: Camera,
   controls: OrbitControlsRef | null,
   state: Partial<CameraState>,
   duration: number = 500
 ) {
-  if (animationFrameId !== null) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
+  if (animationState.animationFrameId !== null) {
+    cancelAnimationFrame(animationState.animationFrameId);
+    animationState.animationFrameId = null;
   }
 
   const startTime = performance.now();
   const startPosition = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+  const startRotation = { x: camera.rotation.x, y: camera.rotation.y, z: camera.rotation.z };
   const startTarget = controls
     ? { x: controls.target.x, y: controls.target.y, z: controls.target.z }
     : null;
@@ -96,6 +103,9 @@ function animateCameraState(
   const endPosition = state.position
     ? { x: state.position[0], y: state.position[1], z: state.position[2] }
     : startPosition;
+  const endRotation = state.rotation
+    ? { x: state.rotation[0], y: state.rotation[1], z: state.rotation[2] }
+    : startRotation;
   const endTarget =
     state.target && controls
       ? { x: state.target[0], y: state.target[1], z: state.target[2] }
@@ -112,6 +122,14 @@ function animateCameraState(
       startPosition.z + (endPosition.z - startPosition.z) * eased
     );
 
+    if (state.rotation) {
+      camera.rotation.set(
+        startRotation.x + (endRotation.x - startRotation.x) * eased,
+        startRotation.y + (endRotation.y - startRotation.y) * eased,
+        startRotation.z + (endRotation.z - startRotation.z) * eased
+      );
+    }
+
     if (endTarget && controls && startTarget) {
       controls.target.set(
         startTarget.x + (endTarget.x - startTarget.x) * eased,
@@ -122,13 +140,13 @@ function animateCameraState(
     }
 
     if (progress < 1) {
-      animationFrameId = requestAnimationFrame(animate);
+      animationState.animationFrameId = requestAnimationFrame(animate);
     } else {
-      animationFrameId = null;
+      animationState.animationFrameId = null;
     }
   }
 
-  animationFrameId = requestAnimationFrame(animate);
+  animationState.animationFrameId = requestAnimationFrame(animate);
 }
 
 export const useCameraStore = create<CameraStoreState & CameraActions>((set, get) => ({

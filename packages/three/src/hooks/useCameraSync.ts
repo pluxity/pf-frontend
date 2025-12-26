@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useCameraStore } from "../store/cameraStore";
 import type { OrbitControlsRef } from "../types/camera";
@@ -6,6 +6,7 @@ import type { OrbitControlsRef } from "../types/camera";
 export function useCameraSync(controlsRef?: React.RefObject<OrbitControlsRef | null>): void {
   const camera = useThree((state) => state.camera);
   const { _setCamera, _setControls, _syncState } = useCameraStore();
+  const prevControlsRef = useRef<OrbitControlsRef | null>(null);
 
   useEffect(() => {
     _setCamera(camera);
@@ -16,16 +17,17 @@ export function useCameraSync(controlsRef?: React.RefObject<OrbitControlsRef | n
   }, [camera, _setCamera]);
 
   useEffect(() => {
-    if (controlsRef?.current) {
-      _setControls(controlsRef.current);
-    }
-
     return () => {
       _setControls(null);
     };
-  }, [controlsRef, _setControls]);
+  }, [_setControls]);
 
   useFrame(() => {
+    const currentControls = controlsRef?.current ?? null;
+    if (prevControlsRef.current !== currentControls) {
+      _setControls(currentControls);
+      prevControlsRef.current = currentControls;
+    }
     _syncState();
   });
 }
