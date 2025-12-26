@@ -1,7 +1,6 @@
 export {
   Canvas,
   SceneLighting,
-  CameraControls,
   SceneGrid,
   Stats,
   GLTFModel,
@@ -18,7 +17,6 @@ export type {
   SceneGridProps,
   SceneLightingProps,
   DirectionalLightConfig,
-  CameraControlsProps,
   StatsProps,
   GLTFModelProps,
   FBXModelProps,

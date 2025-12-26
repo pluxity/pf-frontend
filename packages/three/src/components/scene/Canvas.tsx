@@ -1,11 +1,20 @@
 import type { ReactNode, ComponentProps } from "react";
 import { Canvas as R3FCanvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 
 import { SceneLighting, type LightingPreset } from "./SceneLighting";
-import { CameraControls, type CameraControlsProps } from "./CameraControls";
 import { SceneGrid, type SceneGridProps } from "../debug/SceneGrid";
 
 type R3FCanvasProps = ComponentProps<typeof R3FCanvas>;
+type OrbitControlsProps = ComponentProps<typeof OrbitControls>;
+
+/** OrbitControls 기본 설정값 */
+const DEFAULT_ORBIT_CONTROLS_PROPS = {
+  enableDamping: true,
+  dampingFactor: 0.05,
+  minDistance: 1,
+  maxDistance: 500,
+} as const;
 
 // Re-export LightingPreset and SceneGridProps for convenience
 export type { LightingPreset, SceneGridProps };
@@ -15,7 +24,7 @@ export interface CanvasProps extends Omit<R3FCanvasProps, "children"> {
   background?: string | null;
   lighting?: LightingPreset | false;
   grid?: boolean | SceneGridProps;
-  controls?: boolean | CameraControlsProps;
+  controls?: boolean | Omit<OrbitControlsProps, "makeDefault">;
 }
 
 /**
@@ -79,7 +88,13 @@ export function Canvas({
       {gridProps && <SceneGrid {...gridProps} />}
 
       {/* 카메라 컨트롤 */}
-      {controls !== false && <CameraControls {...(typeof controls === "object" ? controls : {})} />}
+      {controls !== false && (
+        <OrbitControls
+          makeDefault
+          {...DEFAULT_ORBIT_CONTROLS_PROPS}
+          {...(typeof controls === "object" ? controls : {})}
+        />
+      )}
 
       {/* 사용자 children */}
       {children}
