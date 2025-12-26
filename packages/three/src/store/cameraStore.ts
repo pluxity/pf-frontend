@@ -188,13 +188,17 @@ export const useCameraStore = create<CameraStoreState & CameraActions>((set, get
     const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
     // 방향 벡터 정규화 (카메라가 Feature 위치와 동일하면 기본 방향 사용)
-    let nx = 0,
-      ny = 0.5,
-      nz = 1;
+    let nx: number, ny: number, nz: number;
     if (len > 0.001) {
       nx = dx / len;
       ny = dy / len;
       nz = dz / len;
+    } else {
+      // 기본 방향 벡터 (0, 0.5, 1)를 정규화
+      const defaultLen = Math.sqrt(0 + 0.25 + 1);
+      nx = 0;
+      ny = 0.5 / defaultLen;
+      nz = 1 / defaultLen;
     }
 
     // Feature에서 distance만큼 떨어진 위치에 카메라 배치
