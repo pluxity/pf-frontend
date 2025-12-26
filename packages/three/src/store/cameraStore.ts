@@ -160,36 +160,33 @@ export const useCameraStore = create<CameraStoreState & CameraActions>((set, get
     const { _camera, _controls } = get();
 
     if (!_camera) {
-      console.warn("[useCameraStore] Camera not initialized. Use useCameraSync inside Canvas.");
       return;
     }
 
-    // featureStore에서 Feature 조회
     const feature = useFeatureStore.getState().getFeature(featureId);
     if (!feature) {
-      console.warn(`[useCameraStore] Feature not found: ${featureId}`);
       return;
     }
 
     const [fx, fy, fz] = feature.position;
 
-    // 현재 카메라 위치에서 Feature까지의 방향 계산
     const dx = _camera.position.x - fx;
     const dy = _camera.position.y - fy;
     const dz = _camera.position.z - fz;
     const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-    // 방향 벡터 정규화 (카메라가 Feature 위치와 동일하면 기본 방향 사용)
-    let nx = 0,
-      ny = 0.5,
-      nz = 1;
+    let nx: number, ny: number, nz: number;
     if (len > 0.001) {
       nx = dx / len;
       ny = dy / len;
       nz = dz / len;
+    } else {
+      const defaultLen = Math.sqrt(0 + 0.25 + 1);
+      nx = 0;
+      ny = 0.5 / defaultLen;
+      nz = 1 / defaultLen;
     }
 
-    // Feature에서 distance만큼 떨어진 위치에 카메라 배치
     const newPosition: [number, number, number] = [
       fx + nx * distance,
       fy + ny * distance,
