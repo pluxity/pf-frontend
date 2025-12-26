@@ -8,6 +8,14 @@ import { SceneGrid, type SceneGridProps } from "../debug/SceneGrid";
 type R3FCanvasProps = ComponentProps<typeof R3FCanvas>;
 type OrbitControlsProps = ComponentProps<typeof OrbitControls>;
 
+/** OrbitControls 기본 설정값 */
+const DEFAULT_ORBIT_CONTROLS_PROPS = {
+  enableDamping: true,
+  dampingFactor: 0.05,
+  minDistance: 1,
+  maxDistance: 500,
+} as const;
+
 // Re-export LightingPreset and SceneGridProps for convenience
 export type { LightingPreset, SceneGridProps };
 
@@ -83,10 +91,7 @@ export function Canvas({
       {controls !== false && (
         <OrbitControls
           makeDefault
-          enableDamping
-          dampingFactor={0.05}
-          minDistance={1}
-          maxDistance={500}
+          {...DEFAULT_ORBIT_CONTROLS_PROPS}
           {...(typeof controls === "object" ? controls : {})}
         />
       )}
