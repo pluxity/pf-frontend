@@ -45,7 +45,7 @@ interface WidgetHeaderPropsWithRef extends WidgetHeaderProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function WidgetHeader({ className, ref, ...props }: WidgetHeaderPropsWithRef) {
+function WidgetHeader({ className, children, ref, ...props }: WidgetHeaderPropsWithRef) {
   return (
     <div
       ref={ref}
@@ -55,7 +55,9 @@ function WidgetHeader({ className, ref, ...props }: WidgetHeaderPropsWithRef) {
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </div>
   );
 }
 
@@ -63,8 +65,12 @@ interface WidgetContentPropsWithRef extends WidgetContentProps {
   ref?: Ref<HTMLDivElement>;
 }
 
-function WidgetContent({ className, ref, ...props }: WidgetContentPropsWithRef) {
-  return <div ref={ref} className={cn("p-4", className)} {...props} />;
+function WidgetContent({ className, children, ref, ...props }: WidgetContentPropsWithRef) {
+  return (
+    <div ref={ref} className={cn("p-4", className)} {...props}>
+      {children}
+    </div>
+  );
 }
 
 export { Widget, WidgetHeader, WidgetContent };
