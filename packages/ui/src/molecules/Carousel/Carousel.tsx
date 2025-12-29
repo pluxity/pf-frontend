@@ -128,9 +128,11 @@ function Carousel({
       }
 
       if (transition === "fade") {
+        // active 슬라이드는 relative로 두어 container 높이 유지
+        // 나머지는 absolute로 겹침
         return {
-          position: "absolute" as const,
-          inset: 0,
+          position: isActive ? ("relative" as const) : ("absolute" as const),
+          inset: isActive ? undefined : 0,
           opacity: isActive ? 1 : 0,
           transition: `opacity ${transitionDuration}ms ease-in-out`,
           pointerEvents: isActive ? ("auto" as const) : ("none" as const),
@@ -157,7 +159,7 @@ function Carousel({
     <CarouselContext.Provider value={contextValue}>
       <div
         ref={ref}
-        className={cn("relative w-full overflow-hidden", className)}
+        className={cn("relative w-full h-full overflow-hidden", className)}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         role="region"
