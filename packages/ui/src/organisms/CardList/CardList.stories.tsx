@@ -24,7 +24,6 @@ const meta: Meta<typeof CardList> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// 샘플 데이터
 interface Facility {
   id: string;
   name: string;

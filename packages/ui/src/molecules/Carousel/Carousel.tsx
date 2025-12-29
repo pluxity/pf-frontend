@@ -74,7 +74,6 @@ function Carousel({
     [goPrev, goNext]
   );
 
-  // Auto play
   useEffect(() => {
     if (!autoPlay || totalSlides <= 1) return;
 
@@ -85,7 +84,6 @@ function Carousel({
     return () => clearInterval(interval);
   }, [autoPlay, autoPlayInterval, goNext, totalSlides]);
 
-  // 슬라이드 렌더링 여부 결정
   const shouldRenderSlide = useCallback(
     (index: number): boolean => {
       if (!lazy) return true;
@@ -128,8 +126,6 @@ function Carousel({
       }
 
       if (transition === "fade") {
-        // active 슬라이드는 relative로 두어 container 높이 유지
-        // 나머지는 absolute로 겹침
         return {
           position: isActive ? ("relative" as const) : ("absolute" as const),
           inset: isActive ? undefined : 0,
@@ -139,7 +135,6 @@ function Carousel({
         };
       }
 
-      // slide transition - 개별 슬라이드는 스타일 없음 (container에서 처리)
       return {};
     },
     [activeIndex, transition, transitionDuration]

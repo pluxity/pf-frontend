@@ -23,10 +23,8 @@ function Widget({
   const gridLayoutContext = useGridLayoutContext();
   const dragDropContext = useDragDropContext();
 
-  // GridLayout 템플릿 모드에서 셀 위치 가져오기
   const cell = id && gridLayoutContext ? gridLayoutContext.getCellForWidget(id) : null;
 
-  // 그리드 스타일 계산
   const gridStyle: CSSProperties = {
     ...style,
     ...(cell
@@ -40,7 +38,6 @@ function Widget({
         }),
   };
 
-  // 드래그앤드롭 핸들러
   const isDragging = dragDropContext?.draggedWidgetId === id;
   const isDropTarget = dragDropContext?.dropTargetWidgetId === id;
 

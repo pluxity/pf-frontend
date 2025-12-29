@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Carousel } from "./Carousel";
 
@@ -53,7 +53,6 @@ const meta: Meta<typeof Carousel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// 기본 슬라이드 컨텐츠
 const slides = [
   { bg: "bg-blue-500", text: "슬라이드 1" },
   { bg: "bg-green-500", text: "슬라이드 2" },
@@ -187,15 +186,7 @@ export const NoIndicators: Story = {
   ),
 };
 
-// Lazy 렌더링 테스트용 컴포넌트
 function LazySlide({ index }: { index: number }) {
-  useEffect(() => {
-    console.log(`Slide ${index + 1} mounted`);
-    return () => {
-      console.log(`Slide ${index + 1} unmounted`);
-    };
-  }, [index]);
-
   return (
     <div
       className={`${slides[index]?.bg || "bg-gray-500"} w-full h-[300px] flex flex-col items-center justify-center text-white`}

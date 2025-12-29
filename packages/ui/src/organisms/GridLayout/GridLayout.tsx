@@ -70,7 +70,6 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
       getCellForWidget,
     };
 
-    // 페이지네이션 모드
     if (isPaginationMode && pagination) {
       const childArray = Children.toArray(children);
       const perPage = pagination.perPage || columns * (rows || 1);
@@ -84,7 +83,7 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
 
       if (pagination.type === "carousel") {
         return (
-          <div ref={ref} className={cn("h-full", className)} {...props}>
+          <div ref={ref} className={cn("h-full p-4", className)} {...props}>
             <Carousel
               transition={pagination.transition || "slide"}
               showArrows={true}
@@ -102,9 +101,8 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
         );
       }
 
-      // pagination type: 일반 페이지네이션 (추후 구현)
       return (
-        <div ref={ref} className={cn("h-full", className)} {...props}>
+        <div ref={ref} className={cn("h-full p-4", className)} {...props}>
           <div className="grid h-full" style={gridStyle}>
             {pages[0]}
           </div>
@@ -112,12 +110,11 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
       );
     }
 
-    // 템플릿 모드
     if (isTemplateMode && template) {
       return (
         <DragDropContext.Provider value={dragDropState}>
           <GridLayoutContext.Provider value={gridLayoutContextValue}>
-            <div ref={ref} className={cn("h-full overflow-y-auto", className)} {...props}>
+            <div ref={ref} className={cn("h-full overflow-y-auto p-4", className)} {...props}>
               <div
                 className="grid h-full"
                 style={{
@@ -134,11 +131,10 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
       );
     }
 
-    // 기본 모드
     return (
-      <div ref={ref} className={cn("h-full overflow-y-auto", className)} {...props}>
+      <div ref={ref} className={cn("h-full p-4", !rows && "overflow-y-auto", className)} {...props}>
         <div
-          className="grid"
+          className={cn("grid", rows && "h-full")}
           style={{
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
             gridTemplateRows: rows ? `repeat(${rows}, 1fr)` : undefined,
