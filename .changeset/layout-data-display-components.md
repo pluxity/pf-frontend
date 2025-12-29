@@ -39,6 +39,16 @@
    - 타입 안전한 keyExtractor
    - gap 설정 지원
 
+**개선 사항**
+
+- **Pagination variant 추가**
+  - `default`: 테두리 없는 기본 스타일
+  - `bordered`: 테두리와 배경이 있는 스타일
+
+- **인라인 SVG → Icon 컴포넌트 교체**
+  - Link, Carousel, Pagination, Select 컴포넌트
+  - 일관된 아이콘 스타일 및 유지보수성 향상
+
 **타입 정의**
 
 ```typescript
