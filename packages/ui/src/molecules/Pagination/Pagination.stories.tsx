@@ -37,7 +37,7 @@ export const FewPages: Story = {
   },
 };
 
-export const Minimal: Story = {
+export const Bordered: Story = {
   render: () => {
     const [currentPage, setCurrentPage] = useState(1);
     return (
@@ -45,7 +45,7 @@ export const Minimal: Story = {
         currentPage={currentPage}
         totalPages={10}
         onPageChange={setCurrentPage}
-        variant="minimal"
+        variant="bordered"
       />
     );
   },
@@ -58,21 +58,16 @@ export const Variants: Story = {
     return (
       <div className="space-y-8">
         <div>
-          <p className="text-sm text-gray-500 mb-2">Default Style</p>
-          <Pagination
-            currentPage={page1}
-            totalPages={10}
-            onPageChange={setPage1}
-            variant="default"
-          />
+          <p className="text-sm text-gray-500 mb-2">Default</p>
+          <Pagination currentPage={page1} totalPages={10} onPageChange={setPage1} />
         </div>
         <div>
-          <p className="text-sm text-gray-500 mb-2">Minimal Style</p>
+          <p className="text-sm text-gray-500 mb-2">Bordered</p>
           <Pagination
             currentPage={page2}
             totalPages={10}
             onPageChange={setPage2}
-            variant="minimal"
+            variant="bordered"
           />
         </div>
       </div>

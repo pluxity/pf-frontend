@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { cn } from "../../utils";
+import { ChevronLeft, ChevronRight } from "../../atoms/Icon";
 import type { PaginationProps } from "./types";
 
 const range = (start: number, end: number) => {
@@ -14,6 +15,7 @@ const Pagination = ({
   totalPages,
   onPageChange,
   siblingCount = 1,
+  variant = "default",
   className,
 }: PaginationProps) => {
   const paginationRange = useMemo(() => {
@@ -64,10 +66,22 @@ const Pagination = ({
     if (currentPage < totalPages) onPageChange(currentPage + 1);
   };
 
-  const navButtonClass =
-    "inline-flex h-8 w-8 items-center justify-center rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed";
+  const isBordered = variant === "bordered";
+
+  const navButtonClass = cn(
+    "inline-flex h-8 w-8 items-center justify-center rounded text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
+    isBordered ? "border border-gray-200 bg-white hover:bg-gray-50" : "hover:bg-gray-100"
+  );
 
   const getPageButtonClass = (isActive: boolean) => {
+    if (isBordered) {
+      return cn(
+        "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors border",
+        isActive
+          ? "border-brand bg-brand text-white"
+          : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+      );
+    }
     return cn(
       "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors",
       isActive ? "bg-blue-50 text-brand" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
@@ -82,19 +96,7 @@ const Pagination = ({
         className={navButtonClass}
         aria-label="Previous page"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
+        <ChevronLeft size="sm" />
       </button>
 
       {paginationRange.map((pageNumber, index) => {
@@ -127,19 +129,7 @@ const Pagination = ({
         className={navButtonClass}
         aria-label="Next page"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m9 18 6-6-6-6" />
-        </svg>
+        <ChevronRight size="sm" />
       </button>
     </nav>
   );

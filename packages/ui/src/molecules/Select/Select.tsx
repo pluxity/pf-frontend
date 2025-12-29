@@ -1,6 +1,7 @@
 ﻿import type { ComponentRef, Ref } from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cn } from "../../utils";
+import { ChevronDown, Check } from "../../atoms/Icon";
 import type {
   SelectTriggerProps,
   SelectContentProps,
@@ -29,20 +30,7 @@ function SelectTrigger({ className, children, ref, ...props }: SelectTriggerProp
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-gray-500"
-        >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        <ChevronDown size="sm" className="text-gray-500" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -116,19 +104,7 @@ function SelectItem({ className, children, ref, ...props }: SelectItemPropsWithR
     >
       <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <Check size="sm" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

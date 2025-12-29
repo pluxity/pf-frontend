@@ -18,3 +18,5 @@ export * from "./FileUpload";
 export * from "./FilterChip";
 export * from "./ComboBox";
 export * from "./Listbox";
+export * from "./Widget";
+export * from "./Carousel";
