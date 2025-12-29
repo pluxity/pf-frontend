@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
 export interface WidgetProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+  id?: string;
   colSpan?: number;
   rowSpan?: number;
   title?: ReactNode;
