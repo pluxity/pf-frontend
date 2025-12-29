@@ -25,6 +25,14 @@ function chunkArray<T>(array: T[], size: number): T[][] {
   return chunks;
 }
 
+const EMPTY_TEMPLATE: GridTemplate = {
+  id: "",
+  name: "",
+  columns: 0,
+  rows: 0,
+  cells: [],
+};
+
 export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
   (
     {
@@ -47,16 +55,8 @@ export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
 
     const widgetIds = useMemo(() => extractWidgetIds(children), [children]);
 
-    const emptyTemplate: GridTemplate = {
-      id: "",
-      name: "",
-      columns: 0,
-      rows: 0,
-      cells: [],
-    };
-
     const { layoutState, handleSwap, getCellForWidget } = useGridLayoutState(
-      template || emptyTemplate,
+      template || EMPTY_TEMPLATE,
       initialLayout,
       onLayoutChange,
       widgetIds

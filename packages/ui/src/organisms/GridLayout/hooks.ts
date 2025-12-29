@@ -45,11 +45,7 @@ function swapWidgetPlacements(
 function createInitialPlacements(template: GridTemplate, widgetIds: string[]): WidgetPlacement[] {
   return template.cells
     .slice(0, widgetIds.length)
-    .map((cell, index) => {
-      const widgetId = widgetIds[index];
-      return widgetId ? { widgetId, cellId: cell.id } : null;
-    })
-    .filter((placement): placement is WidgetPlacement => placement !== null);
+    .map((cell, index) => ({ widgetId: widgetIds[index]!, cellId: cell.id }));
 }
 
 export function useDragDropState(

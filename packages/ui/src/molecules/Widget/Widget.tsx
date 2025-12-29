@@ -1,5 +1,6 @@
-import type { Ref } from "react";
+import type { Ref, CSSProperties } from "react";
 import { cn } from "../../utils";
+import { useGridLayoutContext, useDragDropContext } from "../../organisms/GridLayout/hooks";
 import type { WidgetProps, WidgetHeaderProps, WidgetContentProps } from "./types";
 
 interface WidgetPropsWithRef extends WidgetProps {
@@ -7,6 +8,7 @@ interface WidgetPropsWithRef extends WidgetProps {
 }
 
 function Widget({
+  id,
   colSpan,
   rowSpan,
   title,
@@ -18,18 +20,78 @@ function Widget({
   ref,
   ...props
 }: WidgetPropsWithRef) {
-  const gridStyle = {
+  const gridLayoutContext = useGridLayoutContext();
+  const dragDropContext = useDragDropContext();
+
+  // GridLayout 템플릿 모드에서 셀 위치 가져오기
+  const cell = id && gridLayoutContext ? gridLayoutContext.getCellForWidget(id) : null;
+
+  // 그리드 스타일 계산
+  const gridStyle: CSSProperties = {
     ...style,
-    ...(colSpan && { gridColumn: `span ${colSpan}` }),
-    ...(rowSpan && { gridRow: `span ${rowSpan}` }),
+    ...(cell
+      ? {
+          gridColumn: `${cell.colStart} / span ${cell.colSpan}`,
+          gridRow: `${cell.rowStart} / span ${cell.rowSpan}`,
+        }
+      : {
+          ...(colSpan && { gridColumn: `span ${colSpan}` }),
+          ...(rowSpan && { gridRow: `span ${rowSpan}` }),
+        }),
+  };
+
+  // 드래그앤드롭 핸들러
+  const isDragging = dragDropContext?.draggedWidgetId === id;
+  const isDropTarget = dragDropContext?.dropTargetWidgetId === id;
+
+  const handleDragStart = () => {
+    if (dragDropContext?.editable && id) {
+      dragDropContext.setDraggedWidgetId(id);
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (dragDropContext?.editable) {
+      dragDropContext.handleDrop();
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (dragDropContext?.editable && id) {
+      e.preventDefault();
+      dragDropContext.setDropTargetWidgetId(id);
+    }
+  };
+
+  const handleDragLeave = () => {
+    if (dragDropContext?.editable) {
+      dragDropContext.setDropTargetWidgetId(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (dragDropContext?.editable) {
+      e.preventDefault();
+      dragDropContext.handleDrop();
+    }
   };
 
   return (
     <div
       ref={ref}
+      id={id}
+      draggable={dragDropContext?.editable}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       className={cn(
         "rounded-xl bg-white shadow-card",
         border && "border border-border-light",
+        isDragging && "opacity-50",
+        isDropTarget && "ring-2 ring-primary",
+        dragDropContext?.editable && "cursor-move",
         className
       )}
       style={gridStyle}

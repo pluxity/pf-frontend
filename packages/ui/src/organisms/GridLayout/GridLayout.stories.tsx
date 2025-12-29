@@ -140,59 +140,46 @@ export const TemplateMode: Story = {
   render: () => (
     <div className="h-[600px] p-4 bg-gray-100">
       <GridLayout template={dashboardTemplate} gap={16}>
-        <Widget
-          id="widget-1"
-          title="메인 차트"
-          border
-          style={{
-            gridColumn: "1 / span 6",
-            gridRow: "1 / span 2",
-          }}
-        >
+        <Widget id="widget-1" title="메인 차트" border>
           <div className="h-full flex items-center justify-center bg-blue-50">메인 차트 영역</div>
         </Widget>
-        <Widget
-          id="widget-2"
-          title="통계 1"
-          border
-          style={{
-            gridColumn: "7 / span 3",
-            gridRow: "1 / span 1",
-          }}
-        >
+        <Widget id="widget-2" title="통계 1" border>
           <div className="p-4 text-center">통계 1</div>
         </Widget>
-        <Widget
-          id="widget-3"
-          title="통계 2"
-          border
-          style={{
-            gridColumn: "10 / span 3",
-            gridRow: "1 / span 1",
-          }}
-        >
+        <Widget id="widget-3" title="통계 2" border>
           <div className="p-4 text-center">통계 2</div>
         </Widget>
-        <Widget
-          id="widget-4"
-          title="서브 차트"
-          border
-          style={{
-            gridColumn: "7 / span 6",
-            gridRow: "2 / span 1",
-          }}
-        >
+        <Widget id="widget-4" title="서브 차트" border>
           <div className="p-4">서브 차트</div>
         </Widget>
-        <Widget
-          id="widget-5"
-          title="데이터 테이블"
-          border
-          style={{
-            gridColumn: "1 / span 12",
-            gridRow: "3 / span 2",
-          }}
-        >
+        <Widget id="widget-5" title="데이터 테이블" border>
+          <div className="p-4">데이터 테이블 영역</div>
+        </Widget>
+      </GridLayout>
+    </div>
+  ),
+};
+
+export const TemplateModeEditable: Story = {
+  name: "템플릿 모드 (편집 가능)",
+  render: () => (
+    <div className="h-[600px] p-4 bg-gray-100">
+      <GridLayout template={dashboardTemplate} gap={16} editable>
+        <Widget id="widget-1" title="메인 차트" border>
+          <div className="h-full flex items-center justify-center bg-blue-50">
+            드래그하여 위치 변경
+          </div>
+        </Widget>
+        <Widget id="widget-2" title="통계 1" border>
+          <div className="p-4 text-center">통계 1</div>
+        </Widget>
+        <Widget id="widget-3" title="통계 2" border>
+          <div className="p-4 text-center">통계 2</div>
+        </Widget>
+        <Widget id="widget-4" title="서브 차트" border>
+          <div className="p-4">서브 차트</div>
+        </Widget>
+        <Widget id="widget-5" title="데이터 테이블" border>
           <div className="p-4">데이터 테이블 영역</div>
         </Widget>
       </GridLayout>
