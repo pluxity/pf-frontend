@@ -50,7 +50,14 @@ const InputFields = ({
   max,
 }: InputFieldProps) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = parseFloat(event.target.value);
+    const inputString = event.target.value;
+
+    if (inputString === "") {
+      onChange?.(0);
+      return;
+    }
+
+    const inputValue = parseFloat(inputString);
     if (!isNaN(inputValue)) {
       onChange?.(inputValue);
     }
@@ -282,37 +289,34 @@ export function CalibratePage() {
     const lat = CesiumMath.toDegrees(carto.latitude);
     const height = carto.height;
 
-    const actualWidth = parsedBBox.width * scale.scale;
-    const actualDepth = parsedBBox.depth * scale.scale;
+    const actualWidth = parsedBBox.depth * scale.scale;
+    const actualDepth = parsedBBox.width * scale.scale;
 
-    const metersPerLat = 111320;
-    const metersPerLon = metersPerLat * Math.cos(CesiumMath.toRadians(lat));
+    const metersPerDegLat = 111320;
+    const metersPerDegLon = metersPerDegLat * Math.cos(CesiumMath.toRadians(lat));
 
-    // X축(width) → 위도, Z축(depth) → 경도
-    const halfLat = actualWidth / 2 / metersPerLat;
-    const halfLon = actualDepth / 2 / metersPerLon;
+    const halfWidth = actualWidth / 2;
+    const halfDepth = actualDepth / 2;
 
-    const headingRadians = CesiumMath.toRadians(-rotation.heading);
-    const cos = Math.cos(headingRadians);
-    const sin = Math.sin(headingRadians);
+    const headingRad = CesiumMath.toRadians(rotation.heading);
+    const cosH = Math.cos(headingRad);
+    const sinH = Math.sin(headingRad);
 
-    const rotate = (x: number, y: number) => ({
-      x: x * cos - y * sin,
-      y: x * sin + y * cos,
-    });
-
-    // x=경도, y=위도
-    const local = [
-      { x: -halfLon, y: -halfLat }, // 왼쪽 위
-      { x: halfLon, y: -halfLat }, // 오른쪽 위
-      { x: halfLon, y: halfLat }, // 오른쪽 아래
-      { x: -halfLon, y: halfLat }, // 왼쪽 아래
+    const localPoints = [
+      { east: -halfWidth, north: -halfDepth },
+      { east: halfWidth, north: -halfDepth },
+      { east: halfWidth, north: halfDepth },
+      { east: -halfWidth, north: halfDepth },
     ];
 
-    // 회전된 모서리 좌표를 3D Cartesian 좌표로 변환
-    const corners = local.map((p) => {
-      const r = rotate(p.x, p.y);
-      return Cartesian3.fromDegrees(lon + r.x, lat + r.y, height);
+    const corners = localPoints.map((p) => {
+      const east = p.east * cosH + p.north * sinH;
+      const north = -p.east * sinH + p.north * cosH;
+
+      const lonOffset = east / metersPerDegLon;
+      const latOffset = north / metersPerDegLat;
+
+      return Cartesian3.fromDegrees(lon + lonOffset, lat + latOffset, height);
     });
 
     const cornerCartos = corners.map((c) => Cartographic.fromCartesian(c));
@@ -519,37 +523,22 @@ export function CalibratePage() {
 
   const handleFieldsChange = (sectionId: string, values: Record<string, number>) => {
     if (sectionId === "position") {
-      setPosition(values as Position);
+      const positionValues = values as Position;
+      const roundedPosition: Position = {
+        longitude: parseFloat(positionValues.longitude.toFixed(6)),
+        latitude: parseFloat(positionValues.latitude.toFixed(6)),
+        height: positionValues.height,
+      };
+      setPosition(roundedPosition);
       if (featureId) {
         updateFeature(featureId, {
-          position: values as Position,
+          position: roundedPosition,
         });
       }
     }
 
     if (sectionId === "rotation") {
       setRotation(values as Rotation);
-      if (featureId) {
-        const rotationValues = values as Rotation;
-        const headingPitchRoll = new HeadingPitchRoll(
-          CesiumMath.toRadians(rotationValues.heading),
-          0,
-          0
-        );
-        const currentPosition = positionRef.current;
-        const orientation = Transforms.headingPitchRollQuaternion(
-          Cartesian3.fromDegrees(
-            currentPosition.longitude,
-            currentPosition.latitude,
-            currentPosition.height
-          ),
-          headingPitchRoll
-        );
-
-        updateFeature(featureId, {
-          orientation,
-        });
-      }
     }
 
     if (sectionId === "scale") {
@@ -594,6 +583,25 @@ export function CalibratePage() {
       }
     };
   }, [fileUrl, featureId, addFeature, removeFeature]);
+
+  useEffect(() => {
+    if (!featureId || !fileUrl) return;
+
+    const currentPosition = positionRef.current;
+    const headingPitchRoll = new HeadingPitchRoll(CesiumMath.toRadians(rotation.heading), 0, 0);
+    const orientation = Transforms.headingPitchRollQuaternion(
+      Cartesian3.fromDegrees(
+        currentPosition.longitude,
+        currentPosition.latitude,
+        currentPosition.height
+      ),
+      headingPitchRoll
+    );
+
+    updateFeature(featureId, {
+      orientation,
+    });
+  }, [rotation.heading, position, featureId, fileUrl, updateFeature]);
 
   const getSectionValues = (sectionId: string): Record<string, number> | undefined => {
     if (sectionId === "position") {
