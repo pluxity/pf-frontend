@@ -17,7 +17,8 @@
   },
   "peerDependencies": {
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-router-dom": "catalog:"
   },
   "dependencies": {
     "zustand": "catalog:"
@@ -31,6 +32,7 @@
     "eslint": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-router-dom": "catalog:",
     "rimraf": "^6.0.1",
     "typescript": "catalog:"
   }
