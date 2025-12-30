@@ -12,23 +12,23 @@ jobs:
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
 
-          # 허용되는 패턴
-          PATTERN="^(feature|fix|hotfix|refactor|epic|chore|docs|test)/issue-[0-9]+-[a-z0-9-]+$|^epic/[a-z0-9-]+-v[0-9]+$|^main$|^develop$"
+          # 허용되는 패턴 (slug는 선택사항)
+          PATTERN="^(feature|fix|hotfix|refactor|chore|docs|test)/issue-[0-9]+(-[a-z0-9-]+)?$|^epic/issue-[0-9]+(-[a-z0-9-]+)?$|^main$|^develop$"
 
           if [[ ! "$BRANCH_NAME" =~ $PATTERN ]]; then
             echo "❌ 브랜치 이름이 컨벤션에 맞지 않습니다: $BRANCH_NAME"
             echo ""
             echo "허용되는 형식:"
-            echo "  - feature/issue-{번호}-{설명}"
-            echo "  - fix/issue-{번호}-{설명}"
-            echo "  - hotfix/issue-{번호}-{설명}"
-            echo "  - refactor/issue-{번호}-{설명}"
-            echo "  - epic/{패키지명}-v{버전}"
+            echo "  - feature/issue-{번호} 또는 feature/issue-{번호}-{설명}"
+            echo "  - fix/issue-{번호} 또는 fix/issue-{번호}-{설명}"
+            echo "  - hotfix/issue-{번호} 또는 hotfix/issue-{번호}-{설명}"
+            echo "  - refactor/issue-{번호} 또는 refactor/issue-{번호}-{설명}"
+            echo "  - epic/issue-{번호} 또는 epic/issue-{번호}-{설명}"
             echo ""
             echo "예시:"
-            echo "  - feature/issue-75-widget"
+            echo "  - feature/issue-75"
             echo "  - fix/issue-82-login-error"
-            echo "  - epic/pf-devui-v120"
+            echo "  - epic/issue-83"
             exit 1
           fi
 
