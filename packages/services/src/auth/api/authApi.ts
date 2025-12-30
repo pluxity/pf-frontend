@@ -16,11 +16,16 @@ export const configureAuthApi = (config: Partial<AuthApiConfig>) => {
 
 export const getAuthApiConfig = () => apiConfig;
 
-const getUrl = (endpoint: string) => `${apiConfig.baseUrl}${endpoint}`;
+const getUrl = (endpoint: string | undefined): string => {
+  if (!endpoint) {
+    throw new Error("Auth API endpoint is not configured.");
+  }
+  return `${apiConfig.baseUrl}${endpoint}`;
+};
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const response = await fetch(getUrl(apiConfig.loginEndpoint!), {
+    const response = await fetch(getUrl(apiConfig.loginEndpoint), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +43,7 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    const response = await fetch(getUrl(apiConfig.logoutEndpoint!), {
+    const response = await fetch(getUrl(apiConfig.logoutEndpoint), {
       method: "POST",
       credentials: "include",
     });
@@ -50,26 +55,28 @@ export const authApi = {
   },
 
   refresh: async (): Promise<LoginResponse> => {
-    const response = await fetch(getUrl(apiConfig.refreshEndpoint!), {
+    const response = await fetch(getUrl(apiConfig.refreshEndpoint), {
       method: "POST",
       credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error("토큰 갱신에 실패했습니다.");
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || "토큰 갱신에 실패했습니다.");
     }
 
     return response.json();
   },
 
   getMe: async (): Promise<User> => {
-    const response = await fetch(getUrl(apiConfig.meEndpoint!), {
+    const response = await fetch(getUrl(apiConfig.meEndpoint), {
       method: "GET",
       credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error("사용자 정보를 가져오는데 실패했습니다.");
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || "사용자 정보를 가져오는데 실패했습니다.");
     }
 
     return response.json();

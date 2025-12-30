@@ -18,6 +18,7 @@ export const useLogout = (options?: UseLogoutOptions): UseLogoutReturn => {
       const error = err instanceof Error ? err : new Error("로그아웃 실패");
       options?.onError?.(error);
       reset();
+      throw error;
     } finally {
       setIsLoading(false);
     }
