@@ -1,8 +1,6 @@
-// Client
-export { createApiClient } from "./client";
+export { createApiClient, configureApi, getApiClient } from "./client";
 export type { ApiClient } from "./client";
 
-// Types
 export type {
   DataResponse,
   CreatedResponse,
@@ -15,5 +13,4 @@ export type {
   FileResponse,
 } from "./types";
 
-// Error
 export { ApiError, isApiError } from "./error";

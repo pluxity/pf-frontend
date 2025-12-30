@@ -1,38 +1,51 @@
 # @pf-dev/services
 
-공통 서비스 로직 패키지입니다.
+React 앱을 위한 공통 서비스 모듈 패키지.
 
-## 설치
+## Auth
 
-```bash
-pnpm add @pf-dev/services
+HttpOnly 쿠키 기반 인증 모듈.
+
+### 구조
+
+```text
+auth/
+├── api.ts       # API 함수 (login, logout, refresh, getMe)
+├── store.ts     # Zustand store + selectors
+├── context.ts   # AuthContext + useAuthContext
+├── types.ts     # 타입 정의 (User, Role, LoginCredentials)
+├── Provider.tsx # AuthProvider 컴포넌트
+├── Router.tsx   # ProtectedRouter 컴포넌트
+└── index.ts     # exports
 ```
 
-## 모듈
+### Exports
 
-### Auth
+#### API 함수
 
-인증 관련 타입을 제공합니다.
+- `login(credentials)` - 로그인
+- `logout()` - 로그아웃
+- `refresh()` - 토큰 갱신
+- `getMe()` - 현재 사용자 정보 조회
 
-```typescript
-import type { User, AuthState, LoginCredentials, LoginResponse } from "@pf-dev/services/auth";
-```
+#### Store
 
-## Roadmap
+- `useAuthStore` - Zustand store hook
+- `selectUser` - user selector
+- `selectIsLoading` - isLoading selector
+- `selectIsAuthenticated` - 인증 여부 selector
 
-- [ ] useAuth, useLogin, useLogout 훅 구현
-- [ ] AuthProvider 컴포넌트 구현
-- [ ] ProtectedRouter 컴포넌트 구현
+#### Components
 
-## 개발
+- `AuthProvider` - 앱 시작 시 인증 상태 초기화
+- `ProtectedRouter` - 인증 필요 라우트 보호
 
-```bash
-# 타입 체크
-pnpm type-check
+#### Hooks
 
-# 린트
-pnpm lint
+- `useAuthContext` - AuthProvider의 context 접근
 
-# 포맷
-pnpm format
-```
+#### Types
+
+- `User` - 사용자 정보
+- `Role` - 역할 정보
+- `LoginCredentials` - 로그인 요청 데이터

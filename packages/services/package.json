@@ -21,6 +21,7 @@
     "react-router-dom": "catalog:"
   },
   "dependencies": {
+    "@pf-dev/api": "workspace:*",
     "zustand": "catalog:"
   },
   "devDependencies": {

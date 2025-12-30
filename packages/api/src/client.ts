@@ -1,9 +1,6 @@
 import { ApiError } from "./error";
 import type { ApiClientConfig, RequestOptions, UploadOptions } from "./types";
 
-/**
- * API 클라이언트 생성
- */
 export function createApiClient(config: ApiClientConfig) {
   const { baseURL, refreshTokenURL = "/auth/refresh-token", onUnauthorized } = config;
 
@@ -11,17 +8,24 @@ export function createApiClient(config: ApiClientConfig) {
   let refreshPromise: Promise<boolean> | null = null;
 
   function buildURL(path: string, params?: RequestOptions["params"]): string {
-    const url = new URL(path, baseURL);
+    let fullPath = baseURL.startsWith("http")
+      ? new URL(path, baseURL).toString()
+      : `${baseURL}${path}`;
 
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) {
-          url.searchParams.set(key, String(value));
+          searchParams.set(key, String(value));
         }
       });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        fullPath += `?${queryString}`;
+      }
     }
 
-    return url.toString();
+    return fullPath;
   }
 
   async function refreshToken(): Promise<boolean> {
@@ -30,7 +34,6 @@ export function createApiClient(config: ApiClientConfig) {
         method: "POST",
         credentials: "include",
       });
-
       return response.ok;
     } catch {
       return false;
@@ -38,7 +41,6 @@ export function createApiClient(config: ApiClientConfig) {
   }
 
   async function handleUnauthorized(): Promise<boolean> {
-    // 이미 갱신 중이면 기존 Promise 재사용
     if (isRefreshing && refreshPromise) {
       return refreshPromise;
     }
@@ -68,7 +70,6 @@ export function createApiClient(config: ApiClientConfig) {
     const { params, headers: customHeaders, ...restOptions } = options;
 
     const url = buildURL(path, params);
-
     const isFormData = body instanceof FormData;
 
     const headers: HeadersInit = {
@@ -84,30 +85,24 @@ export function createApiClient(config: ApiClientConfig) {
       ...restOptions,
     });
 
-    // 401 응답 시 토큰 갱신 후 재시도 (1회)
     if (response.status === 401 && !isRetry) {
       const refreshed = await handleUnauthorized();
-
       if (refreshed) {
         return request<T>(method, path, body, options, true);
       }
     }
 
-    // 204 No Content
     if (response.status === 204) {
       return undefined as T;
     }
 
-    // 에러 응답
     if (!response.ok) {
       throw await ApiError.fromResponse(response);
     }
 
-    // JSON 응답 처리
     const contentType = response.headers.get("content-type");
     if (contentType?.includes("application/json")) {
       const data = await response.json();
-      // 201 Created 시 Location 헤더 포함
       if (response.status === 201) {
         const location = response.headers.get("Location");
         return { ...data, location } as T;
@@ -115,7 +110,6 @@ export function createApiClient(config: ApiClientConfig) {
       return data as T;
     }
 
-    // 201 Created (JSON 아닌 경우)
     if (response.status === 201) {
       const location = response.headers.get("Location");
       return { location } as T;
@@ -124,46 +118,27 @@ export function createApiClient(config: ApiClientConfig) {
     return undefined as T;
   }
 
-  const client = {
-    /**
-     * GET 요청
-     */
+  return {
     get<T>(path: string, options?: RequestOptions): Promise<T> {
       return request<T>("GET", path, undefined, options);
     },
 
-    /**
-     * POST 요청
-     */
     post<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
       return request<T>("POST", path, body, options);
     },
 
-    /**
-     * PUT 요청
-     */
     put<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
       return request<T>("PUT", path, body, options);
     },
 
-    /**
-     * PATCH 요청
-     */
     patch<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
       return request<T>("PATCH", path, body, options);
     },
 
-    /**
-     * DELETE 요청
-     */
     delete<T>(path: string, options?: RequestOptions): Promise<T> {
       return request<T>("DELETE", path, undefined, options);
     },
 
-    /**
-     * 파일 업로드 (진행률 콜백 지원)
-     * XHR 사용으로 업로드 진행률 추적 가능
-     */
     upload<T>(path: string, file: File | File[], options: UploadOptions = {}): Promise<T> {
       const { fieldName = "file", onProgress, headers: customHeaders } = options;
 
@@ -179,7 +154,6 @@ export function createApiClient(config: ApiClientConfig) {
             formData.append(fieldName, file);
           }
 
-          // 진행률 이벤트
           if (onProgress) {
             xhr.upload.addEventListener("progress", (event) => {
               if (event.lengthComputable) {
@@ -190,7 +164,6 @@ export function createApiClient(config: ApiClientConfig) {
           }
 
           xhr.addEventListener("load", async () => {
-            // 401 시 토큰 갱신 후 재시도
             if (xhr.status === 401 && !isRetry) {
               const refreshed = await handleUnauthorized();
               if (refreshed) {
@@ -216,7 +189,7 @@ export function createApiClient(config: ApiClientConfig) {
               try {
                 errorResponse = JSON.parse(xhr.responseText);
               } catch {
-                // JSON 파싱 실패 시 무시
+                // ignore
               }
               reject(
                 new ApiError(
@@ -251,8 +224,19 @@ export function createApiClient(config: ApiClientConfig) {
       return executeUpload();
     },
   };
-
-  return client;
 }
 
 export type ApiClient = ReturnType<typeof createApiClient>;
+
+let client: ApiClient | null = null;
+
+export const configureApi = (config: ApiClientConfig) => {
+  client = createApiClient(config);
+};
+
+export const getApiClient = (): ApiClient => {
+  if (!client) {
+    throw new Error("API client not configured. Call configureApi() first.");
+  }
+  return client;
+};

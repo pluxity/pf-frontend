@@ -6,6 +6,12 @@ import { resolve } from "path";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
+  // 프록시 설정 (개발 환경 전용)
+  const devServer = env.VITE_DEV_SERVER || "http://localhost:8080";
+  const projectPath = env.VITE_PROJECT_PATH || "";
+  const proxyTarget = `${devServer}${projectPath}`;
+  const cookiePath = `${projectPath}/api`;
+
   return {
     plugins: [react(), tailwindcss()],
     resolve: {
@@ -14,12 +20,32 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      host: "0.0.0.0",
       port: {{ port }},
       proxy: {
         "/api": {
-          target: env.VITE_API_URL,
+          target: proxyTarget,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
+          secure: false,
+          configure: (proxy) => {
+            if (!projectPath) return;
+
+            const cookiePathRegex = new RegExp(
+              `Path=${cookiePath.replace(/\//g, "\\/")}`,
+              "gi"
+            );
+
+            proxy.on("proxyRes", (proxyRes) => {
+              const setCookie = proxyRes.headers["set-cookie"];
+              if (setCookie) {
+                proxyRes.headers["set-cookie"] = setCookie.map((cookie: string) =>
+                  cookie
+                    .replace(cookiePathRegex, "Path=/api")
+                    .replace(/Domain=[^;]+;?/gi, "")
+                );
+              }
+            });
+          },
         },
       },
     },
