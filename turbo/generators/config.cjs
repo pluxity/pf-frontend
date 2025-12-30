@@ -124,11 +124,6 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/index.tsx",
         templateFile: "templates/app/src/routes/index.tsx.hbs",
       },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/ProtectedRoute.tsx",
-        templateFile: "templates/app/src/routes/ProtectedRoute.tsx.hbs",
-      },
       // Layouts
       {
         type: "add",
@@ -145,11 +140,6 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
         templateFile: "templates/app/src/pages/home/index.tsx.hbs",
-      },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/login/index.tsx",
-        templateFile: "templates/app/src/pages/login/index.tsx.hbs",
       },
       // Services
       {
@@ -169,11 +159,6 @@ module.exports = function generator(plop) {
       },
       {
         type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/auth.service.ts",
-        templateFile: "templates/app/src/services/auth.service.ts.hbs",
-      },
-      {
-        type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/types/index.ts",
         templateFile: "templates/app/src/services/types/index.ts.hbs",
       },
@@ -181,22 +166,6 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/types/user.ts",
         templateFile: "templates/app/src/services/types/user.ts.hbs",
-      },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/services/types/auth.ts",
-        templateFile: "templates/app/src/services/types/auth.ts.hbs",
-      },
-      // Stores
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/stores/index.ts",
-        templateFile: "templates/app/src/stores/index.ts.hbs",
-      },
-      {
-        type: "add",
-        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/stores/auth.store.ts",
-        templateFile: "templates/app/src/stores/auth.store.ts.hbs",
       },
       // Hooks
       {
