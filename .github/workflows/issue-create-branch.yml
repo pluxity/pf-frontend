@@ -52,13 +52,13 @@ jobs:
           echo "branch=${branch}" >> $GITHUB_OUTPUT
           echo "Built branch: ${branch}"
 
-      - name: Create branch and push
+      - name: Create branch and link to issue
         run: |
-          BRANCH="${{ steps.build.outputs.branch }}"
-          git checkout -b "$BRANCH"
-          git push --set-upstream origin "$BRANCH"
+          gh issue develop ${{ github.event.issue.number }} \
+            --name "${{ steps.build.outputs.branch }}" \
+            --base main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment on issue
         uses: actions/github-script@v6
