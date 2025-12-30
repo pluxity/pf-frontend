@@ -265,6 +265,130 @@ export function CalibratePage() {
     [viewer, getFeature]
   );
 
+  const updateBoundingBoxVisual = useCallback((): BoundingBoxInfo | null => {
+    if (!viewer || viewer.isDestroyed() || !featureId || !parsedBBox || !showBoundingBox)
+      return null;
+
+    const entity = getFeature(featureId);
+    if (!entity?.position) return null;
+
+    // 모델의 실제 중심점 찾기
+    let modelCenter: Cartesian3 | null = null;
+
+    if (entity.model) {
+      const modelPrimitive = findModelPrimitive(featureId);
+      if (modelPrimitive && modelPrimitive.boundingSphere) {
+        const boundingSphere = modelPrimitive.boundingSphere;
+        if (boundingSphere.radius > 0 && boundingSphere.center) {
+          modelCenter = boundingSphere.center;
+        }
+      }
+    }
+
+    if (!modelCenter) {
+      const tempCenter = entity.position.getValue(viewer.clock.currentTime);
+      if (!tempCenter) return null;
+      modelCenter = tempCenter;
+    }
+
+    const carto = Cartographic.fromCartesian(modelCenter);
+    const lon = CesiumMath.toDegrees(carto.longitude);
+    const lat = CesiumMath.toDegrees(carto.latitude);
+    const height = carto.height;
+
+    const actualWidth = parsedBBox.width * scale.scale;
+    const actualDepth = parsedBBox.depth * scale.scale;
+
+    const metersPerLat = 111320;
+    const metersPerLon = metersPerLat * Math.cos(CesiumMath.toRadians(lat));
+
+    // X축(width) → 위도, Z축(depth) → 경도
+    const halfLat = actualWidth / 2 / metersPerLat;
+    const halfLon = actualDepth / 2 / metersPerLon;
+
+    const headingRadians = CesiumMath.toRadians(-rotation.heading);
+    const cos = Math.cos(headingRadians);
+    const sin = Math.sin(headingRadians);
+
+    const rotate = (x: number, y: number) => ({
+      x: x * cos - y * sin,
+      y: x * sin + y * cos,
+    });
+
+    // x=경도, y=위도
+    const local = [
+      { x: -halfLon, y: -halfLat }, // 왼쪽 위
+      { x: halfLon, y: -halfLat }, // 오른쪽 위
+      { x: halfLon, y: halfLat }, // 오른쪽 아래
+      { x: -halfLon, y: halfLat }, // 왼쪽 아래
+    ];
+
+    // 회전된 모서리 좌표를 3D Cartesian 좌표로 변환
+    const corners = local.map((p) => {
+      const r = rotate(p.x, p.y);
+      return Cartesian3.fromDegrees(lon + r.x, lat + r.y, height);
+    });
+
+    const cornerCartos = corners.map((c) => Cartographic.fromCartesian(c));
+    const lats = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.latitude));
+    const lons = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.longitude));
+
+    const boundingBoxInfo: BoundingBoxInfo = {
+      north: Math.max(...lats),
+      south: Math.min(...lats),
+      east: Math.max(...lons),
+      west: Math.min(...lons),
+    };
+
+    const boundingBoxFeatureId = boundingBoxFeatureIdRef.current ?? `bbox-${featureId}`;
+    boundingBoxFeatureIdRef.current = boundingBoxFeatureId;
+
+    if (hasFeature(boundingBoxFeatureId)) {
+      const entity = getFeature(boundingBoxFeatureId);
+      if (entity) {
+        updateFeature(boundingBoxFeatureId, {
+          position: { longitude: lon, latitude: lat, height },
+        });
+        entity.polygon = new PolygonGraphics({
+          hierarchy: new PolygonHierarchy(corners),
+          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
+          fill: true,
+          outline: false,
+          show: true,
+        });
+      }
+    } else {
+      const entity = addFeature(boundingBoxFeatureId, {
+        position: { longitude: lon, latitude: lat, height },
+      });
+
+      if (entity) {
+        entity.polygon = new PolygonGraphics({
+          hierarchy: new PolygonHierarchy(corners),
+          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
+          fill: true,
+          outline: false,
+          show: true,
+        });
+      }
+    }
+
+    return boundingBoxInfo;
+  }, [
+    viewer,
+    featureId,
+    parsedBBox,
+    showBoundingBox,
+    scale.scale,
+    rotation.heading,
+    position,
+    getFeature,
+    addFeature,
+    updateFeature,
+    hasFeature,
+    findModelPrimitive,
+  ]);
+
   const parseGLTFBoundingBox = async (file: File) => {
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
@@ -439,15 +563,6 @@ export function CalibratePage() {
         updateFeature(featureId, {
           orientation,
         });
-
-        if (showBoundingBox) {
-          setTimeout(() => {
-            const info = updateBoundingBoxVisual();
-            if (info) {
-              setBoundingBoxInfo(info);
-            }
-          }, 100);
-        }
       }
     }
 
@@ -463,15 +578,6 @@ export function CalibratePage() {
             heightReference: HeightReference.RELATIVE_TO_GROUND,
           },
         });
-      }
-
-      if (showBoundingBox && featureId) {
-        setTimeout(() => {
-          const info = updateBoundingBoxVisual();
-          if (info) {
-            setBoundingBoxInfo(info);
-          }
-        }, 100);
       }
     }
   };
@@ -565,130 +671,6 @@ export function CalibratePage() {
       });
     }
   };
-
-  const updateBoundingBoxVisual = useCallback((): BoundingBoxInfo | null => {
-    if (!viewer || viewer.isDestroyed() || !featureId || !parsedBBox || !showBoundingBox)
-      return null;
-
-    const entity = getFeature(featureId);
-    if (!entity?.position) return null;
-
-    // 모델의 실제 중심점 찾기
-    let modelCenter: Cartesian3 | null = null;
-
-    if (entity.model) {
-      const modelPrimitive = findModelPrimitive(featureId);
-      if (modelPrimitive && modelPrimitive.boundingSphere) {
-        const boundingSphere = modelPrimitive.boundingSphere;
-        if (boundingSphere.radius > 0 && boundingSphere.center) {
-          modelCenter = boundingSphere.center;
-        }
-      }
-    }
-
-    if (!modelCenter) {
-      const tempCenter = entity.position.getValue(viewer.clock.currentTime);
-      if (!tempCenter) return null;
-      modelCenter = tempCenter;
-    }
-
-    const carto = Cartographic.fromCartesian(modelCenter);
-    const lon = CesiumMath.toDegrees(carto.longitude);
-    const lat = CesiumMath.toDegrees(carto.latitude);
-    const height = carto.height;
-
-    const actualWidth = parsedBBox.width * scale.scale;
-    const actualDepth = parsedBBox.depth * scale.scale;
-
-    const metersPerLat = 111320;
-    const metersPerLon = metersPerLat * Math.cos(CesiumMath.toRadians(lat));
-
-    // X축(width) → 위도, Z축(depth) → 경도
-    const halfLat = actualWidth / 2 / metersPerLat;
-    const halfLon = actualDepth / 2 / metersPerLon;
-
-    const headingRadians = CesiumMath.toRadians(-rotation.heading);
-    const cos = Math.cos(headingRadians);
-    const sin = Math.sin(headingRadians);
-
-    const rotate = (x: number, y: number) => ({
-      x: x * cos - y * sin,
-      y: x * sin + y * cos,
-    });
-
-    // x=경도, y=위도
-    const local = [
-      { x: -halfLon, y: -halfLat }, // 왼쪽 위
-      { x: halfLon, y: -halfLat }, // 오른쪽 위
-      { x: halfLon, y: halfLat }, // 오른쪽 아래
-      { x: -halfLon, y: halfLat }, // 왼쪽 아래
-    ];
-
-    // 회전된 모서리 좌표를 3D Cartesian 좌표로 변환
-    const corners = local.map((p) => {
-      const r = rotate(p.x, p.y);
-      return Cartesian3.fromDegrees(lon + r.x, lat + r.y, height);
-    });
-
-    const cornerCartos = corners.map((c) => Cartographic.fromCartesian(c));
-    const lats = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.latitude));
-    const lons = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.longitude));
-
-    const boundingBoxInfo: BoundingBoxInfo = {
-      north: Math.max(...lats),
-      south: Math.min(...lats),
-      east: Math.max(...lons),
-      west: Math.min(...lons),
-    };
-
-    const boundingBoxFeatureId = boundingBoxFeatureIdRef.current ?? `bbox-${featureId}`;
-    boundingBoxFeatureIdRef.current = boundingBoxFeatureId;
-
-    if (hasFeature(boundingBoxFeatureId)) {
-      const entity = getFeature(boundingBoxFeatureId);
-      if (entity) {
-        updateFeature(boundingBoxFeatureId, {
-          position: { longitude: lon, latitude: lat, height },
-        });
-        entity.polygon = new PolygonGraphics({
-          hierarchy: new PolygonHierarchy(corners),
-          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
-          fill: true,
-          outline: false,
-          show: true,
-        });
-      }
-    } else {
-      const entity = addFeature(boundingBoxFeatureId, {
-        position: { longitude: lon, latitude: lat, height },
-      });
-
-      if (entity) {
-        entity.polygon = new PolygonGraphics({
-          hierarchy: new PolygonHierarchy(corners),
-          material: new ColorMaterialProperty(Color.fromCssColorString("#00ff0080")),
-          fill: true,
-          outline: false,
-          show: true,
-        });
-      }
-    }
-
-    return boundingBoxInfo;
-  }, [
-    viewer,
-    featureId,
-    parsedBBox,
-    showBoundingBox,
-    scale.scale,
-    rotation.heading,
-    position,
-    getFeature,
-    addFeature,
-    updateFeature,
-    hasFeature,
-    findModelPrimitive,
-  ]);
 
   const handleToggleBoundingBox = () => {
     setShowBoundingBox(!showBoundingBox);
