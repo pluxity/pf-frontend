@@ -1,13 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Input, Button, useToast, Toaster, Slider, Toggle } from "@pf-dev/ui";
-import {
-  MapViewer,
-  Terrain,
-  Imagery,
-  useFeatureStore,
-  useMapStore,
-  useCameraStore,
-} from "@pf-dev/map";
+import { MapViewer, Imagery, useFeatureStore, useMapStore, useCameraStore } from "@pf-dev/map";
 import {
   HeightReference,
   HeadingPitchRoll,
@@ -40,8 +33,6 @@ const DEFAULT_POSITION: Position = {
 
 const DEFAULT_ROTATION: Rotation = {
   heading: 0,
-  pitch: 0,
-  roll: 0,
 };
 
 const DEFAULT_SCALE: Scale = {
@@ -155,11 +146,7 @@ const SectionFieldsData: SectionFieldProps[] = [
   {
     id: "rotation",
     title: "Rotation",
-    fields: [
-      { id: "heading", label: "Heading", slider: true, step: 0.1, min: 0, max: 360 },
-      { id: "pitch", label: "Pitch", slider: true, step: 0.1, min: 0, max: 360 },
-      { id: "roll", label: "Roll", slider: true, step: 0.1, min: 0, max: 360 },
-    ],
+    fields: [{ id: "heading", label: "Heading", slider: true, step: 0.1, min: 0, max: 360 }],
   },
   {
     id: "scale",
@@ -171,7 +158,6 @@ const SectionFieldsData: SectionFieldProps[] = [
 export function CalibratePage() {
   const ionToken = import.meta.env.VITE_ION_CESIUM_ACCESS_TOKEN;
   const imageryAssetId = Number(import.meta.env.VITE_ION_CESIUM_MAP_ASSET_ID);
-  const terrainAssetId = Number(import.meta.env.VITE_ION_CESIUM_TERRAIN_ASSET_ID);
 
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
@@ -547,8 +533,8 @@ export function CalibratePage() {
         const rotationValues = values as Rotation;
         const headingPitchRoll = new HeadingPitchRoll(
           CesiumMath.toRadians(rotationValues.heading),
-          CesiumMath.toRadians(rotationValues.pitch),
-          CesiumMath.toRadians(rotationValues.roll)
+          0,
+          0
         );
         const currentPosition = positionRef.current;
         const orientation = Transforms.headingPitchRollQuaternion(
@@ -620,8 +606,6 @@ export function CalibratePage() {
     if (sectionId === "rotation") {
       return {
         heading: rotation.heading,
-        pitch: rotation.pitch,
-        roll: rotation.roll,
       };
     }
     if (sectionId === "scale") {
@@ -833,7 +817,6 @@ export function CalibratePage() {
 
         <MapViewer className="w-full h-screen" ionToken={ionToken}>
           <Imagery provider="ion" assetId={imageryAssetId} />
-          <Terrain provider="ion" assetId={terrainAssetId} />
         </MapViewer>
       </div>
 

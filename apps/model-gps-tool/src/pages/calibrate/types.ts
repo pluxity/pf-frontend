@@ -25,8 +25,6 @@ export type Position = {
 
 export type Rotation = {
   heading: number;
-  pitch: number;
-  roll: number;
 };
 
 export type Scale = {
