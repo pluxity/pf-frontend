@@ -1,0 +1,76 @@
+# 이슈 생성 시 자동으로 브랜치를 생성하고 이슈에 연결합니다.
+# 브랜치 네이밍: {prefix}/issue-{number}
+# prefix는 라벨에 따라 결정: epic, bug -> fix, 그 외 -> feature
+name: Create Issue Branch
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Build branch name
+        id: build
+        env:
+          ISSUE_LABELS: ${{ toJson(github.event.issue.labels.*.name) }}
+        run: |
+          number=${{ github.event.issue.number }}
+
+          # 라벨로 prefix 결정
+          if echo "$ISSUE_LABELS" | grep -qi "epic"; then
+            prefix="epic"
+          elif echo "$ISSUE_LABELS" | grep -qi "bug"; then
+            prefix="fix"
+          elif echo "$ISSUE_LABELS" | grep -qi "refactor"; then
+            prefix="refactor"
+          elif echo "$ISSUE_LABELS" | grep -qi "documentation"; then
+            prefix="docs"
+          elif echo "$ISSUE_LABELS" | grep -qi "test"; then
+            prefix="test"
+          else
+            prefix="feature"
+          fi
+
+          branch="${prefix}/issue-${number}"
+
+          echo "branch=${branch}" >> $GITHUB_OUTPUT
+          echo "Built branch: ${branch}"
+
+      - name: Create branch and push
+        run: |
+          BRANCH="${{ steps.build.outputs.branch }}"
+          git checkout -b "$BRANCH"
+          git push --set-upstream origin "$BRANCH"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const branch = process.env.BRANCH;
+            const issue_number = context.payload.issue.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body: `🌿 브랜치 생성됨: \`${branch}\`\n\n\`\`\`bash\ngit fetch origin\ngit checkout ${branch}\n\`\`\``
+            });
+        env:
+          BRANCH: ${{ steps.build.outputs.branch }}
