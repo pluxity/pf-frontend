@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { useWHEPStore } from "./store.ts";
-import type { WHEPConfig } from "./types.ts";
-import type { StreamStatus } from "../types.ts";
+import { useWHEPStore } from "./store";
+import type { WHEPConfig } from "./types";
+import type { StreamStatus } from "../types";
 
 export interface UseWHEPStreamReturn {
   status: StreamStatus;

@@ -1,5 +1,5 @@
-export { useWHEPStore } from "./store.ts";
-export type { WHEPConfig, WHEPStreamState, WHEPState, WHEPStore } from "./store.ts";
+export { useWHEPStore } from "./store";
+export type { WHEPConfig, WHEPStreamState, WHEPState, WHEPStore } from "./store";
 
 export {
   useWHEPStream,
@@ -7,8 +7,8 @@ export {
   useWHEPConfig,
   useWHEPInit,
   useWHEPCleanup,
-} from "./hooks.ts";
-export type { UseWHEPStreamReturn } from "./hooks.ts";
+} from "./hooks";
+export type { UseWHEPStreamReturn } from "./hooks";
 
-export { performWhepNegotiation, createReceiverPeerConnection } from "./client.ts";
-export type { WHEPNegotiationResult } from "./types.ts";
+export { performWhepNegotiation, createReceiverPeerConnection } from "./client";
+export type { WHEPNegotiationResult } from "./types";

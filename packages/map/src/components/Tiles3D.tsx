@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Cesium3DTileset, IonResource } from "cesium";
-import { useMapStore } from "../store/index.ts";
-import type { Tiles3DProps, Tiles3DSource } from "../types/index.ts";
+import { useMapStore } from "../store/index";
+import type { Tiles3DProps, Tiles3DSource } from "../types/index";
 
 export type { Tiles3DProps, Tiles3DSource };
 

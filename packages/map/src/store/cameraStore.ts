@@ -13,15 +13,15 @@ import type {
   LookAtOptions,
   ZoomToOptions,
   Coordinate,
-} from "../types/index.ts";
+} from "../types/index";
 import {
   isLookAtFeature,
   isZoomToCoordinates,
   isZoomToFeatures,
   isZoomToBoundary,
-} from "../types/index.ts";
-import { useMapStore } from "./mapStore.ts";
-import { useFeatureStore } from "./featureStore.ts";
+} from "../types/index";
+import { useMapStore } from "./mapStore";
+import { useFeatureStore } from "./featureStore";
 
 // ============================================================================
 // Helpers
@@ -244,3 +244,29 @@ export const useCameraStore = create<CameraState & CameraActions>((set) => {
 });
 
 export const cameraStore = useCameraStore;
+
+// ============================================================================
+// Viewer 변경 구독 - 카메라 이벤트 리스너 자동 등록/해제
+// ============================================================================
+
+let cameraUpdateHandler: (() => void) | null = null;
+
+useMapStore.subscribe(
+  (state) => state.viewer,
+  (viewer, prevViewer) => {
+    // 이전 viewer에서 리스너 제거
+    if (prevViewer && !prevViewer.isDestroyed() && cameraUpdateHandler) {
+      prevViewer.camera.changed.removeEventListener(cameraUpdateHandler);
+    }
+
+    // 카메라 위치 초기화
+    useCameraStore.getState()._resetCameraPosition();
+
+    // 새 viewer에 리스너 등록
+    if (viewer && !viewer.isDestroyed()) {
+      cameraUpdateHandler = useCameraStore.getState()._updateCameraPosition;
+      viewer.camera.changed.addEventListener(cameraUpdateHandler);
+      viewer.camera.percentageChanged = 0.01;
+    }
+  }
+);

@@ -15,7 +15,7 @@ import {
   Math as CesiumMath,
   type Entity,
 } from "cesium";
-import { useMapStore } from "./mapStore.ts";
+import { useMapStore } from "./mapStore";
 import type {
   FeatureStoreState,
   FeatureActions,
@@ -26,7 +26,7 @@ import type {
   FeatureVisual,
   FeatureMeta,
   DisplayConditionRange,
-} from "../types/feature.ts";
+} from "../types/feature";
 
 // ============================================================================
 // Helpers

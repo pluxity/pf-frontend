@@ -1,4 +1,4 @@
-import type { BaseStreamConfig, IceServerConfig, StreamStatus, CCTVInfo } from "../types.ts";
+import type { BaseStreamConfig, IceServerConfig, StreamStatus, CCTVInfo } from "../types";
 
 export interface WHEPNegotiationResult {
   answerSdp: string;

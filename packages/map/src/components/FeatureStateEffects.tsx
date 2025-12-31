@@ -8,9 +8,9 @@ import {
   type Entity,
   type CustomDataSource,
 } from "cesium";
-import { useMapStore } from "../store/mapStore.ts";
-import { useFeatureStore } from "../store/featureStore.ts";
-import type { FeatureStateEffectsProps, StateEffect, RippleEffect } from "../types/featureState.ts";
+import { useMapStore } from "../store/mapStore";
+import { useFeatureStore } from "../store/featureStore";
+import type { FeatureStateEffectsProps, StateEffect, RippleEffect } from "../types/featureState";
 
 /**
  * Feature 상태별 시각 효과를 자동 적용하는 컴포넌트

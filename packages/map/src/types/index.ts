@@ -5,25 +5,20 @@ export type {
   LookAtOptions,
   ZoomToOptions,
   FeatureSelector,
-} from "./camera.ts";
-export {
-  isLookAtFeature,
-  isZoomToCoordinates,
-  isZoomToFeatures,
-  isZoomToBoundary,
-} from "./camera.ts";
+} from "./camera";
+export { isLookAtFeature, isZoomToCoordinates, isZoomToFeatures, isZoomToBoundary } from "./camera";
 
 // Viewer
-export type { MapViewerProps } from "./viewer.ts";
+export type { MapViewerProps } from "./viewer";
 
 // Imagery
-export type { ImageryProps, ImageryProviderType, VWorldLayer } from "./imagery.ts";
+export type { ImageryProps, ImageryProviderType, VWorldLayer } from "./imagery";
 
 // Terrain
-export type { TerrainProps, TerrainProviderType } from "./terrain.ts";
+export type { TerrainProps, TerrainProviderType } from "./terrain";
 
 // Tiles3D
-export type { Tiles3DProps, Tiles3DSource } from "./tiles3d.ts";
+export type { Tiles3DProps, Tiles3DSource } from "./tiles3d";
 
 // Feature State
 export type {
@@ -33,7 +28,7 @@ export type {
   RippleEffect,
   GlowEffect,
   OutlineEffect,
-} from "./featureState.ts";
+} from "./featureState";
 
 // Feature
 export type {
@@ -53,4 +48,4 @@ export type {
   FeatureSelector as FeatureSelectorType,
   FeatureStoreState,
   FeatureActions,
-} from "./feature.ts";
+} from "./feature";

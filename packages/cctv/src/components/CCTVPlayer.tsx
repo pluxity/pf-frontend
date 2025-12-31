@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { useHLSStore } from "../hls/store.ts";
-import { useWHEPStore } from "../whep/store.ts";
-import type { StreamProtocol, StreamStatus, HLSStreamStatus } from "../types.ts";
-import type { HLSStats } from "../hls/types.ts";
+import { useHLSStore } from "../hls/store";
+import { useWHEPStore } from "../whep/store";
+import type { StreamProtocol, StreamStatus, HLSStreamStatus } from "../types";
+import type { HLSStats } from "../hls/types";
 
 export interface CCTVPlayerRenderProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;

@@ -1,2 +1,2 @@
-export { CCTVPlayer } from "./CCTVPlayer.tsx";
-export type { CCTVPlayerProps, CCTVPlayerRenderProps } from "./CCTVPlayer.tsx";
+export { CCTVPlayer } from "./CCTVPlayer";
+export type { CCTVPlayerProps, CCTVPlayerRenderProps } from "./CCTVPlayer";

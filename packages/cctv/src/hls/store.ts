@@ -9,8 +9,8 @@ import type {
   HLSStats,
   HLSStreamState,
   HLSStore,
-} from "./types.ts";
-import type { HLSStreamStatus } from "../types.ts";
+} from "./types";
+import type { HLSStreamStatus } from "../types";
 
 const DEFAULT_CONFIG: Required<HLSConfig> = {
   autoReconnect: true,

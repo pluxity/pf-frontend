@@ -9,12 +9,12 @@ export type {
   IceServerConfig,
   UseStreamReturn,
   StreamProtocol,
-} from "./types.ts";
+} from "./types";
 
 // ============================================================================
 // HLS
 // ============================================================================
-export { useHLSStore, useHLSStream, useHLSConfig, useHLSCleanup } from "./hls/index.ts";
+export { useHLSStore, useHLSStream, useHLSConfig, useHLSCleanup } from "./hls/index";
 export type {
   HLSConfig,
   HLSStreamState,
@@ -23,7 +23,7 @@ export type {
   HLSStats,
   HLSEngineInstance,
   UseHLSStreamReturn,
-} from "./hls/index.ts";
+} from "./hls/index";
 
 // ============================================================================
 // WHEP
@@ -37,7 +37,7 @@ export {
   useWHEPCleanup,
   performWhepNegotiation,
   createReceiverPeerConnection,
-} from "./whep/index.ts";
+} from "./whep/index";
 export type {
   WHEPConfig,
   WHEPStreamState,
@@ -45,10 +45,10 @@ export type {
   WHEPStore,
   WHEPNegotiationResult,
   UseWHEPStreamReturn,
-} from "./whep/index.ts";
+} from "./whep/index";
 
 // ============================================================================
 // Components
 // ============================================================================
-export { CCTVPlayer } from "./components/index.ts";
-export type { CCTVPlayerProps, CCTVPlayerRenderProps } from "./components/index.ts";
+export { CCTVPlayer } from "./components/index";
+export type { CCTVPlayerProps, CCTVPlayerRenderProps } from "./components/index";
