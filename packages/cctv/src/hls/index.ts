@@ -1,7 +1,7 @@
-export { useHLSStore } from "./store.ts";
-export type { HLSConfig, HLSStreamState, HLSState, HLSStore, HLSStats } from "./store.ts";
+export { useHLSStore } from "./store";
+export type { HLSConfig, HLSStreamState, HLSState, HLSStore, HLSStats } from "./store";
 
-export { useHLSStream, useHLSConfig, useHLSCleanup } from "./hooks.ts";
-export type { UseHLSStreamReturn } from "./hooks.ts";
+export { useHLSStream, useHLSConfig, useHLSCleanup } from "./hooks";
+export type { UseHLSStreamReturn } from "./hooks";
 
-export type { HLSEngineInstance } from "./types.ts";
+export type { HLSEngineInstance } from "./types";

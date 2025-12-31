@@ -9,11 +9,11 @@ export function LoginPage() {
   const { setUser } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (data: { email: string; password: string }) => {
+  const handleLogin = async (data: { username: string; password: string; remember: boolean }) => {
     setLoading(true);
     try {
       await authService.signIn({
-        username: data.email,
+        username: data.username,
         password: data.password,
       });
 

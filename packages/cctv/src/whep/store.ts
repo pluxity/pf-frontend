@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 
-import { performWhepNegotiation } from "./client.ts";
-import type { WHEPConfig, WHEPState, WHEPStreamState, WHEPStore } from "./types.ts";
-import type { CCTVInfo, StreamStatus } from "../types.ts";
+import { performWhepNegotiation } from "./client";
+import type { WHEPConfig, WHEPState, WHEPStreamState, WHEPStore } from "./types";
+import type { CCTVInfo, StreamStatus } from "../types";
 
 const RETRY_DELAY = 5000;
 const MAX_RETRIES = 3;

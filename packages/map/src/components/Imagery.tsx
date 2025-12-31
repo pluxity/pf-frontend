@@ -9,8 +9,8 @@ import {
   Credit,
 } from "cesium";
 import type { ImageryProvider } from "cesium";
-import { useMapStore } from "../store/index.ts";
-import type { ImageryProps, ImageryProviderType, VWorldLayer } from "../types/index.ts";
+import { useMapStore } from "../store/index";
+import type { ImageryProps, ImageryProviderType, VWorldLayer } from "../types/index";
 
 export type { ImageryProps, ImageryProviderType, VWorldLayer };
 

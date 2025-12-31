@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { useHLSStore } from "./store.ts";
-import type { HLSConfig, HLSStats } from "./types.ts";
-import type { HLSStreamStatus } from "../types.ts";
+import { useHLSStore } from "./store";
+import type { HLSConfig, HLSStats } from "./types";
+import type { HLSStreamStatus } from "../types";
 
 export interface UseHLSStreamReturn {
   status: HLSStreamStatus;

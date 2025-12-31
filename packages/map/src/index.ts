@@ -1,5 +1,5 @@
 // Components
-export { MapViewer, Imagery, Terrain, Tiles3D, FeatureStateEffects } from "./components/index.ts";
+export { MapViewer, Imagery, Terrain, Tiles3D, FeatureStateEffects } from "./components/index";
 
 // Store
 export {
@@ -9,7 +9,7 @@ export {
   cameraStore,
   useFeatureStore,
   featureStore,
-} from "./store/index.ts";
+} from "./store/index";
 
 // Types
 export type {
@@ -55,7 +55,7 @@ export type {
   FeatureSelectorType,
   FeatureStoreState,
   FeatureActions,
-} from "./types/index.ts";
+} from "./types/index";
 
 // Type Guards
 export {
@@ -63,4 +63,4 @@ export {
   isZoomToCoordinates,
   isZoomToFeatures,
   isZoomToBoundary,
-} from "./types/index.ts";
+} from "./types/index";

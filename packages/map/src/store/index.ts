@@ -1,3 +1,3 @@
-export { useMapStore, mapStore } from "./mapStore.ts";
-export { useCameraStore, cameraStore } from "./cameraStore.ts";
-export { useFeatureStore, featureStore } from "./featureStore.ts";
+export { useMapStore, mapStore } from "./mapStore";
+export { useCameraStore, cameraStore } from "./cameraStore";
+export { useFeatureStore, featureStore } from "./featureStore";

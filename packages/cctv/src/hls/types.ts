@@ -1,4 +1,4 @@
-import type { BaseStreamConfig, HLSStreamStatus } from "../types.ts";
+import type { BaseStreamConfig, HLSStreamStatus } from "../types";
 
 export interface HLSStats {
   bytesLoaded: number;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { CesiumTerrainProvider, EllipsoidTerrainProvider } from "cesium";
-import { useMapStore } from "../store/index.ts";
-import type { TerrainProps, TerrainProviderType } from "../types/index.ts";
+import { useMapStore } from "../store/index";
+import type { TerrainProps, TerrainProviderType } from "../types/index";
 
 export type { TerrainProps, TerrainProviderType };
 

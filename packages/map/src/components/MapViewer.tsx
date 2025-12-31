@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Viewer, Ion, Cartesian3, Math as CesiumMath } from "cesium";
-import { mapStore, useMapStore } from "../store/index.ts";
-import type { MapViewerProps } from "../types/index.ts";
+import { mapStore, useMapStore } from "../store/index";
+import type { MapViewerProps } from "../types/index";
 
 export type { MapViewerProps };
 

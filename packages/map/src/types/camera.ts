@@ -1,5 +1,5 @@
 import type { Entity } from "cesium";
-import type { Coordinate } from "./feature.ts";
+import type { Coordinate } from "./feature";
 
 // ============================================================================
 // Camera Position

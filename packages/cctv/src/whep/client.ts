@@ -1,4 +1,4 @@
-import type { WHEPNegotiationResult } from "./types.ts";
+import type { WHEPNegotiationResult } from "./types";
 
 export async function performWhepNegotiation(
   pc: RTCPeerConnection,
