@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginCard } from "@pf-dev/ui/organisms";
+import { Toaster, useToast } from "@pf-dev/ui/molecules";
 import { login, useAuthStore, getMe } from "@pf-dev/services";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
   const [loading, setLoading] = useState(false);
+  const { toasts, toast, dismissToast } = useToast();
 
   const handleLogin = async (data: { username: string; password: string }) => {
     setLoading(true);
@@ -17,7 +19,7 @@ export function LoginPage() {
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
-      alert("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
+      toast.error("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
     } finally {
       setLoading(false);
     }
@@ -31,6 +33,7 @@ export function LoginPage() {
         onLoginSubmit={handleLogin}
         loading={loading}
       />
+      <Toaster toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

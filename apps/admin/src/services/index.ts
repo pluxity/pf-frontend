@@ -2,8 +2,7 @@
  * Services barrel export
  *
  * Usage:
- * import { userService, apiClient } from '@/services';
+ * import { userService } from '@/services';
  */
 
-export { apiClient } from "./client";
 export * from "./user.service";
