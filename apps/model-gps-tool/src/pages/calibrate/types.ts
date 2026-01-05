@@ -20,7 +20,7 @@ export type SectionFieldProps = {
 export type Position = {
   longitude: number;
   latitude: number;
-  height: number;
+  height?: number;
 };
 
 export type Rotation = {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Input, Button, useToast, Toaster, Slider, Toggle } from "@pf-dev/ui";
+import { Input, Button, useToast, Toaster, Slider, Toggle, X } from "@pf-dev/ui";
 import { MapViewer, Imagery, useFeatureStore, useMapStore, useCameraStore } from "@pf-dev/map";
 import {
   HeightReference,
@@ -19,7 +19,7 @@ import type {
   BoundingBoxInfo,
   GLTFJson,
 } from "./types";
-import { useModelDrag } from "../../hooks";
+import { useModelDrag, useCoordinatePicker } from "../../hooks";
 
 const DEFAULT_POSITION: Position = {
   longitude: 126.970198,
@@ -179,6 +179,10 @@ export function CalibratePage() {
 
   const { flyTo, cameraPosition } = useCameraStore();
   const [topView, setTopView] = useState<boolean>(false);
+  const [dragMode, setDragMode] = useState<boolean>(false);
+  const [clickedCoord, setClickedCoord] = useState<{ longitude: number; latitude: number } | null>(
+    null
+  );
   const [showBoundingBox, setShowBoundingBox] = useState<boolean>(false);
   const [boundingBoxInfo, setBoundingBoxInfo] = useState<BoundingBoxInfo | null>(null);
 
@@ -229,6 +233,13 @@ export function CalibratePage() {
     featureId,
     positionRef,
     setPosition,
+    enabled: dragMode,
+  });
+
+  useCoordinatePicker({
+    viewer,
+    enabled: !dragMode,
+    setClickedCoord,
   });
 
   const findModelPrimitive = useCallback(
@@ -468,6 +479,7 @@ export function CalibratePage() {
     setFileName("");
     setParsedBBox(null);
     setBoundingBoxInfo(null);
+    setClickedCoord(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -565,7 +577,7 @@ export function CalibratePage() {
       return {
         longitude: position.longitude,
         latitude: position.latitude,
-        height: position.height,
+        height: position.height ?? 0,
       };
     }
     if (sectionId === "rotation") {
@@ -590,6 +602,7 @@ export function CalibratePage() {
     setFileName("");
     setParsedBBox(null);
     setBoundingBoxInfo(null);
+    setClickedCoord(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -727,54 +740,92 @@ export function CalibratePage() {
             <Toggle size="sm" pressed={topView} onPressedChange={handleToggleTopView}>
               Top View
             </Toggle>
+            <Toggle size="sm" pressed={dragMode} onPressedChange={setDragMode}>
+              Model Drag
+            </Toggle>
           </div>
         </div>
 
-        {showBoundingBox && boundingBoxInfo && (
-          <div className="absolute bottom-3 left-3 z-10 bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
-            <div className="space-y-4">
-              <div>
-                <strong className="block mb-2 text-sm font-semibold">Bounding Box</strong>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">North:</span>
-                    <span>{boundingBoxInfo.north.toFixed(6)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">South:</span>
-                    <span>{boundingBoxInfo.south.toFixed(6)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">East:</span>
-                    <span>{boundingBoxInfo.east.toFixed(6)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">West:</span>
-                    <span>{boundingBoxInfo.west.toFixed(6)}</span>
+        <div className="absolute bottom-3 left-3 z-10">
+          <div className="flex flex-col gap-2">
+            {clickedCoord && (
+              <div className="relative bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
+                <div className="space-y-4">
+                  <div>
+                    <strong className="block mb-2 text-sm font-semibold">Clicked Coordinate</strong>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Longitude:</span>
+                        <span>{clickedCoord.longitude.toFixed(6)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Latitude:</span>
+                        <span>{clickedCoord.latitude.toFixed(6)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <button
+                  className="absolute top-2 right-2 p-2 cursor-pointer"
+                  onClick={() => setClickedCoord(null)}
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
+            )}
+            {showBoundingBox && boundingBoxInfo && (
+              <div className="relative bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
+                <div className="space-y-4">
+                  <div>
+                    <strong className="block mb-2 text-sm font-semibold">Bounding Box</strong>
+                    <div className="space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">North:</span>
+                        <span>{boundingBoxInfo.north.toFixed(6)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">South:</span>
+                        <span>{boundingBoxInfo.south.toFixed(6)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">East:</span>
+                        <span>{boundingBoxInfo.east.toFixed(6)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">West:</span>
+                        <span>{boundingBoxInfo.west.toFixed(6)}</span>
+                      </div>
+                    </div>
+                  </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <strong className="block text-sm font-semibold">JSON</strong>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <strong className="block text-sm font-semibold">JSON</strong>
+                    </div>
+                    <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
+                      {JSON.stringify(
+                        {
+                          north: Number(boundingBoxInfo.north.toFixed(6)),
+                          south: Number(boundingBoxInfo.south.toFixed(6)),
+                          east: Number(boundingBoxInfo.east.toFixed(6)),
+                          west: Number(boundingBoxInfo.west.toFixed(6)),
+                        },
+                        null,
+                        2
+                      )}
+                    </pre>
+                  </div>
+                  <button
+                    className="absolute top-2 right-2 p-2 cursor-pointer"
+                    onClick={() => setShowBoundingBox(false)}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
                 </div>
-                <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
-                  {JSON.stringify(
-                    {
-                      north: Number(boundingBoxInfo.north.toFixed(6)),
-                      south: Number(boundingBoxInfo.south.toFixed(6)),
-                      east: Number(boundingBoxInfo.east.toFixed(6)),
-                      west: Number(boundingBoxInfo.west.toFixed(6)),
-                    },
-                    null,
-                    2
-                  )}
-                </pre>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </div>
 
         <MapViewer className="w-full h-screen" ionToken={ionToken} requestRenderMode={false}>
           <Imagery provider="ion" assetId={imageryAssetId} />
