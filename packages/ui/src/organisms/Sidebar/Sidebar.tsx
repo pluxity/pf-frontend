@@ -179,7 +179,7 @@ function SidebarItem({
   const label = Array.isArray(children) ? children.find((c) => typeof c === "string") : children;
 
   return (
-    <div>
+    <div className="overflow-visible">
       {href ? (
         <a href={href} className={itemClasses} onClick={handleClick} {...props}>
           {active && !collapsed && (
@@ -187,7 +187,7 @@ function SidebarItem({
           )}
           {content}
           {collapsed && (
-            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-[#333340] px-2 py-1 text-xs text-white group-hover:block">
+            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-brand px-2 py-1 text-xs text-white group-hover:block">
               {label}
             </span>
           )}
@@ -199,7 +199,7 @@ function SidebarItem({
           )}
           {content}
           {collapsed && (
-            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-[#333340] px-2 py-1 text-xs text-white group-hover:block">
+            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-brand px-2 py-1 text-xs text-white group-hover:block">
               {label}
             </span>
           )}
