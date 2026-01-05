@@ -31,10 +31,7 @@ export function useCoordinatePicker({
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
 
     handler.setInputAction((movement: ScreenSpaceEventHandler.PositionedEvent) => {
-      const cartesian = viewer.camera.pickEllipsoid(
-        movement.position,
-        viewer.scene.globe.ellipsoid
-      );
+      const cartesian = viewer.scene.pickPosition(movement.position);
 
       if (!cartesian) return;
 
