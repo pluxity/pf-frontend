@@ -3,6 +3,8 @@ import { Outlet } from "react-router-dom";
 import { AdminSidebar } from "./AdminSidebar";
 import { Header } from "./Header";
 
+const LG_BREAKPOINT = 1024;
+
 export function AdminLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,7 +12,7 @@ export function AdminLayout() {
   // 화면 크기 변경 시 모바일 메뉴 닫기
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
+      if (window.innerWidth >= LG_BREAKPOINT) {
         setMobileMenuOpen(false);
       }
     };
@@ -31,8 +33,10 @@ export function AdminLayout() {
     };
   }, [mobileMenuOpen]);
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
-    <div className="flex h-screen bg-[#F5F5F7]">
+    <div className="flex h-screen bg-gray-50">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <AdminSidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
@@ -42,7 +46,7 @@ export function AdminLayout() {
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
           aria-hidden="true"
         />
       )}
@@ -53,7 +57,7 @@ export function AdminLayout() {
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <AdminSidebar collapsed={false} onCollapsedChange={() => setMobileMenuOpen(false)} />
+        <AdminSidebar collapsed={false} onItemClick={closeMobileMenu} />
       </div>
 
       {/* Main Content Area */}

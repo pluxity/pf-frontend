@@ -5,6 +5,7 @@ import { Home, Users, Settings, Dashboard } from "@pf-dev/ui/atoms";
 interface AdminSidebarProps {
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  onItemClick?: () => void;
 }
 
 interface MenuItem {
@@ -20,7 +21,7 @@ const menuItems: MenuItem[] = [
   { label: "설정", path: "/settings", icon: <Settings size="md" /> },
 ];
 
-export function AdminSidebar({ collapsed, onCollapsedChange }: AdminSidebarProps) {
+export function AdminSidebar({ collapsed, onCollapsedChange, onItemClick }: AdminSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,6 +30,11 @@ export function AdminSidebar({ collapsed, onCollapsedChange }: AdminSidebarProps
       return location.pathname === "/";
     }
     return location.pathname.startsWith(path);
+  };
+
+  const handleItemClick = (path: string) => {
+    navigate(path);
+    onItemClick?.();
   };
 
   return (
@@ -44,7 +50,7 @@ export function AdminSidebar({ collapsed, onCollapsedChange }: AdminSidebarProps
               key={item.path}
               icon={item.icon}
               active={isActive(item.path)}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleItemClick(item.path)}
             >
               {item.label}
             </Sidebar.Item>
