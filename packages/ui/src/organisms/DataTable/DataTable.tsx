@@ -1,4 +1,4 @@
-import { useState, type Ref } from "react";
+import { useState, useMemo, type Ref } from "react";
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import { Checkbox } from "../../atoms/Checkbox";
@@ -176,6 +176,13 @@ function DataTableComponent<T extends Record<string, unknown>>({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // 데이터가 변경되어 현재 페이지가 유효 범위를 벗어나면 자동 조정
+  const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+  const effectiveCurrentPage = useMemo(() => {
+    if (!pagination) return currentPage;
+    return Math.min(currentPage, totalPages);
+  }, [currentPage, totalPages, pagination]);
+
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       const allIndexes = new Set(data.map((_, index) => index));
@@ -218,9 +225,8 @@ function DataTableComponent<T extends Record<string, unknown>>({
     return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const totalPages = Math.ceil(data.length / pageSize);
   const paginatedData = pagination
-    ? sortedData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    ? sortedData.slice((effectiveCurrentPage - 1) * pageSize, effectiveCurrentPage * pageSize)
     : sortedData;
 
   const isAllSelected = selectedRows.size === data.length && data.length > 0;
@@ -272,7 +278,9 @@ function DataTableComponent<T extends Record<string, unknown>>({
           </thead>
           <tbody>
             {paginatedData.map((row, rowIndex) => {
-              const actualIndex = pagination ? (currentPage - 1) * pageSize + rowIndex : rowIndex;
+              const actualIndex = pagination
+                ? (effectiveCurrentPage - 1) * pageSize + rowIndex
+                : rowIndex;
               return (
                 <tr
                   key={actualIndex}
@@ -310,7 +318,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
 
       {pagination && (
         <DataTablePagination
-          currentPage={currentPage}
+          currentPage={effectiveCurrentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
           pageSize={pageSize}

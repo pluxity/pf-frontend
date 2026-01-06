@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@pf-dev/ui/organisms";
-import { Home, Users, Settings, Dashboard, Grid } from "@pf-dev/ui/atoms";
+import { Home, Users, Settings, Dashboard, FileText, Grid } from "@pf-dev/ui/atoms";
 
 interface AdminSidebarProps {
   collapsed?: boolean;
@@ -30,7 +30,10 @@ const menuSections: MenuSection[] = [
   },
   {
     label: "예제",
-    items: [{ label: "CRUD 카드형", path: "/examples/crud-card", icon: <Grid size="md" /> }],
+    items: [
+      { label: "CRUD 카드형", path: "/examples/crud-card", icon: <Grid size="md" /> },
+      { label: "CRUD 리스트형", path: "/examples/crud-list", icon: <FileText size="md" /> },
+    ],
   },
 ];
 
@@ -56,9 +59,9 @@ export function AdminSidebar({ collapsed, onCollapsedChange, onItemClick }: Admi
         <Sidebar.CollapseButton iconOnly />
       </Sidebar.Header>
 
-      <nav className="flex-1 overflow-y-auto p-3">
+      <Sidebar.Content>
         {menuSections.map((section, index) => (
-          <Sidebar.Section key={index} label={section.label}>
+          <Sidebar.Section key={section.label ?? index} label={section.label}>
             {section.items.map((item) => (
               <Sidebar.Item
                 key={item.path}
@@ -71,7 +74,7 @@ export function AdminSidebar({ collapsed, onCollapsedChange, onItemClick }: Admi
             ))}
           </Sidebar.Section>
         ))}
-      </nav>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
