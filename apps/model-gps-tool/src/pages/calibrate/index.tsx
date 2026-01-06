@@ -595,11 +595,17 @@ export function CalibratePage() {
 
   // 바운딩 박스 업데이트
   useEffect(() => {
-    if (!showBoundingBox || !viewer || !featureId || !parsedBBox) return;
+    if (showBoundingBox) {
+      if (!viewer || !featureId || !parsedBBox) return;
 
-    const result = calculateBoundingBoxInfo();
-    if (result) {
-      setBoundingBoxInfo(result);
+      const result = calculateBoundingBoxInfo();
+      if (result) {
+        setBoundingBoxInfo(result);
+      }
+    } else if (boundingBoxFeatureIdRef.current && hasFeature(boundingBoxFeatureIdRef.current)) {
+      removeFeature(boundingBoxFeatureIdRef.current);
+      boundingBoxFeatureIdRef.current = null;
+      setBoundingBoxInfo(null);
     }
   }, [
     position.longitude,
@@ -612,6 +618,8 @@ export function CalibratePage() {
     featureId,
     parsedBBox,
     calculateBoundingBoxInfo,
+    hasFeature,
+    removeFeature,
   ]);
 
   return (
