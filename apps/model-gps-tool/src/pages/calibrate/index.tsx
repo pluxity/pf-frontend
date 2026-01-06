@@ -291,14 +291,14 @@ export function CalibratePage() {
     });
 
     const cornerCartos = corners.map((c) => Cartographic.fromCartesian(c));
-    const lats = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.latitude));
-    const lons = cornerCartos.map((carto) => CesiumMath.toDegrees(carto.longitude));
+    const cornerLabels = ["Southwest", "Southeast", "Northeast", "Northwest"];
 
     const boundingBoxInfo: BoundingBoxInfo = {
-      north: Math.max(...lats),
-      south: Math.min(...lats),
-      east: Math.max(...lons),
-      west: Math.min(...lons),
+      corners: cornerCartos.map((carto, index) => ({
+        longitude: CesiumMath.toDegrees(carto.longitude),
+        latitude: CesiumMath.toDegrees(carto.latitude),
+        label: cornerLabels[index] || "",
+      })),
     };
 
     const boundingBoxFeatureId = boundingBoxFeatureIdRef.current ?? `bbox-${featureId}`;
@@ -728,11 +728,11 @@ export function CalibratePage() {
                     <strong className="block mb-2 text-sm font-semibold">Clicked Coordinate</strong>
                     <div className="space-y-1 text-xs">
                       <div className="flex justify-between">
-                        <span className="text-gray-400">Longitude:</span>
+                        <span className="text-gray-400">Lon:</span>
                         <span>{clickedCoord.longitude.toFixed(6)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">Latitude:</span>
+                        <span className="text-gray-400">Lat:</span>
                         <span>{clickedCoord.latitude.toFixed(6)}</span>
                       </div>
                     </div>
@@ -764,40 +764,37 @@ export function CalibratePage() {
             )}
             {showBoundingBox && boundingBoxInfo && (
               <div className="relative bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <div>
                     <strong className="block mb-2 text-sm font-semibold">Bounding Box</strong>
                     <div className="space-y-1 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">North:</span>
-                        <span>{boundingBoxInfo.north.toFixed(6)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">South:</span>
-                        <span>{boundingBoxInfo.south.toFixed(6)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">East:</span>
-                        <span>{boundingBoxInfo.east.toFixed(6)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">West:</span>
-                        <span>{boundingBoxInfo.west.toFixed(6)}</span>
-                      </div>
+                      {boundingBoxInfo.corners.map((corner, index) => (
+                        <div key={index}>
+                          <div className="font-semibold text-gray-300 mb-1">{corner.label}</div>
+                          <div className="flex justify-between pl-2">
+                            <span className="text-gray-400">Lon:</span>
+                            <span>{corner.longitude.toFixed(6)}</span>
+                          </div>
+                          <div className="flex justify-between pl-2 mb-1">
+                            <span className="text-gray-400">Lat:</span>
+                            <span>{corner.latitude.toFixed(6)}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-1">
                       <strong className="block text-sm font-semibold">JSON</strong>
                     </div>
                     <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
                       {JSON.stringify(
                         {
-                          north: Number(boundingBoxInfo.north.toFixed(6)),
-                          south: Number(boundingBoxInfo.south.toFixed(6)),
-                          east: Number(boundingBoxInfo.east.toFixed(6)),
-                          west: Number(boundingBoxInfo.west.toFixed(6)),
+                          corners: boundingBoxInfo.corners.map((corner) => ({
+                            longitude: Number(corner.longitude.toFixed(6)),
+                            latitude: Number(corner.latitude.toFixed(6)),
+                          })),
                         },
                         null,
                         2
