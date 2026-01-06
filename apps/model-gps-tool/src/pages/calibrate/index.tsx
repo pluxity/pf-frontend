@@ -377,6 +377,7 @@ export function CalibratePage() {
     setParsedBBox(null);
     setBoundingBoxInfo(null);
     setClickedCoord(null);
+    setDragMode(false);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
