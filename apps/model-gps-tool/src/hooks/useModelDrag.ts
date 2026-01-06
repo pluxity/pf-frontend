@@ -16,11 +16,18 @@ interface UseModelDragProps {
   featureId: string | null;
   positionRef: { current: Position };
   setPosition: (position: Position | ((prev: Position) => Position)) => void;
+  enabled?: boolean;
 }
 
-export function useModelDrag({ viewer, featureId, positionRef, setPosition }: UseModelDragProps) {
+export function useModelDrag({
+  viewer,
+  featureId,
+  positionRef,
+  setPosition,
+  enabled = true,
+}: UseModelDragProps) {
   useEffect(() => {
-    if (!viewer || viewer.isDestroyed() || !featureId) return;
+    if (!viewer || viewer.isDestroyed() || !featureId || !enabled) return;
 
     const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
     let isDragging = false;
@@ -121,5 +128,5 @@ export function useModelDrag({ viewer, featureId, positionRef, setPosition }: Us
         }
       }
     };
-  }, [viewer, featureId, positionRef, setPosition]);
+  }, [viewer, featureId, positionRef, setPosition, enabled]);
 }

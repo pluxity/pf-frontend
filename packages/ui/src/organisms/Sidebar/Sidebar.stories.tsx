@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Home, Users, Settings, BarChart, FileText, Bell, Help } from "../../atoms/Icon";
-import { Sidebar } from "./Sidebar";
+import { Sidebar, useSidebarContext } from "./Sidebar";
 import { Avatar, AvatarFallback } from "../../atoms/Avatar";
 
 const meta: Meta<typeof Sidebar> = {
@@ -34,23 +34,25 @@ export const Default: Story = {
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Section label="General">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Management">
-        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Support">
-        <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Support">
+          <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -66,19 +68,47 @@ export const CollapseButtonInHeader: Story = {
         <Sidebar.CollapseButton iconOnly />
       </Sidebar.Header>
 
-      <Sidebar.Section label="General">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Management">
-        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
+    </Sidebar>
+  ),
+};
+
+export const CollapseButtonInHeaderCollapsed: Story = {
+  render: () => (
+    <Sidebar defaultCollapsed>
+      <Sidebar.Header title="Dashboard">
+        <Sidebar.CollapseButton iconOnly />
+      </Sidebar.Header>
+
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
+
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
     </Sidebar>
   ),
 };
@@ -88,19 +118,21 @@ export const DefaultCollapsed: Story = {
     <Sidebar defaultCollapsed>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Section label="General">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Management">
-        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -114,19 +146,21 @@ export const WithoutCollapseButton: Story = {
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Section label="General">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Management">
-        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
     </Sidebar>
   ),
 };
@@ -136,23 +170,25 @@ export const WithNestedItems: Story = {
     <Sidebar>
       <Sidebar.Header title="Admin Panel" />
 
-      <Sidebar.Section label="Navigation">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Dashboard
-        </Sidebar.Item>
-        <Sidebar.Item icon={<Users size="sm" />}>
-          Users
-          <Sidebar.Item>All Users</Sidebar.Item>
-          <Sidebar.Item>Add User</Sidebar.Item>
-          <Sidebar.Item>Roles</Sidebar.Item>
-        </Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>
-          Settings
-          <Sidebar.Item>General</Sidebar.Item>
-          <Sidebar.Item>Security</Sidebar.Item>
-          <Sidebar.Item>Notifications</Sidebar.Item>
-        </Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="Navigation">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Dashboard
+          </Sidebar.Item>
+          <Sidebar.Item icon={<Users size="sm" />}>
+            Users
+            <Sidebar.Item>All Users</Sidebar.Item>
+            <Sidebar.Item>Add User</Sidebar.Item>
+            <Sidebar.Item>Roles</Sidebar.Item>
+          </Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>
+            Settings
+            <Sidebar.Item>General</Sidebar.Item>
+            <Sidebar.Item>Security</Sidebar.Item>
+            <Sidebar.Item>Notifications</Sidebar.Item>
+          </Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -161,27 +197,45 @@ export const WithNestedItems: Story = {
   ),
 };
 
+function UserProfile() {
+  const { collapsed } = useSidebarContext();
+
+  if (collapsed) {
+    return (
+      <Avatar size="sm">
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-3 pb-3">
+      <Avatar size="sm">
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+      <div className="flex-1">
+        <div className="text-sm font-medium">John Doe</div>
+        <div className="text-xs text-gray-500">john@example.com</div>
+      </div>
+    </div>
+  );
+}
+
 export const WithUserProfile: Story = {
   render: () => (
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Item icon={<Home size="sm" />} active>
-        Home
-      </Sidebar.Item>
-      <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-      <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      <Sidebar.Content>
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
-        <div className="flex items-center gap-3 pb-3">
-          <Avatar size="sm">
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <div className="text-sm font-medium">John Doe</div>
-            <div className="text-xs text-gray-500">john@example.com</div>
-          </div>
-        </div>
+        <UserProfile />
         <Sidebar.CollapseButton />
       </Sidebar.Footer>
     </Sidebar>
@@ -200,19 +254,21 @@ export const WithCustomLogo: Story = {
         }
       />
 
-      <Sidebar.Section label="General">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="General">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Section label="Management">
-        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Management">
+          <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -226,19 +282,21 @@ export const WithSeparators: Story = {
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Item icon={<Home size="sm" />} active>
-        Home
-      </Sidebar.Item>
-      <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+      <Sidebar.Content>
+        <Sidebar.Item icon={<Home size="sm" />} active>
+          Home
+        </Sidebar.Item>
+        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
 
-      <Sidebar.Separator />
+        <Sidebar.Separator />
 
-      <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
-      <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+        <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
+        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
 
-      <Sidebar.Separator />
+        <Sidebar.Separator />
 
-      <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
+        <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -252,26 +310,28 @@ export const WithCustomContent: Story = {
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Section label="Navigation">
-        <Sidebar.Item icon={<Home size="sm" />} active>
-          Home
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="Navigation">
+          <Sidebar.Item icon={<Home size="sm" />} active>
+            Home
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />}>Analytics</Sidebar.Item>
+        </Sidebar.Section>
 
-      <Sidebar.Custom>
-        <div className="rounded-lg bg-blue-50 p-3">
-          <div className="text-xs font-semibold text-blue-900">Pro Tip</div>
-          <div className="mt-1 text-xs text-blue-700">
-            Use keyboard shortcuts to navigate faster
+        <Sidebar.Custom>
+          <div className="rounded-lg bg-blue-50 p-3">
+            <div className="text-xs font-semibold text-blue-900">Pro Tip</div>
+            <div className="mt-1 text-xs text-blue-700">
+              Use keyboard shortcuts to navigate faster
+            </div>
           </div>
-        </div>
-      </Sidebar.Custom>
+        </Sidebar.Custom>
 
-      <Sidebar.Section label="Settings">
-        <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
-        <Sidebar.Item icon={<Help size="sm" />}>Help</Sidebar.Item>
-      </Sidebar.Section>
+        <Sidebar.Section label="Settings">
+          <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
+          <Sidebar.Item icon={<Help size="sm" />}>Help</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
@@ -285,20 +345,22 @@ export const WithLinks: Story = {
     <Sidebar>
       <Sidebar.Header title="Dashboard" />
 
-      <Sidebar.Section label="Pages">
-        <Sidebar.Item icon={<Home size="sm" />} href="/dashboard" active>
-          Dashboard
-        </Sidebar.Item>
-        <Sidebar.Item icon={<BarChart size="sm" />} href="/analytics">
-          Analytics
-        </Sidebar.Item>
-        <Sidebar.Item icon={<Users size="sm" />} href="/users">
-          Users
-        </Sidebar.Item>
-        <Sidebar.Item icon={<Settings size="sm" />} href="/settings">
-          Settings
-        </Sidebar.Item>
-      </Sidebar.Section>
+      <Sidebar.Content>
+        <Sidebar.Section label="Pages">
+          <Sidebar.Item icon={<Home size="sm" />} href="/dashboard" active>
+            Dashboard
+          </Sidebar.Item>
+          <Sidebar.Item icon={<BarChart size="sm" />} href="/analytics">
+            Analytics
+          </Sidebar.Item>
+          <Sidebar.Item icon={<Users size="sm" />} href="/users">
+            Users
+          </Sidebar.Item>
+          <Sidebar.Item icon={<Settings size="sm" />} href="/settings">
+            Settings
+          </Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
 
       <Sidebar.Footer>
         <Sidebar.CollapseButton />
