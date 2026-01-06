@@ -1,4 +1,5 @@
 import { type HTMLAttributes, type Ref, useState } from "react";
+import { Button } from "../../atoms/Button";
 import { Lock } from "../../atoms/Icon";
 import { cn } from "../../utils";
 
@@ -89,18 +90,9 @@ function PasswordChangeCard({
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={cn(
-            "h-11 w-full rounded-lg bg-brand text-sm font-bold text-white",
-            "hover:bg-brand-dark transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
-            "disabled:cursor-not-allowed disabled:opacity-50"
-          )}
-        >
+        <Button type="submit" disabled={isLoading} className="w-full">
           {isLoading ? "처리 중..." : submitButtonText}
-        </button>
+        </Button>
       </form>
     </div>
   );
