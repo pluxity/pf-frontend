@@ -3,7 +3,7 @@ import { ErrorPage } from "@pf-dev/ui/templates";
 import { ProtectedRouter } from "@pf-dev/services";
 
 import { AdminLayout } from "@/layouts";
-import { HomePage, LoginPage, DashboardPage } from "@/pages";
+import { HomePage, LoginPage, DashboardPage, CrudCardPage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export function AppRoutes() {
       >
         <Route index element={<HomePage />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="examples/crud-card" element={<CrudCardPage />} />
       </Route>
 
       {/* 404 */}
