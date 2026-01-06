@@ -737,6 +737,22 @@ export function CalibratePage() {
                       </div>
                     </div>
                   </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <strong className="block text-sm font-semibold">JSON</strong>
+                    </div>
+                    <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
+                      {JSON.stringify(
+                        {
+                          longitude: Number(clickedCoord.longitude.toFixed(6)),
+                          latitude: Number(clickedCoord.latitude.toFixed(6)),
+                        },
+                        null,
+                        2
+                      )}
+                    </pre>
+                  </div>
                 </div>
                 <button
                   className="absolute top-2 right-2 p-2 cursor-pointer"
