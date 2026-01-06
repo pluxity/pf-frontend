@@ -111,6 +111,12 @@ export interface SidebarCustomProps {
   className?: string;
 }
 
+export interface SidebarContentProps {
+  /** Content children */
+  children: React.ReactNode;
+  className?: string;
+}
+
 function SidebarItem({
   children,
   icon,
@@ -164,11 +170,11 @@ function SidebarItem({
   );
 
   const itemClasses = cn(
-    "group relative flex h-10 w-full cursor-pointer items-center gap-3 rounded-lg px-3 text-sm transition-colors",
+    "group relative flex h-10 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm transition-colors",
     active
       ? "bg-[#F5F8FF] font-bold text-brand"
       : "font-medium text-[#666673] hover:bg-[#F5F5F7] hover:text-[#333340]",
-    collapsed && "justify-center px-0",
+    collapsed ? "w-10 justify-center px-0" : "w-full",
     className
   );
 
@@ -176,33 +182,21 @@ function SidebarItem({
     ? children.filter((child) => child && typeof child === "object" && "type" in child)
     : null;
 
-  const label = Array.isArray(children) ? children.find((c) => typeof c === "string") : children;
-
   return (
-    <div className="overflow-visible">
+    <div>
       {href ? (
         <a href={href} className={itemClasses} onClick={handleClick} {...props}>
-          {active && !collapsed && (
-            <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
+          {active && (
+            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
           {content}
-          {collapsed && (
-            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-brand px-2 py-1 text-xs text-white group-hover:block">
-              {label}
-            </span>
-          )}
         </a>
       ) : (
         <button type="button" className={itemClasses} onClick={handleClick} {...props}>
-          {active && !collapsed && (
-            <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
+          {active && (
+            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
           {content}
-          {collapsed && (
-            <span className="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-brand px-2 py-1 text-xs text-white group-hover:block">
-              {label}
-            </span>
-          )}
         </button>
       )}
       {nestedItems && expanded && !collapsed && (
@@ -216,15 +210,30 @@ function SidebarSection({ label, children, className }: SidebarSectionProps) {
   const { collapsed } = useSidebarContext();
 
   return (
-    <div className={cn("space-y-1", className)}>
+    <div className={cn("space-y-1", collapsed && "flex flex-col items-center", className)}>
       {label && !collapsed && (
-        <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#808088]">
+        <div className="py-2 text-xs font-bold uppercase tracking-wider text-[#808088]">
           {label}
         </div>
       )}
-      {collapsed && label && <div className="my-2 h-px bg-[#E6E6E8]" />}
       {children}
     </div>
+  );
+}
+
+function SidebarContent({ children, className }: SidebarContentProps) {
+  const { collapsed } = useSidebarContext();
+
+  return (
+    <nav
+      className={cn(
+        "flex-1 space-y-2 px-3 py-3",
+        collapsed ? "flex flex-col items-center overflow-hidden" : "overflow-y-auto",
+        className
+      )}
+    >
+      {children}
+    </nav>
   );
 }
 
@@ -293,7 +302,11 @@ function SidebarFooter({ children, className, ...props }: SidebarFooterProps) {
 
   return (
     <div
-      className={cn("border-t border-[#E6E6E8] p-3", collapsed && "flex justify-center", className)}
+      className={cn(
+        "border-t border-[#E6E6E8] p-3",
+        collapsed && "flex flex-col items-center gap-3",
+        className
+      )}
       {...props}
     >
       {children}
@@ -405,6 +418,7 @@ function Sidebar({
 }
 
 Sidebar.Header = SidebarHeader;
+Sidebar.Content = SidebarContent;
 Sidebar.Item = SidebarItem;
 Sidebar.Section = SidebarSection;
 Sidebar.Separator = SidebarSeparator;
