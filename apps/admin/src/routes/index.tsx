@@ -11,6 +11,9 @@ import {
   CrudListPage,
   CrudListCreatePage,
   CrudListDetailPage,
+  UserAccountsPage,
+  PermissionsPage,
+  RolesPage,
 } from "@/pages";
 
 function NotFoundPage() {
@@ -36,6 +39,13 @@ export function AppRoutes() {
       >
         <Route index element={<HomePage />} />
         <Route path="dashboard" element={<DashboardPage />} />
+
+        {/* 사용자 관리 */}
+        <Route path="users/accounts" element={<UserAccountsPage />} />
+        <Route path="users/permissions" element={<PermissionsPage />} />
+        <Route path="users/roles" element={<RolesPage />} />
+
+        {/* 예제 */}
         <Route path="examples/crud-card" element={<CrudCardPage />} />
         <Route path="examples/crud-list" element={<CrudListPage />} />
         <Route path="examples/crud-list/create" element={<CrudListCreatePage />} />

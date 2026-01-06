@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@pf-dev/ui/organisms";
-import { Home, Users, Settings, Dashboard, FileText, Grid } from "@pf-dev/ui/atoms";
+import { Home, Users, Settings, Dashboard, FileText, Grid, Lock, User } from "@pf-dev/ui/atoms";
 
 interface AdminSidebarProps {
   collapsed?: boolean;
@@ -24,8 +24,15 @@ const menuSections: MenuSection[] = [
     items: [
       { label: "홈", path: "/", icon: <Home size="md" /> },
       { label: "대시보드", path: "/dashboard", icon: <Dashboard size="md" /> },
-      { label: "사용자 관리", path: "/users", icon: <Users size="md" /> },
       { label: "설정", path: "/settings", icon: <Settings size="md" /> },
+    ],
+  },
+  {
+    label: "사용자 관리",
+    items: [
+      { label: "계정", path: "/users/accounts", icon: <Users size="md" /> },
+      { label: "권한", path: "/users/permissions", icon: <Lock size="md" /> },
+      { label: "롤", path: "/users/roles", icon: <User size="md" /> },
     ],
   },
   {
