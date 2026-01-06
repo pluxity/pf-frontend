@@ -46,12 +46,12 @@ export interface DashboardGridProps {
 
 export function DashboardGrid({ children, columns = 4, rows, gap = 16 }: DashboardGridProps) {
   return (
-    <div className="h-full">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-full flex-col">
+      <div className="mb-4 flex shrink-0 items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-900">대시보드</h1>
       </div>
 
-      <GridLayout columns={columns} rows={rows} gap={gap} className="h-auto">
+      <GridLayout columns={columns} rows={rows} gap={gap} className="min-h-0 flex-1">
         {children}
       </GridLayout>
     </div>

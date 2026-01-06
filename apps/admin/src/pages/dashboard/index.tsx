@@ -4,7 +4,7 @@ import { DashboardGrid, StatCard, ChartWidget, TableWidget } from "./components"
 
 export function DashboardPage() {
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="h-full">
       <DashboardGrid columns={4} gap={16}>
         {/* 통계 카드 */}
         <StatCard
