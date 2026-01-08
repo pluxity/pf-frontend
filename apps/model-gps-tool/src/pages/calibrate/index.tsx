@@ -66,12 +66,12 @@ const InputFields = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <strong className="w-28 text-sm">{label}</strong>
+    <div className="flex items-center gap-3">
+      <label className="w-24 text-xs font-medium text-text-muted">{label}</label>
       {slider ? (
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-3 flex-1">
           <Slider
-            className="w-40"
+            className="flex-1"
             value={[value ?? 0]}
             onValueChange={handleSliderChange}
             min={min}
@@ -81,7 +81,7 @@ const InputFields = ({
           <Input
             id={inputId}
             inputSize="sm"
-            className="w-20"
+            className="w-20 text-xs bg-white border-border-default focus:border-border-focus focus:ring-primary-500"
             type="number"
             value={value}
             min={min}
@@ -95,6 +95,7 @@ const InputFields = ({
         <Input
           id={inputId}
           inputSize="sm"
+          className="flex-1 text-xs bg-white border-border-default focus:border-border-focus focus:ring-primary-500"
           type="number"
           value={value}
           min={min}
@@ -120,8 +121,11 @@ const SectionFields = ({
     onFieldsChange?.(sectionId, updatedValues);
   };
   return (
-    <div className="space-y-3">
-      <strong className="mb-3 block border-b border-gray-100 pb-2">{title}</strong>
+    <div className="space-y-3 p-4 bg-white rounded-lg border border-neutral-200 shadow-sm">
+      <div className="flex items-center gap-2">
+        <div className="h-6 w-1 bg-primary-500 rounded-full"></div>
+        <h2 className="text-sm font-semibold text-text-secondary">{title}</h2>
+      </div>
       {fields.map((field) => (
         <InputFields
           key={field.id}
@@ -599,10 +603,7 @@ export function CalibratePage() {
     if (showBoundingBox) {
       if (!viewer || !featureId || !parsedBBox) return;
 
-      const result = calculateBoundingBoxInfo();
-      if (result) {
-        setBoundingBoxInfo(result);
-      }
+      calculateBoundingBoxInfo();
     } else if (boundingBoxFeatureIdRef.current && hasFeature(boundingBoxFeatureIdRef.current)) {
       removeFeature(boundingBoxFeatureIdRef.current);
       boundingBoxFeatureIdRef.current = null;
@@ -624,14 +625,17 @@ export function CalibratePage() {
   ]);
 
   return (
-    <div className="flex h-screen">
-      <div className="w-96 border-r border-gray-200 bg-white p-4 overflow-y-auto">
-        <div className="mb-2 border-b-2 border-primary-200 pb-2">
-          <strong>LOCATION EDITOR</strong>
+    <div className="flex h-screen bg-neutral-50">
+      <div className="w-96 border-r border-border-default bg-white shadow-lg p-6 overflow-y-auto">
+        <div className="mb-6 pb-3 border-b-2 border-primary-500">
+          <h1 className="text-xl font-bold text-primary-600">Location Editor</h1>
         </div>
 
-        <div className="mb-4 space-y-2">
-          <strong className="mb-3 block border-b border-gray-100 pb-2">GLB File</strong>
+        <div className="mb-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 bg-primary-500 rounded-full"></div>
+            <h2 className="text-sm font-semibold text-text-secondary">Model File</h2>
+          </div>
           <div className="flex items-center gap-2">
             <Input
               type="file"
@@ -644,30 +648,29 @@ export function CalibratePage() {
 
           {fileUrl ? (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-md">
+              <div className="flex items-center gap-3 p-3 bg-success-50 border border-success-200 rounded-lg shadow-sm">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-green-700 font-medium truncate">{fileName}</p>
+                  <p className="text-xs text-success-700 font-semibold truncate">{fileName}</p>
+                  <p className="text-[10px] text-success-600 mt-0.5">Model loaded successfully</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="cursor-pointer"
-                    onClick={handleRemoveFile}
-                  >
-                    Remove
-                  </Button>
-                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="cursor-pointer border-success-300 text-success-700 hover:bg-success-100"
+                  onClick={handleRemoveFile}
+                >
+                  Remove
+                </Button>
               </div>
             </div>
           ) : (
             <Button
               size="sm"
               variant="outline"
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer bg-primary-50 border-primary-200 text-primary-600 hover:bg-primary-100 font-medium"
               onClick={() => fileInputRef.current?.click()}
             >
-              파일 선택
+              Choose File
             </Button>
           )}
         </div>
@@ -684,100 +687,81 @@ export function CalibratePage() {
             />
           ))}
         </div>
-        <div className="flex gap-4 mt-5 flex-col">
-          <div className="rounded-md border border-gray-200 p-4">
+        <div className="flex gap-3 mt-6 flex-col">
+          <div className="rounded-lg border border-primary-200 bg-primary-50 p-4 shadow-sm">
             <Button
               size="sm"
               variant="outline"
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer bg-white border-primary-300 text-primary-600 hover:bg-primary-100 font-medium"
               onClick={handleToggleBoundingBox}
             >
-              Bounding Box
+              Show Bounding Box
             </Button>
-            <p className="text-xs text-gray-500 text-center mt-1">
+            <p className="text-xs text-primary-600 text-center mt-2">
               Model의 박스 정보를 표시합니다.
               <br />
               Position, Scale, Rotation 변경 시 다시 클릭하세요.
             </p>
           </div>
 
-          <Button size="sm" className="w-full cursor-pointer" onClick={handleReset}>
-            Reset
+          <Button
+            size="sm"
+            className="w-full cursor-pointer bg-neutral-700 hover:bg-neutral-800 text-white font-medium shadow-md"
+            onClick={handleReset}
+          >
+            Reset All
           </Button>
         </div>
       </div>
 
       <div className="flex-1 relative">
-        <div className="absolute top-3 left-3 z-10">
-          <div className="flex items-center gap-2">
-            <Toggle size="sm" pressed={topView} onPressedChange={handleToggleTopView}>
+        <div className="absolute top-4 left-4 z-10">
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-1 border border-border-default">
+            <Toggle
+              size="sm"
+              pressed={topView}
+              onPressedChange={handleToggleTopView}
+              className="data-[state=on]:bg-primary-600 data-[state=on]:text-white font-medium"
+            >
               Top View
             </Toggle>
-            <Toggle size="sm" pressed={dragMode} onPressedChange={setDragMode}>
+            <Toggle
+              size="sm"
+              pressed={dragMode}
+              onPressedChange={setDragMode}
+              className="data-[state=on]:bg-primary-600 data-[state=on]:text-white font-medium"
+            >
               Model Drag
             </Toggle>
           </div>
         </div>
 
-        <div className="absolute bottom-3 left-3 z-10">
-          <div className="flex flex-col gap-2">
-            {clickedCoord && (
-              <div className="relative bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
-                <div className="space-y-4">
-                  <div>
-                    <strong className="block mb-2 text-sm font-semibold">Clicked Coordinate</strong>
-                    <div className="space-y-1 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Lon:</span>
-                        <span>{clickedCoord.longitude.toFixed(6)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Lat:</span>
-                        <span>{clickedCoord.latitude.toFixed(6)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <strong className="block text-sm font-semibold">JSON</strong>
-                    </div>
-                    <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
-                      {JSON.stringify(
-                        {
-                          longitude: Number(clickedCoord.longitude.toFixed(6)),
-                          latitude: Number(clickedCoord.latitude.toFixed(6)),
-                        },
-                        null,
-                        2
-                      )}
-                    </pre>
-                  </div>
-                </div>
-                <button
-                  className="absolute top-2 right-2 p-2 cursor-pointer"
-                  onClick={() => setClickedCoord(null)}
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            )}
+        <div className="absolute bottom-4 left-4 z-10">
+          <div className="flex gap-3 items-end">
             {showBoundingBox && boundingBoxInfo && (
-              <div className="relative bg-gray-800/90 backdrop-blur-sm rounded-lg shadow-lg p-4 text-white min-w-[280px]">
-                <div className="space-y-2">
+              <div className="relative bg-neutral-900/95 backdrop-blur-md rounded-xl shadow-2xl p-5 text-white min-w-[300px] border border-neutral-700">
+                <div className="space-y-3">
                   <div>
-                    <strong className="block mb-2 text-sm font-semibold">Bounding Box</strong>
-                    <div className="space-y-1 text-xs">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="h-5 w-1 bg-info-500 rounded-full"></div>
+                      <strong className="text-sm font-bold text-white">Bounding Box</strong>
+                    </div>
+                    <div className="space-y-2 text-xs">
                       {boundingBoxInfo.corners.map((corner, index) => (
-                        <div key={index}>
-                          <div className="font-semibold text-gray-300 mb-1">{corner.label}</div>
-                          <div className="flex justify-between pl-2">
-                            <span className="text-gray-400">Lon:</span>
-                            <span>{corner.longitude.toFixed(6)}</span>
+                        <div
+                          key={index}
+                          className="bg-neutral-800/50 rounded-lg p-2 border border-neutral-700"
+                        >
+                          <div className="font-semibold text-primary-300 mb-1.5 text-xs">
+                            {corner.label}
                           </div>
-                          <div className="flex justify-between pl-2 mb-1">
-                            <span className="text-gray-400">Lat:</span>
-                            <span>{corner.latitude.toFixed(6)}</span>
+                          <div className="flex justify-between pl-2">
+                            <span className="text-neutral-300">Lon:</span>
+                            <span className="text-neutral-200">{corner.longitude.toFixed(6)}</span>
+                          </div>
+                          <div className="flex justify-between pl-2">
+                            <span className="text-neutral-300">Lat:</span>
+                            <span className="text-neutral-200">{corner.latitude.toFixed(6)}</span>
                           </div>
                         </div>
                       ))}
@@ -785,10 +769,11 @@ export function CalibratePage() {
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <strong className="block text-sm font-semibold">JSON</strong>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-5 w-1 bg-info-500 rounded-full"></div>
+                      <strong className="text-xs font-bold text-white">JSON</strong>
                     </div>
-                    <pre className="text-xs bg-gray-900/50 rounded p-2 overflow-x-auto">
+                    <pre className="text-xs bg-neutral-950/70 rounded-lg p-3 overflow-x-auto border border-neutral-700 text-neutral-300">
                       {JSON.stringify(
                         {
                           corners: boundingBoxInfo.corners.map((corner) => ({
@@ -802,12 +787,59 @@ export function CalibratePage() {
                     </pre>
                   </div>
                   <button
-                    className="absolute top-2 right-2 p-2 cursor-pointer"
+                    className="absolute top-3 right-3 p-1.5 cursor-pointer hover:bg-neutral-700/50 rounded-md transition-colors"
                     onClick={() => setShowBoundingBox(false)}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-4 h-4 text-neutral-400 hover:text-white" />
                   </button>
                 </div>
+              </div>
+            )}
+            {clickedCoord && (
+              <div className="relative bg-neutral-900/95 backdrop-blur-md rounded-xl shadow-2xl p-5 text-white min-w-[300px] border border-neutral-700">
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="h-5 w-1 bg-info-500 rounded-full"></div>
+                      <strong className="text-sm font-bold text-white">Clicked Coordinate</strong>
+                    </div>
+                    <div className="space-y-1.5 text-xs bg-neutral-800/50 rounded-lg p-3 border border-neutral-700">
+                      <div className="flex justify-between">
+                        <span className="text-neutral-300">Lon:</span>
+                        <span className="text-neutral-200">
+                          {clickedCoord.longitude.toFixed(6)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-neutral-300">Lat:</span>
+                        <span className="text-neutral-200">{clickedCoord.latitude.toFixed(6)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-5 w-1 bg-info-500 rounded-full"></div>
+                      <strong className="text-xs font-bold text-white">JSON</strong>
+                    </div>
+                    <pre className="text-xs bg-neutral-950/70 rounded-lg p-3 overflow-x-auto border border-neutral-700 text-neutral-300">
+                      {JSON.stringify(
+                        {
+                          longitude: Number(clickedCoord.longitude.toFixed(6)),
+                          latitude: Number(clickedCoord.latitude.toFixed(6)),
+                        },
+                        null,
+                        2
+                      )}
+                    </pre>
+                  </div>
+                </div>
+                <button
+                  className="absolute top-3 right-3 p-1.5 cursor-pointer hover:bg-neutral-700/50 rounded-md transition-colors"
+                  onClick={() => setClickedCoord(null)}
+                >
+                  <X className="w-4 h-4 text-neutral-400 hover:text-white" />
+                </button>
               </div>
             )}
           </div>
