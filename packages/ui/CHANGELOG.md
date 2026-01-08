@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+
+### Patch Changes
+
+- d653809: table / datatable 컴포넌트 업데이트
+
 ## 1.2.1
 
 ### Patch Changes
