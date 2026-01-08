@@ -7,8 +7,8 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 
 function Table({ className, ref, ...props }: TableProps) {
   return (
-    <div className="w-full overflow-auto rounded-lg border border-[#E6E6E8]">
-      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <div className="w-full overflow-auto border-y border-t-2 border-[#BBBFCF]">
+      <table ref={ref} className={cn("w-full caption-bottom text-xs", className)} {...props} />
     </div>
   );
 }
@@ -18,7 +18,9 @@ interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement>
 }
 
 function TableHeader({ className, ref, ...props }: TableHeaderProps) {
-  return <thead ref={ref} className={cn("bg-[#FAFAFC] [&_tr]:border-b", className)} {...props} />;
+  return (
+    <thead ref={ref} className={cn("bg-[#DFE4EB]/90 [&_tr]:border-b", className)} {...props} />
+  );
 }
 
 interface TableBodyProps extends React.HTMLAttributes<HTMLTableSectionElement> {
@@ -38,7 +40,7 @@ function TableFooter({ className, ref, ...props }: TableFooterProps) {
     <tfoot
       ref={ref}
       className={cn(
-        "border-t border-[#E6E6E8] bg-[#FAFAFC] font-medium [&>tr]:last:border-b-0",
+        "border-t border-[#BBBFCF] text-xs font-bold [&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -55,7 +57,7 @@ function TableRow({ className, ref, ...props }: TableRowProps) {
     <tr
       ref={ref}
       className={cn(
-        "h-12 border-b border-[#E6E6E8] transition-colors hover:bg-gray-50 data-[state=selected]:bg-blue-50",
+        "h-9 border-b border-[#BBBFCF] transition-colors data-[state=selected]:bg-blue-50",
         className
       )}
       {...props}
@@ -72,7 +74,7 @@ function TableHead({ className, ref, ...props }: TableHeadProps) {
     <th
       ref={ref}
       className={cn(
-        "h-11 px-4 text-left align-middle text-[13px] font-bold text-[#666673] [&:has([role=checkbox])]:pr-0",
+        "h-9 px-4 text-center align-middle text-xs font-bold text-[#9499B1] border-r border-[#BBBFCF] last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -89,7 +91,7 @@ function TableCell({ className, ref, ...props }: TableCellProps) {
     <td
       ref={ref}
       className={cn(
-        "px-4 py-3 align-middle text-sm text-[#333340] [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3 align-middle text-center text-xs text-[#333333] border-r border-[#BBBFCF] last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -102,7 +104,7 @@ interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement
 }
 
 function TableCaption({ className, ref, ...props }: TableCaptionProps) {
-  return <caption ref={ref} className={cn("mt-4 text-sm text-[#808088]", className)} {...props} />;
+  return <caption ref={ref} className={cn("mt-4 text-xs text-[#333333]", className)} {...props} />;
 }
 
 interface TableStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -113,7 +115,7 @@ interface TableStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 function TableStatusBadge({ status, className, children, ref, ...props }: TableStatusBadgeProps) {
   const statusClasses = {
     active: "bg-success-brand text-white",
-    inactive: "bg-[#E6E6E8] text-[#808088]",
+    inactive: "bg-neutral-50 text-text-secondary",
     pending: "bg-warning-brand text-white",
   };
 
@@ -140,7 +142,7 @@ function TableActionLink({ className, ref, ...props }: TableActionLinkProps) {
   return (
     <button
       ref={ref}
-      className={cn("text-sm font-medium text-brand hover:underline focus:outline-none", className)}
+      className={cn("text-xs text-brand hover:underline focus:outline-none", className)}
       {...props}
     />
   );
