@@ -9,7 +9,7 @@ import {
   type Entity,
   ConstantPositionProperty,
 } from "cesium";
-import type { Position } from "../pages/calibrate/types";
+import type { Position } from "../types";
 
 interface UseModelDragProps {
   viewer: Viewer | null;

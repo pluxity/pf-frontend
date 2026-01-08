@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { Position } from "../pages/calibrate/types";
+import type { Position } from "../types";
 import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,

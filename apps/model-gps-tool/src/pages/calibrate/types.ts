@@ -32,10 +32,7 @@ export type Scale = {
 };
 
 export type BoundingBoxInfo = {
-  south: number;
-  east: number;
-  north: number;
-  west: number;
+  corners: Array<{ longitude: number; latitude: number; label: string }>;
 };
 
 export type GLTFJson = {
