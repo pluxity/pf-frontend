@@ -108,11 +108,8 @@ function DataTablePagination({
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <div
-      ref={ref}
-      className="mt-4 flex items-center justify-between border-t border-[#E6E6E8] pt-4"
-    >
-      <span className="text-sm text-[#808088]">
+    <div ref={ref} className="mt-2 flex flex-col items-center justify-center gap-1">
+      <span className="w-full text-xs text-[#9499B1]">
         Showing {startItem} to {endItem} of {totalItems} results
       </span>
       <div className="flex items-center gap-1">
@@ -121,7 +118,7 @@ function DataTablePagination({
           size="sm"
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-0 font-medium text-[#999999]"
         >
           <ChevronLeft size="sm" />
         </Button>
@@ -136,13 +133,17 @@ function DataTablePagination({
           } else {
             pageNum = currentPage - 2 + i;
           }
+          const isActive = currentPage === pageNum;
           return (
             <Button
               key={pageNum}
-              variant={currentPage === pageNum ? "default" : "ghost"}
+              variant="ghost"
               size="sm"
               onClick={() => onPageChange(pageNum)}
-              className="h-8 w-8 p-0"
+              className={cn(
+                "h-8 w-8 p-0 text-xs font-medium text-[#555555]",
+                isActive && "bg-[#DAE4F4] text-[#0057FF] hover:bg-[#DAE4F4]"
+              )}
             >
               {pageNum}
             </Button>
@@ -153,7 +154,7 @@ function DataTablePagination({
           size="sm"
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="h-8 w-8 p-0"
+          className="h-8 w-8 p-1 font-medium text-[#999999]"
         >
           <ChevronRight size="sm" />
         </Button>
@@ -237,12 +238,12 @@ function DataTableComponent<T extends Record<string, unknown>>({
         }}
       />
 
-      <div className="w-full overflow-auto rounded-lg border border-[#E6E6E8]">
-        <table className="w-full caption-bottom text-sm">
-          <thead className="bg-[#FAFAFC]">
-            <tr className="border-b border-[#E6E6E8]">
+      <div className="w-full overflow-auto border-y border-t-2 border-[#BBBFCF]">
+        <table className="w-full caption-bottom text-xs">
+          <thead className="bg-[#DFE4EB]/90">
+            <tr className="border-b border-[#BBBFCF]">
               {selectable && (
-                <th className="h-11 w-12 px-4">
+                <th className="h-9 w-12 px-4 border-r border-[#BBBFCF]">
                   <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                 </th>
               )}
@@ -250,13 +251,13 @@ function DataTableComponent<T extends Record<string, unknown>>({
                 <th
                   key={String(column.key)}
                   className={cn(
-                    "h-11 px-4 text-left text-[13px] font-bold text-[#4D4D59]",
-                    column.sortable && "cursor-pointer select-none hover:bg-gray-100",
+                    "h-9 px-4 text-center text-xs font-bold text-[#9499B1] border-r border-[#BBBFCF] last:border-r-0",
+                    column.sortable && "cursor-pointer select-none",
                     column.className
                   )}
                   onClick={() => column.sortable && handleSort(String(column.key))}
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center justify-center gap-1">
                     {column.header}
                     {column.sortable &&
                       sortColumn === column.key &&
@@ -270,19 +271,19 @@ function DataTableComponent<T extends Record<string, unknown>>({
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="[&_tr:last-child]:border-0">
             {paginatedData.map((row, rowIndex) => {
               const actualIndex = pagination ? (currentPage - 1) * pageSize + rowIndex : rowIndex;
               return (
                 <tr
                   key={actualIndex}
                   className={cn(
-                    "h-12 border-b border-[#E6E6E8] transition-colors hover:bg-gray-50",
+                    "h-9 border-b border-[#BBBFCF] transition-colors",
                     selectedRows.has(actualIndex) && "bg-blue-50"
                   )}
                 >
                   {selectable && (
-                    <td className="w-12 px-4">
+                    <td className="w-12 px-4 text-center align-middle border-r border-[#BBBFCF]">
                       <Checkbox
                         checked={selectedRows.has(actualIndex)}
                         onCheckedChange={(checked) =>
@@ -294,7 +295,10 @@ function DataTableComponent<T extends Record<string, unknown>>({
                   {columns.map((column) => (
                     <td
                       key={String(column.key)}
-                      className={cn("px-4 py-3 text-sm text-[#333340]", column.className)}
+                      className={cn(
+                        "px-4 py-3 text-center align-middle text-xs text-[#333333] border-r border-[#BBBFCF] last:border-r-0",
+                        column.className
+                      )}
                     >
                       {column.render
                         ? column.render(row, actualIndex)

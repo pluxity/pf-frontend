@@ -8,6 +8,7 @@ import {
   TableCell,
   TableStatusBadge,
   TableActionLink,
+  TableFooter,
 } from "./Table";
 import { Button } from "../../atoms/Button";
 
@@ -68,14 +69,14 @@ export const Default: Story = {
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
-              <TableCell className="font-medium">{user.name}</TableCell>
-              <TableCell className="text-[#808088]">{user.email}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
                 <TableStatusBadge status={user.status} />
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 justify-center">
                   <TableActionLink>Edit</TableActionLink>
                   <TableActionLink className="text-error-brand hover:text-error-600">
                     Delete
@@ -97,24 +98,24 @@ export const SimpleTable: Story = {
         <TableRow>
           <TableHead>Product</TableHead>
           <TableHead>Category</TableHead>
-          <TableHead className="text-right">Price</TableHead>
+          <TableHead>Price</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow>
-          <TableCell className="font-medium">MacBook Pro</TableCell>
+          <TableCell>MacBook Pro</TableCell>
           <TableCell>Electronics</TableCell>
-          <TableCell className="text-right">$2,499</TableCell>
+          <TableCell>$2,499</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className="font-medium">iPhone 15</TableCell>
+          <TableCell>iPhone 15</TableCell>
           <TableCell>Electronics</TableCell>
-          <TableCell className="text-right">$999</TableCell>
+          <TableCell>$999</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className="font-medium">AirPods Pro</TableCell>
+          <TableCell>AirPods Pro</TableCell>
           <TableCell>Electronics</TableCell>
-          <TableCell className="text-right">$249</TableCell>
+          <TableCell>$249</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -128,33 +129,33 @@ export const WithFooter: Story = {
         <TableRow>
           <TableHead>Item</TableHead>
           <TableHead>Quantity</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead>Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow>
           <TableCell>Product A</TableCell>
           <TableCell>2</TableCell>
-          <TableCell className="text-right">$200</TableCell>
+          <TableCell>$200</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Product B</TableCell>
           <TableCell>1</TableCell>
-          <TableCell className="text-right">$150</TableCell>
+          <TableCell>$150</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Product C</TableCell>
           <TableCell>3</TableCell>
-          <TableCell className="text-right">$300</TableCell>
+          <TableCell>$300</TableCell>
         </TableRow>
       </TableBody>
-      <tfoot className="border-t border-[#E6E6E8] bg-[#FAFAFC]">
+      <TableFooter>
         <TableRow>
-          <TableCell className="font-bold">Total</TableCell>
+          <TableCell>Total</TableCell>
           <TableCell>6</TableCell>
-          <TableCell className="text-right font-bold">$650</TableCell>
+          <TableCell>$650</TableCell>
         </TableRow>
-      </tfoot>
+      </TableFooter>
     </Table>
   ),
 };
