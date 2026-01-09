@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button, Input, Label, Textarea, Checkbox } from "@pf-dev/ui/atoms";
+import { Button, Input, Label, Textarea, Checkbox, ChevronDown } from "@pf-dev/ui/atoms";
+import { cn } from "@pf-dev/ui/utils";
 import {
   Select,
   SelectTrigger,
@@ -19,7 +20,12 @@ import {
   ModalTitle,
   ModalDescription,
 } from "@pf-dev/ui/organisms";
-import type { PermissionFormData, ResourceTypeInfo, PermissionLevelType } from "../types";
+import type {
+  Permission,
+  PermissionFormData,
+  ResourceTypeInfo,
+  PermissionLevelType,
+} from "../types";
 
 const permissionSchema = z.object({
   name: z.string().min(1, "권한명을 입력해주세요").max(50, "권한명은 50자 이내로 입력해주세요"),
@@ -34,6 +40,7 @@ interface PermissionFormModalProps {
   onSubmit: (data: PermissionFormData) => Promise<void>;
   resourceTypes: ResourceTypeInfo[];
   isLoading?: boolean;
+  editingPermission?: Permission | null;
 }
 
 const PERMISSION_LEVELS: { value: PermissionLevelType; label: string }[] = [
@@ -48,10 +55,14 @@ export function PermissionFormModal({
   onSubmit,
   resourceTypes,
   isLoading,
+  editingPermission,
 }: PermissionFormModalProps) {
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
   const [selectedResources, setSelectedResources] = useState<Record<string, Set<string>>>({});
   const [levelByType, setLevelByType] = useState<Record<string, PermissionLevelType>>({});
+  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set());
+
+  const isEditMode = !!editingPermission;
 
   const {
     register,
@@ -70,15 +81,72 @@ export function PermissionFormModal({
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open) {
-      setSelectedTypes(new Set());
-      setSelectedResources({});
-      const initialLevels: Record<string, PermissionLevelType> = {};
-      resourceTypes.forEach((rt) => {
-        initialLevels[rt.key] = "READ";
-      });
-      setLevelByType(initialLevels);
+      if (editingPermission) {
+        // 수정 모드: 기존 데이터로 초기화
+        reset({
+          name: editingPermission.name,
+          description: editingPermission.description || "",
+        });
+
+        const types = new Set<string>();
+        const resources: Record<string, Set<string>> = {};
+        const levels: Record<string, PermissionLevelType> = {};
+
+        // 도메인 권한 (전체 리소스) 처리
+        editingPermission.domainPermissions.forEach((dp) => {
+          types.add(dp.resourceType);
+          levels[dp.resourceType] = dp.level;
+          // 전체 선택이므로 해당 타입의 모든 리소스 선택
+          const rt = resourceTypes.find((r) => r.key === dp.resourceType);
+          if (rt && rt.resources.length > 0) {
+            resources[dp.resourceType] = new Set(rt.resources.map((r) => String(r.id)));
+          }
+        });
+
+        // 개별 리소스 권한 처리
+        editingPermission.resourcePermissions.forEach((rp) => {
+          if (!resources[rp.resourceType]) {
+            resources[rp.resourceType] = new Set();
+          }
+          resources[rp.resourceType]!.add(rp.resourceId);
+          if (!levels[rp.resourceType]) {
+            levels[rp.resourceType] = rp.level;
+          }
+        });
+
+        // 나머지 타입들 기본 레벨 설정
+        resourceTypes.forEach((rt) => {
+          if (!levels[rt.key]) {
+            levels[rt.key] = "READ";
+          }
+        });
+
+        setSelectedTypes(types);
+        setSelectedResources(resources);
+        setLevelByType(levels);
+        // 개별 리소스가 선택된 타입만 펼침 (전체 선택은 펼치지 않음)
+        const expanded = new Set<string>();
+        Object.entries(resources).forEach(([typeKey, ids]) => {
+          const rt = resourceTypes.find((r) => r.key === typeKey);
+          if (rt && ids.size > 0 && ids.size < rt.resources.length) {
+            expanded.add(typeKey);
+          }
+        });
+        setExpandedTypes(expanded);
+      } else {
+        // 생성 모드: 빈 폼으로 초기화
+        reset({ name: "", description: "" });
+        setSelectedTypes(new Set());
+        setSelectedResources({});
+        setExpandedTypes(new Set());
+        const initialLevels: Record<string, PermissionLevelType> = {};
+        resourceTypes.forEach((rt) => {
+          initialLevels[rt.key] = "READ";
+        });
+        setLevelByType(initialLevels);
+      }
     }
-  }, [open, resourceTypes]);
+  }, [open, editingPermission, resourceTypes, reset]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleTypeCheck = (typeKey: string, checked: boolean) => {
@@ -162,6 +230,18 @@ export function PermissionFormModal({
     setLevelByType((prev) => ({ ...prev, [key]: level }));
   };
 
+  const toggleExpanded = (typeKey: string) => {
+    setExpandedTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(typeKey)) {
+        next.delete(typeKey);
+      } else {
+        next.add(typeKey);
+      }
+      return next;
+    });
+  };
+
   const handleFormSubmit = async (data: FormValues) => {
     const permissions: Array<{
       resourceType: "NONE" | "FACILITY" | "CCTV" | "TEMPERATURE_HUMIDITY";
@@ -225,6 +305,7 @@ export function PermissionFormModal({
     reset();
     setSelectedTypes(new Set());
     setSelectedResources({});
+    setExpandedTypes(new Set());
     onOpenChange(false);
   };
 
@@ -233,8 +314,12 @@ export function PermissionFormModal({
       <ModalContent className="max-w-xl">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
-            <ModalTitle>새 권한 생성</ModalTitle>
-            <ModalDescription>새로운 권한을 생성합니다.</ModalDescription>
+            <ModalTitle className="text-center font-bold">
+              {isEditMode ? "권한 수정" : "새 권한 생성"}
+            </ModalTitle>
+            <ModalDescription className="text-center">
+              {isEditMode ? "권한 정보를 수정합니다." : "새로운 권한을 생성합니다."}
+            </ModalDescription>
           </ModalHeader>
           <ModalBody className="space-y-4">
             <div>
@@ -265,34 +350,49 @@ export function PermissionFormModal({
                 </div>
               ) : (
                 <div className="max-h-[300px] space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-3">
-                  {resourceTypes.map((rt) => (
-                    <div key={rt.key} className="space-y-1">
-                      {/* 리소스 타입 체크박스 */}
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id={`type-${rt.key}`}
-                          checked={
-                            isTypeIndeterminate(rt.key) ? "indeterminate" : isTypeChecked(rt.key)
-                          }
-                          onCheckedChange={(checked) => handleTypeCheck(rt.key, checked === true)}
-                        />
-                        <label
-                          htmlFor={`type-${rt.key}`}
-                          className="cursor-pointer text-sm font-medium"
-                        >
-                          {rt.name}
-                          {rt.resources && rt.resources.length > 0 && (
-                            <span className="ml-1 text-gray-400">({rt.resources.length})</span>
-                          )}
-                        </label>
-                      </div>
+                  {resourceTypes.map((rt) => {
+                    const hasResources = rt.resources && rt.resources.length > 0;
+                    const isExpanded = expandedTypes.has(rt.key);
 
-                      {/* 하위 리소스 체크박스들 */}
-                      {rt.resources &&
-                        rt.resources.length > 0 &&
-                        (isTypeChecked(rt.key) ||
-                          isTypeIndeterminate(rt.key) ||
-                          (selectedResources[rt.key]?.size ?? 0) > 0) && (
+                    return (
+                      <div key={rt.key} className="space-y-1">
+                        {/* 리소스 타입 체크박스 */}
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id={`type-${rt.key}`}
+                            checked={
+                              isTypeIndeterminate(rt.key) ? "indeterminate" : isTypeChecked(rt.key)
+                            }
+                            onCheckedChange={(checked) => handleTypeCheck(rt.key, checked === true)}
+                          />
+                          <label
+                            htmlFor={`type-${rt.key}`}
+                            className="flex-1 cursor-pointer text-sm font-medium"
+                          >
+                            {rt.name}
+                            {hasResources && (
+                              <span className="ml-1 text-gray-400">({rt.resources.length})</span>
+                            )}
+                          </label>
+                          {hasResources && (
+                            <button
+                              type="button"
+                              onClick={() => toggleExpanded(rt.key)}
+                              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                            >
+                              <ChevronDown
+                                size="sm"
+                                className={cn(
+                                  "transition-transform duration-200",
+                                  isExpanded && "-rotate-180"
+                                )}
+                              />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* 하위 리소스 체크박스들 */}
+                        {hasResources && isExpanded && (
                           <div className="ml-6 grid grid-cols-2 gap-1 rounded-md bg-gray-50 p-2">
                             {rt.resources.map((resource) => (
                               <div key={resource.id} className="flex items-center gap-2">
@@ -317,8 +417,9 @@ export function PermissionFormModal({
                             ))}
                           </div>
                         )}
-                    </div>
-                  ))}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -347,9 +448,15 @@ export function PermissionFormModal({
                       >
                         <div className="text-sm">
                           <span className="font-medium">{rt.name}</span>
-                          <span className="ml-2 text-gray-500">
-                            {isAllSelected ? "(전체)" : `(${selectedCount}개 선택)`}
-                          </span>
+                          {isAllSelected ? (
+                            <span className="ml-2 rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700">
+                              도메인 권한
+                            </span>
+                          ) : (
+                            <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-700">
+                              리소스 권한 ({selectedCount}개)
+                            </span>
+                          )}
                         </div>
                         <Select
                           value={levelByType[typeKey] || "READ"}
@@ -380,7 +487,13 @@ export function PermissionFormModal({
               취소
             </Button>
             <Button type="submit" disabled={isLoading || !hasSelectedPermissions}>
-              {isLoading ? "생성 중..." : "생성"}
+              {isLoading
+                ? isEditMode
+                  ? "수정 중..."
+                  : "생성 중..."
+                : isEditMode
+                  ? "수정"
+                  : "생성"}
             </Button>
           </ModalFooter>
         </form>

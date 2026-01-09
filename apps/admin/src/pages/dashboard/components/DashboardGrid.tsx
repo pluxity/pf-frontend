@@ -6,7 +6,6 @@ import type { ChartWidgetProps } from "./widgets/ChartWidget";
 import type { TableWidgetProps } from "./widgets/TableWidget";
 import type { EmptyWidgetProps } from "./widgets/EmptyWidget";
 
-// Discriminated Union 타입으로 WidgetConfig 정의
 interface StatWidgetConfig {
   id: string;
   type: "stat";

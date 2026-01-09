@@ -1,20 +1,13 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
-import { ProtectedRouter } from "@pf-dev/services";
+import { ProtectedRouter, useAuthStore, selectUser } from "@pf-dev/services";
 
 import { AdminLayout } from "@/layouts";
-import {
-  HomePage,
-  LoginPage,
-  DashboardPage,
-  CrudCardPage,
-  CrudListPage,
-  CrudListCreatePage,
-  CrudListDetailPage,
-  UserAccountsPage,
-  PermissionsPage,
-  RolesPage,
-} from "@/pages";
+
+import { publicRoutes, protectedRoutes } from "./config";
+import { flattenRoutes } from "./utils";
+import type { RouteConfig } from "./types";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -23,13 +16,29 @@ function NotFoundPage() {
   );
 }
 
+function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
+  const user = useAuthStore(selectUser);
+  const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
+
+  if (route.roles && route.roles.length > 0) {
+    const hasRequiredRole = route.roles.some((role) => userRoles.includes(role));
+    if (!hasRequiredRole) {
+      return <Navigate to="/" replace />;
+    }
+  }
+
+  return <>{children}</>;
+}
+
 export function AppRoutes() {
+  const allProtectedRoutes = flattenRoutes(protectedRoutes);
+
   return (
     <Routes>
-      {/* 로그인 페이지 (인증 불필요) */}
-      <Route path="/login" element={<LoginPage />} />
+      {publicRoutes.map((route) => (
+        <Route key={route.path} path={route.path} element={<route.element />} />
+      ))}
 
-      {/* 인증 필요한 라우트 */}
       <Route
         element={
           <ProtectedRouter>
@@ -37,22 +46,20 @@ export function AppRoutes() {
           </ProtectedRouter>
         }
       >
-        <Route index element={<HomePage />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-
-        {/* 사용자 관리 */}
-        <Route path="users/accounts" element={<UserAccountsPage />} />
-        <Route path="users/permissions" element={<PermissionsPage />} />
-        <Route path="users/roles" element={<RolesPage />} />
-
-        {/* 예제 */}
-        <Route path="examples/crud-card" element={<CrudCardPage />} />
-        <Route path="examples/crud-list" element={<CrudListPage />} />
-        <Route path="examples/crud-list/create" element={<CrudListCreatePage />} />
-        <Route path="examples/crud-list/:id" element={<CrudListDetailPage />} />
+        {allProtectedRoutes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path === "/" ? undefined : route.path.slice(1)}
+            index={route.path === "/"}
+            element={
+              <RoleGuard route={route}>
+                <route.element />
+              </RoleGuard>
+            }
+          />
+        ))}
       </Route>
 
-      {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

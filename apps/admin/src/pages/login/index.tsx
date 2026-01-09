@@ -10,7 +10,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { toasts, toast, dismissToast } = useToast();
 
-  const handleLogin = async (data: { username: string; password: string }) => {
+  const handleLogin = async (data: { username: string; password: string; remember: boolean }) => {
     setLoading(true);
     try {
       await login({ username: data.username, password: data.password });
@@ -28,8 +28,8 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <LoginCard
-        title="Admin Login"
-        subtitle="관리자 페이지에 로그인하세요"
+        title="관리자 로그인"
+        subtitle="관리자 대시보드에 로그인하세요"
         onLoginSubmit={handleLogin}
         loading={loading}
       />

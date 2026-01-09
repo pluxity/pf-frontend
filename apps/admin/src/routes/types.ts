@@ -16,6 +16,7 @@ export interface RouteConfig {
   element: LazyExoticComponent<ComponentType> | ComponentType;
   menu?: MenuConfig;
   children?: RouteConfig[];
+  roles?: string[];
 }
 
 export interface SectionConfig {
@@ -24,6 +25,8 @@ export interface SectionConfig {
   collapsible?: boolean;
   defaultExpanded?: boolean;
   order: number;
+  roles?: string[];
+  dividerBefore?: boolean | string; // true면 디바이더만, string이면 라벨 포함
 }
 
 export interface MenuItem {
@@ -40,4 +43,5 @@ export interface MenuSection {
   collapsible?: boolean;
   defaultExpanded?: boolean;
   order: number;
+  dividerBefore?: boolean | string;
 }

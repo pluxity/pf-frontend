@@ -1,4 +1,4 @@
-import { Badge, Button, Edit, Close, Lock, MoreVertical } from "@pf-dev/ui/atoms";
+import { Button, Edit, Close, Lock, MoreVertical } from "@pf-dev/ui/atoms";
 import {
   Table,
   TableHeader,
@@ -6,6 +6,9 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
 } from "@pf-dev/ui/organisms";
 import {
   DropdownMenu,
@@ -27,12 +30,12 @@ export function UserTable({ users, onEdit, onDelete, onResetPassword }: UserTabl
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="text-center">아이디</TableHead>
-          <TableHead className="text-center">이름</TableHead>
-          <TableHead className="text-center">부서</TableHead>
-          <TableHead className="text-center">연락처</TableHead>
+          <TableHead className="w-40 text-center">아이디</TableHead>
+          <TableHead className="w-32 text-center">이름</TableHead>
+          <TableHead className="w-40 text-center">부서</TableHead>
+          <TableHead className="w-40 text-center">연락처</TableHead>
           <TableHead className="text-center">역할</TableHead>
-          <TableHead className="text-center">작업</TableHead>
+          <TableHead className="w-12 text-center">작업</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -43,17 +46,33 @@ export function UserTable({ users, onEdit, onDelete, onResetPassword }: UserTabl
             <TableCell className="text-center">{user.department || "-"}</TableCell>
             <TableCell className="text-center">{user.phoneNumber || "-"}</TableCell>
             <TableCell className="text-center">
-              <div className="flex flex-wrap justify-center gap-1">
-                {user.roles.length > 0 ? (
-                  user.roles.map((role) => (
-                    <Badge key={role.id} variant="default">
-                      {role.name}
-                    </Badge>
-                  ))
+              {user.roles.length > 0 ? (
+                user.roles.length === 1 ? (
+                  <span className="text-sm">{user.roles[0]?.name}</span>
                 ) : (
-                  <span className="text-gray-400">-</span>
-                )}
-              </div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <span className="cursor-pointer text-sm">
+                        {user.roles[0]?.name}{" "}
+                        <span className="text-blue-600 underline decoration-dotted hover:text-blue-800">
+                          외 {user.roles.length - 1}개
+                        </span>
+                      </span>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-3">
+                      <div className="space-y-1">
+                        {user.roles.slice(1).map((role) => (
+                          <div key={role.id} className="text-sm">
+                            {role.name}
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                )
+              ) : (
+                <span className="text-gray-400">-</span>
+              )}
             </TableCell>
             <TableCell className="text-center">
               <DropdownMenu>

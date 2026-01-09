@@ -8,7 +8,6 @@ export interface User {
   joinDate: string;
   createdAt: string;
   updatedAt: string;
-  // DataTable 호환을 위한 index signature
   [key: string]: string;
 }
 

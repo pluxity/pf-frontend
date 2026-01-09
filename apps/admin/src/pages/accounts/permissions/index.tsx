@@ -1,7 +1,16 @@
 import { Button, Plus, Spinner } from "@pf-dev/ui/atoms";
 import { SearchBar, Pagination } from "@pf-dev/ui/molecules";
-import { EmptyState } from "@pf-dev/ui/organisms";
-import { PermissionTable, PermissionFormModal } from "./components";
+import {
+  EmptyState,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalTitle,
+  ModalDescription,
+} from "@pf-dev/ui/organisms";
+import { PermissionTable, PermissionFormModal, PermissionDetailModal } from "./components";
 import { usePermissions } from "./hooks";
 
 export function PermissionsPage() {
@@ -16,12 +25,22 @@ export function PermissionsPage() {
     searchQuery,
     currentPage,
     formModalOpen,
+    editingPermission,
+    deletingPermission,
+    deleteConfirmOpen,
+    viewingPermission,
+    detailModalOpen,
     setSearchQuery,
     setCurrentPage,
     handleCreate,
+    handleEdit,
+    handleDelete,
+    handleDeleteConfirm,
     handleFormSubmit,
     handleSearch,
     setFormModalOpen,
+    setDeleteConfirmOpen,
+    setDetailModalOpen,
     mutatePermissions,
   } = usePermissions();
 
@@ -56,7 +75,13 @@ export function PermissionsPage() {
       );
     }
 
-    return <PermissionTable permissions={paginatedPermissions} />;
+    return (
+      <PermissionTable
+        permissions={paginatedPermissions}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    );
   };
 
   return (
@@ -101,6 +126,45 @@ export function PermissionsPage() {
         onSubmit={handleFormSubmit}
         resourceTypes={resourceTypes}
         isLoading={isLoading}
+        editingPermission={editingPermission}
+      />
+
+      <Modal open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <ModalContent className="max-w-sm">
+          <ModalHeader>
+            <ModalTitle className="text-center font-bold">권한 삭제</ModalTitle>
+            <ModalDescription className="text-center">
+              &quot;{deletingPermission?.name}&quot; 권한을 삭제하시겠습니까?
+            </ModalDescription>
+          </ModalHeader>
+          <ModalBody>
+            <p className="text-center text-sm text-gray-500">이 작업은 되돌릴 수 없습니다.</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteConfirmOpen(false)}
+              disabled={isLoading}
+            >
+              취소
+            </Button>
+            <Button
+              type="button"
+              variant="error"
+              onClick={handleDeleteConfirm}
+              disabled={isLoading}
+            >
+              {isLoading ? "삭제 중..." : "삭제"}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <PermissionDetailModal
+        open={detailModalOpen}
+        onOpenChange={setDetailModalOpen}
+        permission={viewingPermission}
       />
     </div>
   );

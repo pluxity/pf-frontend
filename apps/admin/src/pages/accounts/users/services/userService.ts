@@ -17,7 +17,7 @@ export async function createUser(data: UserCreateData): Promise<number> {
 }
 
 export async function updateUser(id: number, data: UserUpdateData): Promise<void> {
-  await getApiClient().put<void>(`/admin/users/${id}`, data);
+  await getApiClient().patch<void>(`/admin/users/${id}`, data);
 }
 
 export async function deleteUser(id: number): Promise<void> {

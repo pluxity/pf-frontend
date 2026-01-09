@@ -79,7 +79,7 @@ export function RolesPage() {
     <div className="flex h-full flex-col">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">역할 관리</h1>
+          <h1 className="text-xl font-semibold text-gray-900">역할 관리</h1>
           <p className="mt-1 text-sm text-gray-500">총 {filteredRoles.length}개의 역할</p>
         </div>
         <Button onClick={handleCreate}>

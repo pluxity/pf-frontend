@@ -9,7 +9,6 @@ export function AdminLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // 화면 크기 변경 시 모바일 메뉴 닫기
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= LG_BREAKPOINT) {
@@ -21,7 +20,6 @@ export function AdminLayout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 모바일 메뉴 열려있을 때 배경 스크롤 방지
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -37,12 +35,10 @@ export function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <AdminSidebar collapsed={sidebarCollapsed} onCollapsedChange={setSidebarCollapsed} />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -51,7 +47,6 @@ export function AdminLayout() {
         />
       )}
 
-      {/* Mobile Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:hidden ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -60,7 +55,6 @@ export function AdminLayout() {
         <AdminSidebar collapsed={false} onItemClick={closeMobileMenu} />
       </div>
 
-      {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header showMenuButton onMenuClick={() => setMobileMenuOpen(true)} />
 

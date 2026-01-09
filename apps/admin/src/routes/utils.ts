@@ -1,11 +1,22 @@
 import type { RouteConfig, SectionConfig, MenuSection, MenuItem } from "./types";
 
-export function buildMenuSections(routes: RouteConfig[], sections: SectionConfig[]): MenuSection[] {
+function hasRequiredRole(requiredRoles: string[] | undefined, userRoles: string[]): boolean {
+  if (!requiredRoles || requiredRoles.length === 0) {
+    return true;
+  }
+  return requiredRoles.some((role) => userRoles.includes(role));
+}
+
+export function buildMenuSections(
+  routes: RouteConfig[],
+  sections: SectionConfig[],
+  userRoles: string[] = []
+): MenuSection[] {
   const sectionMap = new Map<string, MenuItem[]>();
 
   const collectMenuItems = (routeList: RouteConfig[]) => {
     for (const route of routeList) {
-      if (route.menu) {
+      if (route.menu && hasRequiredRole(route.roles, userRoles)) {
         const { sectionId, label, icon, order = 0 } = route.menu;
         if (!sectionMap.has(sectionId)) {
           sectionMap.set(sectionId, []);
@@ -23,12 +34,14 @@ export function buildMenuSections(routes: RouteConfig[], sections: SectionConfig
   collectMenuItems(routes);
 
   const menuSections: MenuSection[] = sections
+    .filter((section) => hasRequiredRole(section.roles, userRoles))
     .map((section) => ({
       id: section.id,
       label: section.label,
       collapsible: section.collapsible,
       defaultExpanded: section.defaultExpanded,
       order: section.order,
+      dividerBefore: section.dividerBefore,
       items: (sectionMap.get(section.id) || []).sort((a, b) => a.order - b.order),
     }))
     .filter((section) => section.items.length > 0)

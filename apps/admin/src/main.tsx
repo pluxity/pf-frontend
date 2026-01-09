@@ -10,7 +10,6 @@ import "./styles/globals.css";
 const contextPath = import.meta.env.VITE_CONTEXT_PATH || "";
 const apiBasePath = import.meta.env.VITE_API_BASE_PATH || contextPath;
 
-// API 클라이언트 초기화
 configureApi({
   baseURL: `${apiBasePath}/api`,
 });

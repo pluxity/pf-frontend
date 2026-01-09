@@ -71,7 +71,6 @@ export function ItemFormModal({
         status: item.status,
       });
     } else {
-      // useForm에 정의된 defaultValues로 폼을 리셋
       reset();
     }
   }, [item, reset]);
