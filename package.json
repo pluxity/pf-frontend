@@ -13,6 +13,7 @@
     "clean": "turbo run clean && rimraf node_modules",
     "gen": "turbo gen",
     "gen:app": "turbo gen app",
+    "gen:admin": "turbo gen admin",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",

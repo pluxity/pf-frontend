@@ -228,4 +228,330 @@ module.exports = function generator(plop) {
       },
     ],
   });
+
+  plop.setGenerator("admin", {
+    description: "Create a new Admin application with authentication and user management",
+    prompts: [
+      {
+        type: "input",
+        name: "name",
+        message: "What is the name of the new admin app?",
+        validate: function (input) {
+          if (!input) return "App name is required";
+          if (!/^[a-z0-9-]+$/.test(input)) return "App name must be lowercase with hyphens only";
+          return true;
+        },
+      },
+      {
+        type: "input",
+        name: "description",
+        message: "Brief description of the admin app:",
+        default: "A new Admin application",
+      },
+      {
+        type: "input",
+        name: "port",
+        message: "Development server port:",
+        default: "3001",
+        validate: function (input) {
+          const port = parseInt(input, 10);
+          if (isNaN(port) || port < 1000 || port > 65535)
+            return "Port must be a number between 1000 and 65535";
+          return true;
+        },
+      },
+      {
+        type: "confirm",
+        name: "includeDashboard",
+        message: "Include Dashboard page?",
+        default: true,
+      },
+      {
+        type: "confirm",
+        name: "includeCrudCard",
+        message: "Include CRUD Card example?",
+        default: false,
+      },
+      {
+        type: "confirm",
+        name: "includeCrudList",
+        message: "Include CRUD List example?",
+        default: false,
+      },
+    ],
+    actions: function (data) {
+      const actions = [
+        // Package files
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/package.json",
+          templateFile: "templates/admin/package.json.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/tsconfig.json",
+          templateFile: "templates/admin/tsconfig.json.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/vite.config.ts",
+          templateFile: "templates/admin/vite.config.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/index.html",
+          templateFile: "templates/admin/index.html.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/eslint.config.js",
+          templateFile: "templates/admin/eslint.config.js.hbs",
+        },
+        // Environment files
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/.env.development",
+          templateFile: "templates/admin/env/.env.development.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/.env.staging",
+          templateFile: "templates/admin/env/.env.staging.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/.env.production",
+          templateFile: "templates/admin/env/.env.production.hbs",
+        },
+        // Source files
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/main.tsx",
+          templateFile: "templates/admin/src/main.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/App.tsx",
+          templateFile: "templates/admin/src/App.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/vite-env.d.ts",
+          templateFile: "templates/admin/src/vite-env.d.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/styles/globals.css",
+          templateFile: "templates/admin/src/styles/globals.css.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/hooks/index.ts",
+          templateFile: "templates/admin/src/hooks/index.ts.hbs",
+        },
+        // Layouts
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/index.ts",
+          templateFile: "templates/admin/src/layouts/index.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/RootLayout.tsx",
+          templateFile: "templates/admin/src/layouts/RootLayout.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/AdminLayout.tsx",
+          templateFile: "templates/admin/src/layouts/AdminLayout.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/AdminSidebar.tsx",
+          templateFile: "templates/admin/src/layouts/AdminSidebar.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/Header.tsx",
+          templateFile: "templates/admin/src/layouts/Header.tsx.hbs",
+        },
+        // Routes
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/index.tsx",
+          templateFile: "templates/admin/src/routes/index.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/config.tsx",
+          templateFile: "templates/admin/src/routes/config.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/types.ts",
+          templateFile: "templates/admin/src/routes/types.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/routes/utils.ts",
+          templateFile: "templates/admin/src/routes/utils.ts.hbs",
+        },
+        // Pages
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/index.ts",
+          templateFile: "templates/admin/src/pages/index.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
+          templateFile: "templates/admin/src/pages/home/index.tsx.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/login/index.tsx",
+          templateFile: "templates/admin/src/pages/login/index.tsx.hbs",
+        },
+        // Public assets
+        {
+          type: "copyFile",
+          src: "templates/admin/public/favicon.ico",
+          destPath: "public/favicon.ico",
+        },
+      ];
+
+      // Add accounts pages (users, roles, permissions) - these are always included
+      const accountsFiles = [
+        "users/index.tsx",
+        "users/types.ts",
+        "users/components/index.ts",
+        "users/components/UserTable.tsx",
+        "users/components/UserFormModal.tsx",
+        "users/components/UserDeleteDialog.tsx",
+        "users/components/PasswordResetDialog.tsx",
+        "users/hooks/index.ts",
+        "users/hooks/useUsers.ts",
+        "users/services/index.ts",
+        "users/services/userService.ts",
+        "roles/index.tsx",
+        "roles/types.ts",
+        "roles/components/index.ts",
+        "roles/components/RoleTable.tsx",
+        "roles/components/RoleFormModal.tsx",
+        "roles/hooks/index.ts",
+        "roles/hooks/useRoles.ts",
+        "roles/services/index.ts",
+        "roles/services/roleService.ts",
+        "permissions/index.tsx",
+        "permissions/types.ts",
+        "permissions/components/index.ts",
+        "permissions/components/PermissionTable.tsx",
+        "permissions/components/PermissionFormModal.tsx",
+        "permissions/components/PermissionDetailModal.tsx",
+        "permissions/hooks/index.ts",
+        "permissions/hooks/usePermissions.ts",
+        "permissions/services/index.ts",
+        "permissions/services/permissionService.ts",
+      ];
+
+      accountsFiles.forEach((file) => {
+        actions.push({
+          type: "add",
+          path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/accounts/${file}`,
+          templateFile: `templates/admin/src/pages/accounts/${file}`,
+        });
+      });
+
+      // Conditional: Dashboard
+      if (data.includeDashboard) {
+        const dashboardFiles = [
+          "index.tsx",
+          "components/index.ts",
+          "components/DashboardGrid.tsx",
+          "components/widgets/index.ts",
+          "components/widgets/StatCard.tsx",
+          "components/widgets/ChartWidget.tsx",
+          "components/widgets/TableWidget.tsx",
+          "components/widgets/EmptyWidget.tsx",
+        ];
+
+        dashboardFiles.forEach((file) => {
+          actions.push({
+            type: "add",
+            path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/dashboard/${file}`,
+            templateFile: `templates/admin/src/pages/dashboard/${file}`,
+          });
+        });
+      }
+
+      // Conditional: CRUD Card Example
+      if (data.includeCrudCard) {
+        const crudCardFiles = [
+          "index.tsx",
+          "types.ts",
+          "components/index.ts",
+          "components/ItemCard.tsx",
+          "components/ItemFormModal.tsx",
+          "components/DeleteConfirmDialog.tsx",
+          "hooks/index.ts",
+          "hooks/useItems.ts",
+          "services/index.ts",
+          "services/itemService.ts",
+        ];
+
+        crudCardFiles.forEach((file) => {
+          actions.push({
+            type: "add",
+            path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/examples/crud-card/${file}`,
+            templateFile: `templates/admin/src/pages/examples/crud-card/${file}`,
+          });
+        });
+      }
+
+      // Conditional: CRUD List Example
+      if (data.includeCrudList) {
+        const crudListFiles = [
+          "index.tsx",
+          "create.tsx",
+          "detail.tsx",
+          "types.ts",
+          "components/index.ts",
+          "components/UserColumns.tsx",
+          "components/UserForm.tsx",
+          "components/DeleteConfirmDialog.tsx",
+          "hooks/index.ts",
+          "hooks/useUsers.ts",
+          "services/index.ts",
+          "services/userService.ts",
+        ];
+
+        crudListFiles.forEach((file) => {
+          actions.push({
+            type: "add",
+            path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/examples/crud-list/${file}`,
+            templateFile: `templates/admin/src/pages/examples/crud-list/${file}`,
+          });
+        });
+      }
+
+      // Format generated files with prettier
+      actions.push(function (answers) {
+        const appPath = path.join(rootPath, "apps", answers.name);
+        const normalizedAppPath = appPath.replace(/\\/g, "/");
+        try {
+          console.log(`\nFormatting generated files with prettier...`);
+          execSync(`pnpm prettier --write "${normalizedAppPath}/**/*"`, {
+            cwd: rootPath,
+            stdio: "inherit",
+          });
+          return `✓ Formatted all files in apps/${answers.name}`;
+        } catch (error) {
+          console.error("Warning: Failed to format files with prettier");
+          return "⚠ Prettier formatting failed, you may need to run 'pnpm lint --fix' manually";
+        }
+      });
+
+      return actions;
+    },
+  });
 };

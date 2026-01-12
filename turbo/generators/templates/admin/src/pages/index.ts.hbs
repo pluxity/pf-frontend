@@ -1,0 +1,16 @@
+export { HomePage } from "./home";
+export { LoginPage } from "./login";
+{{#if includeDashboard}}
+export { DashboardPage } from "./dashboard";
+{{/if}}
+{{#if includeCrudCard}}
+export { CrudCardPage } from "./examples/crud-card";
+{{/if}}
+{{#if includeCrudList}}
+export { CrudListPage } from "./examples/crud-list";
+export { CrudListCreatePage } from "./examples/crud-list/create";
+export { CrudListDetailPage } from "./examples/crud-list/detail";
+{{/if}}
+export { UserAccountsPage } from "./accounts/users";
+export { PermissionsPage } from "./accounts/permissions";
+export { RolesPage } from "./accounts/roles";
