@@ -27,7 +27,7 @@ export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
 
   return (
     <>
-      <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
+      <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-3 sm:px-4">
         <div className="flex items-center gap-3">
           {showMenuButton && (
             <Button
@@ -42,16 +42,16 @@ export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {user && (
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
               <User size="sm" />
               <span>{user.name || user.username}</span>
             </div>
           )}
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <Logout size="sm" />
-            <span className="ml-1.5">로그아웃</span>
+            <span className="ml-1.5 hidden sm:inline">로그아웃</span>
           </Button>
         </div>
       </header>

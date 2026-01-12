@@ -16,6 +16,17 @@ function NotFoundPage() {
   );
 }
 
+function ForbiddenPage() {
+  const navigate = useNavigate();
+  return (
+    <ErrorPage
+      variant="403"
+      primaryAction={{ label: "홈으로", onClick: () => navigate("/") }}
+      secondaryAction={{ label: "이전 페이지", onClick: () => navigate(-1) }}
+    />
+  );
+}
+
 function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
   const user = useAuthStore(selectUser);
   const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
@@ -23,7 +34,7 @@ function RoleGuard({ route, children }: { route: RouteConfig; children: React.Re
   if (route.roles && route.roles.length > 0) {
     const hasRequiredRole = route.roles.some((role) => userRoles.includes(role));
     if (!hasRequiredRole) {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/403" replace />;
     }
   }
 
@@ -38,6 +49,15 @@ export function AppRoutes() {
       {publicRoutes.map((route) => (
         <Route key={route.path} path={route.path} element={<route.element />} />
       ))}
+
+      <Route
+        path="/403"
+        element={
+          <ProtectedRouter>
+            <ForbiddenPage />
+          </ProtectedRouter>
+        }
+      />
 
       <Route
         element={

@@ -77,25 +77,27 @@ export function RolesPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">역할 관리</h1>
-          <p className="mt-1 text-sm text-gray-500">총 {filteredRoles.length}개의 역할</p>
+      <div className="mb-4 sm:mb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-900">역할 관리</h1>
+            <p className="mt-1 text-sm text-gray-500">총 {filteredRoles.length}개의 역할</p>
+          </div>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
+            <Plus size="sm" />
+            <span className="ml-1">새 역할</span>
+          </Button>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus size="sm" />
-          <span className="ml-1">새 역할</span>
-        </Button>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <SearchBar
           placeholder="역할명 또는 설명으로 검색..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onSearch={handleSearch}
           onClear={() => handleSearch("")}
-          className="w-80"
+          className="w-full sm:w-80"
         />
       </div>
 

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginCard } from "@pf-dev/ui/organisms";
 import { Toaster, useToast } from "@pf-dev/ui/molecules";
 import { login, useAuthStore, getMe } from "@pf-dev/services";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const setUser = useAuthStore((state) => state.setUser);
   const [loading, setLoading] = useState(false);
   const { toasts, toast, dismissToast } = useToast();
@@ -16,7 +17,10 @@ export function LoginPage() {
       await login({ username: data.username, password: data.password });
       const user = await getMe();
       setUser(user);
-      navigate("/");
+
+      // returnUrl 파라미터가 있으면 해당 경로로, 없으면 홈으로 이동
+      const returnUrl = searchParams.get("returnUrl");
+      navigate(returnUrl || "/", { replace: true });
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");

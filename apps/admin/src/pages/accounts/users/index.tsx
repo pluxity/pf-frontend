@@ -80,25 +80,27 @@ export function UserAccountsPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">계정 관리</h1>
-          <p className="mt-1 text-sm text-gray-500">총 {filteredUsers.length}명의 사용자</p>
+      <div className="mb-4 sm:mb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-900">계정 관리</h1>
+            <p className="mt-1 text-sm text-gray-500">총 {filteredUsers.length}명의 사용자</p>
+          </div>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
+            <Plus size="sm" className="mr-1" />
+            사용자 등록
+          </Button>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus size="sm" className="mr-1" />
-          사용자 등록
-        </Button>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <SearchBar
           placeholder="이름 또는 아이디로 검색..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onSearch={handleSearch}
           onClear={() => handleSearch("")}
-          className="w-80"
+          className="w-full sm:w-80"
         />
       </div>
 
