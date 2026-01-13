@@ -6,6 +6,7 @@ node_modules
 dist
 build
 storybook-static
+deploy
 
 # Turbo
 .turbo
@@ -42,6 +43,7 @@ coverage
 
 # Claude
 nul
+tmpclaude-*-cwd
 
 # TestApp
 /apps/demo-*

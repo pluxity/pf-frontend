@@ -1,11 +1,11 @@
-import { useState, type Ref } from "react";
+import { useState, useMemo, type Ref } from "react";
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import { Checkbox } from "../../atoms/Checkbox";
 import { Button } from "../../atoms/Button";
 
 export interface DataTableColumn<T> {
-  key: keyof T | string;
+  key: keyof T;
   header: string;
   sortable?: boolean;
   render?: (row: T, index: number) => React.ReactNode;
@@ -173,9 +173,16 @@ function DataTableComponent<T extends Record<string, unknown>>({
   className,
 }: DataTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
+
+  // 데이터가 변경되어 현재 페이지가 유효 범위를 벗어나면 자동 조정
+  const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+  const effectiveCurrentPage = useMemo(() => {
+    if (!pagination) return currentPage;
+    return Math.min(currentPage, totalPages);
+  }, [currentPage, totalPages, pagination]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -199,7 +206,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
     onSelectionChange?.(data.filter((_, i) => newSelected.has(i)));
   };
 
-  const handleSort = (columnKey: string) => {
+  const handleSort = (columnKey: keyof T) => {
     if (sortColumn === columnKey) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -219,9 +226,8 @@ function DataTableComponent<T extends Record<string, unknown>>({
     return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const totalPages = Math.ceil(data.length / pageSize);
   const paginatedData = pagination
-    ? sortedData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    ? sortedData.slice((effectiveCurrentPage - 1) * pageSize, effectiveCurrentPage * pageSize)
     : sortedData;
 
   const isAllSelected = selectedRows.size === data.length && data.length > 0;
@@ -255,7 +261,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                     column.sortable && "cursor-pointer select-none",
                     column.className
                   )}
-                  onClick={() => column.sortable && handleSort(String(column.key))}
+                  onClick={() => column.sortable && handleSort(column.key)}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {column.header}
@@ -273,7 +279,9 @@ function DataTableComponent<T extends Record<string, unknown>>({
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
             {paginatedData.map((row, rowIndex) => {
-              const actualIndex = pagination ? (currentPage - 1) * pageSize + rowIndex : rowIndex;
+              const actualIndex = pagination
+                ? (effectiveCurrentPage - 1) * pageSize + rowIndex
+                : rowIndex;
               return (
                 <tr
                   key={actualIndex}
@@ -302,7 +310,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                     >
                       {column.render
                         ? column.render(row, actualIndex)
-                        : String(row[column.key as keyof T] ?? "")}
+                        : String(row[column.key] ?? "")}
                     </td>
                   ))}
                 </tr>
@@ -314,7 +322,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
 
       {pagination && (
         <DataTablePagination
-          currentPage={currentPage}
+          currentPage={effectiveCurrentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
           pageSize={pageSize}

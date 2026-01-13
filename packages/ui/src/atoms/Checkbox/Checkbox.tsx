@@ -1,5 +1,5 @@
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { Check } from "../Icon";
+import { Check, Minus } from "../Icon";
 import { cn } from "../../utils";
 import type { CheckboxProps } from "./types";
 
@@ -12,12 +12,13 @@ function Checkbox({ className, ref, ...props }: CheckboxProps) {
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[state=checked]:border-brand data-[state=checked]:bg-brand data-[state=checked]:text-white",
+        "data-[state=indeterminate]:border-brand data-[state=indeterminate]:bg-brand data-[state=indeterminate]:text-white",
         className
       )}
       {...props}
     >
       <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-        <Check size="sm" />
+        {props.checked === "indeterminate" ? <Minus size="sm" /> : <Check size="sm" />}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );
