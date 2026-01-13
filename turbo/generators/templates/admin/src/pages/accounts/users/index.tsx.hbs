@@ -52,7 +52,7 @@ export function UserAccountsPage() {
           variant="custom"
           title="데이터 로딩 실패"
           description="사용자 데이터를 불러오는 중 오류가 발생했습니다."
-          action={{ label: "다시 시도", onClick: mutateUsers }}
+          action=\{{ label: "다시 시도", onClick: mutateUsers }}
         />
       );
     }
@@ -61,7 +61,7 @@ export function UserAccountsPage() {
       return searchQuery ? (
         <EmptyState
           variant="no-results"
-          action={{ label: "검색 초기화", onClick: () => handleSearch("") }}
+          action=\{{ label: "검색 초기화", onClick: () => handleSearch("") }}
         />
       ) : (
         <EmptyState variant="no-data" />

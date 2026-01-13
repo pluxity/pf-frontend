@@ -422,7 +422,7 @@ module.exports = function generator(plop) {
 
       // Add accounts pages (users, roles, permissions) - these are always included
       const accountsFiles = [
-        "users/index.tsx",
+        "users/index.tsx.hbs",
         "users/types.ts",
         "users/components/index.ts",
         "users/components/UserTable.tsx",
@@ -433,7 +433,7 @@ module.exports = function generator(plop) {
         "users/hooks/useUsers.ts",
         "users/services/index.ts",
         "users/services/userService.ts",
-        "roles/index.tsx",
+        "roles/index.tsx.hbs",
         "roles/types.ts",
         "roles/components/index.ts",
         "roles/components/RoleTable.tsx",
@@ -442,7 +442,7 @@ module.exports = function generator(plop) {
         "roles/hooks/useRoles.ts",
         "roles/services/index.ts",
         "roles/services/roleService.ts",
-        "permissions/index.tsx",
+        "permissions/index.tsx.hbs",
         "permissions/types.ts",
         "permissions/components/index.ts",
         "permissions/components/PermissionTable.tsx",
@@ -455,9 +455,11 @@ module.exports = function generator(plop) {
       ];
 
       accountsFiles.forEach((file) => {
+        // Remove .hbs extension from output path
+        const outputPath = file.replace(/\.hbs$/, "");
         actions.push({
           type: "add",
-          path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/accounts/${file}`,
+          path: `{{ turbo.paths.root }}/apps/{{ name }}/src/pages/accounts/${outputPath}`,
           templateFile: `templates/admin/src/pages/accounts/${file}`,
         });
       });
