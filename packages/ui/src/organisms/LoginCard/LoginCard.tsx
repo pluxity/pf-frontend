@@ -13,17 +13,41 @@ export interface LoginCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   signUpHref?: string;
   loading?: boolean;
   ref?: Ref<HTMLDivElement>;
+  showRememberMe?: boolean;
+  defaultRemember?: boolean;
+  rememberMeLabel?: string;
+  forgotPasswordLabel?: string;
+  usernameLabel?: string;
+  usernamePlaceholder?: string;
+  passwordLabel?: string;
+  passwordPlaceholder?: string;
+  submitLabel?: string;
+  loadingLabel?: string;
+  signUpPrompt?: string;
+  signUpLabel?: string;
 }
 
 function LoginCard({
   logo,
-  title = "Welcome back",
-  subtitle = "Sign in to your account",
+  title = "환영합니다",
+  subtitle = "계정에 로그인하세요",
   onLoginSubmit,
-  forgotPasswordHref = "#",
-  signUpHref = "#",
+  forgotPasswordHref,
+  signUpHref,
   loading = false,
   className,
+  showRememberMe = true,
+  defaultRemember = false,
+  usernameLabel = "아이디",
+  passwordLabel = "비밀번호",
+  usernamePlaceholder = "아이디를 입력하세요",
+  passwordPlaceholder = "••••••••",
+  rememberMeLabel = "로그인 상태 유지",
+  forgotPasswordLabel = "비밀번호를 잊으셨나요?",
+  submitLabel = "로그인",
+  loadingLabel = "로그인 중...",
+  signUpPrompt = "계정이 없으신가요?",
+  signUpLabel = "회원가입",
   ref,
   ...props
 }: LoginCardProps) {
@@ -57,13 +81,13 @@ function LoginCard({
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="username" className="text-sm font-medium text-[#333340]">
-              Username
+              {usernameLabel}
             </label>
             <Input
               id="username"
               name="username"
               type="text"
-              placeholder="Enter your username"
+              placeholder={usernamePlaceholder}
               required
               disabled={loading}
             />
@@ -71,42 +95,54 @@ function LoginCard({
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-[#333340]">
-              Password
+              {passwordLabel}
             </label>
             <Input
               id="password"
               name="password"
               type="password"
-              placeholder="••••••••"
+              placeholder={passwordPlaceholder}
               required
               disabled={loading}
             />
           </div>
         </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" name="remember" disabled={loading} />
-            <label htmlFor="remember" className="text-sm text-[#666673]">
-              Remember me
-            </label>
+        {(showRememberMe || forgotPasswordHref) && (
+          <div className="flex items-center justify-between">
+            {showRememberMe && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  name="remember"
+                  disabled={loading}
+                  defaultChecked={defaultRemember}
+                />
+                <label htmlFor="remember" className="text-sm text-[#666673]">
+                  {rememberMeLabel}
+                </label>
+              </div>
+            )}
+            {forgotPasswordHref && (
+              <a href={forgotPasswordHref} className="text-sm text-brand hover:underline">
+                {forgotPasswordLabel}
+              </a>
+            )}
           </div>
-          <a href={forgotPasswordHref} className="text-sm text-brand hover:underline">
-            Forgot password?
-          </a>
-        </div>
+        )}
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? loadingLabel : submitLabel}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-[#666673]">
-        Don't have an account?{" "}
-        <a href={signUpHref} className="font-medium text-brand hover:underline">
-          Sign up
-        </a>
-      </p>
+      {signUpHref && (
+        <p className="mt-6 text-center text-sm text-[#666673]">
+          {signUpPrompt}{" "}
+          <a href={signUpHref} className="font-medium text-brand hover:underline">
+            {signUpLabel}
+          </a>
+        </p>
+      )}
     </div>
   );
 }

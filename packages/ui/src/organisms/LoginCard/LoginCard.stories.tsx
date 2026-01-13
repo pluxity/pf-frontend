@@ -97,3 +97,20 @@ export const FullExample: Story = {
     </div>
   ),
 };
+
+export const CustomExample: Story = {
+  render: () => (
+    <LoginCard
+      title="Welcome back"
+      subtitle="Sign in to your account"
+      usernameLabel="Username"
+      passwordLabel="Password"
+      usernamePlaceholder="Enter your username"
+      rememberMeLabel="Remember me"
+      forgotPasswordHref={undefined}
+      signUpHref={undefined}
+      submitLabel="Sign in"
+      loadingLabel="Signing in..."
+    />
+  ),
+};
