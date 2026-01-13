@@ -71,6 +71,19 @@ module.exports = function generator(plop) {
         message: "Include @pf-dev/three?",
         default: false,
       },
+      {
+        type: "confirm",
+        name: "useAuth",
+        message: "Use authentication? (includes login page and auth setup)",
+        default: false,
+      },
+      {
+        type: "confirm",
+        name: "useProtectedRouter",
+        message: "Use ProtectedRouter? (requires authentication)",
+        default: false,
+        when: (answers) => answers.useAuth,
+      },
     ],
     actions: [
       // Package files
@@ -158,6 +171,12 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
         templateFile: "templates/app/src/pages/home/index.tsx.hbs",
+      },
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/login/index.tsx",
+        templateFile: "templates/app/src/pages/login/index.tsx.hbs",
+        skip: (data) => !data.useAuth,
       },
       // Services
       {
