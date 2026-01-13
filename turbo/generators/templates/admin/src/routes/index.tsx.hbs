@@ -12,7 +12,7 @@ import type { RouteConfig } from "./types";
 function NotFoundPage() {
   const navigate = useNavigate();
   return (
-    <ErrorPage variant="404" primaryAction={{ label: "홈으로", onClick: () => navigate("/") }} />
+    <ErrorPage variant="404" primaryAction=\{{ label: "홈으로", onClick: () => navigate("/") }} />
   );
 }
 
@@ -21,13 +21,13 @@ function ForbiddenPage() {
   return (
     <ErrorPage
       variant="403"
-      primaryAction={{ label: "홈으로", onClick: () => navigate("/") }}
-      secondaryAction={{ label: "이전 페이지", onClick: () => navigate(-1) }}
+      primaryAction=\{{ label: "홈으로", onClick: () => navigate("/") }}
+      secondaryAction=\{{ label: "이전 페이지", onClick: () => navigate(-1) }}
     />
   );
 }
 
-function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
+function RoleGuard(\{ route, children }: \{ route: RouteConfig; children: React.ReactNode }) {
   const user = useAuthStore(selectUser);
   const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
 
