@@ -368,6 +368,17 @@ module.exports = function generator(plop) {
           path: "{{ turbo.paths.root }}/apps/{{ name }}/src/hooks/index.ts",
           templateFile: "templates/admin/src/hooks/index.ts.hbs",
         },
+        // Contexts
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/contexts/index.ts",
+          templateFile: "templates/admin/src/contexts/index.ts.hbs",
+        },
+        {
+          type: "add",
+          path: "{{ turbo.paths.root }}/apps/{{ name }}/src/contexts/ToastContext.tsx",
+          templateFile: "templates/admin/src/contexts/ToastContext.tsx.hbs",
+        },
         // Layouts
         {
           type: "add",
