@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:staging": "vite --mode staging",
+    "dev": "vite --port {{ port }}",
+    "dev:staging": "vite --mode staging --port {{ port }}",
     "build": "tsc && vite build",
+    {{#if includeMap}}
+    "build:staging": "tsc && vite build --mode staging && node scripts/post-build.js",
+    {{else}}
     "build:staging": "tsc && vite build --mode staging",
+    {{/if}}
     "build:production": "tsc && vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -24,7 +28,10 @@
     "react-router-dom": "catalog:",
     "swr": "^2.3.8",
     "zod": "catalog:",
-    "zustand": "catalog:"
+    "zustand": "catalog:"{{#if includeMap}},
+    "@pf-dev/map": "workspace:*",
+    "cesium": "^1.121.0"{{/if}}{{#if includeThree}},
+    "@pf-dev/three": "workspace:*"{{/if}}
   },
   "devDependencies": {
     "@pf-dev/eslint-config": "workspace:*",
@@ -37,6 +44,7 @@
     "rimraf": "^6.0.1",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:"{{#if includeMap}},
+    "vite-plugin-cesium": "^1.2.23"{{/if}}
   }
 }

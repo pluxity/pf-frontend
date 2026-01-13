@@ -297,6 +297,18 @@ module.exports = function generator(plop) {
         message: "Include CRUD List example?",
         default: false,
       },
+      {
+        type: "confirm",
+        name: "includeMap",
+        message: "Include @pf-dev/map? (includes Cesium)",
+        default: false,
+      },
+      {
+        type: "confirm",
+        name: "includeThree",
+        message: "Include @pf-dev/three?",
+        default: false,
+      },
     ],
     actions: function (data) {
       const actions = [
@@ -565,6 +577,19 @@ module.exports = function generator(plop) {
           });
         });
       }
+
+      // Cesium post-build script (only when includeMap is true)
+      actions.push({
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/scripts/post-build.js",
+        templateFile: "templates/admin/scripts/post-build.js.hbs",
+        skip: function (answers) {
+          if (!answers.includeMap) {
+            return "Skipping post-build.js (Map not included)";
+          }
+          return false;
+        },
+      });
 
       // Format generated files with prettier
       actions.push(function (answers) {
