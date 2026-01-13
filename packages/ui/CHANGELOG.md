@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.3
+
+### Patch Changes
+
+- 1138b15: loginCard 커스터마이징 옵션 추가
+
 ## 1.2.2
 
 ### Patch Changes
