@@ -176,7 +176,12 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/login/index.tsx",
         templateFile: "templates/app/src/pages/login/index.tsx.hbs",
-        skip: (data) => !data.useAuth,
+        skip: function (answers) {
+          if (!answers.useAuth) {
+            return "Skipping login page (authentication not enabled)";
+          }
+          return false;
+        },
       },
       // Services
       {
