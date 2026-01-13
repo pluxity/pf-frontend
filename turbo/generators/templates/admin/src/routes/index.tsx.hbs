@@ -27,7 +27,7 @@ function ForbiddenPage() {
   );
 }
 
-function RoleGuard(\{ route, children }: \{ route: RouteConfig; children: React.ReactNode }) {
+function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
   const user = useAuthStore(selectUser);
   const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
 
