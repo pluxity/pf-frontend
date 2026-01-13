@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { configureApi } from "@pf-dev/api";
+{{#if useAuth}}
+import { AuthProvider } from "@pf-dev/services";
+{{/if}}
 
 import { App } from "./App";
 import "./styles/globals.css";
@@ -16,7 +19,13 @@ configureApi({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter basename={contextPath || "/"}>
+{{#if useAuth}}
+      <AuthProvider loginPath="/login">
+        <App />
+      </AuthProvider>
+{{else}}
       <App />
+{{/if}}
     </BrowserRouter>
   </StrictMode>
 );
