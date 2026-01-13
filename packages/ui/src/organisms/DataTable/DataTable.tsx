@@ -5,7 +5,7 @@ import { Checkbox } from "../../atoms/Checkbox";
 import { Button } from "../../atoms/Button";
 
 export interface DataTableColumn<T> {
-  key: keyof T | string;
+  key: keyof T;
   header: string;
   sortable?: boolean;
   render?: (row: T, index: number) => React.ReactNode;
@@ -173,7 +173,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
   className,
 }: DataTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -206,7 +206,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
     onSelectionChange?.(data.filter((_, i) => newSelected.has(i)));
   };
 
-  const handleSort = (columnKey: string) => {
+  const handleSort = (columnKey: keyof T) => {
     if (sortColumn === columnKey) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -261,7 +261,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                     column.sortable && "cursor-pointer select-none",
                     column.className
                   )}
-                  onClick={() => column.sortable && handleSort(String(column.key))}
+                  onClick={() => column.sortable && handleSort(column.key)}
                 >
                   <div className="flex items-center justify-center gap-1">
                     {column.header}
@@ -310,7 +310,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                     >
                       {column.render
                         ? column.render(row, actualIndex)
-                        : String(row[column.key as keyof T] ?? "")}
+                        : String(row[column.key] ?? "")}
                     </td>
                   ))}
                 </tr>

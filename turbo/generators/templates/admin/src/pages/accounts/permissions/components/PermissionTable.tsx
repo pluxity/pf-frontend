@@ -1,11 +1,8 @@
+import { useMemo } from "react";
 import { Badge, Button, Edit, Close } from "@pf-dev/ui/atoms";
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
+  DataTable,
+  type DataTableColumn,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -130,51 +127,57 @@ function PermissionScopeCell({ badges }: { badges: PermissionBadge[] }) {
 }
 
 export function PermissionTable({ permissions, onEdit, onDelete }: PermissionTableProps) {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-32 text-center font-bold">권한명</TableHead>
-          <TableHead className="text-center font-bold">설명</TableHead>
-          <TableHead className="w-80 text-center font-bold">권한 범위</TableHead>
-          <TableHead className="w-24 text-center font-bold">작업</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {permissions.map((permission) => {
+  const columns: DataTableColumn<Permission>[] = useMemo(
+    () => [
+      {
+        key: "name",
+        header: "권한명",
+        sortable: true,
+        className: "w-32 font-medium",
+      },
+      {
+        key: "description",
+        header: "설명",
+        sortable: true,
+        render: (permission) => permission.description || "-",
+      },
+      {
+        key: "domainPermissions",
+        header: "권한 범위",
+        className: "w-80",
+        render: (permission) => {
           const badges = getPermissionBadges(permission);
-
-          return (
-            <TableRow key={permission.id}>
-              <TableCell className="text-center font-medium">{permission.name}</TableCell>
-              <TableCell className="text-left">{permission.description || "-"}</TableCell>
-              <TableCell className="text-center">
-                <PermissionScopeCell badges={badges} />
-              </TableCell>
-              <TableCell className="text-center">
-                <div className="flex items-center justify-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(permission)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <Edit size="sm" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(permission)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Close size="sm" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+          return <PermissionScopeCell badges={badges} />;
+        },
+      },
+      {
+        key: "id",
+        header: "작업",
+        className: "w-24",
+        render: (permission) => (
+          <div className="flex items-center justify-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(permission)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <Edit size="sm" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(permission)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <Close size="sm" />
+            </Button>
+          </div>
+        ),
+      },
+    ],
+    [onEdit, onDelete]
   );
+
+  return <DataTable data={permissions} columns={columns} pagination pageSize={10} />;
 }

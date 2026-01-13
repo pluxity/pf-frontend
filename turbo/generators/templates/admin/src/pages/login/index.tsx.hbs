@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LoginCard } from "@pf-dev/ui/organisms";
-import { Toaster, useToast } from "@pf-dev/ui/molecules";
 import { login, useAuthStore, getMe } from "@pf-dev/services";
+import { useToastContext } from "@/contexts/ToastContext";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const setUser = useAuthStore((state) => state.setUser);
   const [loading, setLoading] = useState(false);
-  const { toasts, toast, dismissToast } = useToast();
+  const { toast } = useToastContext();
 
   const handleLogin = async (data: { username: string; password: string; remember: boolean }) => {
     setLoading(true);
@@ -37,7 +37,6 @@ export function LoginPage() {
         onLoginSubmit={handleLogin}
         loading={loading}
       />
-      <Toaster toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

@@ -8,7 +8,6 @@ export interface User {
   joinDate: string;
   createdAt: string;
   updatedAt: string;
-  [key: string]: string;
 }
 
 export interface UserFormData {

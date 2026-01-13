@@ -1,25 +1,25 @@
+import { lazy } from "react";
 import { Home{{#if includeDashboard}}, Dashboard{{/if}}, Settings, Users, User, Lock{{#if includeCrudCard}}, Grid{{/if}}{{#if includeCrudList}}, FileText{{/if}} } from "@pf-dev/ui";
 
-import {
-  HomePage,
-  LoginPage,
+import type { RouteConfig, SectionConfig } from "./types";
+
+// 코드 스플리팅: 페이지 컴포넌트를 동적으로 로드
+const HomePage = lazy(() => import("@/pages/home").then((m) => ({ default: m.HomePage })));
+const LoginPage = lazy(() => import("@/pages/login").then((m) => ({ default: m.LoginPage })));
 {{#if includeDashboard}}
-  DashboardPage,
+const DashboardPage = lazy(() => import("@/pages/dashboard").then((m) => ({ default: m.DashboardPage })));
 {{/if}}
 {{#if includeCrudCard}}
-  CrudCardPage,
+const CrudCardPage = lazy(() => import("@/pages/examples/crud-card").then((m) => ({ default: m.CrudCardPage })));
 {{/if}}
 {{#if includeCrudList}}
-  CrudListPage,
-  CrudListCreatePage,
-  CrudListDetailPage,
+const CrudListPage = lazy(() => import("@/pages/examples/crud-list").then((m) => ({ default: m.CrudListPage })));
+const CrudListCreatePage = lazy(() => import("@/pages/examples/crud-list/create").then((m) => ({ default: m.CrudListCreatePage })));
+const CrudListDetailPage = lazy(() => import("@/pages/examples/crud-list/detail").then((m) => ({ default: m.CrudListDetailPage })));
 {{/if}}
-  UserAccountsPage,
-  PermissionsPage,
-  RolesPage,
-} from "@/pages";
-
-import type { RouteConfig, SectionConfig } from "./types";
+const UserAccountsPage = lazy(() => import("@/pages/accounts/users").then((m) => ({ default: m.UserAccountsPage })));
+const PermissionsPage = lazy(() => import("@/pages/accounts/permissions").then((m) => ({ default: m.PermissionsPage })));
+const RolesPage = lazy(() => import("@/pages/accounts/roles").then((m) => ({ default: m.RolesPage })));
 
 export const sectionConfigs: SectionConfig[] = [
   {
