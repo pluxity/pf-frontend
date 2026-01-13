@@ -98,19 +98,19 @@ export const FullExample: Story = {
   ),
 };
 
-export const customExample: Story = {
+export const CustomExample: Story = {
   render: () => (
     <LoginCard
-      title="안녕하세요"
-      subtitle="계정에 로그인하세요."
-      usernameLabel="아이디"
-      passwordLabel="비밀번호"
-      usernamePlaceholder="아이디를 입력하세요"
-      rememberMeLabel="로그인 유지"
+      title="Welcome back"
+      subtitle="Sign in to your account"
+      usernameLabel="Username"
+      passwordLabel="Password"
+      usernamePlaceholder="Enter your username"
+      rememberMeLabel="Remember me"
       forgotPasswordHref={undefined}
       signUpHref={undefined}
-      submitLabel="로그인"
-      loadingLabel="로그인 중..."
+      submitLabel="Sign in"
+      loadingLabel="Signing in..."
     />
   ),
 };
