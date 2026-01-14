@@ -18,7 +18,7 @@ export interface ToastData {
 
 type ToastInput = Omit<ToastData, "id">;
 
-interface ToastFunction {
+export interface ToastFunction {
   (input: ToastInput | string): string;
   success: (input: ToastInput | string) => string;
   error: (input: ToastInput | string) => string;
