@@ -5,7 +5,7 @@ import { Checkbox } from "../../atoms/Checkbox";
 import { Button } from "../../atoms/Button";
 
 export interface DataTableColumn<T> {
-  key: keyof T;
+  key: keyof T | string;
   header: string;
   sortable?: boolean;
   render?: (row: T, index: number) => React.ReactNode;
@@ -163,7 +163,7 @@ function DataTablePagination({
   );
 }
 
-function DataTableComponent<T extends Record<string, unknown>>({
+function DataTableComponent<T>({
   data,
   columns,
   selectable = false,
@@ -173,7 +173,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
   className,
 }: DataTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
-  const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
+  const [sortColumn, setSortColumn] = useState<keyof T | string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -206,7 +206,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
     onSelectionChange?.(data.filter((_, i) => newSelected.has(i)));
   };
 
-  const handleSort = (columnKey: keyof T) => {
+  const handleSort = (columnKey: keyof T | string) => {
     if (sortColumn === columnKey) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -217,8 +217,8 @@ function DataTableComponent<T extends Record<string, unknown>>({
 
   const sortedData = [...data].sort((a, b) => {
     if (!sortColumn) return 0;
-    const aVal = a[sortColumn];
-    const bVal = b[sortColumn];
+    const aVal = a[sortColumn as keyof T];
+    const bVal = b[sortColumn as keyof T];
     if (aVal === bVal) return 0;
     if (aVal == null) return 1;
     if (bVal == null) return -1;
@@ -310,7 +310,7 @@ function DataTableComponent<T extends Record<string, unknown>>({
                     >
                       {column.render
                         ? column.render(row, actualIndex)
-                        : String(row[column.key] ?? "")}
+                        : String(row[column.key as keyof T] ?? "")}
                     </td>
                   ))}
                 </tr>
@@ -333,8 +333,6 @@ function DataTableComponent<T extends Record<string, unknown>>({
   );
 }
 
-const DataTable = DataTableComponent as <T extends Record<string, unknown>>(
-  props: DataTableProps<T>
-) => React.ReactElement;
+const DataTable = DataTableComponent as <T>(props: DataTableProps<T>) => React.ReactElement;
 
 export { DataTable, DataTableBulkActionBar, DataTablePagination };
