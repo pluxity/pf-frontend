@@ -1,11 +1,15 @@
 # 이슈 생성 시 자동으로 브랜치를 생성하고 이슈에 연결합니다.
 # 브랜치 네이밍: {prefix}/issue-{number}
 # prefix는 라벨에 따라 결정: epic, bug -> fix, 그 외 -> feature
+#
+# NOTE: 현재 비활성화됨 - 브랜치는 작업 시작 시 수동으로 생성
+# 다시 활성화하려면 on.issues.types: [opened] 주석 해제
 name: Create Issue Branch
 
 on:
-  issues:
-    types: [opened]
+  workflow_dispatch:  # 수동 실행만 가능
+  # issues:
+  #   types: [opened]
 
 permissions:
   contents: write
