@@ -1,8 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
-import { RootLayout } from "@/layouts/RootLayout";
-import { HomePage } from "@/pages";
+import { TrackingPage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -14,11 +13,8 @@ function NotFoundPage() {
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Routes without authentication */}
-      <Route element={<RootLayout />}>
-        <Route index element={<HomePage />} />
-        {/* Add more routes here */}
-      </Route>
+      {/* 메인 트래킹 페이지 - 전체 화면 레이아웃 */}
+      <Route index element={<TrackingPage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
