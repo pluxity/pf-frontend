@@ -1,14 +1,14 @@
-import { useState, useCallback, useRef, type Ref } from "react";
+import { useState, useCallback, useRef, type ReactNode, type Ref } from "react";
 import { Upload } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import { Button } from "../../atoms/Button";
 
-export interface UploadZoneProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface UploadZoneProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   onFilesSelected?: (files: File[]) => void;
   accept?: string;
   multiple?: boolean;
   disabled?: boolean;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   buttonLabel?: string;
   maxSize?: number;

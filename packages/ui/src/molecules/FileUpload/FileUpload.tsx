@@ -1,4 +1,4 @@
-import { useCallback, type Ref } from "react";
+import { useCallback, type ReactNode, type Ref } from "react";
 import { cn } from "../../utils";
 import { UploadZone } from "./UploadZone";
 import { FileItem, type FileItemData } from "./FileItem";
@@ -13,7 +13,7 @@ export interface FileUploadProps {
   maxFiles?: number;
   disabled?: boolean;
   className?: string;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   buttonLabel?: string;
   ref?: Ref<HTMLDivElement>;
