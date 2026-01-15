@@ -132,7 +132,7 @@ const SheetSection = ({
   title,
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { title?: ReactNode }) => (
+}: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & { title?: ReactNode }) => (
   <div className={cn("border-t border-[#E6E6E8] py-6", className)} {...props}>
     {title && <h3 className="mb-4 text-base font-bold text-[#333340]">{title}</h3>}
     {children}

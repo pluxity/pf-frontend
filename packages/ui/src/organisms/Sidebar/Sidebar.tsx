@@ -262,7 +262,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center">
             {logo || (
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                {typeof title === "string" ? title.charAt(0) : "D"}
+                {typeof title === "string" ? title.charAt(0) || "D" : "D"}
               </span>
             )}
           </div>
@@ -279,7 +279,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center">
               {logo || (
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                  {typeof title === "string" ? title.charAt(0) : "D"}
+                  {typeof title === "string" ? title.charAt(0) || "D" : "D"}
                 </span>
               )}
             </div>
