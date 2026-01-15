@@ -145,7 +145,10 @@ export function AdminSidebar({
 
   return (
     <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={onCollapsedChange}>
-      <Sidebar.Header title="yongin-platform-admin" logo={null}>
+      <Sidebar.Header
+        logo={<img src="/ci.svg" alt="Logo" className="h-8 w-8 object-contain" />}
+        title="용인 플랫폼 시티"
+      >
         <Sidebar.CollapseButton iconOnly />
       </Sidebar.Header>
 
