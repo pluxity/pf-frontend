@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { mqttClient, ConnectionStatus, MessageHandler } from "./client";
-import type { MqttTopic } from "./config";
 import type { IClientOptions } from "mqtt";
 
 /**
@@ -49,7 +48,7 @@ export function useMqtt(options?: Partial<IClientOptions>) {
  * @param options - 구독 옵션
  */
 export function useMqttSubscription<T = unknown>(
-  topic: MqttTopic | null,
+  topic: string | null,
   options?: {
     /** 메시지를 JSON으로 파싱할지 여부 */
     parseJson?: boolean;

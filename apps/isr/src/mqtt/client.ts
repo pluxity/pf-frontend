@@ -1,5 +1,5 @@
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
-import { MQTT_CONFIG, type MqttTopic } from "./config";
+import { MQTT_CONFIG } from "./config";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -29,7 +29,11 @@ class MqttClientManager {
    * MQTT 브로커에 연결
    */
   connect(options?: Partial<IClientOptions>): MqttClient {
-    if (this.state.client?.connected) {
+    // 이미 연결되었거나 연결 중이면 기존 클라이언트 반환
+    if (
+      this.state.client &&
+      (this.state.status === "connected" || this.state.status === "connecting")
+    ) {
       return this.state.client;
     }
 
@@ -41,6 +45,7 @@ class MqttClientManager {
 
     // 연결 이벤트 핸들러
     client.on("connect", () => {
+      console.log("[MQTT] Connected to broker");
       this.updateStatus("connected");
       this.state.error = null;
       // 재연결 시 기존 구독 복원
@@ -87,7 +92,7 @@ class MqttClientManager {
   /**
    * 토픽 구독
    */
-  subscribe(topic: MqttTopic, handler: MessageHandler): () => void {
+  subscribe(topic: string, handler: MessageHandler): () => void {
     if (!this.topicHandlers.has(topic)) {
       this.topicHandlers.set(topic, new Set());
     }
@@ -95,8 +100,10 @@ class MqttClientManager {
 
     // 실제 MQTT 구독 (중복 구독 방지)
     if (!this.subscribedTopics.has(topic) && this.state.client?.connected) {
+      console.log("[MQTT] Subscribing to:", topic);
       this.state.client.subscribe(topic, (err) => {
         if (!err) {
+          console.log("[MQTT] Subscribed to:", topic);
           this.subscribedTopics.add(topic);
         }
       });
@@ -181,6 +188,7 @@ class MqttClientManager {
    * 메시지 핸들링 (와일드카드 매칭 지원)
    */
   private handleMessage(topic: string, payload: Buffer, packet: mqtt.IPublishPacket): void {
+    console.log("[MQTT] Message received:", topic, payload.toString());
     this.topicHandlers.forEach((handlers, pattern) => {
       if (this.matchTopic(pattern, topic)) {
         handlers.forEach((handler) => {
