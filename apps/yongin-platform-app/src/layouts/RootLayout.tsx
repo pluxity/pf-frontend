@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
-
 import { Button, User } from "@pf-dev/ui";
+import { NoticeMarquee } from "../components/NoticeMarquee";
 
 export function RootLayout() {
   const navigate = useNavigate();
@@ -45,12 +45,7 @@ export function RootLayout() {
         <div className="flex items-center gap-4 4k:gap-8">
           <Button className="rounded-full 4k:text-4xl 4k:h-20 4k:px-10">안내사항</Button>
           <div className="flex-1 overflow-hidden">
-            <div className="animate-marquee whitespace-nowrap 4k:text-4xl">
-              안내 방송이 들어갑니다. • 용인 플랫폼 시티 1공구 스마트 건설 현장입니다. • 안전에
-              유의하시기 바랍니다. 안내 방송이 들어갑니다. • 용인 플랫폼 시티 1공구 스마트 건설
-              현장입니다. • 안전에 유의하시기 바랍니다. 안내 방송이 들어갑니다. • 용인 플랫폼 시티
-              1공구 스마트 건설 현장입니다. • 안전에 유의하시기 바랍니다.
-            </div>
+            <NoticeMarquee />
           </div>
         </div>
       </footer>
