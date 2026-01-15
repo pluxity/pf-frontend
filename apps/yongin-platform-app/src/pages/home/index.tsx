@@ -31,7 +31,7 @@ const widgets = [
   { id: "progressStats", component: ProgressStats },
   { id: "viewer", component: Viewer },
   { id: "management", component: Management },
-  { id: "dailystats", component: DailyStats },
+  { id: "dailyStats", component: DailyStats },
   { id: "announcement", component: Announcement },
 ];
 
@@ -40,7 +40,7 @@ export function HomePage() {
     <GridLayout
       template={dashboardTemplate}
       gap={16}
-      className="p-4 4k:p-8 h-[calc(100vh-72px-56px)] 4k:h-[calc(100vh-172px-144px)]"
+      className="p-4 4k:p-8 h-[calc(100vh-var(--header-height)-var(--footer-height))] 4k:h-[calc(100vh-var(--header-height-4k)-var(--footer-height-4k))]"
     >
       {widgets.map(({ id, component: Component }) => (
         <Component key={id} id={id} />

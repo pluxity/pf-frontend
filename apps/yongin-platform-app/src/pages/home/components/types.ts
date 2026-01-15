@@ -1,34 +1,18 @@
-export interface WeatherProps {
+export interface BaseWidgetProps {
   id: string;
   className?: string;
 }
 
-export interface WorkerStatsProps {
-  id: string;
-  className?: string;
-}
+export type WeatherProps = BaseWidgetProps;
 
-export interface ProgressStatsProps {
-  id: string;
-  className?: string;
-}
+export type WorkerStatsProps = BaseWidgetProps;
 
-export interface ViewerProps {
-  id: string;
-  className?: string;
-}
+export type ProgressStatsProps = BaseWidgetProps;
 
-export interface DailyStatsProps {
-  id: string;
-  className?: string;
-}
+export type ViewerProps = BaseWidgetProps;
 
-export interface AnnouncementProps {
-  id: string;
-  className?: string;
-}
+export type DailyStatsProps = BaseWidgetProps;
 
-export interface ManagementProps {
-  id: string;
-  className?: string;
-}
+export type AnnouncementProps = BaseWidgetProps;
+
+export type ManagementProps = BaseWidgetProps;

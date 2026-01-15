@@ -5,9 +5,9 @@ import { Button, User } from "@pf-dev/ui";
 export function RootLayout() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="h-18 px-3 bg-[#eff1f8] backdrop-blur-lg 4k:h-43 4k:px-6">
+      <header className="h-[var(--header-height)] px-3 bg-[#eff1f8] backdrop-blur-lg 4k:h-[var(--header-height-4k)] 4k:px-6">
         <div className="flex h-full items-center">
           <h1 className="flex-1 flex justify-start">
             <img
@@ -41,7 +41,7 @@ export function RootLayout() {
       </main>
 
       {/* Footer (optional) */}
-      <footer className="py-2 px-4 bg-[#eff1f8] 4k:py-8 4k:px-8">
+      <footer className="flex overflow-hidden items-center h-[var(--footer-height)] 4k:h-[var(--footer-height-4k)] px-4 bg-[#eff1f8] 4k:px-8">
         <div className="flex items-center gap-4 4k:gap-8">
           <Button className="rounded-full 4k:text-4xl 4k:h-20 4k:px-10">안내사항</Button>
           <div className="flex-1 overflow-hidden">
