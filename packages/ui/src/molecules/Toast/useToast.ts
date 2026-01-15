@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import type { VariantProps } from "class-variance-authority";
 import type { toastVariants } from "./variants";
 
@@ -6,7 +6,7 @@ type ToastVariant = VariantProps<typeof toastVariants>["variant"];
 
 export interface ToastData {
   id: string;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   variant?: ToastVariant;
   duration?: number;

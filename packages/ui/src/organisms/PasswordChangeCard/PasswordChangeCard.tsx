@@ -1,12 +1,15 @@
-import { type HTMLAttributes, type Ref, useState } from "react";
+import { type HTMLAttributes, type ReactNode, type Ref, useState } from "react";
 import { Button } from "../../atoms/Button";
 import { Lock } from "../../atoms/Icon";
 import { cn } from "../../utils";
 
-export interface PasswordChangeCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSubmit"> {
+export interface PasswordChangeCardProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSubmit" | "title"
+> {
   ref?: Ref<HTMLDivElement>;
-  title?: string;
-  subtitle?: string;
+  title?: ReactNode;
+  subtitle?: ReactNode;
   newPasswordLabel?: string;
   newPasswordPlaceholder?: string;
   confirmPasswordLabel?: string;

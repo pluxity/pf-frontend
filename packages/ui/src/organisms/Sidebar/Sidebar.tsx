@@ -57,9 +57,9 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   ariaLabelExpand?: string;
 }
 
-export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SidebarHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Header title */
-  title?: string;
+  title?: React.ReactNode;
   /** Logo element */
   logo?: React.ReactNode;
   /** Additional content (e.g., CollapseButton) */
@@ -262,7 +262,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center">
             {logo || (
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                {title?.charAt(0) || "D"}
+                {typeof title === "string" ? title.charAt(0) || "D" : "D"}
               </span>
             )}
           </div>
@@ -279,7 +279,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center">
               {logo || (
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">
-                  {title?.charAt(0) || "D"}
+                  {typeof title === "string" ? title.charAt(0) || "D" : "D"}
                 </span>
               )}
             </div>
