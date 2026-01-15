@@ -1,10 +1,10 @@
-import { Header } from "@/components/layout";
 import {
+  Header,
   OverviewPanel,
   EventLog,
   EventSnapshotPanel,
   VideoSearchButton,
-} from "@/components/sidebar";
+} from "@/components";
 
 export function TrackingPage() {
   return (

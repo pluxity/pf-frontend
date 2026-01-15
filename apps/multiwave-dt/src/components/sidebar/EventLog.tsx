@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@pf-dev/ui/molecules";
 import { User, PawPrint, Car, Info } from "lucide-react";
+import { formatTime } from "@/utils";
 
 export interface EventLogItem {
   id: string;
@@ -38,15 +39,6 @@ const eventTypeStyles = {
 } as const;
 
 export function EventLog({ logs = [], onLogClick }: EventLogProps) {
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
-
   return (
     <Card className="h-full flex flex-col bg-[#181A1D]/80 backdrop-blur-md border-slate-600/30 rounded-xl">
       <CardHeader className="py-2 border-b border-slate-600/20 text-center">
@@ -74,7 +66,7 @@ export function EventLog({ logs = [], onLogClick }: EventLogProps) {
                 );
               }
 
-              const style = eventTypeStyles[log.type] || eventTypeStyles.person;
+              const style = eventTypeStyles[log.type];
               const Icon = style.icon;
               const bgColor = log.isTrackingEnd ? "bg-slate-500/50" : style.bgColor;
               const iconBg = log.isTrackingEnd ? "bg-slate-600" : style.iconBg;

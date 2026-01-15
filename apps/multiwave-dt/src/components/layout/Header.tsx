@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Clock, Activity } from "lucide-react";
+import { formatTime } from "@/utils";
 
 export function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -10,15 +11,6 @@ export function Header() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-  };
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
