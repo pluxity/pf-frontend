@@ -110,9 +110,12 @@ export function useMqttAutoConnect(
 ) {
   const { disconnectOnUnmount = false, ...mqttOptions } = options || {};
   const mqtt = useMqtt(mqttOptions);
+  const hasTriedConnect = useRef(false);
 
   useEffect(() => {
-    if (mqtt.status === "disconnected") {
+    // 마운트 시 한 번만 연결 시도 (무한 루프 방지)
+    if (mqtt.status === "disconnected" && !hasTriedConnect.current) {
+      hasTriedConnect.current = true;
       mqtt.connect();
     }
 
@@ -121,8 +124,7 @@ export function useMqttAutoConnect(
         mqtt.disconnect();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mqtt.status, mqtt.connect, mqtt.disconnect, disconnectOnUnmount]);
 
   return mqtt;
 }

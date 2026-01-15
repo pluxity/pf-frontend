@@ -208,26 +208,18 @@ class MqttClientManager {
    * # : 다중 레벨 와일드카드
    */
   private matchTopic(pattern: string, topic: string): boolean {
-    const patternParts = pattern.split("/");
-    const topicParts = topic.split("/");
-
-    for (let i = 0; i < patternParts.length; i++) {
-      const patternPart = patternParts[i];
-
-      if (patternPart === "#") {
-        return true; // # 이후 모든 것 매칭
-      }
-
-      if (patternPart === "+") {
-        continue; // + 는 해당 레벨 아무거나 매칭
-      }
-
-      if (topicParts[i] !== patternPart) {
-        return false;
-      }
-    }
-
-    return patternParts.length === topicParts.length;
+    const regexPattern =
+      "^" +
+      pattern
+        .split("/")
+        .map((segment) => {
+          if (segment === "+") return "[^/]+";
+          if (segment === "#") return ".*";
+          return segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        })
+        .join("/") +
+      "$";
+    return new RegExp(regexPattern).test(topic);
   }
 
   /**
