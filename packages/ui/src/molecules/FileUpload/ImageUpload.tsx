@@ -1,4 +1,4 @@
-import { useCallback, type Ref } from "react";
+import { useCallback, type ReactNode, type Ref } from "react";
 import { cn } from "../../utils";
 import { UploadZone } from "./UploadZone";
 import { ThumbnailItem, type ThumbnailItemData } from "./ThumbnailItem";
@@ -13,7 +13,7 @@ export interface ImageUploadProps {
   maxFiles?: number;
   disabled?: boolean;
   className?: string;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   buttonLabel?: string;
   thumbnailSize?: "sm" | "md" | "lg";

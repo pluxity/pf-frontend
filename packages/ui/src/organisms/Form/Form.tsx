@@ -1,4 +1,4 @@
-import { type Ref } from "react";
+import { type ReactNode, type Ref } from "react";
 import { cn } from "../../utils";
 
 export interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -9,8 +9,8 @@ function Form({ className, ref, ...props }: FormProps) {
   return <form ref={ref} className={cn("space-y-6", className)} {...props} />;
 }
 
-export interface FormContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
+export interface FormContainerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: ReactNode;
   description?: string;
   ref?: Ref<HTMLDivElement>;
 }
@@ -40,8 +40,8 @@ function FormContainer({
   );
 }
 
-export interface FormSectionProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
+export interface FormSectionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: ReactNode;
   description?: string;
   ref?: Ref<HTMLDivElement>;
 }
