@@ -3,7 +3,7 @@
 
 @import "@pf-dev/ui/globals.css";
 
-/* SUIT 폰트 - multiwave-dt 전용 (오프라인 환경 지원) */
+/* SUIT 폰트 - ISR 전용 (오프라인 환경 지원) */
 @font-face {
   font-family: "SUIT";
   font-weight: 100;

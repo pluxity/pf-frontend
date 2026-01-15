@@ -6,7 +6,7 @@ export function RootLayout() {
       {/* Header */}
       <header className="h-[var(--app-header-height)] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-full items-center justify-between">
-          <div className="font-semibold">multiwave-dt</div>
+          <div className="font-semibold">ISR</div>
           <nav className="flex items-center gap-4">{/* Navigation items */}</nav>
         </div>
       </header>
