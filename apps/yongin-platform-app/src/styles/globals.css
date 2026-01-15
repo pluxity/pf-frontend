@@ -1,4 +1,22 @@
 @import "tailwindcss";
+
+@theme {
+  --breakpoint-4k: 3840px;
+}
+
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
 @import "@pf-dev/ui/globals.css";
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@theme {
+  --animate-marquee: marquee 30s linear infinite;
+}
