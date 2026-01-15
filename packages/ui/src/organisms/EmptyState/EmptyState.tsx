@@ -1,12 +1,12 @@
-import { type Ref } from "react";
+import { type ReactNode, type Ref } from "react";
 import { Inbox, Database, SearchX } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import { Button } from "../../atoms/Button";
 
-export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   variant?: "empty-inbox" | "no-data" | "no-results" | "custom";
   icon?: React.ReactNode;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   action?: {
     label: string;

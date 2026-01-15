@@ -1,11 +1,11 @@
-import { type Ref } from "react";
+import { type ReactNode, type Ref } from "react";
 import { cn } from "../../utils";
 import { Button } from "../../atoms/Button";
 
-export interface ErrorPageProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ErrorPageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   variant?: "404" | "403" | "500" | "custom";
   errorCode?: string;
-  title?: string;
+  title?: ReactNode;
   description?: string;
   illustration?: React.ReactNode;
   primaryAction?: {

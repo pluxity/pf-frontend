@@ -4,10 +4,13 @@ import { Button } from "../../atoms/Button";
 import { Input } from "../../atoms/Input";
 import { Checkbox } from "../../atoms/Checkbox";
 
-export interface LoginCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit"> {
+export interface LoginCardProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onSubmit" | "title"
+> {
   logo?: React.ReactNode;
-  title?: string;
-  subtitle?: string;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
   onLoginSubmit?: (data: { username: string; password: string; remember: boolean }) => void;
   forgotPasswordHref?: string;
   signUpHref?: string;
