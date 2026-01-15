@@ -26,7 +26,8 @@
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/map": "workspace:*",
     "cesium": "^1.121.0",
-    "lucide-react": "^0.469.0"
+    "lucide-react": "^0.469.0",
+    "mqtt": "^5.10.0"
   },
   "devDependencies": {
     "@pf-dev/eslint-config": "workspace:*",
