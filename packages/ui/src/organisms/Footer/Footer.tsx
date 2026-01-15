@@ -36,7 +36,7 @@ export interface FooterBrandProps {
 
 export interface FooterColumnProps {
   /** Column title */
-  title: string;
+  title: React.ReactNode;
   /** Column links */
   children: React.ReactNode;
   className?: string;

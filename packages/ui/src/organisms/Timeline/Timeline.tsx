@@ -1,4 +1,4 @@
-import { Children } from "react";
+import { Children, type ReactNode } from "react";
 import { cn } from "../../utils";
 
 export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -6,9 +6,9 @@ export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
 }
 
-export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TimelineItemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Item title */
-  title: string;
+  title: ReactNode;
   /** Item description */
   description?: string;
   /** Time label */

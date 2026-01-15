@@ -1,4 +1,4 @@
-import { Children, createContext, useContext } from "react";
+import { Children, createContext, useContext, type ReactNode } from "react";
 import { Check } from "../../atoms/Icon";
 import { cn } from "../../utils";
 
@@ -27,9 +27,9 @@ export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: "horizontal" | "vertical";
 }
 
-export interface StepperStepProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface StepperStepProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Step title */
-  title: string;
+  title: ReactNode;
   /** Step description */
   description?: string;
 }

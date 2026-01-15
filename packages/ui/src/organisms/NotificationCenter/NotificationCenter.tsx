@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { cn } from "../../utils";
 
 interface NotificationCenterContextValue {
@@ -46,13 +46,16 @@ export interface NotificationCenterMarkAllReadProps {
   className?: string;
 }
 
-export interface NotificationCenterItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface NotificationCenterItemProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "title"
+> {
   /** Notification ID */
   id: string;
   /** Icon element */
   icon?: React.ReactNode;
   /** Notification title */
-  title: string;
+  title: ReactNode;
   /** Notification description */
   description?: string;
   /** Timestamp text */
