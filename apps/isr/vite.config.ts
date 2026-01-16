@@ -47,6 +47,18 @@ export default defineConfig(({ mode }) => {
             });
           },
         },
+        // MinIO 3D Tiles 프록시 (CORS 우회)
+        "/tiles": {
+          target: "http://192.168.10.181:8405",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/tiles/, "/playground"),
+        },
+        // Potree 포인트클라우드 프록시
+        "/potree-data": {
+          target: "http://dev.pluxity.com",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/potree-data/, "/3d-tiles/pointclouds"),
+        },
       },
     },
     build: {

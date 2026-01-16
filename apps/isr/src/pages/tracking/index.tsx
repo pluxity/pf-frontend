@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Header,
   OverviewPanel,
@@ -7,6 +8,7 @@ import {
 } from "@/components";
 import { MqttDebugPanel } from "@/components/debug";
 import { useMqttEventLog, MQTT_EVENT_TOPIC } from "@/mqtt";
+import { CesiumViewer } from "@/cesium";
 
 export function TrackingPage() {
   // MQTT 이벤트 로그 연동
@@ -14,15 +16,18 @@ export function TrackingPage() {
     topic: MQTT_EVENT_TOPIC,
   });
 
+  // 지구본(지형) 표시 상태 (기본 off)
+  const [showGlobe, setShowGlobe] = useState(false);
+
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-slate-900">
-      {/* 지도 영역 - Placeholder */}
-      <div className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-slate-800">
-        <div className="text-slate-500 text-sm">지도 영역 (추후 구현)</div>
+      {/* 3D Tiles 지형 뷰어 */}
+      <div className="fixed inset-0 w-screen h-screen">
+        <CesiumViewer heightOffset={0} showGlobe={showGlobe} />
       </div>
 
       {/* 헤더 */}
-      <Header />
+      <Header showGlobe={showGlobe} onToggleGlobe={() => setShowGlobe(!showGlobe)} />
 
       {/* 좌측 사이드바 */}
       <div className="absolute left-4 top-[4.5rem] bottom-4 w-96 z-30 flex flex-col gap-3">
