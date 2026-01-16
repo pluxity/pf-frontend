@@ -1,5 +1,6 @@
 import { cn } from "@pf-dev/ui";
 import { DateTimeProps } from "./types";
+import { useEffect, useState } from "react";
 
 const formatDate = (date: Date, format: string) => {
   return format
@@ -11,8 +12,20 @@ const formatDate = (date: Date, format: string) => {
     .replace("ss", String(date.getSeconds()).padStart(2, "0"));
 };
 
-export function DateTime({ date, format = "YYYY년 MM월 DD일 HH:mm:ss", className }: DateTimeProps) {
-  if (!date) return null;
+export function DateTime({ format = "YYYY년 MM월 DD일 HH:mm:ss", className }: DateTimeProps) {
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
-  return <span className={cn("text-sm 4k:text-4xl", className)}>{formatDate(date, format)}</span>;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={cn("text-sm 4k:text-4xl", className)}>
+      {formatDate(currentDateTime, format)}
+    </span>
+  );
 }
