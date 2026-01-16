@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import { Clock, Activity } from "lucide-react";
+import { Clock, Activity, Map, MapPinOff } from "lucide-react";
 import { formatTime } from "@/utils";
 
-export function Header() {
+interface HeaderProps {
+  showGlobe?: boolean;
+  onToggleGlobe?: () => void;
+}
+
+export function Header({ showGlobe, onToggleGlobe }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -46,7 +51,7 @@ export function Header() {
           <span className="text-sm text-gray-500">v2.23</span>
         </div>
 
-        {/* 우측: 시간 표시 */}
+        {/* 우측: 시간 표시 + 지형 토글 */}
         <div className="flex items-center gap-2 pointer-events-auto">
           <div className="flex items-center gap-2.5 bg-[#2B2F36]/10 backdrop-brightness-60 rounded-xl px-4 py-2 shadow-lg pointer-events-auto h-10">
             <span className="text-xs text-white/90">
@@ -63,6 +68,23 @@ export function Header() {
             <button className="p-1 hover:bg-white/10 rounded transition-colors">
               <Activity className="h-3.5 w-3.5 text-green-400" />
             </button>
+            {onToggleGlobe && (
+              <>
+                <div className="h-3 w-px bg-white/20" />
+                <button
+                  onClick={onToggleGlobe}
+                  className="flex items-center gap-1.5 px-2 py-1 hover:bg-white/10 rounded transition-colors"
+                  title={showGlobe ? "지형 숨기기" : "지형 표시"}
+                >
+                  {showGlobe ? (
+                    <Map className="h-3.5 w-3.5 text-cyan-400" />
+                  ) : (
+                    <MapPinOff className="h-3.5 w-3.5 text-gray-400" />
+                  )}
+                  <span className="text-xs text-white/80">{showGlobe ? "지형" : "지형"}</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

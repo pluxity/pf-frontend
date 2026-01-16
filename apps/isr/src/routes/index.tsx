@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
-import { TrackingPage } from "@/pages";
+import { TrackingPage, DeckGLViewerPage, PotreeViewerPage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -13,8 +13,14 @@ function NotFoundPage() {
 export function AppRoutes() {
   return (
     <Routes>
-      {/* 메인 트래킹 페이지 - 전체 화면 레이아웃 */}
+      {/* 메인 트래킹 페이지 (Cesium) */}
       <Route index element={<TrackingPage />} />
+
+      {/* deck.gl 뷰어 페이지 */}
+      <Route path="deckgl" element={<DeckGLViewerPage />} />
+
+      {/* Potree 뷰어 페이지 */}
+      <Route path="potree" element={<PotreeViewerPage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />

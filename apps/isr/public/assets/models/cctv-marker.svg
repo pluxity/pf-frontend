@@ -1,0 +1,83 @@
+<svg width="48" height="64" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 마커 핀 그라데이션 (위에서 아래로 밝은 파란색 → 어두운 파란색) -->
+    <linearGradient id="markerGradient" x1="24" y1="2" x2="24" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4aff4a"/>
+      <stop offset="50%" stop-color="#0057FF"/>
+      <stop offset="100%" stop-color="#003DA5"/>
+    </linearGradient>
+
+    <!-- 내부 원형 배경 그라데이션 -->
+    <radialGradient id="circleGradient" cx="24" cy="21" r="12" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F0F4FF"/>
+      <stop offset="100%" stop-color="#E0E8FF"/>
+    </radialGradient>
+
+    <!-- 카메라 본체 그라데이션 -->
+    <linearGradient id="cameraGradient" x1="18" y1="17" x2="26" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0057FF"/>
+      <stop offset="100%" stop-color="#003DA5"/>
+    </linearGradient>
+
+    <!-- 렌즈 그라데이션 -->
+    <radialGradient id="lensGradient" cx="22" cy="21" r="2.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A73E8"/>
+      <stop offset="60%" stop-color="#003DA5"/>
+      <stop offset="100%" stop-color="#002060"/>
+    </radialGradient>
+
+    <!-- 그림자 필터 -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.4"/>
+    </filter>
+
+    <!-- 내부 하이라이트 효과 -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 마커 핀 모양 -->
+  <g filter="url(#shadow)">
+    <!-- 외곽선 (더 어두운 테두리) -->
+    <path d="M24 2C13.5066 2 5 10.5066 5 21C5 27.5 10 35 24 54C38 35 43 27.5 43 21C43 10.5066 34.4934 2 24 2Z"
+          fill="url(#markerGradient)"
+          stroke="rgba(52,88,161,0.466)"
+          stroke-width=".5"/>
+
+
+    <!-- 내부 원형 배경 -->
+    <circle cx="24" cy="21" r="12" fill="url(#circleGradient)" filter="url(#glow)"/>
+
+    <!-- 원형 테두리 -->
+    <circle cx="24" cy="21" r="12" fill="none" stroke="#0057FF" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- CCTV 아이콘 -->
+    <g transform="translate(24, 21)">
+      <!-- 카메라 본체 -->
+      <path d="M-6 -4 L-6 4 L2 4 L2 -4 Z" fill="url(#cameraGradient)"/>
+
+      <!-- 카메라 렌즈 -->
+      <circle cx="-2" cy="0" r="2.5" fill="url(#lensGradient)"/>
+
+      <!-- 렌즈 반사광 -->
+      <circle cx="-2.5" cy="-0.5" r="1" fill="#FFFFFF" opacity="0.7"/>
+      <circle cx="-2" cy="0" r="1.2" fill="#4A9EFF" opacity="0.3"/>
+
+      <!-- 카메라 브래킷 (입체감) -->
+      <path d="M2 -2 L6 -4 L6 4 L2 2 Z" fill="#0057FF" opacity="0.9"/>
+      <path d="M2 -2 L6 -4 L6 -3 L2 -1 Z" fill="#6BB0FF" opacity="0.5"/>
+
+      <!-- 카메라 마운트 -->
+      <rect x="6" y="-1" width="2" height="2" fill="#003DA5" rx="0.5"/>
+
+      <!-- 본체 하이라이트 -->
+      <path d="M-5.5 -3.5 L-5.5 -1" stroke="#6BB0FF" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+    </g>
+  </g>
+</svg>
