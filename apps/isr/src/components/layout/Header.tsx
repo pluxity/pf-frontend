@@ -73,7 +73,7 @@ export function Header({ showGlobe, onToggleGlobe }: HeaderProps) {
                 <div className="h-3 w-px bg-white/20" />
                 <button
                   onClick={onToggleGlobe}
-                  className="flex items-center gap-1.5 px-2 py-1 hover:bg-white/10 rounded transition-colors"
+                  className="p-1 hover:bg-white/10 rounded transition-colors"
                   title={showGlobe ? "지형 숨기기" : "지형 표시"}
                 >
                   {showGlobe ? (
@@ -81,7 +81,6 @@ export function Header({ showGlobe, onToggleGlobe }: HeaderProps) {
                   ) : (
                     <MapPinOff className="h-3.5 w-3.5 text-gray-400" />
                   )}
-                  <span className="text-xs text-white/80">{showGlobe ? "지형" : "지형"}</span>
                 </button>
               </>
             )}

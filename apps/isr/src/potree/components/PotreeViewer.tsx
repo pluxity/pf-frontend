@@ -17,7 +17,7 @@ export function PotreeViewer({
   const [isLoading, setIsLoading] = useState(true);
   const [hoverCoord, setHoverCoord] = useState<GISCoordinate | null>(null);
   const [pointCount, setPointCount] = useState(0);
-  const [offset, setOffset] = useState<THREE.Vector3>(new THREE.Vector3());
+  const [offset, setOffset] = useState<THREE.Vector3>(() => new THREE.Vector3());
 
   const handlePointCloudLoaded = useCallback((loadedOffset: THREE.Vector3) => {
     setOffset(loadedOffset.clone());

@@ -7,20 +7,7 @@ interface CoordinateDisplayProps {
 
 export function CoordinateDisplay({ coordinate, pointCount }: CoordinateDisplayProps) {
   return (
-    <div
-      style={{
-        position: "absolute",
-        bottom: "16px",
-        left: "16px",
-        padding: "12px 16px",
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        color: "white",
-        borderRadius: "8px",
-        fontFamily: "monospace",
-        fontSize: "13px",
-        zIndex: 5,
-      }}
-    >
+    <div className="absolute bottom-4 left-4 px-4 py-3 bg-black/70 text-white rounded-lg font-mono text-[13px] z-[5]">
       {coordinate ? (
         <div>
           <div>X: {coordinate.x.toFixed(3)}</div>
@@ -31,13 +18,7 @@ export function CoordinateDisplay({ coordinate, pointCount }: CoordinateDisplayP
         <div>Hover over point cloud</div>
       )}
       {pointCount !== undefined && (
-        <div
-          style={{
-            marginTop: "8px",
-            borderTop: "1px solid rgba(255,255,255,0.3)",
-            paddingTop: "8px",
-          }}
-        >
+        <div className="mt-2 border-t border-white/30 pt-2">
           Points: {pointCount.toLocaleString()}
         </div>
       )}

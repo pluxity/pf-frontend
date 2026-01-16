@@ -60,13 +60,11 @@ export function applyPotreeCompatibleMaterials(
     const mesh = child as THREE.Mesh;
     const originalMaterial = mesh.material as THREE.MeshPhysicalMaterial;
 
-    if (originalMaterial.map && originalMaterial.map.image) {
-      mesh.material = createPotreeCompatibleMaterial(originalMaterial);
+    mesh.material = createPotreeCompatibleMaterial(originalMaterial);
 
-      if (outlineColor !== undefined) {
-        const outlineMesh = createOutlineMesh(mesh.geometry, outlineColor, outlineScale);
-        mesh.add(outlineMesh);
-      }
+    if (outlineColor !== undefined) {
+      const outlineMesh = createOutlineMesh(mesh.geometry, outlineColor, outlineScale);
+      mesh.add(outlineMesh);
     }
   });
 }

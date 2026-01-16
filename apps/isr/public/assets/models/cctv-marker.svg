@@ -1,6 +1,6 @@
 <svg width="48" height="64" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- 마커 핀 그라데이션 (위에서 아래로 밝은 파란색 → 어두운 파란색) -->
+    <!-- 마커 핀 그라데이션 (위에서 아래로 녹색 → 파란색) -->
     <linearGradient id="markerGradient" x1="24" y1="2" x2="24" y2="54" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#4aff4a"/>
       <stop offset="50%" stop-color="#0057FF"/>

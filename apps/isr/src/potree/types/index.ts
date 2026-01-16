@@ -1,6 +1,3 @@
-import type * as THREE from "three";
-import type { PointCloudOctree } from "potree-core";
-
 export interface GISCoordinate {
   x: number;
   y: number;
@@ -62,20 +59,4 @@ export interface PotreeViewerProps {
   showCoordinates?: boolean;
   showPointCount?: boolean;
   onError?: (error: Error) => void;
-}
-
-export interface PotreeSceneState {
-  scene: THREE.Scene | null;
-  camera: THREE.PerspectiveCamera | null;
-  renderer: THREE.WebGLRenderer | null;
-  controls: THREE.EventDispatcher | null;
-  pointCloud: PointCloudOctree | null;
-  offset: THREE.Vector3;
-}
-
-export interface ViewerState {
-  isLoading: boolean;
-  error: Error | null;
-  pointCount: number;
-  hoverCoord: GISCoordinate | null;
 }

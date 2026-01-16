@@ -197,7 +197,7 @@ export function usePotreeScene({
 
       const direction = raycaster.ray.direction.clone();
       const distance = camera.position.distanceTo(controls.target);
-      const zoomAmount = distance * CONTROLS.ZOOM_SPEED * (event.deltaY > 0 ? -1 : 1);
+      const zoomAmount = distance * CONTROLS.ZOOM_SPEED * (event.deltaY > 0 ? 1 : -1);
       const move = direction.multiplyScalar(zoomAmount);
 
       camera.position.add(move);
