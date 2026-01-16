@@ -1,9 +1,20 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button, User } from "@pf-dev/ui";
 import { NoticeMarquee } from "../components/NoticeMarquee";
+import { DateTime } from "../components/DateTime";
+import { useEffect, useState } from "react";
 
 export function RootLayout() {
   const navigate = useNavigate();
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const currentDate = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(currentDate);
+  }, []);
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -22,7 +33,8 @@ export function RootLayout() {
               용인 플랫폼 시티 1공구 스마트 건설
             </div>
           </div>
-          <nav className="flex-1 flex justify-end">
+          <nav className="flex-1 flex justify-end items-center gap-4 4k:gap-10">
+            <DateTime date={currentDateTime} />
             <Button
               variant="ghost"
               size="icon"
