@@ -102,7 +102,14 @@ export function WorkStatusPage() {
   };
 
   const handleExport = () => {
-    gridRef.current?.api.exportDataAsCsv();
+    const date = new Date();
+    const dateString = date.toISOString().split("T")[0];
+    const fileName = `출역현황_${dateString}.csv`;
+
+    gridRef.current?.api.exportDataAsCsv({
+      fileName: fileName,
+      suppressQuotes: true,
+    });
   };
 
   const handleCellValueChanged = (event: CellValueChangedEvent<WorkStatusData>) => {
