@@ -15,6 +15,7 @@ import {
   ImageMaterialProperty,
   Math as CesiumMath,
   type Entity,
+  type Viewer,
 } from "cesium";
 import { useMapStore } from "./mapStore";
 import type {
@@ -164,6 +165,49 @@ function resolveVisibility(meta?: FeatureMeta, visual?: FeatureVisual) {
   return true;
 }
 
+interface InitialEntityStateOptions {
+  orientation?: import("cesium").Quaternion;
+  meta?: FeatureMeta;
+  visual?: FeatureVisual;
+}
+
+/**
+ * Entity 초기 상태 적용 (orientation, visibility, visual)
+ * addFeature/addFeatures에서 공통으로 사용
+ */
+function applyInitialEntityState(entity: Entity, options: InitialEntityStateOptions): boolean {
+  const { orientation, meta, visual } = options;
+
+  if (orientation) {
+    entity.orientation = new ConstantProperty(orientation);
+  }
+
+  const resolvedShow = resolveVisibility(meta, visual);
+  entity.show = resolvedShow;
+  applyVisual(entity, visual);
+
+  return resolvedShow;
+}
+
+/**
+ * Entity와 Viewer 유효성 검사 후 액션 실행
+ * 동적 업데이트 메서드에서 공통으로 사용
+ */
+function withEntityAndViewer(
+  getFeature: (id: string) => Entity | null,
+  id: string,
+  action: (entity: Entity, viewer: Viewer) => void
+): boolean {
+  const viewer = useMapStore.getState().viewer;
+  const entity = getFeature(id);
+
+  if (!entity || !viewer || viewer.isDestroyed()) return false;
+
+  action(entity, viewer);
+  viewer.scene.requestRender();
+  return true;
+}
+
 // ============================================================================
 // Store
 // ============================================================================
@@ -202,14 +246,11 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
       properties: options.properties as unknown as Entity["properties"],
     });
 
-    // 초기 orientation 설정
-    if (options.orientation) {
-      entity.orientation = new ConstantProperty(options.orientation);
-    }
-
-    const resolvedShow = resolveVisibility(meta, options.visual);
-    entity.show = resolvedShow;
-    applyVisual(entity, options.visual);
+    const resolvedShow = applyInitialEntityState(entity, {
+      orientation: options.orientation,
+      meta,
+      visual: options.visual,
+    });
 
     set((state) => {
       const newEntities = new Map(state.entities);
@@ -340,14 +381,11 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
         properties: feature.properties as unknown as Entity["properties"],
       });
 
-      // 초기 orientation 설정
-      if (feature.orientation) {
-        entity.orientation = new ConstantProperty(feature.orientation);
-      }
-
-      const resolvedShow = resolveVisibility(meta, feature.visual);
-      entity.show = resolvedShow;
-      applyVisual(entity, feature.visual);
+      const resolvedShow = applyInitialEntityState(entity, {
+        orientation: feature.orientation,
+        meta,
+        visual: feature.visual,
+      });
 
       newEntities.set(feature.id, entity);
       newMeta.set(feature.id, { ...(meta ?? {}), visible: resolvedShow });
@@ -503,56 +541,32 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
 
   // ========== Dynamic Position/Orientation ==========
 
-  setDynamicPosition: (id, callback) => {
-    const viewer = useMapStore.getState().viewer;
-    const entity = get().getFeature(id);
+  setDynamicPosition: (id, callback) =>
+    withEntityAndViewer(get().getFeature, id, (entity) => {
+      // CallbackProperty는 런타임에서 position으로 사용 가능하나 타입 정의가 불완전함
+      entity.position = new CallbackProperty(callback, false) as unknown as typeof entity.position;
+    }),
 
-    if (!entity || !viewer || viewer.isDestroyed()) return false;
+  setDynamicOrientation: (id, callback) =>
+    withEntityAndViewer(get().getFeature, id, (entity) => {
+      entity.orientation = new CallbackProperty(callback, false);
+    }),
 
-    // CallbackProperty는 런타임에서 position으로 사용 가능하나 타입 정의가 불완전함
-    entity.position = new CallbackProperty(callback, false) as unknown as typeof entity.position;
-    viewer.scene.requestRender();
-    return true;
-  },
+  clearDynamicPosition: (id) =>
+    withEntityAndViewer(get().getFeature, id, (entity) => {
+      const currentPosition = entity.position?.getValue(JulianDate.now());
+      if (currentPosition) {
+        entity.position = new ConstantPositionProperty(currentPosition);
+      }
+    }),
 
-  setDynamicOrientation: (id, callback) => {
-    const viewer = useMapStore.getState().viewer;
-    const entity = get().getFeature(id);
-
-    if (!entity || !viewer || viewer.isDestroyed()) return false;
-
-    entity.orientation = new CallbackProperty(callback, false);
-    viewer.scene.requestRender();
-    return true;
-  },
-
-  clearDynamicPosition: (id) => {
-    const viewer = useMapStore.getState().viewer;
-    const entity = get().getFeature(id);
-
-    if (!entity || !viewer || viewer.isDestroyed()) return false;
-
-    const currentPosition = entity.position?.getValue(JulianDate.now());
-    if (currentPosition) {
-      entity.position = new ConstantPositionProperty(currentPosition);
-    }
-    viewer.scene.requestRender();
-    return true;
-  },
-
-  clearDynamicOrientation: (id) => {
-    const viewer = useMapStore.getState().viewer;
-    const entity = get().getFeature(id);
-
-    if (!entity || !viewer || viewer.isDestroyed()) return false;
-
-    const currentOrientation = entity.orientation?.getValue(JulianDate.now());
-    if (currentOrientation) {
-      entity.orientation = new ConstantProperty(currentOrientation);
-    }
-    viewer.scene.requestRender();
-    return true;
-  },
+  clearDynamicOrientation: (id) =>
+    withEntityAndViewer(get().getFeature, id, (entity) => {
+      const currentOrientation = entity.orientation?.getValue(JulianDate.now());
+      if (currentOrientation) {
+        entity.orientation = new ConstantProperty(currentOrientation);
+      }
+    }),
 }));
 
 export const featureStore = useFeatureStore;
