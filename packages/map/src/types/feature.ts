@@ -1,4 +1,5 @@
 import type {
+  Cartesian3,
   Color,
   Entity,
   HeightReference,
@@ -17,6 +18,10 @@ export interface Coordinate {
   latitude: number;
   height?: number;
 }
+
+// 동적 위치/방향 콜백 타입
+export type PositionCallback = () => Cartesian3;
+export type OrientationCallback = () => Quaternion;
 
 // ============================================================================
 // Feature
@@ -55,6 +60,7 @@ export interface ModelVisual extends BaseVisual {
   color?: Color;
   silhouetteColor?: Color;
   silhouetteSize?: number;
+  runAnimations?: boolean;
 }
 
 export interface PointVisual extends BaseVisual {
@@ -95,6 +101,7 @@ export interface Feature {
   properties?: Record<string, unknown>;
   visual?: FeatureVisual;
   meta?: FeatureMeta;
+  orientation?: Quaternion;
 }
 
 export interface FeatureOptions {
@@ -102,6 +109,7 @@ export interface FeatureOptions {
   properties?: Record<string, unknown>;
   visual?: FeatureVisual;
   meta?: FeatureMeta;
+  orientation?: Quaternion;
 }
 
 export interface FeaturePatch {
@@ -164,4 +172,10 @@ export interface FeatureActions {
   setFeatureState: (id: string, state: string) => void;
   getFeatureState: (id: string) => string | undefined;
   clearFeatureState: (id: string) => void;
+
+  // Dynamic Position/Orientation (CallbackProperty 기반)
+  setDynamicPosition: (id: string, callback: PositionCallback) => boolean;
+  setDynamicOrientation: (id: string, callback: OrientationCallback) => boolean;
+  clearDynamicPosition: (id: string) => boolean;
+  clearDynamicOrientation: (id: string) => boolean;
 }
