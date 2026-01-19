@@ -132,7 +132,11 @@ function ControlBar({
         </button>
       </div>
       <div className="flex items-center gap-2">
-        <button className="p-2 hover:bg-white/20 rounded-full transition-colors" title="설정">
+        <button
+          className="p-2 rounded-full transition-colors opacity-50 cursor-not-allowed"
+          title="설정 (구현 예정)"
+          disabled
+        >
           <Settings className="w-5 h-5 text-white" />
         </button>
         <button
@@ -272,11 +276,10 @@ export function CCTVViewerPage() {
 
     if (!document.fullscreenElement) {
       containerRef.current.requestFullscreen();
-      setIsFullscreen(true);
     } else {
       document.exitFullscreen();
-      setIsFullscreen(false);
     }
+    // 상태 업데이트는 fullscreenchange 이벤트 리스너에서 처리
   }, []);
 
   useEffect(() => {
@@ -323,19 +326,23 @@ export function CCTVViewerPage() {
 
                 <StatusIndicator status={status} />
 
-                {error && (
-                  <div className="absolute top-4 left-4 bg-red-500/80 text-white text-xs px-2 py-1 rounded">
-                    {error}
-                  </div>
-                )}
+                {/* 좌측 상단: LIVE 표시 또는 에러 메시지 */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                  {status === "connected" && !error && (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                      <span className="text-xs text-white font-medium">LIVE</span>
+                    </div>
+                  )}
+                  {error && (
+                    <div className="bg-red-500/80 text-white text-xs px-2 py-1 rounded">
+                      {error}
+                    </div>
+                  )}
+                </div>
 
                 <div className="absolute top-4 right-4 bg-slate-800/80 text-white text-xs px-2 py-1 rounded">
                   {selectedCamera.name}
-                </div>
-
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-xs text-white font-medium">LIVE</span>
                 </div>
 
                 <ControlBar

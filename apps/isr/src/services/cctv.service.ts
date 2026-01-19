@@ -1,7 +1,14 @@
 import type { CCTVListResponse } from "./types/cctv";
 
-const MEDIA_API_URL = import.meta.env.VITE_MEDIA_API_URL || "http://192.168.10.181:9997";
-const WHEP_API_URL = import.meta.env.VITE_WHEP_API_URL || "http://192.168.10.181:8889";
+// 환경변수 필수 - .env 파일에 설정 필요
+// VITE_MEDIA_API_URL: MediaMTX API URL (예: http://localhost:9997)
+// VITE_WHEP_API_URL: WHEP 스트리밍 URL (예: http://localhost:8889)
+const MEDIA_API_URL = import.meta.env.VITE_MEDIA_API_URL || "";
+const WHEP_API_URL = import.meta.env.VITE_WHEP_API_URL || "";
+
+if (!MEDIA_API_URL || !WHEP_API_URL) {
+  console.warn("[CCTV] VITE_MEDIA_API_URL 또는 VITE_WHEP_API_URL 환경변수가 설정되지 않았습니다.");
+}
 
 export const cctvService = {
   async fetchList(): Promise<CCTVListResponse> {

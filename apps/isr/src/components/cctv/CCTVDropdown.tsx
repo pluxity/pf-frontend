@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Camera, ChevronDown, Loader2 } from "lucide-react";
+import { Camera, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { cctvService } from "../../services";
 import type { CCTVStream } from "../../services/types";
 import { CCTVModal } from "./CCTVModal";
@@ -7,27 +7,30 @@ import { CCTVModal } from "./CCTVModal";
 export function CCTVDropdown() {
   const [cctvList, setCCTVList] = useState<CCTVStream[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCCTVName, setSelectedCCTVName] = useState<string | undefined>();
 
   const fetchCCTVList = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await cctvService.fetchList();
       setCCTVList(response.items);
     } catch (err) {
       console.error("Failed to fetch CCTV list:", err);
+      setError("목록을 불러오는데 실패했습니다");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (dropdownOpen && cctvList.length === 0) {
+    if (dropdownOpen && cctvList.length === 0 && !error) {
       fetchCCTVList();
     }
-  }, [dropdownOpen, cctvList.length, fetchCCTVList]);
+  }, [dropdownOpen, cctvList.length, error, fetchCCTVList]);
 
   const handleCCTVSelect = (cctvName: string) => {
     setSelectedCCTVName(cctvName);
@@ -60,6 +63,17 @@ export function CCTVDropdown() {
               {loading ? (
                 <div className="flex items-center justify-center py-6">
                   <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
+                </div>
+              ) : error ? (
+                <div className="flex flex-col items-center justify-center py-6 gap-2">
+                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <span className="text-sm text-red-400">{error}</span>
+                  <button
+                    onClick={fetchCCTVList}
+                    className="text-xs text-slate-400 hover:text-white underline"
+                  >
+                    다시 시도
+                  </button>
                 </div>
               ) : cctvList.length === 0 ? (
                 <div className="text-center py-6 text-sm text-slate-400">

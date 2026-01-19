@@ -11,6 +11,10 @@ import { MqttDebugPanel } from "@/components/debug";
 import { useMqttEventLog, MQTT_EVENT_TOPIC } from "@/mqtt";
 import { CesiumViewer } from "@/cesium";
 
+// 3D Tiles 고도 보정값 (미터 단위)
+// 지형 데이터와 3D Tiles 간의 고도 차이를 보정하기 위한 값
+const TILESET_HEIGHT_OFFSET = -68;
+
 export function TrackingPage() {
   // MQTT 이벤트 로그 연동
   const { logs } = useMqttEventLog({
@@ -24,7 +28,7 @@ export function TrackingPage() {
     <div className="relative h-screen w-screen overflow-hidden bg-slate-900">
       {/* 3D Tiles 지형 뷰어 */}
       <div className="fixed inset-0 w-screen h-screen">
-        <CesiumViewer heightOffset={-68} showGlobe={showGlobe} />
+        <CesiumViewer heightOffset={TILESET_HEIGHT_OFFSET} showGlobe={showGlobe} />
       </div>
 
       {/* 헤더 */}

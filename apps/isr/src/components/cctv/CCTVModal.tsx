@@ -142,11 +142,10 @@ export function CCTVModal({ open, onOpenChange, initialCCTVName }: CCTVModalProp
 
     if (!document.fullscreenElement) {
       containerRef.current.requestFullscreen();
-      setIsFullscreen(true);
     } else {
       document.exitFullscreen();
-      setIsFullscreen(false);
     }
+    // 상태 업데이트는 fullscreenchange 이벤트 리스너에서 처리
   }, []);
 
   useEffect(() => {
@@ -242,16 +241,19 @@ export function CCTVModal({ open, onOpenChange, initialCCTVName }: CCTVModalProp
 
                       <StatusIndicator status={status} />
 
-                      {streamError && (
-                        <div className="absolute top-4 left-4 bg-red-500/80 text-white text-xs px-2 py-1 rounded">
-                          {streamError}
-                        </div>
-                      )}
-
-                      {/* LIVE 표시 */}
-                      <div className="absolute top-4 left-4 flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                        <span className="text-xs text-white font-medium">LIVE</span>
+                      {/* 좌측 상단: LIVE 표시 또는 에러 메시지 */}
+                      <div className="absolute top-4 left-4 flex flex-col gap-2">
+                        {status === "connected" && !streamError && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                            <span className="text-xs text-white font-medium">LIVE</span>
+                          </div>
+                        )}
+                        {streamError && (
+                          <div className="bg-red-500/80 text-white text-xs px-2 py-1 rounded">
+                            {streamError}
+                          </div>
+                        )}
                       </div>
 
                       {/* 카메라 이름 */}
