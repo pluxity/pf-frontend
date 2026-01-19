@@ -3,7 +3,15 @@ import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import type { ColDef, CellValueChangedEvent } from "ag-grid-community";
 import { useRef, useState, useMemo } from "react";
-import { Button, SearchBar } from "@pf-dev/ui";
+import {
+  Button,
+  SearchBar,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@pf-dev/ui";
 import type { WorkStatusData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 
@@ -159,15 +167,16 @@ export function WorkStatusPage() {
         <div className="flex gap-4">
           <div className="flex-1">
             <label className="mb-1 block text-sm font-medium text-gray-700">구분</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="all">전체</option>
-              <option value="device">단말기명</option>
-              <option value="date">일자</option>
-            </select>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Select an option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                <SelectItem value="device">단말기명</SelectItem>
+                <SelectItem value="date">일자</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex-2">
