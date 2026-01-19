@@ -1,4 +1,4 @@
-export interface WorkStatusData {
+export interface WorkstatusData {
   id: string;
   inputDate: string;
   deviceName: string;

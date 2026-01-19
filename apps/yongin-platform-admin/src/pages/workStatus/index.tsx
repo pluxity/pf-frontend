@@ -1,8 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
-import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import type { ColDef, CellValueChangedEvent } from "ag-grid-community";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import {
   Button,
   SearchBar,
@@ -12,44 +11,30 @@ import {
   SelectContent,
   SelectItem,
 } from "@pf-dev/ui";
-import type { WorkStatusData } from "./types";
+import type { WorkstatusData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
+import { getWorkStatus } from "./hooks/useWorkstatus";
 
-ModuleRegistry.registerModules([AllCommunityModule]);
-
-const MOCK_DATA: WorkStatusData[] = [
-  {
-    id: "1",
-    inputDate: "2026-01-07",
-    deviceName: "단말기1",
-    todayContent: "토공 작업 진행",
-  },
-  {
-    id: "2",
-    inputDate: "2026-01-07",
-    deviceName: "단말기2",
-    todayContent: "도로공 작업 완료",
-  },
-  {
-    id: "3",
-    inputDate: "2026-01-07",
-    deviceName: "단말기3",
-    todayContent: "비계착 설치 중",
-  },
-];
-
-export function WorkStatusPage() {
-  const gridRef = useRef<AgGridReactType<WorkStatusData>>(null);
+export function WorkstatusPage() {
+  const gridRef = useRef<AgGridReactType<WorkstatusData>>(null);
   const { toast } = useToastContext();
-  const [rowData, setRowData] = useState<WorkStatusData[]>(MOCK_DATA);
+  const [allData, setAllData] = useState<WorkstatusData[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [editedRows, setEditedRows] = useState<Set<string>>(new Set());
 
-  const columnDefs = useMemo<ColDef<WorkStatusData>[]>(
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await getWorkStatus();
+      setAllData(data);
+    };
+    loadData();
+  }, []);
+
+  const columnDefs = useMemo<ColDef<WorkstatusData>[]>(
     () => [
       {
         headerName: "입력일자",
@@ -83,7 +68,7 @@ export function WorkStatusPage() {
   );
 
   const handleSearch = () => {
-    const filtered = MOCK_DATA.filter((row) => {
+    const filtered = allData.filter((row) => {
       const filterSearch =
         search === "" ||
         (category === "all"
@@ -98,7 +83,7 @@ export function WorkStatusPage() {
       return filterSearch && filterDate;
     });
 
-    setRowData(filtered);
+    setAllData(filtered);
   };
 
   const handleExport = () => {
@@ -112,34 +97,27 @@ export function WorkStatusPage() {
     });
   };
 
-  const handleCellValueChanged = (event: CellValueChangedEvent<WorkStatusData>) => {
+  const handleCellValueChanged = (event: CellValueChangedEvent<WorkstatusData>) => {
     const rowId = event.data.id;
     setEditedRows((prev) => new Set(prev).add(rowId));
-
-    console.log("Cell value changed:", {
-      oldValue: event.oldValue,
-      newValue: event.newValue,
-      field: event.colDef.field,
-      data: event.data,
-    });
   };
 
   const handleCreate = () => {
     const date = new Date();
     const today = date.toISOString().split("T")[0];
     const newId = uuidv4();
-    const newRow: WorkStatusData = {
+    const newRow: WorkstatusData = {
       id: newId,
       inputDate: today || "",
       deviceName: "",
       todayContent: "",
     };
-    setRowData([newRow, ...rowData]);
+    setAllData([newRow, ...allData]);
     setEditedRows((prev) => new Set(prev).add(newId));
   };
 
   const handleSave = async () => {
-    const dataToSave = rowData.filter((row) => editedRows.has(row.id));
+    const dataToSave = allData.filter((row) => editedRows.has(row.id));
 
     if (dataToSave.length === 0) {
       toast.error("저장할 변경 사항이 없습니다.");
@@ -147,7 +125,6 @@ export function WorkStatusPage() {
     }
 
     try {
-      console.log("Saving data:", dataToSave);
       toast.success(`${dataToSave.length}건 저장되었습니다.`);
       setEditedRows(new Set());
     } catch (error) {
@@ -163,8 +140,8 @@ export function WorkStatusPage() {
       return;
     }
     const selectedIds = selectedRows.map((row) => row.id);
-    const newData = rowData.filter((row) => !selectedIds.includes(row.id));
-    setRowData(newData);
+    const newData = allData.filter((row) => !selectedIds.includes(row.id));
+    setAllData(newData);
   };
 
   return (
@@ -240,7 +217,7 @@ export function WorkStatusPage() {
       <div className="flex-1">
         <AgGridReact
           ref={gridRef}
-          rowData={rowData}
+          rowData={allData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           animateRows={true}

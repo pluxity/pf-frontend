@@ -8,4 +8,4 @@ export { CrudListDetailPage } from "./examples/crud-list/detail";
 export { UserAccountsPage } from "./accounts/users";
 export { PermissionsPage } from "./accounts/permissions";
 export { RolesPage } from "./accounts/roles";
-export { WorkStatusPage } from "./workStatus";
+export { WorkstatusPage } from "./workstatus";

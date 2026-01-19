@@ -30,8 +30,8 @@ const PermissionsPage = lazy(() =>
 const RolesPage = lazy(() =>
   import("@/pages/accounts/roles").then((m) => ({ default: m.RolesPage }))
 );
-const WorkStatusPage = lazy(() =>
-  import("@/pages/workStatus").then((m) => ({ default: m.WorkStatusPage }))
+const WorkstatusPage = lazy(() =>
+  import("@/pages/workstatus").then((m) => ({ default: m.WorkstatusPage }))
 );
 
 export const sectionConfigs: SectionConfig[] = [
@@ -96,7 +96,7 @@ export const protectedRoutes: RouteConfig[] = [
   },
   {
     path: "/workstatus",
-    element: WorkStatusPage,
+    element: WorkstatusPage,
     menu: {
       label: "출역 현황",
       icon: FileText,
