@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
-import { TrackingPage, DeckGLViewerPage, PotreeViewerPage } from "@/pages";
+import { TrackingPage, DeckGLViewerPage, PotreeViewerPage, CCTVViewerPage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -21,6 +21,9 @@ export function AppRoutes() {
 
       {/* Potree 뷰어 페이지 */}
       <Route path="potree" element={<PotreeViewerPage />} />
+
+      {/* CCTV 뷰어 페이지 */}
+      <Route path="cctv" element={<CCTVViewerPage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />

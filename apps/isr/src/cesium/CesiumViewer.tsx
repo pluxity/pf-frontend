@@ -11,7 +11,6 @@ import {
   Color,
   ColorMaterialProperty,
   PolygonHierarchy,
-  createWorldTerrainAsync,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   Cartesian2,
@@ -131,40 +130,36 @@ function applyZoomBasedStyle(viewer: Viewer, tileset: Cesium3DTileset) {
   const t = clampedH / MAX_H;
   const pointSize = MIN_SIZE + t * (MAX_SIZE - MIN_SIZE);
 
-  // attenuation / LOD 조절 (높은 고도까지 확장)
+  // attenuation / LOD 조절 (빈 곳 없이 빠르게 채우기)
   let maxAtt: number, sse: number;
 
   if (h > 10000) {
-    // 10km 이상: 매우 먼 거리
     maxAtt = 16;
-    sse = 128;
+    sse = 32;
   } else if (h > 5000) {
-    // 5~10km
     maxAtt = 14;
-    sse = 96;
+    sse = 24;
   } else if (h > 2000) {
-    // 2~5km
     maxAtt = 12;
-    sse = 80;
+    sse = 16;
   } else if (h > 1000) {
-    // 1~2km
     maxAtt = 10;
-    sse = 64;
+    sse = 12;
   } else if (h > 500) {
     maxAtt = 8;
-    sse = 48;
+    sse = 8;
   } else if (h > 300) {
     maxAtt = 6;
-    sse = 36;
+    sse = 6;
   } else if (h > 150) {
     maxAtt = 5;
-    sse = 28;
+    sse = 4;
   } else if (h > 60) {
     maxAtt = 4;
-    sse = 22;
+    sse = 2;
   } else {
     maxAtt = 3;
-    sse = 18;
+    sse = 1;
   }
 
   // 불필요한 재적용 방지
@@ -193,10 +188,9 @@ function applyZoomBasedStyle(viewer: Viewer, tileset: Cesium3DTileset) {
     });
 
     tileset.maximumScreenSpaceError = sse;
-    tileset.skipLevelOfDetail = true;
-    tileset.baseScreenSpaceError = 1024;
-    tileset.skipScreenSpaceErrorFactor = 8;
-    tileset.skipLevels = 1;
+    tileset.skipLevelOfDetail = false; // LOD 스킵 비활성화 - 순차적으로 로드
+    tileset.immediatelyLoadDesiredLevelOfDetail = true;
+    tileset.loadSiblings = true; // 주변 타일도 함께 로드
   }
 }
 
@@ -397,10 +391,10 @@ export function CesiumViewer({
 
         tileset.cullRequestsWhileMoving = false;
         tileset.cullRequestsWhileMovingMultiplier = 0.1;
-        tileset.foveatedScreenSpaceError = false;
+        tileset.foveatedScreenSpaceError = false; // 전체 균일하게 로드
         tileset.dynamicScreenSpaceError = false;
 
-        tileset.preloadWhenHidden = true;
+        tileset.preloadWhenHidden = true; // 숨겨진 타일도 미리 로드
 
         viewer.scene.primitives.add(tileset);
 
@@ -456,13 +450,9 @@ export function CesiumViewer({
     viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1; // 최소 1미터까지 줌인
     viewer.scene.screenSpaceCameraController.maximumZoomDistance = 50000000; // 최대 줌아웃
 
-    // Terrain 적용
-    createWorldTerrainAsync().then((terrain) => {
-      if (!viewer.isDestroyed()) {
-        viewer.terrainProvider = terrain;
-        console.log("[Cesium] World Terrain loaded");
-      }
-    });
+    // Terrain 비활성화 - 기본 ellipsoid만 사용
+    // 3D Tiles의 heightOffset으로 고도 조절
+    console.log("[Cesium] Using default ellipsoid (no terrain)");
 
     // CCTV 엔티티 추가
     if (cctvConfig) {

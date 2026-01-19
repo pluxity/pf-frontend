@@ -5,10 +5,15 @@ import {
   EventLog,
   EventSnapshotPanel,
   VideoSearchButton,
+  CCTVDropdown,
 } from "@/components";
 import { MqttDebugPanel } from "@/components/debug";
 import { useMqttEventLog, MQTT_EVENT_TOPIC } from "@/mqtt";
 import { CesiumViewer } from "@/cesium";
+
+// 3D Tiles 고도 보정값 (미터 단위)
+// 지형 데이터와 3D Tiles 간의 고도 차이를 보정하기 위한 값
+const TILESET_HEIGHT_OFFSET = -68;
 
 export function TrackingPage() {
   // MQTT 이벤트 로그 연동
@@ -23,7 +28,7 @@ export function TrackingPage() {
     <div className="relative h-screen w-screen overflow-hidden bg-slate-900">
       {/* 3D Tiles 지형 뷰어 */}
       <div className="fixed inset-0 w-screen h-screen">
-        <CesiumViewer heightOffset={0} showGlobe={showGlobe} />
+        <CesiumViewer heightOffset={TILESET_HEIGHT_OFFSET} showGlobe={showGlobe} />
       </div>
 
       {/* 헤더 */}
@@ -50,6 +55,11 @@ export function TrackingPage() {
         <div>
           <VideoSearchButton />
         </div>
+      </div>
+
+      {/* 우측 상단: CCTV 드롭다운 */}
+      <div className="absolute right-4 top-20 z-40">
+        <CCTVDropdown />
       </div>
 
       {/* MQTT 디버그 패널 (개발용) */}

@@ -7,10 +7,11 @@ import { Ion } from "cesium";
  * - VITE_3D_TILES_URL: 3D Tiles tileset.json URL
  */
 
-// Cesium Ion 토큰 설정
-Ion.defaultAccessToken =
-  import.meta.env.VITE_CESIUM_ION_TOKEN ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyYzNlNzg4MS1hMjY1LTQ1ODgtOTc3ZS0xMjZhMjM4NDkzMWQiLCJpZCI6Mzc3ODUzLCJpYXQiOjE3NjgyNzAyMTF9.24QwZPqVvYLtsQ9TOWou7z_fmKtJPzxNDBweZzM_uLs";
+// Cesium Ion 토큰 설정 (환경변수 필수)
+if (!import.meta.env.VITE_CESIUM_ION_TOKEN) {
+  console.warn("[Cesium] VITE_CESIUM_ION_TOKEN 환경변수가 설정되지 않았습니다.");
+}
+Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN || "";
 
 /**
  * 3D Tiles URL

@@ -1,4 +1,5 @@
 import { PotreeViewer } from "@/potree";
+import { CCTVDropdown } from "@/components";
 
 export function PotreeViewerPage() {
   return (
@@ -17,6 +18,11 @@ export function PotreeViewerPage() {
             DeckGL Viewer
           </a>
         </div>
+      </div>
+
+      {/* 우측 상단: CCTV 드롭다운 */}
+      <div className="absolute right-4 top-20 z-40">
+        <CCTVDropdown />
       </div>
 
       <div className="absolute top-20 left-4 bg-slate-800/80 backdrop-blur text-slate-300 text-xs px-3 py-2 rounded z-30">
