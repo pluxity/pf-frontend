@@ -1,0 +1,21 @@
+{
+  "cctvList": [
+    {
+      "id": "cctv-1",
+      "name": "CCTV 1",
+      "position": [1517263.83, 4279009.407, 101.895],
+      "direction": 180,
+      "fov": 120,
+      "range": 5,
+      "tilt": 45
+    }
+  ],
+  "viewCone": {
+    "fillColor": [0, 200, 255, 80],
+    "lineColor": [0, 200, 255, 200]
+  },
+  "model": {
+    "path": "/assets/models/cctv.glb",
+    "scale": 2.5
+  }
+}
