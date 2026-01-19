@@ -18,6 +18,8 @@
     "@pf-dev/api": "workspace:*",
     "@pf-dev/services": "workspace:*",
     "@pf-dev/ui": "workspace:*",
+    "ag-grid-community": "^35.0.0",
+    "ag-grid-react": "^35.0.0",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
