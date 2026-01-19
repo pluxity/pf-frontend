@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {
   Cartesian3,
   Cartographic,
+  CallbackProperty,
   ConstantPositionProperty,
   ConstantProperty,
   DistanceDisplayCondition,
@@ -95,6 +96,7 @@ function applyVisual(entity: Entity, visual?: FeatureVisual) {
         silhouetteSize: visual.silhouetteSize,
         distanceDisplayCondition,
         show: visual.show,
+        runAnimations: visual.runAnimations,
       });
       break;
     }
@@ -199,6 +201,11 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
       position: cartesian,
       properties: options.properties as unknown as Entity["properties"],
     });
+
+    // 초기 orientation 설정
+    if (options.orientation) {
+      entity.orientation = new ConstantProperty(options.orientation);
+    }
 
     const resolvedShow = resolveVisibility(meta, options.visual);
     entity.show = resolvedShow;
@@ -332,6 +339,11 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
         position: cartesian,
         properties: feature.properties as unknown as Entity["properties"],
       });
+
+      // 초기 orientation 설정
+      if (feature.orientation) {
+        entity.orientation = new ConstantProperty(feature.orientation);
+      }
 
       const resolvedShow = resolveVisibility(meta, feature.visual);
       entity.show = resolvedShow;
@@ -487,6 +499,59 @@ export const useFeatureStore = create<FeatureStoreState & FeatureActions>((set, 
       newFeatureStates.delete(id);
       return { featureStates: newFeatureStates };
     });
+  },
+
+  // ========== Dynamic Position/Orientation ==========
+
+  setDynamicPosition: (id, callback) => {
+    const viewer = useMapStore.getState().viewer;
+    const entity = get().getFeature(id);
+
+    if (!entity || !viewer || viewer.isDestroyed()) return false;
+
+    // CallbackProperty는 런타임에서 position으로 사용 가능하나 타입 정의가 불완전함
+    entity.position = new CallbackProperty(callback, false) as unknown as typeof entity.position;
+    viewer.scene.requestRender();
+    return true;
+  },
+
+  setDynamicOrientation: (id, callback) => {
+    const viewer = useMapStore.getState().viewer;
+    const entity = get().getFeature(id);
+
+    if (!entity || !viewer || viewer.isDestroyed()) return false;
+
+    entity.orientation = new CallbackProperty(callback, false);
+    viewer.scene.requestRender();
+    return true;
+  },
+
+  clearDynamicPosition: (id) => {
+    const viewer = useMapStore.getState().viewer;
+    const entity = get().getFeature(id);
+
+    if (!entity || !viewer || viewer.isDestroyed()) return false;
+
+    const currentPosition = entity.position?.getValue(JulianDate.now());
+    if (currentPosition) {
+      entity.position = new ConstantPositionProperty(currentPosition);
+    }
+    viewer.scene.requestRender();
+    return true;
+  },
+
+  clearDynamicOrientation: (id) => {
+    const viewer = useMapStore.getState().viewer;
+    const entity = get().getFeature(id);
+
+    if (!entity || !viewer || viewer.isDestroyed()) return false;
+
+    const currentOrientation = entity.orientation?.getValue(JulianDate.now());
+    if (currentOrientation) {
+      entity.orientation = new ConstantProperty(currentOrientation);
+    }
+    viewer.scene.requestRender();
+    return true;
   },
 }));
 
