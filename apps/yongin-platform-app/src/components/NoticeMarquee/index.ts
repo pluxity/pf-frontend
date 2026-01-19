@@ -1,0 +1,1 @@
+export { NoticeMarquee } from "./NoticeMarquee";
