@@ -14,6 +14,7 @@ import {
 } from "@pf-dev/ui";
 import type { WorkStatusData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
+import { v4 as uuidv4 } from "uuid";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -84,7 +85,13 @@ export function WorkStatusPage() {
   const handleSearch = () => {
     const filtered = MOCK_DATA.filter((row) => {
       const filterSearch =
-        search === "" || row.deviceName.includes(search) || row.todayContent.includes(search);
+        search === "" ||
+        (category === "all"
+          ? row.deviceName.includes(search) || row.todayContent.includes(search)
+          : category === "device"
+            ? row.deviceName.includes(search)
+            : row.todayContent.includes(search));
+
       const filterDate =
         (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
 
@@ -113,13 +120,15 @@ export function WorkStatusPage() {
   const handleCreate = () => {
     const date = new Date();
     const today = date.toISOString().split("T")[0];
+    const newId = uuidv4();
     const newRow: WorkStatusData = {
-      id: `${Date.now()}`,
+      id: newId,
       inputDate: today || "",
       deviceName: "",
       todayContent: "",
     };
     setRowData([newRow, ...rowData]);
+    setEditedRows((prev) => new Set(prev).add(newId));
   };
 
   const handleSave = async () => {
@@ -144,7 +153,6 @@ export function WorkStatusPage() {
     const selectedRows = gridRef.current?.api.getSelectedRows();
     if (!selectedRows || selectedRows.length === 0) {
       toast.error("삭제할 항목을 선택해주세요.");
-      console.log("toast.error('삭제할 항목을 선택해주세요.');");
       return;
     }
     const selectedIds = selectedRows.map((row) => row.id);
@@ -168,13 +176,12 @@ export function WorkStatusPage() {
           <div className="flex-1">
             <label className="mb-1 block text-sm font-medium text-gray-700">구분</label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select an option" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">전체</SelectItem>
                 <SelectItem value="device">단말기명</SelectItem>
-                <SelectItem value="date">일자</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -182,6 +189,7 @@ export function WorkStatusPage() {
           <div className="flex-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">검색어</label>
             <SearchBar
+              className="w-full"
               placeholder="검색..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
