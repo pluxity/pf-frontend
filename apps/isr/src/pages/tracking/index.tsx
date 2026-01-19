@@ -5,6 +5,7 @@ import {
   EventLog,
   EventSnapshotPanel,
   VideoSearchButton,
+  CCTVDropdown,
 } from "@/components";
 import { MqttDebugPanel } from "@/components/debug";
 import { useMqttEventLog, MQTT_EVENT_TOPIC } from "@/mqtt";
@@ -23,7 +24,7 @@ export function TrackingPage() {
     <div className="relative h-screen w-screen overflow-hidden bg-slate-900">
       {/* 3D Tiles 지형 뷰어 */}
       <div className="fixed inset-0 w-screen h-screen">
-        <CesiumViewer heightOffset={0} showGlobe={showGlobe} />
+        <CesiumViewer heightOffset={-68} showGlobe={showGlobe} />
       </div>
 
       {/* 헤더 */}
@@ -50,6 +51,11 @@ export function TrackingPage() {
         <div>
           <VideoSearchButton />
         </div>
+      </div>
+
+      {/* 우측 상단: CCTV 드롭다운 */}
+      <div className="absolute right-4 top-20 z-40">
+        <CCTVDropdown />
       </div>
 
       {/* MQTT 디버그 패널 (개발용) */}

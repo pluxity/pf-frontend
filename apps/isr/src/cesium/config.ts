@@ -10,7 +10,7 @@ import { Ion } from "cesium";
 // Cesium Ion 토큰 설정
 Ion.defaultAccessToken =
   import.meta.env.VITE_CESIUM_ION_TOKEN ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyYzNlNzg4MS1hMjY1LTQ1ODgtOTc3ZS0xMjZhMjM4NDkzMWQiLCJpZCI6Mzc3ODUzLCJpYXQiOjE3NjgyNzAyMTF9.24QwZPqVvYLtsQ9TOWou7z_fmKtJPzxNDBweZzM_uLs";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5NGQ0YTBmZC1kMjVmLTQ2OGUtOTFiYy03YWYyNDJhOWZjYzMiLCJpZCI6MjgzMTA2LCJpYXQiOjE3NTMwNjEzMDF9.xhu9JUBNx01Zanmt1lz_MR8a5V0_vTaIpiN8gxhHuU0";
 
 /**
  * 3D Tiles URL

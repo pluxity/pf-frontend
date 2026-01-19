@@ -214,16 +214,18 @@ function CameraSelector({
 }
 
 export function CCTVViewerPage() {
-  const [selectedCamera, setSelectedCamera] = useState<CCTVCamera>(SAMPLE_CAMERAS[0]);
+  const [selectedCamera, setSelectedCamera] = useState<CCTVCamera>(SAMPLE_CAMERAS[0]!);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [detectedObjects, setDetectedObjects] = useState<DetectedObject[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useWHEPInit({
-    baseUrl: import.meta.env.VITE_WHEP_BASE_URL || "http://localhost:8889",
-  });
+  const { initialize } = useWHEPInit();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   useEffect(() => {
     const interval = setInterval(() => {

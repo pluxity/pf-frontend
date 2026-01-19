@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Button } from "@pf-dev/ui";
+import { CCTVModal } from "../../components";
 
 export function HomePage() {
+  const [cctvModalOpen, setCCTVModalOpen] = useState(false);
+
   return (
     <div className="container py-10">
       <div className="max-w-2xl mx-auto text-center space-y-6">
@@ -12,8 +16,13 @@ export function HomePage() {
         <div className="flex justify-center gap-4">
           <Button>Get Started</Button>
           <Button variant="outline">Learn More</Button>
+          <Button variant="outline" onClick={() => setCCTVModalOpen(true)}>
+            CCTV 모달 열기
+          </Button>
         </div>
       </div>
+
+      <CCTVModal open={cctvModalOpen} onOpenChange={setCCTVModalOpen} />
     </div>
   );
 }
