@@ -14,7 +14,7 @@ import {
 import type { WorkstatusData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
-import { getWorkStatus } from "./hooks/useWorkstatus";
+import { getWorkStatus } from "./services/workstatusService";
 
 export function WorkstatusPage() {
   const gridRef = useRef<AgGridReactType<WorkstatusData>>(null);
