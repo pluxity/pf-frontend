@@ -33,6 +33,9 @@ const RolesPage = lazy(() =>
 const WorkstatusPage = lazy(() =>
   import("@/pages/workstatus").then((m) => ({ default: m.WorkstatusPage }))
 );
+const ProgressPage = lazy(() =>
+  import("@/pages/progress").then((m) => ({ default: m.ProgressPage }))
+);
 
 export const sectionConfigs: SectionConfig[] = [
   {
@@ -102,6 +105,16 @@ export const protectedRoutes: RouteConfig[] = [
       icon: FileText,
       sectionId: "main",
       order: 3,
+    },
+  },
+  {
+    path: "/progress",
+    element: ProgressPage,
+    menu: {
+      label: "공정 현황",
+      icon: FileText,
+      sectionId: "main",
+      order: 4,
     },
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능
