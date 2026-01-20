@@ -56,12 +56,22 @@ export function ProgressPage() {
         field: "targetRate",
         flex: 1,
         editable: true,
+        cellEditorParams: {
+          precision: 0,
+          step: 1,
+          showStepperButtons: true,
+        },
       },
       {
         headerName: "공정률 (%)",
         field: "progressRate",
         flex: 1,
         editable: true,
+        cellEditorParams: {
+          precision: 0,
+          step: 1,
+          showStepperButtons: true,
+        },
       },
     ],
     []
