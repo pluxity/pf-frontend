@@ -89,17 +89,27 @@ export function ProgressPage() {
     const filtered = allData.filter((row) => {
       const filterSearch =
         search === "" ||
-        (category === "all"
-          ? row.name.includes(search) ||
-            row.targetRate.toString().includes(search) ||
-            row.progressRate.toString().includes(search)
-          : category === "name"
-            ? row.name.includes(search)
-            : category === "targetRate"
-              ? row.targetRate.toString().includes(search)
-              : category === "progressRate"
-                ? row.progressRate.toString().includes(search)
-                : false);
+        (() => {
+          switch (category) {
+            case "all":
+              return (
+                row.name.includes(search) ||
+                row.targetRate.toString().includes(search) ||
+                row.progressRate.toString().includes(search)
+              );
+            case "name":
+              return row.name.includes(search);
+
+            case "targetRate":
+              return row.targetRate.toString().includes(search);
+
+            case "progressRate":
+              return row.progressRate.toString().includes(search);
+
+            default:
+              return false;
+          }
+        })();
 
       const filterDate = (!startDate || row.date >= startDate) && (!endDate || row.date <= endDate);
 
@@ -107,6 +117,10 @@ export function ProgressPage() {
     });
 
     setFilteredData(filtered);
+    setSearch("");
+    setCategory("all");
+    setStartDate("");
+    setEndDate("");
   };
 
   const handleExport = () => {
@@ -139,7 +153,6 @@ export function ProgressPage() {
     };
     const newAllData = [newRow, ...allData];
     setAllData(newAllData);
-    setFilteredData(newAllData);
     setEditedRows((prev) => new Set(prev).add(newId));
   };
 
@@ -169,7 +182,6 @@ export function ProgressPage() {
     const selectedIds = selectedRows.map((row) => row.id);
     const newData = allData.filter((row) => !selectedIds.includes(row.id));
     setAllData(newData);
-    setFilteredData(newData);
   };
 
   return (
