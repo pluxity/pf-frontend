@@ -3,24 +3,24 @@ import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import type { ColDef, CellValueChangedEvent } from "ag-grid-community";
 import { useRef, useState, useMemo, useEffect } from "react";
 import {
-  Button,
-  SearchBar,
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
+  SearchBar,
+  Button,
 } from "@pf-dev/ui";
-import type { WorkstatusData } from "./types";
+import type { ProgressData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
-import { getWorkStatus } from "./services/workstatusService";
+import { getProgressList } from "./services/progressService";
 
-export function WorkstatusPage() {
-  const gridRef = useRef<AgGridReactType<WorkstatusData>>(null);
+export function ProgressPage() {
+  const gridRef = useRef<AgGridReactType<ProgressData>>(null);
   const { toast } = useToastContext();
-  const [allData, setAllData] = useState<WorkstatusData[]>([]);
-  const [filteredData, setFilteredData] = useState<WorkstatusData[]>([]);
+  const [allData, setAllData] = useState<ProgressData[]>([]);
+  const [filteredData, setFilteredData] = useState<ProgressData[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
@@ -29,33 +29,49 @@ export function WorkstatusPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getWorkStatus();
+      const data = await getProgressList();
       setAllData(data);
       setFilteredData(data);
     };
     loadData();
   }, []);
 
-  const columnDefs = useMemo<ColDef<WorkstatusData>[]>(
+  const columnDefs = useMemo<ColDef<ProgressData>[]>(
     () => [
       {
         headerName: "입력일자",
-        field: "inputDate",
+        field: "date",
         checkboxSelection: true,
         headerCheckboxSelection: true,
         editable: true,
       },
       {
-        headerName: "단말기명",
-        field: "deviceName",
-        flex: 1,
+        headerName: "공정명",
+        field: "name",
+        flex: 2,
         editable: true,
       },
       {
-        headerName: "금일 작성 내용",
-        field: "todayContent",
-        flex: 2,
+        headerName: "목표율 (%)",
+        field: "targetRate",
+        flex: 1,
         editable: true,
+        cellEditorParams: {
+          precision: 0,
+          step: 1,
+          showStepperButtons: true,
+        },
+      },
+      {
+        headerName: "공정률 (%)",
+        field: "progressRate",
+        flex: 1,
+        editable: true,
+        cellEditorParams: {
+          precision: 0,
+          step: 1,
+          showStepperButtons: true,
+        },
       },
     ],
     []
@@ -73,25 +89,44 @@ export function WorkstatusPage() {
     const filtered = allData.filter((row) => {
       const filterSearch =
         search === "" ||
-        (category === "all"
-          ? row.deviceName.includes(search) || row.todayContent.includes(search)
-          : category === "device"
-            ? row.deviceName.includes(search)
-            : row.todayContent.includes(search));
+        (() => {
+          switch (category) {
+            case "all":
+              return (
+                row.name.includes(search) ||
+                row.targetRate.toString().includes(search) ||
+                row.progressRate.toString().includes(search)
+              );
+            case "name":
+              return row.name.includes(search);
 
-      const filterDate =
-        (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
+            case "targetRate":
+              return row.targetRate.toString().includes(search);
+
+            case "progressRate":
+              return row.progressRate.toString().includes(search);
+
+            default:
+              return false;
+          }
+        })();
+
+      const filterDate = (!startDate || row.date >= startDate) && (!endDate || row.date <= endDate);
 
       return filterSearch && filterDate;
     });
 
     setFilteredData(filtered);
+    setSearch("");
+    setCategory("all");
+    setStartDate("");
+    setEndDate("");
   };
 
   const handleExport = () => {
     const date = new Date();
     const dateString = date.toISOString().split("T")[0];
-    const fileName = `출역현황_${dateString}.csv`;
+    const fileName = `공정현황_${dateString}.csv`;
 
     gridRef.current?.api.exportDataAsCsv({
       fileName: fileName,
@@ -99,24 +134,25 @@ export function WorkstatusPage() {
     });
   };
 
-  const handleCellValueChanged = (event: CellValueChangedEvent<WorkstatusData>) => {
+  const handleCellValueChanged = (event: CellValueChangedEvent<ProgressData>) => {
+    if (!event.data) return;
     const rowId = event.data.id;
     setEditedRows((prev) => new Set(prev).add(rowId));
   };
 
   const handleCreate = () => {
     const date = new Date();
-    const today = date.toISOString().split("T")[0];
+    const today = date.toISOString().split("T")[0] ?? "";
     const newId = uuidv4();
-    const newRow: WorkstatusData = {
+    const newRow: ProgressData = {
       id: newId,
-      inputDate: today || "",
-      deviceName: "",
-      todayContent: "",
+      date: today,
+      name: "",
+      targetRate: 0,
+      progressRate: 0,
     };
     const newAllData = [newRow, ...allData];
     setAllData(newAllData);
-    setFilteredData(newAllData);
     setEditedRows((prev) => new Set(prev).add(newId));
   };
 
@@ -146,7 +182,6 @@ export function WorkstatusPage() {
     const selectedIds = selectedRows.map((row) => row.id);
     const newData = allData.filter((row) => !selectedIds.includes(row.id));
     setAllData(newData);
-    setFilteredData(newData);
   };
 
   return (
@@ -154,8 +189,8 @@ export function WorkstatusPage() {
       <div className="mb-4">
         <div className="flex flex-col gap-3">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">출역 현황</h1>
-            <p className="mt-1 text-sm text-gray-500">출역 현황 관리</p>
+            <h1 className="text-lg font-semibold text-gray-900">공정 현황</h1>
+            <p className="mt-1 text-sm text-gray-500">공정 현황 관리</p>
           </div>
         </div>
       </div>
@@ -170,7 +205,9 @@ export function WorkstatusPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="device">단말기명</SelectItem>
+                <SelectItem value="name">공정명</SelectItem>
+                <SelectItem value="targetRate">목표율</SelectItem>
+                <SelectItem value="progressRate">공정률</SelectItem>
               </SelectContent>
             </Select>
           </div>
