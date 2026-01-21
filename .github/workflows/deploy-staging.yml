@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: 스테이징 배포
 
 on:
   pull_request:
@@ -13,52 +13,58 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       has_changes: ${{ steps.set-matrix.outputs.has_changes }}
     steps:
-      - name: Checkout
+      - name: 코드 체크아웃
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
+      - name: pnpm 설정
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Setup Node.js
+      - name: Node.js 설정
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 의존성 설치
         run: pnpm install --frozen-lockfile
 
-      - name: Detect changed apps with Turborepo
+      - name: Turborepo로 변경된 앱 감지
         id: set-matrix
         run: |
-          # Get changed packages using turbo dry-run
+          # turbo dry-run으로 변경된 패키지 목록 조회
           CHANGED_PACKAGES=$(pnpm turbo build:staging --filter="...[origin/main^]" --dry-run=json 2>/dev/null | jq -r '.packages[]' | grep -v '//' | sort -u)
 
-          echo "Changed packages: $CHANGED_PACKAGES"
+          echo "변경된 패키지: $CHANGED_PACKAGES"
 
-          # Read deploy config
+          # 배포 설정 파일 읽기
           DEPLOY_CONFIG=$(cat .github/deploy-config.json)
 
-          # Build matrix from changed packages that exist in deploy config
+          # deploy-config.json에 등록된 패키지만 matrix에 추가
           MATRIX_ITEMS="[]"
 
           for pkg in $CHANGED_PACKAGES; do
-            # Check if package exists in deploy config
+            # deploy-config.json에서 해당 패키지 설정 조회
             PATH_VALUE=$(echo $DEPLOY_CONFIG | jq -r --arg pkg "$pkg" '.[$pkg].path // empty')
-            ENV_VALUE=$(echo $DEPLOY_CONFIG | jq -r --arg pkg "$pkg" '.[$pkg].env // empty')
+            SECRETS_KEY=$(echo $DEPLOY_CONFIG | jq -r --arg pkg "$pkg" '.[$pkg].secretsKey // empty')
+            ENV_VARS=$(echo $DEPLOY_CONFIG | jq -c --arg pkg "$pkg" '.[$pkg].envVars // {}')
 
             if [ -n "$PATH_VALUE" ]; then
-              MATRIX_ITEMS=$(echo $MATRIX_ITEMS | jq --arg app "$pkg" --arg path "$PATH_VALUE" --arg env "$ENV_VALUE" '. + [{"app": $app, "path": $path, "env": $env}]')
+              MATRIX_ITEMS=$(echo $MATRIX_ITEMS | jq \
+                --arg app "$pkg" \
+                --arg path "$PATH_VALUE" \
+                --arg secretsKey "$SECRETS_KEY" \
+                --argjson envVars "$ENV_VARS" \
+                '. + [{"app": $app, "path": $path, "secretsKey": $secretsKey, "envVars": $envVars}]')
             fi
           done
 
           echo "Matrix: $MATRIX_ITEMS"
 
-          # Check if there are any changes to deploy
+          # 배포할 변경사항이 있는지 확인
           if [ "$MATRIX_ITEMS" = "[]" ]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
@@ -75,27 +81,71 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
     steps:
-      - name: Checkout
+      - name: 코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: pnpm 설정
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Setup Node.js
+      - name: Node.js 설정
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 의존성 설치
         run: pnpm install --frozen-lockfile
 
-      - name: Build ${{ matrix.app }}
-        run: pnpm turbo build:${{ matrix.env }} --filter=${{ matrix.app }}
+      - name: .env.staging 파일 생성
+        env:
+          # 프로젝트별 Secrets (JSON 형태)
+          YONGIN_SECRETS: ${{ secrets.YONGIN_SECRETS }}
+          GAJA_SECRETS: ${{ secrets.GAJA_SECRETS }}
+          # 프로젝트별 Variables (JSON 형태)
+          YONGIN_VARS: ${{ vars.YONGIN_VARS }}
+          GAJA_VARS: ${{ vars.GAJA_VARS }}
+          # 앱별 환경변수 (deploy-config.json에서)
+          APP_ENV_VARS: ${{ toJson(matrix.envVars) }}
+        run: |
+          ENV_FILE="apps/${{ matrix.app }}/.env.staging"
 
-      - name: Deploy to server
+          # 1. 프로젝트별 Secrets 추가 (YONGIN_SECRETS, GAJA_SECRETS 등)
+          SECRETS_KEY="${{ matrix.secretsKey }}_SECRETS"
+          SECRETS_VALUE="${!SECRETS_KEY}"
+
+          if [ -n "$SECRETS_VALUE" ] && [ "$SECRETS_VALUE" != "null" ]; then
+            echo "$SECRETS_VALUE" | jq -r 'to_entries[] | "\(.key)=\(.value)"' > "$ENV_FILE"
+            echo "✓ $SECRETS_KEY 에서 Secrets 추가됨"
+          else
+            echo "# 자동 생성된 .env.staging" > "$ENV_FILE"
+            echo "⚠ $SECRETS_KEY 에 Secrets 없음"
+          fi
+
+          # 2. 프로젝트별 Variables 추가 (YONGIN_VARS, GAJA_VARS 등)
+          VARS_KEY="${{ matrix.secretsKey }}_VARS"
+          VARS_VALUE="${!VARS_KEY}"
+
+          if [ -n "$VARS_VALUE" ] && [ "$VARS_VALUE" != "null" ]; then
+            echo "$VARS_VALUE" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> "$ENV_FILE"
+            echo "✓ $VARS_KEY 에서 Variables 추가됨"
+          fi
+
+          # 3. 앱별 환경변수 추가 (deploy-config.json의 envVars)
+          if [ -n "$APP_ENV_VARS" ] && [ "$APP_ENV_VARS" != "null" ] && [ "$APP_ENV_VARS" != "{}" ]; then
+            echo "$APP_ENV_VARS" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> "$ENV_FILE"
+            echo "✓ 앱별 envVars 추가됨"
+          fi
+
+          echo "--- 생성된 .env.staging ---"
+          cat "$ENV_FILE"
+          echo "---------------------------"
+
+      - name: ${{ matrix.app }} 빌드
+        run: pnpm turbo build:staging --filter=${{ matrix.app }}
+
+      - name: 서버에 배포
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.PLX_DEV_DOMAIN }}
@@ -106,10 +156,10 @@ jobs:
           target: ${{ matrix.path }}
           strip_components: 3
 
-      - name: Deployment summary
+      - name: 배포 결과 요약
         run: |
-          echo "### Deployment Complete! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "### 배포 완료! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| App | Path | Environment |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|------|-------------|" >> $GITHUB_STEP_SUMMARY
-          echo "| ${{ matrix.app }} | ${{ matrix.path }} | ${{ matrix.env }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 앱 | 경로 | Secrets 그룹 |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|------|---------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ matrix.app }} | ${{ matrix.path }} | ${{ matrix.secretsKey }} |" >> $GITHUB_STEP_SUMMARY
