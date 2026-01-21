@@ -1,0 +1,115 @@
+name: Deploy to Staging
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  detect-changes:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_changes: ${{ steps.set-matrix.outputs.has_changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Detect changed apps with Turborepo
+        id: set-matrix
+        run: |
+          # Get changed packages using turbo dry-run
+          CHANGED_PACKAGES=$(pnpm turbo build:staging --filter="...[origin/main^]" --dry-run=json 2>/dev/null | jq -r '.packages[]' | grep -v '//' | sort -u)
+
+          echo "Changed packages: $CHANGED_PACKAGES"
+
+          # Read deploy config
+          DEPLOY_CONFIG=$(cat .github/deploy-config.json)
+
+          # Build matrix from changed packages that exist in deploy config
+          MATRIX_ITEMS="[]"
+
+          for pkg in $CHANGED_PACKAGES; do
+            # Check if package exists in deploy config
+            PATH_VALUE=$(echo $DEPLOY_CONFIG | jq -r --arg pkg "$pkg" '.[$pkg].path // empty')
+            ENV_VALUE=$(echo $DEPLOY_CONFIG | jq -r --arg pkg "$pkg" '.[$pkg].env // empty')
+
+            if [ -n "$PATH_VALUE" ]; then
+              MATRIX_ITEMS=$(echo $MATRIX_ITEMS | jq --arg app "$pkg" --arg path "$PATH_VALUE" --arg env "$ENV_VALUE" '. + [{"app": $app, "path": $path, "env": $env}]')
+            fi
+          done
+
+          echo "Matrix: $MATRIX_ITEMS"
+
+          # Check if there are any changes to deploy
+          if [ "$MATRIX_ITEMS" = "[]" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":$MATRIX_ITEMS}" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build ${{ matrix.app }}
+        run: pnpm turbo build:${{ matrix.env }} --filter=${{ matrix.app }}
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PLX_DEV_DOMAIN }}
+          username: ${{ secrets.PLX_DEV_USER }}
+          password: ${{ secrets.PLX_DEV_PASSWORD }}
+          port: ${{ secrets.PLX_DEV_SSH_PORT }}
+          source: "apps/${{ matrix.app }}/dist/*"
+          target: ${{ matrix.path }}
+          strip_components: 3
+
+      - name: Deployment summary
+        run: |
+          echo "### Deployment Complete! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| App | Path | Environment |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|------|-------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ${{ matrix.app }} | ${{ matrix.path }} | ${{ matrix.env }} |" >> $GITHUB_STEP_SUMMARY
