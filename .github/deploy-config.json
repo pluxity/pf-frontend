@@ -1,0 +1,10 @@
+{
+  "yongin-platform-app": {
+    "path": "/home/pluxity/docker/yonginplatform/front/",
+    "env": "staging"
+  },
+  "yongin-platform-admin": {
+    "path": "/home/pluxity/docker/yonginplatform/front/admin/",
+    "env": "staging"
+  }
+}
