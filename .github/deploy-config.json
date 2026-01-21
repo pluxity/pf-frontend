@@ -1,10 +1,16 @@
 {
   "yongin-platform-app": {
     "path": "/home/pluxity/docker/yonginplatform/front/",
-    "env": "staging"
+    "secretsKey": "YONGIN",
+    "envVars": {
+      "VITE_CONTEXT_PATH": ""
+    }
   },
   "yongin-platform-admin": {
     "path": "/home/pluxity/docker/yonginplatform/front/admin/",
-    "env": "staging"
+    "secretsKey": "YONGIN",
+    "envVars": {
+      "VITE_CONTEXT_PATH": "/admin"
+    }
   }
 }
