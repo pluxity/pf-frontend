@@ -11,16 +11,16 @@ import {
   SelectContent,
   SelectItem,
 } from "@pf-dev/ui";
-import type { WorkstatusData } from "./types";
+import type { AttendanceData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
-import { getWorkStatus } from "./services/workstatusService";
+import { getAttendanceList } from "./services/attendanceService";
 
-export function WorkstatusPage() {
-  const gridRef = useRef<AgGridReactType<WorkstatusData>>(null);
+export function AttendancePage() {
+  const gridRef = useRef<AgGridReactType<AttendanceData>>(null);
   const { toast } = useToastContext();
-  const [allData, setAllData] = useState<WorkstatusData[]>([]);
-  const [filteredData, setFilteredData] = useState<WorkstatusData[]>([]);
+  const [allData, setAllData] = useState<AttendanceData[]>([]);
+  const [filteredData, setFilteredData] = useState<AttendanceData[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
@@ -29,14 +29,14 @@ export function WorkstatusPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getWorkStatus();
+      const data = await getAttendanceList();
       setAllData(data);
       setFilteredData(data);
     };
     loadData();
   }, []);
 
-  const columnDefs = useMemo<ColDef<WorkstatusData>[]>(
+  const columnDefs = useMemo<ColDef<AttendanceData>[]>(
     () => [
       {
         headerName: "입력일자",
@@ -99,7 +99,7 @@ export function WorkstatusPage() {
     });
   };
 
-  const handleCellValueChanged = (event: CellValueChangedEvent<WorkstatusData>) => {
+  const handleCellValueChanged = (event: CellValueChangedEvent<AttendanceData>) => {
     const rowId = event.data.id;
     setEditedRows((prev) => new Set(prev).add(rowId));
   };
@@ -108,7 +108,7 @@ export function WorkstatusPage() {
     const date = new Date();
     const today = date.toISOString().split("T")[0];
     const newId = uuidv4();
-    const newRow: WorkstatusData = {
+    const newRow: AttendanceData = {
       id: newId,
       inputDate: today || "",
       deviceName: "",

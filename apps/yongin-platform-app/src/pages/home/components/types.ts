@@ -5,9 +5,9 @@ export interface BaseWidgetProps {
 
 export type WeatherProps = BaseWidgetProps;
 
-export type WorkerStatsProps = BaseWidgetProps;
+export type AttendanceProps = BaseWidgetProps;
 
-export type ProgressStatsProps = BaseWidgetProps;
+export type ProcessStatusProps = BaseWidgetProps;
 
 export type ViewerProps = BaseWidgetProps;
 

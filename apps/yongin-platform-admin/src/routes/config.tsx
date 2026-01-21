@@ -30,11 +30,11 @@ const PermissionsPage = lazy(() =>
 const RolesPage = lazy(() =>
   import("@/pages/accounts/roles").then((m) => ({ default: m.RolesPage }))
 );
-const WorkstatusPage = lazy(() =>
-  import("@/pages/workstatus").then((m) => ({ default: m.WorkstatusPage }))
+const AttendancePage = lazy(() =>
+  import("@/pages/attendance").then((m) => ({ default: m.AttendancePage }))
 );
-const ProgressPage = lazy(() =>
-  import("@/pages/progress").then((m) => ({ default: m.ProgressPage }))
+const ProcessStatusPage = lazy(() =>
+  import("@/pages/process-status").then((m) => ({ default: m.ProcessStatusPage }))
 );
 
 export const sectionConfigs: SectionConfig[] = [
@@ -98,8 +98,8 @@ export const protectedRoutes: RouteConfig[] = [
     },
   },
   {
-    path: "/workstatus",
-    element: WorkstatusPage,
+    path: "/attendance",
+    element: AttendancePage,
     menu: {
       label: "출역 현황",
       icon: FileText,
@@ -108,8 +108,8 @@ export const protectedRoutes: RouteConfig[] = [
     },
   },
   {
-    path: "/progress",
-    element: ProgressPage,
+    path: "/process-status",
+    element: ProcessStatusPage,
     menu: {
       label: "공정 현황",
       icon: FileText,
