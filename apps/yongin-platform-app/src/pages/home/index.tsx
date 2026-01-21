@@ -1,8 +1,8 @@
 import { GridLayout, GridTemplate } from "@pf-dev/ui";
 import {
   Weather,
-  WorkerStats,
-  ProgressStats,
+  Attendance,
+  ProcessStatus,
   Viewer,
   Management,
   DailyStats,
@@ -16,8 +16,8 @@ const dashboardTemplate: GridTemplate = {
   rows: 3,
   cells: [
     { id: "weather", colStart: 1, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 날씨
-    { id: "workerStats", colStart: 1, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 출역현황
-    { id: "progressStats", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공정현황
+    { id: "attendance", colStart: 1, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 출역현황
+    { id: "processStatus", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공정현황
     { id: "viewer", colStart: 2, colSpan: 3, rowStart: 1, rowSpan: 3 }, // 메인 콘텐츠
     { id: "management", colStart: 5, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 주요 관리사항
     { id: "dailyStats", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 일일목표
@@ -27,8 +27,8 @@ const dashboardTemplate: GridTemplate = {
 
 const widgets = [
   { id: "weather", component: Weather },
-  { id: "workerStats", component: WorkerStats },
-  { id: "progressStats", component: ProgressStats },
+  { id: "attendance", component: Attendance },
+  { id: "processStatus", component: ProcessStatus },
   { id: "viewer", component: Viewer },
   { id: "management", component: Management },
   { id: "dailyStats", component: DailyStats },
