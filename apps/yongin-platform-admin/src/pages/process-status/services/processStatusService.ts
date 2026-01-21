@@ -1,6 +1,6 @@
-import type { ProgressData } from "../types";
+import type { ProcessStatusData } from "../types";
 
-const MOCK_DATA: ProgressData[] = [
+const MOCK_DATA: ProcessStatusData[] = [
   {
     id: "1",
     date: "2026-01-20",
@@ -31,7 +31,7 @@ const MOCK_DATA: ProgressData[] = [
   },
 ];
 
-export const getProgressList = (): Promise<ProgressData[]> => {
+export const getProcessStatusList = (): Promise<ProcessStatusData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(MOCK_DATA);

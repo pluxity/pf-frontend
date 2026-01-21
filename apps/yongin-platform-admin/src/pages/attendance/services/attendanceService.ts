@@ -1,6 +1,6 @@
-import type { WorkstatusData } from "../types";
+import type { AttendanceData } from "../types";
 
-const MOCK_DATA: WorkstatusData[] = [
+const MOCK_DATA: AttendanceData[] = [
   {
     id: "1",
     inputDate: "2026-01-07",
@@ -21,7 +21,7 @@ const MOCK_DATA: WorkstatusData[] = [
   },
 ];
 
-export const getWorkStatus = (): Promise<WorkstatusData[]> => {
+export const getAttendanceList = (): Promise<AttendanceData[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(MOCK_DATA);

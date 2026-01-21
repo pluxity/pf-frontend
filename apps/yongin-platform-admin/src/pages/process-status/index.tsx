@@ -11,16 +11,16 @@ import {
   SearchBar,
   Button,
 } from "@pf-dev/ui";
-import type { ProgressData } from "./types";
+import type { ProcessStatusData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { v4 as uuidv4 } from "uuid";
-import { getProgressList } from "./services/progressService";
+import { getProcessStatusList } from "./services/processStatusService";
 
-export function ProgressPage() {
-  const gridRef = useRef<AgGridReactType<ProgressData>>(null);
+export function ProcessStatusPage() {
+  const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
   const { toast } = useToastContext();
-  const [allData, setAllData] = useState<ProgressData[]>([]);
-  const [filteredData, setFilteredData] = useState<ProgressData[]>([]);
+  const [allData, setAllData] = useState<ProcessStatusData[]>([]);
+  const [filteredData, setFilteredData] = useState<ProcessStatusData[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
@@ -29,14 +29,14 @@ export function ProgressPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getProgressList();
+      const data = await getProcessStatusList();
       setAllData(data);
       setFilteredData(data);
     };
     loadData();
   }, []);
 
-  const columnDefs = useMemo<ColDef<ProgressData>[]>(
+  const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
     () => [
       {
         headerName: "입력일자",
@@ -134,7 +134,7 @@ export function ProgressPage() {
     });
   };
 
-  const handleCellValueChanged = (event: CellValueChangedEvent<ProgressData>) => {
+  const handleCellValueChanged = (event: CellValueChangedEvent<ProcessStatusData>) => {
     if (!event.data) return;
     const rowId = event.data.id;
     setEditedRows((prev) => new Set(prev).add(rowId));
@@ -144,7 +144,7 @@ export function ProgressPage() {
     const date = new Date();
     const today = date.toISOString().split("T")[0] ?? "";
     const newId = uuidv4();
-    const newRow: ProgressData = {
+    const newRow: ProcessStatusData = {
       id: newId,
       date: today,
       name: "",
