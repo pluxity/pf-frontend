@@ -46,16 +46,16 @@ PR 머지 → 변경된 앱 감지 → deploy-config.json 매칭 → 동적 matr
       "VITE_CONTEXT_PATH": "/admin"
     }
   },
-  "새-프로젝트-app": {
-    "path": "/home/pluxity/docker/새프로젝트/front/",
-    "secretsKey": "새프로젝트",
+  "new-project-app": {
+    "path": "/home/pluxity/docker/new-project/front/",
+    "secretsKey": "NEW_PROJECT",
     "envVars": {
       "VITE_CONTEXT_PATH": ""
     }
   },
-  "새-프로젝트-admin": {
-    "path": "/home/pluxity/docker/새프로젝트/front/admin/",
-    "secretsKey": "새프로젝트",
+  "new-project-admin": {
+    "path": "/home/pluxity/docker/new-project/front/admin/",
+    "secretsKey": "NEW_PROJECT",
     "envVars": {
       "VITE_CONTEXT_PATH": "/admin"
     }
@@ -134,11 +134,11 @@ PR 머지 → 변경된 앱 감지 → deploy-config.json 매칭 → 동적 matr
     # 프로젝트별 Secrets (JSON 형태)
     YONGIN_SECRETS: ${{ secrets.YONGIN_SECRETS }}
     GAJA_SECRETS: ${{ secrets.GAJA_SECRETS }}
-    새프로젝트_SECRETS: ${{ secrets.새프로젝트_SECRETS }} # ← 추가
+    NEW_PROJECT_SECRETS: ${{ secrets.NEW_PROJECT_SECRETS }} # ← 추가
     # 프로젝트별 Variables (JSON 형태)
     YONGIN_VARS: ${{ vars.YONGIN_VARS }}
     GAJA_VARS: ${{ vars.GAJA_VARS }}
-    새프로젝트_VARS: ${{ vars.새프로젝트_VARS }} # ← 추가
+    NEW_PROJECT_VARS: ${{ vars.NEW_PROJECT_VARS }} # ← 추가
 ```
 
 ### 5단계. 앱에 빌드 스크립트 확인
@@ -159,8 +159,8 @@ PR 머지 → 변경된 앱 감지 → deploy-config.json 매칭 → 동적 matr
 
 ```bash
 ssh user@dev.pluxity.com
-mkdir -p /home/pluxity/docker/새프로젝트/front/
-mkdir -p /home/pluxity/docker/새프로젝트/front/admin/
+mkdir -p /home/pluxity/docker/new-project/front/
+mkdir -p /home/pluxity/docker/new-project/front/admin/
 ```
 
 ### 7단계. Nginx 설정 (필요시)
