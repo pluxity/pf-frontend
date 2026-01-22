@@ -30,8 +30,8 @@ export function ProcessStatusPage() {
     isError,
     error,
     isSaving,
-    saveAndRefresh,
-    refresh,
+    save,
+    refreshData,
     addWorkType,
     removeWorkType,
   } = useProcessStatus();
@@ -381,7 +381,8 @@ export function ProcessStatusPage() {
         deletedIds: Array.from(deletedIds),
       };
 
-      await saveAndRefresh(request);
+      await save(request);
+      await refreshData();
 
       // 로컬 상태 초기화
       setLocalAdditions([]);
@@ -460,7 +461,7 @@ export function ProcessStatusPage() {
           <p className="text-gray-700">
             {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
           </p>
-          <Button onClick={() => refresh()}>다시 시도</Button>
+          <Button onClick={() => refreshData()}>다시 시도</Button>
         </div>
       </div>
     );

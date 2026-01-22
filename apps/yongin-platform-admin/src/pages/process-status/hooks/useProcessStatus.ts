@@ -9,60 +9,64 @@ import {
   saveProcessStatuses,
 } from "../services/processStatusService";
 
-const PROCESS_STATUS_KEY = "/process-statuses";
-const WORK_TYPES_KEY = "/process-statuses/work-types";
+const API_PATH = {
+  PROCESS_STATUS: "/process-statuses",
+  WORK_TYPES: "/process-statuses/work-types",
+} as const;
 
 export function useProcessStatus() {
+  // 공정현황 목록
   const {
     data: processData,
     error: dataError,
     isLoading: isLoadingData,
-    mutate: mutateData,
-  } = useSWR([PROCESS_STATUS_KEY], () => getProcessStatusList(), {
+    mutate: refreshData,
+  } = useSWR(API_PATH.PROCESS_STATUS, () => getProcessStatusList(), {
     revalidateOnFocus: false,
   });
 
+  // 공정명 목록
   const {
-    data: workTypesData,
+    data: workTypes = [],
     error: workTypesError,
     isLoading: isLoadingWorkTypes,
-    mutate: mutateWorkTypes,
-  } = useSWR<WorkType[]>(WORK_TYPES_KEY, getWorkTypes, {
+  } = useSWR(API_PATH.WORK_TYPES, getWorkTypes, {
     revalidateOnFocus: false,
   });
 
+  // 공정현황 저장
   const { trigger: save, isMutating: isSaving } = useSWRMutation(
-    PROCESS_STATUS_KEY,
-    async (_key: string, { arg }: { arg: ProcessStatusBulkRequest }) => {
-      await saveProcessStatuses(arg);
-    }
+    API_PATH.PROCESS_STATUS,
+    (_key, { arg }: { arg: ProcessStatusBulkRequest }) => saveProcessStatuses(arg)
   );
 
-  const addWorkType = async (name: string) => {
-    await createWorkType(name);
-    await mutateWorkTypes();
-  };
+  // 공정명 추가
+  const { trigger: addWorkType } = useSWRMutation(
+    API_PATH.WORK_TYPES,
+    (_key, { arg }: { arg: string }) => createWorkType(arg)
+  );
 
-  const removeWorkType = async (id: number) => {
-    await deleteWorkType(id);
-    await mutateWorkTypes();
-  };
-
-  const saveAndRefresh = async (request: ProcessStatusBulkRequest) => {
-    await save(request);
-    await mutateData();
-  };
+  // 공정명 삭제
+  const { trigger: removeWorkType } = useSWRMutation(
+    API_PATH.WORK_TYPES,
+    (_key, { arg }: { arg: number }) => deleteWorkType(arg)
+  );
 
   return {
+    // 데이터
     data: processData?.data ?? [],
     totalElements: processData?.totalElements ?? 0,
-    workTypes: workTypesData ?? [],
+    workTypes: workTypes as WorkType[],
+
+    // 상태
     isLoading: isLoadingData || isLoadingWorkTypes,
     isError: !!dataError || !!workTypesError,
     error: dataError || workTypesError,
     isSaving,
-    saveAndRefresh,
-    refresh: mutateData,
+
+    // 액션
+    save,
+    refreshData,
     addWorkType,
     removeWorkType,
   };

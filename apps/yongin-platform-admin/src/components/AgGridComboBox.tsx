@@ -1,4 +1,5 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, useCallback } from "react";
+import { useEffect, useImperativeHandle, useRef, useState, useCallback } from "react";
+import type { Ref } from "react";
 import type { ICellEditorParams } from "ag-grid-community";
 import { Input, Button } from "@pf-dev/ui";
 import { X, Plus } from "@pf-dev/ui";
@@ -8,7 +9,14 @@ export interface ComboBoxItem {
   name: string;
 }
 
+interface AgGridComboBoxRef {
+  getValue: () => number;
+  isCancelAfterEnd: () => boolean;
+  isPopup: () => boolean;
+}
+
 export interface AgGridComboBoxProps extends ICellEditorParams {
+  ref?: Ref<AgGridComboBoxRef>;
   items: ComboBoxItem[];
   onAdd?: (name: string) => Promise<void>;
   onDelete?: (id: number) => Promise<void>;
@@ -19,29 +27,22 @@ export interface AgGridComboBoxProps extends ICellEditorParams {
   deleteErrorMessage?: string;
 }
 
-interface AgGridComboBoxRef {
-  getValue: () => number;
-  isCancelAfterEnd: () => boolean;
-  isPopup: () => boolean;
-}
-
-export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>((props, ref) => {
-  const {
-    value,
-    items,
-    onAdd,
-    onDelete,
-    onAddSuccess,
-    onDeleteSuccess,
-    stopEditing,
-    column,
-    node,
-    eGridCell,
-    placeholder = "새 항목",
-    addErrorMessage = "추가 실패",
-    deleteErrorMessage = "삭제 실패",
-  } = props;
-
+export function AgGridComboBox({
+  ref,
+  value,
+  items,
+  onAdd,
+  onDelete,
+  onAddSuccess,
+  onDeleteSuccess,
+  stopEditing,
+  column,
+  node,
+  eGridCell,
+  placeholder = "새 항목",
+  addErrorMessage = "추가 실패",
+  deleteErrorMessage = "삭제 실패",
+}: AgGridComboBoxProps) {
   const colId = column?.getColId();
   const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
   const cellWidthPx = Math.max(column?.getActualWidth() ?? 200, 200);
@@ -205,6 +206,4 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
       )}
     </div>
   );
-});
-
-AgGridComboBox.displayName = "AgGridComboBox";
+}
