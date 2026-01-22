@@ -1,17 +1,14 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
-import type { ColDef, CellValueChangedEvent } from "ag-grid-community";
+import type {
+  ColDef,
+  CellValueChangedEvent,
+  CellClassParams,
+  ICellRendererParams,
+  RowClassParams,
+} from "ag-grid-community";
 import { useRef, useState, useMemo, useCallback } from "react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SearchBar,
-  Button,
-  Spinner,
-} from "@pf-dev/ui";
+import { SearchBar, Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
@@ -33,9 +30,16 @@ export function ProcessStatusPage() {
 
   // 검색 필터
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  // 검색 하이라이트용 상태
+  const [activeSearchTerm, setActiveSearchTerm] = useState("");
+
+  // 유효성 검사 함수 (공정률 ≤ 목표율)
+  const validateRow = useCallback((row: ProcessStatusData): boolean => {
+    return row.actualRate <= row.plannedRate;
+  }, []);
 
   // 임시 ID 생성 (신규 행)
   const tempIdRef = useRef(-1);
@@ -75,6 +79,67 @@ export function ProcessStatusPage() {
     return ids;
   }, [localAdditions, localEdits]);
 
+  // 변경된 행 스타일 적용
+  const getRowStyle = useCallback(
+    (params: RowClassParams<ProcessStatusData>) => {
+      if (params.data && editedRowIds.has(params.data.id)) {
+        return { backgroundColor: "#fef3c7" }; // amber-100
+      }
+      return undefined;
+    },
+    [editedRowIds]
+  );
+
+  // 검색어 하이라이트 함수
+  const highlightText = useCallback((text: string, searchTerm: string): React.ReactNode => {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <span key={index} style={{ backgroundColor: "#ffff00" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  }, []);
+
+  // 커스텀 셀 렌더러 (검색 하이라이트용)
+  const workTypeNameCellRenderer = useCallback(
+    (params: ICellRendererParams<ProcessStatusData>) => {
+      const value = params.data?.workTypeName ?? "";
+      if (activeSearchTerm) {
+        return <>{highlightText(value, activeSearchTerm)}</>;
+      }
+      return <>{value}</>;
+    },
+    [activeSearchTerm, highlightText]
+  );
+
+  const plannedRateCellRenderer = useCallback(
+    (params: ICellRendererParams<ProcessStatusData>) => {
+      const value = String(params.value ?? "");
+      if (activeSearchTerm) {
+        return <>{highlightText(value, activeSearchTerm)}</>;
+      }
+      return <>{value}</>;
+    },
+    [activeSearchTerm, highlightText]
+  );
+
+  const actualRateCellRenderer = useCallback(
+    (params: ICellRendererParams<ProcessStatusData>) => {
+      const value = String(params.value ?? "");
+      if (activeSearchTerm) {
+        return <>{highlightText(value, activeSearchTerm)}</>;
+      }
+      return <>{value}</>;
+    },
+    [activeSearchTerm, highlightText]
+  );
+
   // 컬럼 정의
   const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
     () => [
@@ -109,6 +174,7 @@ export function ProcessStatusPage() {
           }
           return false;
         },
+        cellRenderer: workTypeNameCellRenderer,
       },
       {
         headerName: "목표율 (%)",
@@ -121,6 +187,11 @@ export function ProcessStatusPage() {
           step: 1,
           min: 0,
           max: 100,
+        },
+        cellRenderer: plannedRateCellRenderer,
+        cellClassRules: {
+          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
+            params.data ? !validateRow(params.data) : false,
         },
       },
       {
@@ -135,9 +206,20 @@ export function ProcessStatusPage() {
           min: 0,
           max: 100,
         },
+        cellRenderer: actualRateCellRenderer,
+        cellClassRules: {
+          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
+            params.data ? !validateRow(params.data) : false,
+        },
       },
     ],
-    [workTypes]
+    [
+      workTypes,
+      workTypeNameCellRenderer,
+      plannedRateCellRenderer,
+      actualRateCellRenderer,
+      validateRow,
+    ]
   );
 
   const defaultColDef = useMemo<ColDef>(
@@ -150,28 +232,19 @@ export function ProcessStatusPage() {
 
   // 검색 필터링
   const handleSearch = useCallback(() => {
+    // 날짜 유효성 검사
+    if (startDate && endDate && startDate > endDate) {
+      toast.error("시작일자가 종료일자보다 늦을 수 없습니다.");
+      return;
+    }
+
     const filtered = allData.filter((row) => {
       const searchLower = search.toLowerCase();
       const filterSearch =
         search === "" ||
-        (() => {
-          switch (category) {
-            case "all":
-              return (
-                row.workTypeName.toLowerCase().includes(searchLower) ||
-                row.plannedRate.toString().includes(search) ||
-                row.actualRate.toString().includes(search)
-              );
-            case "name":
-              return row.workTypeName.toLowerCase().includes(searchLower);
-            case "plannedRate":
-              return row.plannedRate.toString().includes(search);
-            case "actualRate":
-              return row.actualRate.toString().includes(search);
-            default:
-              return false;
-          }
-        })();
+        row.workTypeName.toLowerCase().includes(searchLower) ||
+        row.plannedRate.toString().includes(search) ||
+        row.actualRate.toString().includes(search);
 
       const filterDate =
         (!startDate || row.workDate >= startDate) && (!endDate || row.workDate <= endDate);
@@ -180,15 +253,16 @@ export function ProcessStatusPage() {
     });
 
     setFilteredData(filtered);
-  }, [allData, search, category, startDate, endDate]);
+    setActiveSearchTerm(search);
+  }, [allData, search, startDate, endDate, toast]);
 
   // 필터 초기화
   const handleResetFilter = useCallback(() => {
     setFilteredData(null);
     setSearch("");
-    setCategory("all");
     setStartDate("");
     setEndDate("");
+    setActiveSearchTerm("");
   }, []);
 
   // 내보내기
@@ -215,6 +289,11 @@ export function ProcessStatusPage() {
       newMap.set(rowId, { ...existing, [field]: event.newValue });
       return newMap;
     });
+
+    // 공정률이 목표율을 초과하면 경고 표시
+    if (!validateRow(event.data)) {
+      toast.warning("공정률이 목표율을 초과했습니다.");
+    }
   };
 
   // 신규 행 생성
@@ -245,6 +324,13 @@ export function ProcessStatusPage() {
   const handleSave = async () => {
     if (editedRowIds.size === 0 && deletedIds.size === 0) {
       toast.error("저장할 변경 사항이 없습니다.");
+      return;
+    }
+
+    // 유효성 검사: 공정률이 목표율을 초과하는 데이터가 있는지 확인
+    const invalidRows = allData.filter((row) => editedRowIds.has(row.id) && !validateRow(row));
+    if (invalidRows.length > 0) {
+      toast.error("공정률이 목표율을 초과하는 데이터가 있습니다. 수정 후 저장해주세요.");
       return;
     }
 
@@ -362,21 +448,6 @@ export function ProcessStatusPage() {
 
       <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
         <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="mb-1 block text-sm font-medium text-gray-700">구분</label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">전체</SelectItem>
-                <SelectItem value="name">공정명</SelectItem>
-                <SelectItem value="plannedRate">목표율</SelectItem>
-                <SelectItem value="actualRate">공정률</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="flex-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">검색어</label>
             <SearchBar
@@ -394,7 +465,14 @@ export function ProcessStatusPage() {
             <input
               type="date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={(e) => {
+                const newStartDate = e.target.value;
+                if (endDate && newStartDate > endDate) {
+                  toast.warning("시작일자가 종료일자보다 늦을 수 없습니다.");
+                  return;
+                }
+                setStartDate(newStartDate);
+              }}
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -404,7 +482,14 @@ export function ProcessStatusPage() {
             <input
               type="date"
               value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={(e) => {
+                const newEndDate = e.target.value;
+                if (startDate && newEndDate < startDate) {
+                  toast.warning("종료일자가 시작일자보다 빠를 수 없습니다.");
+                  return;
+                }
+                setEndDate(newEndDate);
+              }}
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -417,8 +502,9 @@ export function ProcessStatusPage() {
               </Button>
             )}
             <Button onClick={handleSave} variant="outline" disabled={isSaving || !hasChanges}>
-              {isSaving ? "저장 중..." : "저장"}
-              {hasChanges && <span className="ml-1">({editedRowIds.size + deletedIds.size})</span>}
+              {isSaving
+                ? "저장 중..."
+                : `저장${hasChanges ? ` (${editedRowIds.size + deletedIds.size})` : ""}`}
             </Button>
             <Button onClick={handleExport} variant="outline">
               내보내기
@@ -454,6 +540,7 @@ export function ProcessStatusPage() {
             paginationPageSize={20}
             onCellValueChanged={handleCellValueChanged}
             getRowId={(params) => String(params.data.id)}
+            getRowStyle={getRowStyle}
           />
         )}
       </div>
