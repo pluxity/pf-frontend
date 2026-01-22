@@ -44,6 +44,16 @@ export async function getWorkTypes(): Promise<WorkType[]> {
   return response.data;
 }
 
+// 공정명 추가
+export async function createWorkType(name: string): Promise<void> {
+  await getApiClient().post<void>("/process-statuses/work-types", { name });
+}
+
+// 공정명 삭제
+export async function deleteWorkType(id: number): Promise<void> {
+  await getApiClient().delete<void>(`/process-statuses/work-types/${id}`);
+}
+
 // 공정현황 일괄 저장/수정/삭제
 export async function saveProcessStatuses(request: ProcessStatusBulkRequest): Promise<void> {
   await getApiClient().put<void>("/process-statuses", request);

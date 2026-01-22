@@ -6,20 +6,34 @@ import type {
   CellClassParams,
   ICellRendererParams,
   RowClassParams,
+  GridApi,
+  GridReadyEvent,
 } from "ag-grid-community";
 import { useRef, useState, useMemo, useCallback } from "react";
 import { SearchBar, Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
+import { AgGridPagination, AgGridComboBox } from "../../components";
 
 export function ProcessStatusPage() {
   const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const { toast } = useToastContext();
 
   // SWR 훅 사용
-  const { data, workTypes, isLoading, isError, error, isSaving, saveAndRefresh, refresh } =
-    useProcessStatus();
+  const {
+    data,
+    workTypes,
+    isLoading,
+    isError,
+    error,
+    isSaving,
+    saveAndRefresh,
+    refresh,
+    addWorkType,
+    removeWorkType,
+  } = useProcessStatus();
 
   // 로컬 편집 상태 (서버 데이터와 분리)
   const [localAdditions, setLocalAdditions] = useState<ProcessStatusData[]>([]);
@@ -90,6 +104,11 @@ export function ProcessStatusPage() {
     [editedRowIds]
   );
 
+  // 그리드 준비 완료 핸들러
+  const onGridReady = useCallback((event: GridReadyEvent) => {
+    setGridApi(event.api);
+  }, []);
+
   // 검색어 하이라이트 함수
   const highlightText = useCallback((text: string, searchTerm: string): React.ReactNode => {
     if (!searchTerm) return text;
@@ -147,8 +166,6 @@ export function ProcessStatusPage() {
         headerName: "작업일",
         field: "workDate",
         width: 150,
-        checkboxSelection: true,
-        headerCheckboxSelection: true,
         editable: true,
         cellEditor: "agDateStringCellEditor",
       },
@@ -157,10 +174,15 @@ export function ProcessStatusPage() {
         field: "workTypeId",
         flex: 2,
         editable: true,
-        cellEditor: "agSelectCellEditor",
+        cellEditor: AgGridComboBox,
         cellEditorParams: {
-          values: workTypes.map((wt) => wt.id),
+          items: workTypes,
+          onAdd: addWorkType,
+          onDelete: removeWorkType,
+          placeholder: "새 공정명",
+          deleteErrorMessage: "삭제 실패 (사용 중)",
         },
+        cellEditorPopup: true,
         valueFormatter: (params) => {
           const workType = workTypes.find((wt) => wt.id === params.value);
           return workType?.name ?? "";
@@ -219,6 +241,8 @@ export function ProcessStatusPage() {
       plannedRateCellRenderer,
       actualRateCellRenderer,
       validateRow,
+      addWorkType,
+      removeWorkType,
     ]
   );
 
@@ -286,7 +310,21 @@ export function ProcessStatusPage() {
     setLocalEdits((prev) => {
       const newMap = new Map(prev);
       const existing = newMap.get(rowId) ?? {};
-      newMap.set(rowId, { ...existing, [field]: event.newValue });
+
+      // workTypeId 변경 시 workTypeName도 함께 업데이트
+      if (field === "workTypeId") {
+        const workType = workTypes.find((wt) => wt.id === event.newValue);
+        if (workType) {
+          newMap.set(rowId, {
+            ...existing,
+            workTypeId: workType.id,
+            workTypeName: workType.name,
+          });
+        }
+      } else {
+        newMap.set(rowId, { ...existing, [field]: event.newValue });
+      }
+
       return newMap;
     });
 
@@ -513,9 +551,9 @@ export function ProcessStatusPage() {
         </div>
       </div>
 
-      <div className="flex-1">
+      <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-gray-200">
         {displayData.length === 0 ? (
-          <div className="flex h-full items-center justify-center rounded-lg border border-gray-200 bg-white">
+          <div className="flex flex-1 items-center justify-center bg-white">
             <div className="flex flex-col items-center gap-2 text-gray-500">
               <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -529,19 +567,30 @@ export function ProcessStatusPage() {
             </div>
           </div>
         ) : (
-          <AgGridReact
-            ref={gridRef}
-            rowData={displayData}
-            columnDefs={columnDefs}
-            defaultColDef={defaultColDef}
-            animateRows={true}
-            rowSelection="multiple"
-            pagination={true}
-            paginationPageSize={20}
-            onCellValueChanged={handleCellValueChanged}
-            getRowId={(params) => String(params.data.id)}
-            getRowStyle={getRowStyle}
-          />
+          <>
+            <div className="flex-1">
+              <AgGridReact
+                ref={gridRef}
+                rowData={displayData}
+                columnDefs={columnDefs}
+                defaultColDef={defaultColDef}
+                animateRows={true}
+                rowSelection={{
+                  mode: "multiRow",
+                  checkboxes: true,
+                  headerCheckbox: true,
+                }}
+                pagination={true}
+                paginationPageSize={20}
+                suppressPaginationPanel={true}
+                onGridReady={onGridReady}
+                onCellValueChanged={handleCellValueChanged}
+                getRowId={(params) => String(params.data.id)}
+                getRowStyle={getRowStyle}
+              />
+            </div>
+            <AgGridPagination api={gridApi} pageSizeOptions={[10, 20, 50, 100]} />
+          </>
         )}
       </div>
 
