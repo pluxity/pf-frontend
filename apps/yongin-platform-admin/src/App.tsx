@@ -8,7 +8,7 @@ function AppContent() {
   return (
     <>
       <AppRoutes />
-      <Toaster toasts={toasts} onDismiss={dismissToast} position="top-right" />
+      <Toaster toasts={toasts} onDismiss={dismissToast} />
     </>
   );
 }
