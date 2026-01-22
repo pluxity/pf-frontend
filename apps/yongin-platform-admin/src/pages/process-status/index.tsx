@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import type { ColDef, CellValueChangedEvent } from "ag-grid-community";
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo, useCallback } from "react";
 import {
   Select,
   SelectTrigger,
@@ -10,71 +10,134 @@ import {
   SelectItem,
   SearchBar,
   Button,
+  Spinner,
 } from "@pf-dev/ui";
-import type { ProcessStatusData } from "./types";
+import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
-import { v4 as uuidv4 } from "uuid";
-import { getProcessStatusList } from "./services/processStatusService";
+import { useProcessStatus } from "./hooks";
 
 export function ProcessStatusPage() {
   const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
   const { toast } = useToastContext();
-  const [allData, setAllData] = useState<ProcessStatusData[]>([]);
-  const [filteredData, setFilteredData] = useState<ProcessStatusData[]>([]);
+
+  // SWR 훅 사용
+  const { data, workTypes, isLoading, isError, error, isSaving, saveAndRefresh, refresh } =
+    useProcessStatus();
+
+  // 로컬 편집 상태 (서버 데이터와 분리)
+  const [localAdditions, setLocalAdditions] = useState<ProcessStatusData[]>([]);
+  const [localEdits, setLocalEdits] = useState<Map<number | null, Partial<ProcessStatusData>>>(
+    new Map()
+  );
+  const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
+
+  // 검색 필터
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [editedRows, setEditedRows] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await getProcessStatusList();
-      setAllData(data);
-      setFilteredData(data);
-    };
-    loadData();
-  }, []);
+  // 임시 ID 생성 (신규 행)
+  const tempIdRef = useRef(-1);
+  const generateTempId = () => {
+    tempIdRef.current -= 1;
+    return tempIdRef.current;
+  };
 
+  // 서버 데이터 + 로컬 편집을 합친 전체 데이터
+  const allData = useMemo(() => {
+    // 서버 데이터에서 삭제된 것 제외하고 편집 적용
+    const serverData = (data ?? [])
+      .filter((row) => row.id === null || !deletedIds.has(row.id))
+      .map((row) => {
+        const edits = localEdits.get(row.id);
+        return edits ? { ...row, ...edits } : row;
+      });
+
+    // 로컬 추가 데이터에 편집 적용
+    const addedData = localAdditions.map((row) => {
+      const edits = localEdits.get(row.id);
+      return edits ? { ...row, ...edits } : row;
+    });
+
+    return [...addedData, ...serverData];
+  }, [data, localAdditions, localEdits, deletedIds]);
+
+  // 필터링된 데이터
+  const [filteredData, setFilteredData] = useState<ProcessStatusData[] | null>(null);
+  const displayData = filteredData ?? allData;
+
+  // 변경된 행 ID 목록
+  const editedRowIds = useMemo(() => {
+    const ids = new Set<number | null>();
+    localAdditions.forEach((row) => ids.add(row.id));
+    localEdits.forEach((_, id) => ids.add(id));
+    return ids;
+  }, [localAdditions, localEdits]);
+
+  // 컬럼 정의
   const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
     () => [
       {
-        headerName: "입력일자",
-        field: "date",
+        headerName: "작업일",
+        field: "workDate",
+        width: 150,
         checkboxSelection: true,
         headerCheckboxSelection: true,
         editable: true,
+        cellEditor: "agDateStringCellEditor",
       },
       {
         headerName: "공정명",
-        field: "name",
+        field: "workTypeId",
         flex: 2,
         editable: true,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+          values: workTypes.map((wt) => wt.id),
+        },
+        valueFormatter: (params) => {
+          const workType = workTypes.find((wt) => wt.id === params.value);
+          return workType?.name ?? "";
+        },
+        valueSetter: (params) => {
+          const workType = workTypes.find((wt) => wt.id === params.newValue);
+          if (workType) {
+            params.data.workTypeId = workType.id;
+            params.data.workTypeName = workType.name;
+            return true;
+          }
+          return false;
+        },
       },
       {
         headerName: "목표율 (%)",
-        field: "targetRate",
+        field: "plannedRate",
         flex: 1,
         editable: true,
+        cellEditor: "agNumberCellEditor",
         cellEditorParams: {
           precision: 0,
           step: 1,
-          showStepperButtons: true,
+          min: 0,
+          max: 100,
         },
       },
       {
         headerName: "공정률 (%)",
-        field: "progressRate",
+        field: "actualRate",
         flex: 1,
         editable: true,
+        cellEditor: "agNumberCellEditor",
         cellEditorParams: {
           precision: 0,
           step: 1,
-          showStepperButtons: true,
+          min: 0,
+          max: 100,
         },
       },
     ],
-    []
+    [workTypes]
   );
 
   const defaultColDef = useMemo<ColDef>(
@@ -85,44 +148,50 @@ export function ProcessStatusPage() {
     []
   );
 
-  const handleSearch = () => {
+  // 검색 필터링
+  const handleSearch = useCallback(() => {
     const filtered = allData.filter((row) => {
+      const searchLower = search.toLowerCase();
       const filterSearch =
         search === "" ||
         (() => {
           switch (category) {
             case "all":
               return (
-                row.name.includes(search) ||
-                row.targetRate.toString().includes(search) ||
-                row.progressRate.toString().includes(search)
+                row.workTypeName.toLowerCase().includes(searchLower) ||
+                row.plannedRate.toString().includes(search) ||
+                row.actualRate.toString().includes(search)
               );
             case "name":
-              return row.name.includes(search);
-
-            case "targetRate":
-              return row.targetRate.toString().includes(search);
-
-            case "progressRate":
-              return row.progressRate.toString().includes(search);
-
+              return row.workTypeName.toLowerCase().includes(searchLower);
+            case "plannedRate":
+              return row.plannedRate.toString().includes(search);
+            case "actualRate":
+              return row.actualRate.toString().includes(search);
             default:
               return false;
           }
         })();
 
-      const filterDate = (!startDate || row.date >= startDate) && (!endDate || row.date <= endDate);
+      const filterDate =
+        (!startDate || row.workDate >= startDate) && (!endDate || row.workDate <= endDate);
 
       return filterSearch && filterDate;
     });
 
     setFilteredData(filtered);
+  }, [allData, search, category, startDate, endDate]);
+
+  // 필터 초기화
+  const handleResetFilter = useCallback(() => {
+    setFilteredData(null);
     setSearch("");
     setCategory("all");
     setStartDate("");
     setEndDate("");
-  };
+  }, []);
 
+  // 내보내기
   const handleExport = () => {
     const date = new Date();
     const dateString = date.toISOString().split("T")[0];
@@ -134,55 +203,151 @@ export function ProcessStatusPage() {
     });
   };
 
+  // 셀 값 변경
   const handleCellValueChanged = (event: CellValueChangedEvent<ProcessStatusData>) => {
     if (!event.data) return;
     const rowId = event.data.id;
-    setEditedRows((prev) => new Set(prev).add(rowId));
+    const field = event.colDef.field as keyof ProcessStatusData;
+
+    setLocalEdits((prev) => {
+      const newMap = new Map(prev);
+      const existing = newMap.get(rowId) ?? {};
+      newMap.set(rowId, { ...existing, [field]: event.newValue });
+      return newMap;
+    });
   };
 
+  // 신규 행 생성
   const handleCreate = () => {
-    const date = new Date();
-    const today = date.toISOString().split("T")[0] ?? "";
-    const newId = uuidv4();
+    if (workTypes.length === 0) {
+      toast.error("공정명을 먼저 등록해주세요.");
+      return;
+    }
+
+    const today = new Date().toISOString().split("T")[0] ?? "";
+    const tempId = generateTempId();
+    const defaultWorkType = workTypes[0]!;
+
     const newRow: ProcessStatusData = {
-      id: newId,
-      date: today,
-      name: "",
-      targetRate: 0,
-      progressRate: 0,
+      id: tempId,
+      workDate: today,
+      workTypeId: defaultWorkType.id,
+      workTypeName: defaultWorkType.name,
+      plannedRate: 0,
+      actualRate: 0,
+      isNew: true,
     };
-    const newAllData = [newRow, ...allData];
-    setAllData(newAllData);
-    setEditedRows((prev) => new Set(prev).add(newId));
+
+    setLocalAdditions((prev) => [newRow, ...prev]);
   };
 
+  // 저장
   const handleSave = async () => {
-    const dataToSave = allData.filter((row) => editedRows.has(row.id));
-
-    if (dataToSave.length === 0) {
+    if (editedRowIds.size === 0 && deletedIds.size === 0) {
       toast.error("저장할 변경 사항이 없습니다.");
       return;
     }
 
     try {
-      toast.success(`${dataToSave.length}건 저장되었습니다.`);
-      setEditedRows(new Set());
-    } catch (error) {
-      console.error("Save error:", error);
+      // 저장할 데이터 수집
+      const dataToSave = allData.filter((row) => editedRowIds.has(row.id));
+
+      const request: ProcessStatusBulkRequest = {
+        upserts: dataToSave.map((row) => ({
+          id: row.id !== null && row.id > 0 ? row.id : undefined,
+          workDate: row.workDate,
+          workTypeId: row.workTypeId,
+          plannedRate: row.plannedRate,
+          actualRate: row.actualRate,
+        })),
+        deletedIds: Array.from(deletedIds),
+      };
+
+      await saveAndRefresh(request);
+
+      // 로컬 상태 초기화
+      setLocalAdditions([]);
+      setLocalEdits(new Map());
+      setDeletedIds(new Set());
+      setFilteredData(null);
+
+      toast.success("저장되었습니다.");
+    } catch (err) {
+      console.error("Save error:", err);
       toast.error("저장에 실패했습니다.");
     }
   };
 
+  // 삭제
   const handleDelete = () => {
     const selectedRows = gridRef.current?.api.getSelectedRows();
     if (!selectedRows || selectedRows.length === 0) {
       toast.error("삭제할 항목을 선택해주세요.");
       return;
     }
+
     const selectedIds = selectedRows.map((row) => row.id);
-    const newData = allData.filter((row) => !selectedIds.includes(row.id));
-    setAllData(newData);
+
+    // 기존 데이터는 deletedIds에 추가
+    selectedIds.forEach((id) => {
+      if (id !== null && id > 0) {
+        setDeletedIds((prev) => new Set(prev).add(id));
+      }
+    });
+
+    // 로컬 추가 데이터는 바로 제거
+    setLocalAdditions((prev) => prev.filter((row) => !selectedIds.includes(row.id)));
+
+    // 편집 상태에서도 제거
+    setLocalEdits((prev) => {
+      const newMap = new Map(prev);
+      selectedIds.forEach((id) => newMap.delete(id));
+      return newMap;
+    });
+
+    // 필터된 데이터에서도 제거
+    if (filteredData) {
+      setFilteredData(filteredData.filter((row) => !selectedIds.includes(row.id)));
+    }
   };
+
+  // 로딩 상태 렌더링
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner size="lg" />
+          <p className="text-gray-500">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태 렌더링
+  if (isError) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-red-500">
+            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-700">
+            {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
+          </p>
+          <Button onClick={() => refresh()}>다시 시도</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const hasChanges = editedRowIds.size > 0 || deletedIds.size > 0;
 
   return (
     <div className="flex h-full flex-col">
@@ -206,8 +371,8 @@ export function ProcessStatusPage() {
               <SelectContent>
                 <SelectItem value="all">전체</SelectItem>
                 <SelectItem value="name">공정명</SelectItem>
-                <SelectItem value="targetRate">목표율</SelectItem>
-                <SelectItem value="progressRate">공정률</SelectItem>
+                <SelectItem value="plannedRate">목표율</SelectItem>
+                <SelectItem value="actualRate">공정률</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -246,8 +411,14 @@ export function ProcessStatusPage() {
 
           <div className="flex items-end gap-2">
             <Button onClick={handleSearch}>검색</Button>
-            <Button onClick={handleSave} variant="outline">
-              저장 {editedRows.size > 0 && <span>({editedRows.size})</span>}
+            {filteredData && (
+              <Button onClick={handleResetFilter} variant="outline">
+                초기화
+              </Button>
+            )}
+            <Button onClick={handleSave} variant="outline" disabled={isSaving || !hasChanges}>
+              {isSaving ? "저장 중..." : "저장"}
+              {hasChanges && <span className="ml-1">({editedRowIds.size + deletedIds.size})</span>}
             </Button>
             <Button onClick={handleExport} variant="outline">
               내보내기
@@ -257,17 +428,34 @@ export function ProcessStatusPage() {
       </div>
 
       <div className="flex-1">
-        <AgGridReact
-          ref={gridRef}
-          rowData={filteredData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          animateRows={true}
-          rowSelection="multiple"
-          pagination={true}
-          paginationPageSize={20}
-          onCellValueChanged={handleCellValueChanged}
-        />
+        {displayData.length === 0 ? (
+          <div className="flex h-full items-center justify-center rounded-lg border border-gray-200 bg-white">
+            <div className="flex flex-col items-center gap-2 text-gray-500">
+              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p>데이터가 없습니다.</p>
+            </div>
+          </div>
+        ) : (
+          <AgGridReact
+            ref={gridRef}
+            rowData={displayData}
+            columnDefs={columnDefs}
+            defaultColDef={defaultColDef}
+            animateRows={true}
+            rowSelection="multiple"
+            pagination={true}
+            paginationPageSize={20}
+            onCellValueChanged={handleCellValueChanged}
+            getRowId={(params) => String(params.data.id)}
+          />
+        )}
       </div>
 
       <div className="mt-4 flex gap-2">
