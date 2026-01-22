@@ -1,40 +1,60 @@
-import type { ProcessStatusData } from "../types";
+import { getApiClient, type DataResponse } from "@pf-dev/api";
+import type {
+  ProcessStatusResponse,
+  ProcessStatusData,
+  ProcessStatusBulkRequest,
+  WorkType,
+  PageResponse,
+} from "../types";
 
-const MOCK_DATA: ProcessStatusData[] = [
-  {
-    id: "1",
-    date: "2026-01-20",
-    name: "도로공",
-    targetRate: 100,
-    progressRate: 60,
-  },
-  {
-    id: "2",
-    date: "2026-01-21",
-    name: "토공",
-    targetRate: 100,
-    progressRate: 10,
-  },
-  {
-    id: "3",
-    date: "2026-01-22",
-    name: "비개착",
-    targetRate: 100,
-    progressRate: 20,
-  },
-  {
-    id: "4",
-    date: "2026-01-23",
-    name: "교량/옹벽",
-    targetRate: 100,
-    progressRate: 33,
-  },
-];
+// API 응답을 그리드 데이터로 변환
+function toGridData(response: ProcessStatusResponse): ProcessStatusData {
+  return {
+    id: response.id,
+    workDate: response.workDate,
+    workTypeId: response.workType.id,
+    workTypeName: response.workType.name,
+    plannedRate: response.plannedRate,
+    actualRate: response.actualRate,
+  };
+}
 
-export const getProcessStatusList = (): Promise<ProcessStatusData[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(MOCK_DATA);
-    }, 1000);
-  });
-};
+// 공정현황 목록 조회
+export async function getProcessStatusList(
+  page?: number,
+  size?: number
+): Promise<{ data: ProcessStatusData[]; totalElements: number }> {
+  const response = await getApiClient().get<DataResponse<PageResponse<ProcessStatusResponse>>>(
+    "/process-statuses",
+    {
+      params: { page, size },
+    }
+  );
+  return {
+    data: response.data.content.map(toGridData),
+    totalElements: response.data.totalElements,
+  };
+}
+
+// 공정명 목록 조회
+export async function getWorkTypes(): Promise<WorkType[]> {
+  const response = await getApiClient().get<DataResponse<WorkType[]>>(
+    "/process-statuses/work-types"
+  );
+  return response.data;
+}
+
+// 공정명 추가
+export async function createWorkType(name: string): Promise<void> {
+  await getApiClient().post<void>("/process-statuses/work-types", { name });
+}
+
+// 공정명 삭제
+export async function deleteWorkType(id: number): Promise<void> {
+  await getApiClient().delete<void>(`/process-statuses/work-types/${id}`);
+}
+
+// 공정현황 일괄 저장/수정/삭제
+export async function saveProcessStatuses(request: ProcessStatusBulkRequest): Promise<void> {
+  await getApiClient().put<void>("/process-statuses", request);
+}
