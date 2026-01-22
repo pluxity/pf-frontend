@@ -10,11 +10,12 @@ import type {
   GridReadyEvent,
 } from "ag-grid-community";
 import { useRef, useState, useMemo, useCallback } from "react";
-import { SearchBar, Button, Spinner } from "@pf-dev/ui";
+import { Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
-import { AgGridPagination, AgGridComboBox } from "../../components";
+import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
+import type { SearchFilters } from "../../components";
 
 export function ProcessStatusPage() {
   const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
@@ -41,11 +42,6 @@ export function ProcessStatusPage() {
     new Map()
   );
   const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
-
-  // 검색 필터
-  const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
 
   // 검색 하이라이트용 상태
   const [activeSearchTerm, setActiveSearchTerm] = useState("");
@@ -179,8 +175,9 @@ export function ProcessStatusPage() {
           items: workTypes,
           onAdd: addWorkType,
           onDelete: removeWorkType,
+          onAddSuccess: (name: string) => toast.success(`"${name}" 공정명이 추가되었습니다.`),
+          onDeleteSuccess: () => toast.success("공정명이 삭제되었습니다."),
           placeholder: "새 공정명",
-          deleteErrorMessage: "삭제 실패 (사용 중)",
         },
         cellEditorPopup: true,
         valueFormatter: (params) => {
@@ -243,6 +240,7 @@ export function ProcessStatusPage() {
       validateRow,
       addWorkType,
       removeWorkType,
+      toast,
     ]
   );
 
@@ -255,37 +253,33 @@ export function ProcessStatusPage() {
   );
 
   // 검색 필터링
-  const handleSearch = useCallback(() => {
-    // 날짜 유효성 검사
-    if (startDate && endDate && startDate > endDate) {
-      toast.error("시작일자가 종료일자보다 늦을 수 없습니다.");
-      return;
-    }
+  const handleSearch = useCallback(
+    (filters: SearchFilters) => {
+      const { search, startDate, endDate } = filters;
 
-    const filtered = allData.filter((row) => {
-      const searchLower = search.toLowerCase();
-      const filterSearch =
-        search === "" ||
-        row.workTypeName.toLowerCase().includes(searchLower) ||
-        row.plannedRate.toString().includes(search) ||
-        row.actualRate.toString().includes(search);
+      const filtered = allData.filter((row) => {
+        const searchLower = search.toLowerCase();
+        const filterSearch =
+          search === "" ||
+          row.workTypeName.toLowerCase().includes(searchLower) ||
+          row.plannedRate.toString().includes(search) ||
+          row.actualRate.toString().includes(search);
 
-      const filterDate =
-        (!startDate || row.workDate >= startDate) && (!endDate || row.workDate <= endDate);
+        const filterDate =
+          (!startDate || row.workDate >= startDate) && (!endDate || row.workDate <= endDate);
 
-      return filterSearch && filterDate;
-    });
+        return filterSearch && filterDate;
+      });
 
-    setFilteredData(filtered);
-    setActiveSearchTerm(search);
-  }, [allData, search, startDate, endDate, toast]);
+      setFilteredData(filtered);
+      setActiveSearchTerm(search);
+    },
+    [allData]
+  );
 
   // 필터 초기화
   const handleResetFilter = useCallback(() => {
     setFilteredData(null);
-    setSearch("");
-    setStartDate("");
-    setEndDate("");
     setActiveSearchTerm("");
   }, []);
 
@@ -398,7 +392,8 @@ export function ProcessStatusPage() {
       toast.success("저장되었습니다.");
     } catch (err) {
       console.error("Save error:", err);
-      toast.error("저장에 실패했습니다.");
+      const message = err instanceof Error ? err.message : "저장에 실패했습니다.";
+      toast.error(message);
     }
   };
 
@@ -485,60 +480,16 @@ export function ProcessStatusPage() {
       </div>
 
       <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
-        <div className="flex gap-4">
-          <div className="flex-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">검색어</label>
-            <SearchBar
-              className="w-full"
-              placeholder="검색..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+        <div className="flex items-end gap-4">
+          <div className="flex-1">
+            <AgGridSearchFilter
               onSearch={handleSearch}
-              onClear={() => setSearch("")}
+              onReset={handleResetFilter}
+              searchPlaceholder="공정명, 목표율, 공정률 검색..."
+              onDateError={(msg) => toast.warning(msg)}
             />
           </div>
-
-          <div className="flex-1">
-            <label className="mb-1 block text-sm font-medium text-gray-700">시작일자</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                const newStartDate = e.target.value;
-                if (endDate && newStartDate > endDate) {
-                  toast.warning("시작일자가 종료일자보다 늦을 수 없습니다.");
-                  return;
-                }
-                setStartDate(newStartDate);
-              }}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex-1">
-            <label className="mb-1 block text-sm font-medium text-gray-700">종료일자</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                const newEndDate = e.target.value;
-                if (startDate && newEndDate < startDate) {
-                  toast.warning("종료일자가 시작일자보다 빠를 수 없습니다.");
-                  return;
-                }
-                setEndDate(newEndDate);
-              }}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          <div className="flex items-end gap-2">
-            <Button onClick={handleSearch}>검색</Button>
-            {filteredData && (
-              <Button onClick={handleResetFilter} variant="outline">
-                초기화
-              </Button>
-            )}
+          <div className="flex gap-2">
             <Button onClick={handleSave} variant="outline" disabled={isSaving || !hasChanges}>
               {isSaving
                 ? "저장 중..."

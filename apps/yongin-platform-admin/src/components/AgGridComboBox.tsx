@@ -12,6 +12,8 @@ export interface AgGridComboBoxProps extends ICellEditorParams {
   items: ComboBoxItem[];
   onAdd?: (name: string) => Promise<void>;
   onDelete?: (id: number) => Promise<void>;
+  onAddSuccess?: (name: string) => void;
+  onDeleteSuccess?: () => void;
   placeholder?: string;
   addErrorMessage?: string;
   deleteErrorMessage?: string;
@@ -29,6 +31,8 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
     items,
     onAdd,
     onDelete,
+    onAddSuccess,
+    onDeleteSuccess,
     stopEditing,
     column,
     node,
@@ -39,15 +43,28 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
   } = props;
 
   const colId = column?.getColId();
-  const cellWidth = Math.max(column?.getActualWidth() ?? 200, 200);
-  const cellHeight = eGridCell?.offsetHeight ?? 40;
+  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const cellWidthPx = Math.max(column?.getActualWidth() ?? 200, 200);
+  const cellHeightPx = eGridCell?.offsetHeight ?? 40;
+  const cellWidthRem = cellWidthPx / rootFontSize;
+  const cellHeightRem = cellHeightPx / rootFontSize;
 
   const [selectedId, setSelectedId] = useState<number>(value as number);
   const [newName, setNewName] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [openUpward, setOpenUpward] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // 콤보박스 방향 결정 (아래 공간이 부족하면 위로)
+  useEffect(() => {
+    if (!eGridCell) return;
+    const cellRect = eGridCell.getBoundingClientRect();
+    const dropdownHeightPx = 25 * rootFontSize; // 25rem
+    const spaceBelow = window.innerHeight - cellRect.bottom;
+    setOpenUpward(spaceBelow < dropdownHeightPx);
+  }, [eGridCell, rootFontSize]);
 
   useImperativeHandle(
     ref,
@@ -80,15 +97,22 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
     [stopEditing, node, colId]
   );
 
+  const getErrorMessage = (err: unknown, fallback: string): string => {
+    if (err instanceof Error) return err.message;
+    return fallback;
+  };
+
   const handleAdd = async () => {
     if (!newName.trim() || !onAdd) return;
+    const name = newName.trim();
     setIsAdding(true);
     setError(null);
     try {
-      await onAdd(newName.trim());
+      await onAdd(name);
       setNewName("");
-    } catch {
-      setError(addErrorMessage);
+      onAddSuccess?.(name);
+    } catch (err) {
+      setError(getErrorMessage(err, addErrorMessage));
     } finally {
       setIsAdding(false);
     }
@@ -101,8 +125,9 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
     setError(null);
     try {
       await onDelete(id);
-    } catch {
-      setError(deleteErrorMessage);
+      onDeleteSuccess?.();
+    } catch (err) {
+      setError(getErrorMessage(err, deleteErrorMessage));
     } finally {
       setDeletingId(null);
     }
@@ -123,7 +148,10 @@ export const AgGridComboBox = forwardRef<AgGridComboBoxRef, AgGridComboBoxProps>
   return (
     <div
       ref={containerRef}
-      style={{ width: cellWidth, top: cellHeight }}
+      style={{
+        width: `${cellWidthRem}rem`,
+        ...(openUpward ? { bottom: 0 } : { top: `${cellHeightRem}rem` }),
+      }}
       className="absolute left-0 z-50 rounded-lg border border-gray-200 bg-white shadow-lg"
     >
       {error && (

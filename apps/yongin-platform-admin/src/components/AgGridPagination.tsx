@@ -87,7 +87,7 @@ export function AgGridPagination({
       <div className="flex items-center gap-2 text-sm text-gray-600">
         <span>페이지당</span>
         <Select value={String(pageSize)} onValueChange={handlePageSizeChange}>
-          <SelectTrigger className="h-8 w-[70px]">
+          <SelectTrigger className="h-8 w-[4.375rem]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
