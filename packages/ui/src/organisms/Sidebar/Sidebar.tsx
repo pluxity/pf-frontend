@@ -154,14 +154,11 @@ function SidebarItem({
           {icon}
         </span>
       )}
-      <span
-        className={cn(
-          "flex-1 truncate transition-all duration-200",
-          collapsed ? "opacity-0 w-0" : "opacity-100 delay-150"
-        )}
-      >
-        {Array.isArray(children) ? children.find((c) => typeof c === "string") : children}
-      </span>
+      {!collapsed && (
+        <span className="flex-1 truncate">
+          {Array.isArray(children) ? children.find((c) => typeof c === "string") : children}
+        </span>
+      )}
       {hasNestedItems && !collapsed && (
         <span className="flex-shrink-0">
           {expanded ? <ChevronDown size="sm" /> : <ChevronRight size="sm" />}
@@ -171,11 +168,11 @@ function SidebarItem({
   );
 
   const itemClasses = cn(
-    "group relative flex h-10 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm transition-colors",
+    "group relative flex h-10 cursor-pointer items-center rounded-lg text-sm transition-colors",
     active
       ? "bg-[#F5F8FF] font-bold text-brand"
       : "font-medium text-[#666673] hover:bg-[#F5F5F7] hover:text-[#333340]",
-    collapsed ? "w-10 justify-center px-0" : "w-full",
+    collapsed ? "w-10 justify-center px-0" : "w-full gap-3 px-3",
     className
   );
 
