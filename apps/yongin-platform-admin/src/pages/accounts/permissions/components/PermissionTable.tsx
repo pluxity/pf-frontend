@@ -87,12 +87,12 @@ function PermissionScopeCell({ badges }: { badges: PermissionBadge[] }) {
   };
 
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-center gap-2">
       {visibleBadges.map((badge, idx) => (
         <Badge
           key={idx}
           variant={badge.isDomain ? "primary" : "warning"}
-          className="max-w-24 truncate"
+          className="max-w-56 truncate px-3 py-1"
           title={formatBadgeLabel(badge)}
         >
           {formatBadgeLabel(badge)}
@@ -144,7 +144,7 @@ export function PermissionTable({ permissions, onEdit, onDelete }: PermissionTab
       {
         key: "domainPermissions",
         header: "권한 범위",
-        className: "w-80",
+        className: "w-[30rem]",
         render: (permission) => {
           const badges = getPermissionBadges(permission);
           return <PermissionScopeCell badges={badges} />;
