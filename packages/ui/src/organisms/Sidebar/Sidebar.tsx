@@ -156,7 +156,7 @@ function SidebarItem({
       )}
       <span
         className={cn(
-          "flex-1 truncate transition-opacity duration-200",
+          "flex-1 truncate transition-all duration-200",
           collapsed ? "opacity-0 w-0" : "opacity-100 delay-150"
         )}
       >
@@ -215,7 +215,7 @@ function SidebarSection({ label, children, className }: SidebarSectionProps) {
       {label && (
         <div
           className={cn(
-            "py-2 text-xs font-bold uppercase tracking-wider text-[#808088] transition-opacity duration-200",
+            "py-2 text-xs font-bold uppercase tracking-wider text-[#808088] transition-all duration-200",
             collapsed ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100 delay-150"
           )}
         >
