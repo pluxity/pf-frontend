@@ -384,6 +384,8 @@ catalog:
 - @README.md - 프로젝트 전체 개요
 - @CI-CD.md - CI/CD 및 배포 가이드
 - @DEPLOY.md - 로컬 배포 테스트
+- @docs/react19-guide.md - React 19 개발 가이드
+- @docs/skills-guide.md - Claude Code Skills 활용 가이드
 - @packages/ui/README.md - UI 컴포넌트 문서
 - @packages/map/README.md - 3D 지도 패키지
 - @packages/three/README.md - 3D 뷰어 패키지
