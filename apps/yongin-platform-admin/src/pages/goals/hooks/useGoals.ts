@@ -73,9 +73,20 @@ export function useGoals() {
 }
 
 export const CalculateGoal = (goal: GoalData): GoalData => {
-  const startDate = new Date(goal.startDate);
-  const completionDate = new Date(goal.completionDate);
-  const currentDate = new Date(goal.inputDate);
+  const toUtcDate = (dateString: string) => {
+    if (!dateString) return new Date(0);
+    const parts = dateString.split("-").map(Number);
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+
+    if (!year || !month || !day) return new Date(0);
+
+    return new Date(Date.UTC(year, month - 1, day));
+  };
+  const startDate = toUtcDate(goal.startDate);
+  const completionDate = toUtcDate(goal.completionDate);
+  const currentDate = toUtcDate(goal.inputDate);
 
   // 누계량(전일 누계량 + 금일작업량)
   const cumulativeQuantity = goal.previousCumulativeQuantity + goal.workQuantity;
