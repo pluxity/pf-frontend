@@ -1,26 +1,9 @@
 import { lazy } from "react";
-import { Home, Dashboard, Settings, Users, User, Lock, Grid, FileText } from "@pf-dev/ui";
+import { Settings, Users, User, Lock, FileText } from "@pf-dev/ui";
 
 import type { RouteConfig, SectionConfig } from "./types";
 
-// 코드 스플리팅: 페이지 컴포넌트를 동적으로 로드
-const HomePage = lazy(() => import("@/pages/home").then((m) => ({ default: m.HomePage })));
 const LoginPage = lazy(() => import("@/pages/login").then((m) => ({ default: m.LoginPage })));
-const DashboardPage = lazy(() =>
-  import("@/pages/dashboard").then((m) => ({ default: m.DashboardPage }))
-);
-const CrudCardPage = lazy(() =>
-  import("@/pages/examples/crud-card").then((m) => ({ default: m.CrudCardPage }))
-);
-const CrudListPage = lazy(() =>
-  import("@/pages/examples/crud-list").then((m) => ({ default: m.CrudListPage }))
-);
-const CrudListCreatePage = lazy(() =>
-  import("@/pages/examples/crud-list/create").then((m) => ({ default: m.CrudListCreatePage }))
-);
-const CrudListDetailPage = lazy(() =>
-  import("@/pages/examples/crud-list/detail").then((m) => ({ default: m.CrudListDetailPage }))
-);
 const UserAccountsPage = lazy(() =>
   import("@/pages/accounts/users").then((m) => ({ default: m.UserAccountsPage }))
 );
@@ -37,35 +20,42 @@ const ProcessStatusPage = lazy(() =>
   import("@/pages/process-status").then((m) => ({ default: m.ProcessStatusPage }))
 );
 const GoalsPage = lazy(() => import("@/pages/goals").then((m) => ({ default: m.GoalsPage })));
+const PasswordChangePage = lazy(() =>
+  import("@/pages/settings").then((m) => ({ default: m.PasswordChangePage }))
+);
+const SystemSettingsPage = lazy(() =>
+  import("@/pages/system").then((m) => ({ default: m.SystemSettingsPage }))
+);
 
 export const sectionConfigs: SectionConfig[] = [
   {
-    id: "main",
+    id: "management",
+    label: "관리",
+    collapsible: true,
+    defaultExpanded: true,
     order: 1,
   },
-
   {
-    id: "examples",
-    label: "예제",
+    id: "settings",
+    label: "개인 설정",
     collapsible: true,
-    defaultExpanded: false,
+    defaultExpanded: true,
     order: 2,
+    dividerBefore: true,
   },
-
-  // 관리자 전용 섹션: ADMIN 역할만 접근 가능
   {
     id: "accounts",
     label: "사용자 관리",
     collapsible: true,
     defaultExpanded: true,
     order: 3,
-    roles: ["ADMIN"], // 필수: 관리자 기능은 ADMIN 역할만 접근 가능
+    roles: ["ADMIN"],
     dividerBefore: "관리자 기능",
   },
   {
     id: "system",
     order: 4,
-    roles: ["ADMIN"], // 필수: 시스템 설정은 ADMIN 역할만 접근 가능
+    roles: ["ADMIN"],
   },
 ];
 
@@ -77,45 +67,26 @@ export const publicRoutes: RouteConfig[] = [
 ];
 
 export const protectedRoutes: RouteConfig[] = [
-  // 공통 페이지: 모든 로그인 사용자 접근 가능 (roles 미지정)
-  {
-    path: "/",
-    element: HomePage,
-    menu: {
-      label: "홈",
-      icon: Home,
-      sectionId: "main",
-      order: 1,
-    },
-  },
-  {
-    path: "/dashboard",
-    element: DashboardPage,
-    menu: {
-      label: "대시보드",
-      icon: Dashboard,
-      sectionId: "main",
-      order: 2,
-    },
-  },
   {
     path: "/attendance",
     element: AttendancePage,
+    permissions: [{ resourceType: "ATTENDANCE_STATUS", minLevel: "READ" }],
     menu: {
       label: "출역 현황",
       icon: FileText,
-      sectionId: "main",
-      order: 3,
+      sectionId: "management",
+      order: 1,
     },
   },
   {
     path: "/process-status",
     element: ProcessStatusPage,
+    permissions: [{ resourceType: "PROCESS_STATUS", minLevel: "READ" }],
     menu: {
       label: "공정 현황",
       icon: FileText,
-      sectionId: "main",
-      order: 4,
+      sectionId: "management",
+      order: 2,
     },
   },
   {
@@ -130,20 +101,19 @@ export const protectedRoutes: RouteConfig[] = [
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능
   {
-    path: "/system/settings",
-    element: HomePage,
-    roles: ["ADMIN"], // 필수: 시스템 설정은 ADMIN만 접근
+    path: "/settings/account",
+    element: PasswordChangePage,
     menu: {
-      label: "시스템 설정",
-      icon: Settings,
-      sectionId: "system",
+      label: "계정 관리",
+      icon: User,
+      sectionId: "settings",
       order: 1,
     },
   },
   {
     path: "/accounts/users",
     element: UserAccountsPage,
-    roles: ["ADMIN"], // 필수: 사용자 관리는 ADMIN만 접근
+    roles: ["ADMIN"],
     menu: {
       label: "사용자",
       icon: Users,
@@ -154,7 +124,7 @@ export const protectedRoutes: RouteConfig[] = [
   {
     path: "/accounts/roles",
     element: RolesPage,
-    roles: ["ADMIN"], // 필수: 역할 관리는 ADMIN만 접근
+    roles: ["ADMIN"],
     menu: {
       label: "역할",
       icon: User,
@@ -165,7 +135,7 @@ export const protectedRoutes: RouteConfig[] = [
   {
     path: "/accounts/permissions",
     element: PermissionsPage,
-    roles: ["ADMIN"], // 필수: 권한 관리는 ADMIN만 접근
+    roles: ["ADMIN"],
     menu: {
       label: "권한",
       icon: Lock,
@@ -173,35 +143,15 @@ export const protectedRoutes: RouteConfig[] = [
       order: 3,
     },
   },
-  // 예제 페이지: 모든 로그인 사용자 접근 가능 (프로젝트별 커스터마이징 가능)
   {
-    path: "/examples/crud-card",
-    element: CrudCardPage,
+    path: "/system/settings",
+    element: SystemSettingsPage,
+    roles: ["ADMIN"],
     menu: {
-      label: "CRUD 카드형",
-      icon: Grid,
-      sectionId: "examples",
+      label: "시스템 설정",
+      icon: Settings,
+      sectionId: "system",
       order: 1,
     },
-  },
-  {
-    path: "/examples/crud-list",
-    element: CrudListPage,
-    menu: {
-      label: "CRUD 리스트형",
-      icon: FileText,
-      sectionId: "examples",
-      order: 2,
-    },
-    children: [
-      {
-        path: "/examples/crud-list/create",
-        element: CrudListCreatePage,
-      },
-      {
-        path: "/examples/crud-list/:id",
-        element: CrudListDetailPage,
-      },
-    ],
   },
 ];
