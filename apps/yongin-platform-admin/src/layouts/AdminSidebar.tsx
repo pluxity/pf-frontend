@@ -6,8 +6,10 @@ import { cn } from "@pf-dev/ui/utils";
 import { useAuthStore, selectUser } from "@pf-dev/services";
 
 import { sectionConfigs, protectedRoutes } from "@/routes/config";
-import { buildMenuSections, isPathActive } from "@/routes/utils";
+import { buildMenuSections, isPathActive, extractDomainPermissions } from "@/routes/utils";
 import type { MenuSection } from "@/routes/types";
+
+import ciSvg from "/ci.svg";
 
 interface AdminSidebarProps {
   collapsed?: boolean;
@@ -25,9 +27,10 @@ export function AdminSidebar({
   const user = useAuthStore(selectUser);
 
   const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
+  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
   const menuSections = useMemo(
-    () => buildMenuSections(protectedRoutes, sectionConfigs, userRoles),
-    [userRoles]
+    () => buildMenuSections(protectedRoutes, sectionConfigs, userRoles, userPermissions),
+    [userRoles, userPermissions]
   );
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
@@ -101,19 +104,23 @@ export function AdminSidebar({
             )}
             {(isExpanded || sidebarCollapsed) && (
               <div className={cn(!sidebarCollapsed && "pl-3")}>
-                {section.items.map((item) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <Sidebar.Item
-                      key={item.path}
-                      icon={<IconComponent size="md" />}
-                      active={isPathActive(location.pathname, item.path)}
-                      onClick={() => handleItemClick(item.path)}
-                    >
-                      {item.label}
-                    </Sidebar.Item>
-                  );
-                })}
+                {section.items.length > 0 ? (
+                  section.items.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <Sidebar.Item
+                        key={item.path}
+                        icon={<IconComponent size="md" />}
+                        active={isPathActive(location.pathname, item.path)}
+                        onClick={() => handleItemClick(item.path)}
+                      >
+                        {item.label}
+                      </Sidebar.Item>
+                    );
+                  })
+                ) : (
+                  <div className="px-3 py-2 text-xs text-gray-400">권한이 없습니다</div>
+                )}
               </div>
             )}
           </div>
@@ -125,19 +132,23 @@ export function AdminSidebar({
       <div key={section.id}>
         {divider}
         <Sidebar.Section label={section.label}>
-          {section.items.map((item) => {
-            const IconComponent = item.icon;
-            return (
-              <Sidebar.Item
-                key={item.path}
-                icon={<IconComponent size="md" />}
-                active={isPathActive(location.pathname, item.path)}
-                onClick={() => handleItemClick(item.path)}
-              >
-                {item.label}
-              </Sidebar.Item>
-            );
-          })}
+          {section.items.length > 0 ? (
+            section.items.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Sidebar.Item
+                  key={item.path}
+                  icon={<IconComponent size="md" />}
+                  active={isPathActive(location.pathname, item.path)}
+                  onClick={() => handleItemClick(item.path)}
+                >
+                  {item.label}
+                </Sidebar.Item>
+              );
+            })
+          ) : (
+            <div className="px-3 py-2 text-xs text-gray-400">권한이 없습니다</div>
+          )}
         </Sidebar.Section>
       </div>
     );
@@ -146,7 +157,7 @@ export function AdminSidebar({
   return (
     <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={onCollapsedChange}>
       <Sidebar.Header
-        logo={<img src="/ci.svg" alt="용인 플랫폼 시티 CI" className="h-8 w-8 object-contain" />}
+        logo={<img src={ciSvg} alt="용인 플랫폼 시티 CI" className="h-8 w-8 object-contain" />}
         title="용인 플랫폼 시티"
       >
         <Sidebar.CollapseButton iconOnly />
