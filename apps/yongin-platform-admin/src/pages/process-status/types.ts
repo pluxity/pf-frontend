@@ -1,3 +1,6 @@
+// 공통 타입 re-export
+export type { PageResponse } from "@/types";
+
 // API 응답 타입
 export interface WorkType {
   id: number;
@@ -10,15 +13,6 @@ export interface ProcessStatusResponse {
   workType: WorkType;
   plannedRate: number;
   actualRate: number;
-}
-
-export interface PageResponse<T> {
-  content: T[];
-  pageNumber: number;
-  pageSize: number;
-  totalElements: number;
-  first: boolean;
-  last: boolean;
 }
 
 // API 요청 타입
@@ -37,7 +31,7 @@ export interface ProcessStatusBulkRequest {
 
 // 그리드용 내부 타입
 export interface ProcessStatusData {
-  id: number | null; // null이면 신규
+  id: number; // 양수: 서버 데이터, 음수: 신규
   workDate: string;
   workTypeId: number;
   workTypeName: string;

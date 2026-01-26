@@ -1,3 +1,6 @@
+// 공통 타입 re-export
+export type { PageResponse } from "@/types";
+
 // API 응답 타입
 export interface ConstructionSection {
   id: number;
@@ -25,15 +28,6 @@ export interface GoalResponse {
   delayDays: number;
 }
 
-export interface PageResponse<T> {
-  content: T[];
-  pageNumber: number;
-  pageSize: number;
-  totalElements: number;
-  first: boolean;
-  last: boolean;
-}
-
 // API 요청 타입
 export interface GoalRequest {
   id?: number;
@@ -59,7 +53,7 @@ export interface GoalBulkRequest {
 
 // 그리드용 내부 타입
 export interface GoalData {
-  id: number | null; // null이면 신규
+  id: number; // 양수: 서버 데이터, 음수: 신규
   inputDate: string;
   constructionSectionId: number;
   constructionSectionName: string;
