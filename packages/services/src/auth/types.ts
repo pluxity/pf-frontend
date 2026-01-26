@@ -1,8 +1,22 @@
+export type PermissionLevel = "READ" | "WRITE" | "ADMIN";
+
+export interface DomainPermission {
+  resourceType: string;
+  level: PermissionLevel;
+}
+
+export interface Permission {
+  id: number;
+  name: string;
+  description?: string;
+  domainPermissions?: DomainPermission[];
+}
+
 export interface Role {
   id: number;
   name: string;
   description?: string;
-  permissions?: string[];
+  permissions?: Permission[];
 }
 
 export interface User {

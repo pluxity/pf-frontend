@@ -4,6 +4,18 @@ export interface IconProps {
   size?: "sm" | "md" | "lg";
 }
 
+export type PermissionLevel = "READ" | "WRITE" | "ADMIN";
+
+export interface DomainPermission {
+  resourceType: string;
+  level: PermissionLevel;
+}
+
+export interface PermissionRequirement {
+  resourceType: string;
+  minLevel: PermissionLevel;
+}
+
 export interface MenuConfig {
   label: string;
   icon: ComponentType<IconProps>;
@@ -17,6 +29,7 @@ export interface RouteConfig {
   menu?: MenuConfig;
   children?: RouteConfig[];
   roles?: string[];
+  permissions?: PermissionRequirement[];
 }
 
 export interface SectionConfig {
@@ -26,7 +39,8 @@ export interface SectionConfig {
   defaultExpanded?: boolean;
   order: number;
   roles?: string[];
-  dividerBefore?: boolean | string; // true면 디바이더만, string이면 라벨 포함
+  permissions?: PermissionRequirement[];
+  dividerBefore?: boolean | string;
 }
 
 export interface MenuItem {
