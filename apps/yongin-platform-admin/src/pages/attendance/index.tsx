@@ -202,11 +202,55 @@ export function AttendancePage() {
     });
   }, []);
 
+  // 로딩 상태 렌더링
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner size="lg" />
+          <p className="text-gray-500">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태 렌더링
+  if (isError) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-red-500">
+            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-700">
+            {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
+          </p>
+          <Button onClick={() => refreshData()}>다시 시도</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const hasChanges = editedRowIds.size > 0;
+
   return (
     <div className="flex h-full flex-col">
       <div className="mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">출역 관리</h1>
-        <p className="mt-1 text-sm text-gray-500">출역 현황을 조회하고 작업 내용을 관리합니다.</p>
+        <div className="flex flex-col gap-3">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">출역 관리</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              출역 현황을 조회하고 작업 내용을 관리합니다.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
@@ -222,10 +266,8 @@ export function AttendancePage() {
             />
           </div>
           <div className="flex gap-2">
-            <Button onClick={handleSave} disabled={isSaving || editedRowIds.size === 0}>
-              {isSaving
-                ? "저장 중..."
-                : `저장${editedRowIds.size > 0 ? ` (${editedRowIds.size})` : ""}`}
+            <Button onClick={handleSave} variant="outline" disabled={isSaving || !hasChanges}>
+              {isSaving ? "저장 중..." : `저장${hasChanges ? ` (${editedRowIds.size})` : ""}`}
             </Button>
             <Button onClick={handleExport} variant="outline">
               내보내기
@@ -234,23 +276,24 @@ export function AttendancePage() {
         </div>
       </div>
 
-      <div className="flex-1 rounded-lg border border-gray-200 bg-white">
-        {isLoading ? (
-          <div className="flex h-full items-center justify-center">
-            <Spinner size="lg" />
-          </div>
-        ) : isError ? (
-          <div className="flex h-full flex-col items-center justify-center">
-            <div className="text-red-500">
-              {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
+      <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-gray-200">
+        {displayData.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center bg-white">
+            <div className="flex flex-col items-center gap-2 text-gray-500">
+              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p>데이터가 없습니다.</p>
             </div>
-            <Button onClick={() => refreshData()} className="mt-4">
-              다시 시도
-            </Button>
           </div>
         ) : (
           <>
-            <div className="h-[calc(100%-48px)]">
+            <div className="flex-1">
               <AgGridReact
                 ref={gridRef}
                 rowData={displayData}
