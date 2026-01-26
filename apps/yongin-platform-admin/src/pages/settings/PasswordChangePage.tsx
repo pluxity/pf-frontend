@@ -72,6 +72,30 @@ export function PasswordChangePage() {
 
       <Card>
         <CardHeader>
+          <CardTitle>계정 정보</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="space-y-2">
+            <div className="flex gap-2">
+              <dt className="w-24 font-medium text-muted-foreground">아이디</dt>
+              <dd>{user?.username}</dd>
+            </div>
+            <div className="flex gap-2">
+              <dt className="w-24 font-medium text-muted-foreground">이름</dt>
+              <dd>{user?.name}</dd>
+            </div>
+            {user?.department && (
+              <div className="flex gap-2">
+                <dt className="w-24 font-medium text-muted-foreground">부서</dt>
+                <dd>{user.department}</dd>
+              </div>
+            )}
+          </dl>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>비밀번호 변경</CardTitle>
           <CardDescription>보안을 위해 주기적으로 비밀번호를 변경해주세요.</CardDescription>
         </CardHeader>
@@ -105,30 +129,6 @@ export function PasswordChangePage() {
               {isLoading ? "변경 중..." : "비밀번호 변경"}
             </Button>
           </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>계정 정보</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="space-y-2">
-            <div className="flex gap-2">
-              <dt className="w-24 font-medium text-muted-foreground">아이디</dt>
-              <dd>{user?.username}</dd>
-            </div>
-            <div className="flex gap-2">
-              <dt className="w-24 font-medium text-muted-foreground">이름</dt>
-              <dd>{user?.name}</dd>
-            </div>
-            {user?.department && (
-              <div className="flex gap-2">
-                <dt className="w-24 font-medium text-muted-foreground">부서</dt>
-                <dd>{user.department}</dd>
-              </div>
-            )}
-          </dl>
         </CardContent>
       </Card>
     </div>
