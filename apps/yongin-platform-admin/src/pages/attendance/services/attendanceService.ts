@@ -1,30 +1,44 @@
-import type { AttendanceData } from "../types";
+import { getApiClient, type DataResponse } from "@pf-dev/api";
+import type { AttendanceResponse, AttendanceData, PageResponse } from "../types";
 
-const MOCK_DATA: AttendanceData[] = [
-  {
-    id: "1",
-    inputDate: "2026-01-07",
-    deviceName: "단말기1",
-    todayContent: "토공 작업 진행",
-  },
-  {
-    id: "2",
-    inputDate: "2026-01-07",
-    deviceName: "단말기2",
-    todayContent: "도로공 작업 완료",
-  },
-  {
-    id: "3",
-    inputDate: "2026-01-07",
-    deviceName: "단말기3",
-    todayContent: "비계착 설치 중",
-  },
-];
+function toGridData(response: AttendanceResponse): AttendanceData {
+  return {
+    id: response.id,
+    attendanceDate: response.attendanceDate,
+    deviceName: response.deviceName,
+    attendanceCount: response.attendanceCount,
+    workContent: response.workContent ?? "",
+  };
+}
 
-export const getAttendanceList = (): Promise<AttendanceData[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(MOCK_DATA);
-    }, 1000);
-  });
-};
+export async function getAttendanceList(
+  page?: number,
+  size?: number
+): Promise<{ data: AttendanceData[]; totalElements: number }> {
+  const response = await getApiClient().get<DataResponse<PageResponse<AttendanceResponse>>>(
+    "/attendances",
+    {
+      params: { page, size },
+    }
+  );
+  return {
+    data: response.data.content.map(toGridData),
+    totalElements: response.data.totalElements,
+  };
+}
+
+export async function getLatestAttendances(): Promise<AttendanceData[]> {
+  const response =
+    await getApiClient().get<DataResponse<AttendanceResponse[]>>("/attendances/latest");
+  return response.data.map(toGridData);
+}
+
+export async function updateAttendance(id: number, workContent: string): Promise<void> {
+  await getApiClient().patch<void>(`/attendances/${id}`, { workContent });
+}
+
+export async function updateAttendances(
+  updates: { id: number; workContent: string }[]
+): Promise<void> {
+  await Promise.all(updates.map(({ id, workContent }) => updateAttendance(id, workContent)));
+}

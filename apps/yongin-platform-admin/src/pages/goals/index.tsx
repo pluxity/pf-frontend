@@ -601,6 +601,7 @@ export function GoalsPage() {
                   mode: "multiRow",
                   checkboxes: true,
                   headerCheckbox: true,
+                  selectAll: "currentPage",
                 }}
                 pagination={true}
                 paginationPageSize={20}

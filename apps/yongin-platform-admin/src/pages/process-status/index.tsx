@@ -512,6 +512,7 @@ export function ProcessStatusPage() {
                   mode: "multiRow",
                   checkboxes: true,
                   headerCheckbox: true,
+                  selectAll: "currentPage",
                 }}
                 pagination={true}
                 paginationPageSize={20}
