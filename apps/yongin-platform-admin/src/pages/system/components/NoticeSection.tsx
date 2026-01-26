@@ -24,13 +24,30 @@ import {
   ModalFooter,
   ModalTitle,
 } from "@pf-dev/ui/organisms";
-import { Button, Input, Label, Plus, Edit, Close, MoreVertical, Spinner } from "@pf-dev/ui/atoms";
+import {
+  Button,
+  Input,
+  Label,
+  Textarea,
+  Plus,
+  Edit,
+  Close,
+  MoreVertical,
+  Spinner,
+} from "@pf-dev/ui/atoms";
 import { useToastContext } from "@/contexts";
 import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "../hooks";
 import type { Notice, NoticeFormData } from "../types";
 
 const noticeSchema = z.object({
-  title: z.string().min(1, "공지사항 제목을 입력해주세요"),
+  title: z
+    .string()
+    .min(1, "공지사항 제목을 입력해주세요")
+    .max(255, "제목은 255자 이내로 입력해주세요"),
+  content: z
+    .string()
+    .min(1, "공지사항 내용을 입력해주세요")
+    .max(1000, "내용은 1000자 이내로 입력해주세요"),
 });
 
 export function NoticeSection() {
@@ -51,19 +68,19 @@ export function NoticeSection() {
     formState: { errors },
   } = useForm<NoticeFormData>({
     resolver: zodResolver(noticeSchema),
-    defaultValues: { title: "" },
+    defaultValues: { title: "", content: "" },
   });
 
   const handleCreate = () => {
     setSelectedNotice(null);
-    reset({ title: "" });
+    reset({ title: "", content: "" });
     setFormModalOpen(true);
   };
 
   const handleEdit = useCallback(
     (notice: Notice) => {
       setSelectedNotice(notice);
-      reset({ title: notice.title });
+      reset({ title: notice.title, content: notice.content });
       setFormModalOpen(true);
     },
     [reset]
@@ -130,7 +147,17 @@ export function NoticeSection() {
       {
         key: "title",
         header: "제목",
+        className: "w-48",
         sortable: true,
+      },
+      {
+        key: "content",
+        header: "내용",
+        render: (notice) => (
+          <span className="line-clamp-1" title={notice.content}>
+            {notice.content}
+          </span>
+        ),
       },
       {
         key: "updatedAt",
@@ -209,10 +236,28 @@ export function NoticeSection() {
           </ModalHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
-              <div className="space-y-2">
-                <Label htmlFor="title">제목</Label>
-                <Input id="title" placeholder="공지사항 제목을 입력하세요" {...register("title")} />
-                {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">제목</Label>
+                  <Input
+                    id="title"
+                    placeholder="공지사항 제목을 입력하세요"
+                    {...register("title")}
+                  />
+                  {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="content">내용</Label>
+                  <Textarea
+                    id="content"
+                    placeholder="공지사항 내용을 입력하세요"
+                    rows={5}
+                    {...register("content")}
+                  />
+                  {errors.content && (
+                    <p className="text-sm text-red-500">{errors.content.message}</p>
+                  )}
+                </div>
               </div>
             </ModalBody>
             <ModalFooter>
