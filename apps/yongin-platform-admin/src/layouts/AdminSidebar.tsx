@@ -9,6 +9,8 @@ import { sectionConfigs, protectedRoutes } from "@/routes/config";
 import { buildMenuSections, isPathActive } from "@/routes/utils";
 import type { MenuSection } from "@/routes/types";
 
+import ciSvg from "/ci.svg";
+
 interface AdminSidebarProps {
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
@@ -146,7 +148,7 @@ export function AdminSidebar({
   return (
     <Sidebar collapsed={sidebarCollapsed} onCollapsedChange={onCollapsedChange}>
       <Sidebar.Header
-        logo={<img src="/ci.svg" alt="용인 플랫폼 시티 CI" className="h-8 w-8 object-contain" />}
+        logo={<img src={ciSvg} alt="용인 플랫폼 시티 CI" className="h-8 w-8 object-contain" />}
         title="용인 플랫폼 시티"
       >
         <Sidebar.CollapseButton iconOnly />

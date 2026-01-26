@@ -1,11 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Button, User } from "@pf-dev/ui";
 import { NoticeMarquee } from "../components/NoticeMarquee";
 import { DateTime } from "../components/DateTime";
 
 export function RootLayout() {
-  const navigate = useNavigate();
-
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -29,7 +27,7 @@ export function RootLayout() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/admin")}
+              onClick={() => (window.location.href = "/admin")}
               className="bg-white 4k:w-26 4k:h-26"
             >
               <User size="lg" className="text-gray-600 4k:scale-300" />
