@@ -18,18 +18,24 @@ export function AgGridPagination({
   const [pageSize, setPageSize] = useState(20);
 
   useEffect(() => {
-    if (!api) return;
+    if (!api || api.isDestroyed()) return;
 
     const syncState = () => {
-      setCurrentPage(api.paginationGetCurrentPage());
-      setTotalPages(api.paginationGetTotalPages());
-      setTotalRows(api.paginationGetRowCount());
-      setPageSize(api.paginationGetPageSize());
+      if (!api.isDestroyed()) {
+        setCurrentPage(api.paginationGetCurrentPage() ?? 0);
+        setTotalPages(api.paginationGetTotalPages() ?? 0);
+        setTotalRows(api.paginationGetRowCount() ?? 0);
+        setPageSize(api.paginationGetPageSize() ?? 20);
+      }
     };
 
     syncState();
     api.addEventListener("paginationChanged", syncState);
-    return () => api.removeEventListener("paginationChanged", syncState);
+    return () => {
+      if (!api.isDestroyed()) {
+        api.removeEventListener("paginationChanged", syncState);
+      }
+    };
   }, [api]);
 
   const goToFirstPage = () => api?.paginationGoToFirstPage();
