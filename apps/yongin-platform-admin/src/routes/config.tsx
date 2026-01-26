@@ -92,6 +92,7 @@ export const protectedRoutes: RouteConfig[] = [
   {
     path: "/goals",
     element: GoalsPage,
+    permissions: [{ resourceType: "GOAL", minLevel: "READ" }],
     menu: {
       label: "목표 관리",
       icon: FileText,

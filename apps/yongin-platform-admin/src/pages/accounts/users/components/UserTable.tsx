@@ -35,7 +35,7 @@ export function UserTable({ users, onEdit, onDelete, onResetPassword }: UserTabl
         key: "name",
         header: "이름",
         sortable: true,
-        className: "w-32",
+        className: "w-48",
       },
       {
         key: "department",
@@ -53,6 +53,7 @@ export function UserTable({ users, onEdit, onDelete, onResetPassword }: UserTabl
       {
         key: "roles",
         header: "역할",
+        className: "w-32",
         render: (user) =>
           user.roles.length > 0 ? (
             user.roles.length === 1 ? (
