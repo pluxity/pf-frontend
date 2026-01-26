@@ -48,6 +48,7 @@ git log --oneline $(git describe --tags --abbrev=0)..HEAD
 ```
 
 ### 릴리즈 가능 조건
+
 - [ ] 모든 CI 통과
 - [ ] 스테이징 테스트 완료
 - [ ] 크리티컬 버그 없음
@@ -115,11 +116,11 @@ git diff packages/*/package.json
 
 ### 버전 규칙
 
-| 변경 유형 | 버전 업 | 예시 |
-|----------|---------|------|
-| Breaking Change | Major | 1.0.0 → 2.0.0 |
-| 새 기능 | Minor | 1.0.0 → 1.1.0 |
-| 버그 수정 | Patch | 1.0.0 → 1.0.1 |
+| 변경 유형       | 버전 업 | 예시          |
+| --------------- | ------- | ------------- |
+| Breaking Change | Major   | 1.0.0 → 2.0.0 |
+| 새 기능         | Minor   | 1.0.0 → 1.1.0 |
+| 버그 수정       | Patch   | 1.0.0 → 1.0.1 |
 
 ---
 
@@ -138,12 +139,33 @@ git tag --list | tail -5
 ### 커밋 & 푸시
 
 ```bash
-# 버전 업데이트 커밋
+# 버전 업데이트 커밋 (이슈번호 포함 필수)
 git add .
-git commit -m "chore: release @pf-dev/ui@1.2.5, @pf-dev/map@0.1.2"
+git commit -m "#이슈번호 - chore(release): @pf-dev/ui@1.2.5"
 
-# 태그와 함께 푸시
-git push --follow-tags
+# 예시
+git commit -m "#204 - chore(release): @pf-dev/ui@1.2.5"
+git commit -m "#205 - chore(release): @pf-dev/ui@1.2.6, @pf-dev/map@0.1.2"
+```
+
+### [필수] 사용자 확인 후 푸시
+
+**⚠️ 반드시 사용자 승인을 받은 후 푸시할 것**
+
+```bash
+# 1. 변경사항 최종 확인
+git log --oneline -1
+git tag --list | tail -3
+
+# 2. 사용자 승인 대기
+#    → "푸시해도 될까요?" 확인 필수
+
+# 3. 해당 릴리즈 태그만 푸시 (--follow-tags 사용 금지!)
+git push
+git push origin @pf-dev/ui@1.2.5
+
+# 여러 패키지인 경우
+git push origin @pf-dev/ui@1.2.5 @pf-dev/map@0.1.2
 ```
 
 ---
@@ -254,3 +276,33 @@ git push
 # 또는 이전 태그로 체크아웃
 git checkout @pf-dev/ui@1.2.4
 ```
+
+---
+
+## 태그 관리 대상 패키지
+
+다음 패키지들만 태그와 버전 관리를 진행합니다:
+
+| 패키지             | 설명                   |
+| ------------------ | ---------------------- |
+| `@pf-dev/ui`       | UI 컴포넌트 라이브러리 |
+| `@pf-dev/map`      | CesiumJS 3D 지도       |
+| `@pf-dev/three`    | Three.js 3D 뷰어       |
+| `@pf-dev/cctv`     | 영상 스트리밍          |
+| `@pf-dev/services` | 공통 서비스 (인증 등)  |
+
+**태그 관리하지 않는 패키지:**
+
+- `@pf-dev/fonts` - 폰트 패키지
+- `@pf-dev/api` - API 클라이언트
+- `@pf-dev/eslint-config` - ESLint 설정
+- `@pf-dev/typescript-config` - TypeScript 설정
+
+---
+
+## 주의사항
+
+- **[필수] 푸시 전 사용자 승인 필수** - 버전/태그 확인 후 승인 받기
+- **[필수] `--follow-tags` 사용 금지** - 이번 릴리즈 태그만 명시적으로 푸시
+- **[필수] 커밋 메시지에 이슈번호 포함** - `#이슈번호 - chore(release): 패키지@버전`
+- **[필수] 태그 관리 대상 패키지만 릴리즈** - 위 목록 참고
