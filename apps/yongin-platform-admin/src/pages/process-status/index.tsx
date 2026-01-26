@@ -14,8 +14,10 @@ import { Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
+import { validateProcessStatus, isValidProcessStatus } from "./validation";
 import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
+import { highlightText } from "@/utils";
 
 export function ProcessStatusPage() {
   const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
@@ -46,11 +48,6 @@ export function ProcessStatusPage() {
   // 검색 하이라이트용 상태
   const [activeSearchTerm, setActiveSearchTerm] = useState("");
 
-  // 유효성 검사 함수 (공정률 ≤ 목표율)
-  const validateRow = useCallback((row: ProcessStatusData): boolean => {
-    return row.actualRate <= row.plannedRate;
-  }, []);
-
   // 임시 ID 생성 (신규 행)
   const tempIdRef = useRef(-1);
   const generateTempId = () => {
@@ -62,7 +59,7 @@ export function ProcessStatusPage() {
   const allData = useMemo(() => {
     // 서버 데이터에서 삭제된 것 제외하고 편집 적용
     const serverData = (data ?? [])
-      .filter((row) => row.id === null || !deletedIds.has(row.id))
+      .filter((row) => !deletedIds.has(row.id))
       .map((row) => {
         const edits = localEdits.get(row.id);
         return edits ? { ...row, ...edits } : row;
@@ -105,22 +102,6 @@ export function ProcessStatusPage() {
     setGridApi(event.api);
   }, []);
 
-  // 검색어 하이라이트 함수
-  const highlightText = useCallback((text: string, searchTerm: string): React.ReactNode => {
-    if (!searchTerm) return text;
-    const regex = new RegExp(`(${searchTerm})`, "gi");
-    const parts = text.split(regex);
-    return parts.map((part, index) =>
-      regex.test(part) ? (
-        <span key={index} style={{ backgroundColor: "#ffff00" }}>
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  }, []);
-
   // 커스텀 셀 렌더러 (검색 하이라이트용)
   const workTypeNameCellRenderer = useCallback(
     (params: ICellRendererParams<ProcessStatusData>) => {
@@ -130,7 +111,7 @@ export function ProcessStatusPage() {
       }
       return <>{value}</>;
     },
-    [activeSearchTerm, highlightText]
+    [activeSearchTerm]
   );
 
   const plannedRateCellRenderer = useCallback(
@@ -141,7 +122,7 @@ export function ProcessStatusPage() {
       }
       return <>{value}</>;
     },
-    [activeSearchTerm, highlightText]
+    [activeSearchTerm]
   );
 
   const actualRateCellRenderer = useCallback(
@@ -152,7 +133,7 @@ export function ProcessStatusPage() {
       }
       return <>{value}</>;
     },
-    [activeSearchTerm, highlightText]
+    [activeSearchTerm]
   );
 
   // 컬럼 정의
@@ -210,7 +191,7 @@ export function ProcessStatusPage() {
         cellRenderer: plannedRateCellRenderer,
         cellClassRules: {
           "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data ? !validateRow(params.data) : false,
+            params.data ? !isValidProcessStatus(params.data) : false,
         },
       },
       {
@@ -228,7 +209,7 @@ export function ProcessStatusPage() {
         cellRenderer: actualRateCellRenderer,
         cellClassRules: {
           "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data ? !validateRow(params.data) : false,
+            params.data ? !isValidProcessStatus(params.data) : false,
         },
       },
     ],
@@ -237,7 +218,6 @@ export function ProcessStatusPage() {
       workTypeNameCellRenderer,
       plannedRateCellRenderer,
       actualRateCellRenderer,
-      validateRow,
       addWorkType,
       removeWorkType,
       toast,
@@ -322,9 +302,10 @@ export function ProcessStatusPage() {
       return newMap;
     });
 
-    // 공정률이 목표율을 초과하면 경고 표시
-    if (!validateRow(event.data)) {
-      toast.warning("공정률이 목표율을 초과했습니다.");
+    // 유효성 검사
+    const errors = validateProcessStatus(event.data);
+    if (errors.length > 0 && errors[0]) {
+      toast.warning(errors[0].message);
     }
   };
 
@@ -359,20 +340,20 @@ export function ProcessStatusPage() {
       return;
     }
 
-    // 유효성 검사: 공정률이 목표율을 초과하는 데이터가 있는지 확인
-    const invalidRows = allData.filter((row) => editedRowIds.has(row.id) && !validateRow(row));
-    if (invalidRows.length > 0) {
-      toast.error("공정률이 목표율을 초과하는 데이터가 있습니다. 수정 후 저장해주세요.");
-      return;
-    }
-
     try {
       // 저장할 데이터 수집
       const dataToSave = allData.filter((row) => editedRowIds.has(row.id));
 
+      // 유효성 검사
+      const allErrors = dataToSave.flatMap((row) => validateProcessStatus(row));
+      if (allErrors.length > 0 && allErrors[0]) {
+        toast.error(`유효성 검사 실패: ${allErrors[0].message}`);
+        return;
+      }
+
       const request: ProcessStatusBulkRequest = {
         upserts: dataToSave.map((row) => ({
-          id: row.id !== null && row.id > 0 ? row.id : undefined,
+          id: row.id > 0 ? row.id : undefined,
           workDate: row.workDate,
           workTypeId: row.workTypeId,
           plannedRate: row.plannedRate,

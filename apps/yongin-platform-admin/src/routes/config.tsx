@@ -72,7 +72,7 @@ export const protectedRoutes: RouteConfig[] = [
     element: AttendancePage,
     permissions: [{ resourceType: "ATTENDANCE_STATUS", minLevel: "READ" }],
     menu: {
-      label: "출역 현황",
+      label: "출역 관리",
       icon: FileText,
       sectionId: "management",
       order: 1,
@@ -83,7 +83,7 @@ export const protectedRoutes: RouteConfig[] = [
     element: ProcessStatusPage,
     permissions: [{ resourceType: "PROCESS_STATUS", minLevel: "READ" }],
     menu: {
-      label: "공정 현황",
+      label: "공정 관리",
       icon: FileText,
       sectionId: "management",
       order: 2,
@@ -95,8 +95,8 @@ export const protectedRoutes: RouteConfig[] = [
     menu: {
       label: "목표 관리",
       icon: FileText,
-      sectionId: "main",
-      order: 5,
+      sectionId: "management",
+      order: 3,
     },
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능

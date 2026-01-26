@@ -13,8 +13,10 @@ import { Button, Progress, Spinner } from "@pf-dev/ui";
 import type { GoalData, GoalBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useGoals, CalculateGoal } from "./hooks";
+import { validateGoal } from "./validation";
 import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
+import { formatDateKST, highlightText } from "@/utils";
 
 export function GoalsPage() {
   const gridRef = useRef<AgGridReactType<GoalData>>(null);
@@ -52,7 +54,7 @@ export function GoalsPage() {
   const allData = useMemo(() => {
     // 서버 데이터에서 삭제된 것 제외하고 편집 적용
     const serverData = (data ?? [])
-      .filter((row) => row.id === null || !deletedIds.has(row.id))
+      .filter((row) => !deletedIds.has(row.id))
       .map((row) => {
         const edits = localEdits.get(row.id);
         const merged = edits ? { ...row, ...edits } : row;
@@ -97,22 +99,6 @@ export function GoalsPage() {
     setGridApi(event.api);
   }, []);
 
-  // 검색어 하이라이트 함수
-  const highlightText = useCallback((text: string, searchTerm: string): React.ReactNode => {
-    if (!searchTerm) return text;
-    const regex = new RegExp(`(${searchTerm})`, "gi");
-    const parts = text.split(regex);
-    return parts.map((part, index) =>
-      regex.test(part) ? (
-        <span key={index} style={{ backgroundColor: "#ffff00" }}>
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  }, []);
-
   // 커스텀 셀 렌더러 (검색 하이라이트용)
   const constructionSectionNameCellRenderer = useCallback(
     (params: ICellRendererParams<GoalData>) => {
@@ -122,7 +108,7 @@ export function GoalsPage() {
       }
       return <>{value}</>;
     },
-    [activeSearchTerm, highlightText]
+    [activeSearchTerm]
   );
 
   const columnDefs = useMemo<ColDef<GoalData>[]>(
@@ -342,6 +328,12 @@ export function GoalsPage() {
     if (updatedData) {
       const recalculated = CalculateGoal({ ...updatedData, [field]: event.newValue });
       event.api.applyTransaction({ update: [recalculated] });
+
+      // 유효성 검사
+      const errors = validateGoal(recalculated);
+      if (errors.length > 0 && errors[0]) {
+        toast.warning(errors[0].message);
+      }
     }
   };
 
@@ -352,10 +344,7 @@ export function GoalsPage() {
       return;
     }
 
-    const todayDate = new Date();
-    const today = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, "0")}-${String(
-      todayDate.getDate()
-    ).padStart(2, "0")}`;
+    const today = formatDateKST();
     const tempId = generateTempId();
     const defaultSection = constructionSections[0]!;
 
@@ -392,6 +381,13 @@ export function GoalsPage() {
       // 저장할 데이터 수집
       const dataToSave = allData.filter((row) => editedRowIds.has(row.id));
 
+      // 유효성 검사
+      const allErrors = dataToSave.flatMap((row) => validateGoal(row));
+      if (allErrors.length > 0 && allErrors[0]) {
+        toast.error(`유효성 검사 실패: ${allErrors[0].message}`);
+        return;
+      }
+
       // 삭제될 항목 중에서 (날짜, 시공구간) 조합으로 매핑
       const deletedByKey = new Map<string, number>();
       Array.from(deletedIds).forEach((id) => {
@@ -404,7 +400,7 @@ export function GoalsPage() {
 
       const upserts = dataToSave.map((row) => {
         // 새로 추가된 행인 경우, 삭제될 항목 중 같은 (날짜, 시공구간)이 있는지 확인
-        if (row.id === null || row.id < 0) {
+        if (row.id < 0) {
           const key = `${row.inputDate}_${row.constructionSectionId}`;
           const reusableId = deletedByKey.get(key);
           if (reusableId) {
@@ -430,7 +426,7 @@ export function GoalsPage() {
         }
 
         return {
-          id: row.id !== null && row.id > 0 ? row.id : undefined,
+          id: row.id > 0 ? row.id : undefined,
           inputDate: row.inputDate,
           constructionSectionId: row.constructionSectionId,
           totalQuantity: row.totalQuantity,
