@@ -109,9 +109,14 @@ function DataTablePagination({
 
   return (
     <div ref={ref} className="mt-2 flex flex-col items-center justify-center gap-1">
-      <span className="w-full text-xs text-[#9499B1]">
-        Showing {startItem} to {endItem} of {totalItems} results
-      </span>
+      <div className="flex w-full items-center gap-1 text-xs text-[#9499B1]">
+        <span>전체</span>
+        <span className="font-semibold text-[#555555]">{totalItems.toLocaleString()}</span>
+        <span>건</span>
+        <span className="text-[#BBBFCF]">
+          ({startItem.toLocaleString()} - {endItem.toLocaleString()})
+        </span>
+      </div>
       <div className="flex items-center gap-1">
         <Button
           variant="ghost"
