@@ -10,17 +10,17 @@ PLUXITY 프론트엔드 팀의 React 모노레포 프로젝트입니다.
 
 ## 기술 스택
 
-| 분류 | 기술 | 버전 |
-|------|------|------|
-| Framework | React | 19.x |
-| Build | Vite | 7.x |
-| Language | TypeScript | 5.9.x |
-| Styling | Tailwind CSS | 4.x |
-| State | Zustand | 5.x |
-| Form | react-hook-form + Zod | - |
-| 3D Map | CesiumJS | - |
-| 3D Viewer | React Three Fiber | - |
-| Streaming | HLS.js, WHEP | - |
+| 분류      | 기술                  | 버전  |
+| --------- | --------------------- | ----- |
+| Framework | React                 | 19.x  |
+| Build     | Vite                  | 7.x   |
+| Language  | TypeScript            | 5.9.x |
+| Styling   | Tailwind CSS          | 4.x   |
+| State     | Zustand               | 5.x   |
+| Form      | react-hook-form + Zod | -     |
+| 3D Map    | CesiumJS              | -     |
+| 3D Viewer | React Three Fiber     | -     |
+| Streaming | HLS.js, WHEP          | -     |
 
 ## 프로젝트 구조
 
@@ -108,7 +108,7 @@ src/
 ```json
 {
   "semi": true,
-  "singleQuote": false,      // 큰따옴표 사용
+  "singleQuote": false, // 큰따옴표 사용
   "tabWidth": 2,
   "trailingComma": "es5",
   "printWidth": 100
@@ -150,7 +150,9 @@ const sorted = useMemo(() => items.sort((a, b) => complexSort(a, b)), [items]);
 const mapOptions = useMemo(() => ({ center, zoom }), [center, zoom]);
 
 // 3. 정말 무거운 컴포넌트 (수천 행 렌더링)
-const HeavyTable = memo(function HeavyTable({ data }) { /* ... */ });
+const HeavyTable = memo(function HeavyTable({ data }) {
+  /* ... */
+});
 ```
 
 > 상세 가이드: @docs/react19-guide.md
@@ -222,12 +224,7 @@ import { cn } from "../../utils";
 import { buttonVariants } from "./variants";
 
 function Button({ className, variant, size, ...props }) {
-  return (
-    <button
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  );
+  return <button className={cn(buttonVariants({ variant, size, className }))} {...props} />;
 }
 ```
 
@@ -238,7 +235,9 @@ function Button({ className, variant, size, ...props }) {
 <Sidebar defaultCollapsed={false}>
   <Sidebar.Header title="Dashboard" />
   <Sidebar.Section label="메뉴">
-    <Sidebar.Item icon={<Home />} active>홈</Sidebar.Item>
+    <Sidebar.Item icon={<Home />} active>
+      홈
+    </Sidebar.Item>
   </Sidebar.Section>
   <Sidebar.Footer />
 </Sidebar>
@@ -329,14 +328,11 @@ export const userService = {
   getUsers: (params: { page: number; size: number }) =>
     apiClient.get<PageResponse<User>>("/users", { params }),
 
-  createUser: (data: CreateUserDto) =>
-    apiClient.post<User>("/users", data),
+  createUser: (data: CreateUserDto) => apiClient.post<User>("/users", data),
 
-  updateUser: (id: number, data: UpdateUserDto) =>
-    apiClient.put<User>(`/users/${id}`, data),
+  updateUser: (id: number, data: UpdateUserDto) => apiClient.put<User>(`/users/${id}`, data),
 
-  deleteUser: (id: number) =>
-    apiClient.delete<void>(`/users/${id}`),
+  deleteUser: (id: number) => apiClient.delete<void>(`/users/${id}`),
 };
 ```
 
@@ -344,13 +340,13 @@ export const userService = {
 
 ## 환경변수
 
-| 변수명 | 설명 |
-|--------|------|
-| `VITE_API_URL` | API 서버 URL |
-| `VITE_CONTEXT_PATH` | 앱 컨텍스트 경로 (예: `/admin`) |
-| `VITE_ION_CESIUM_ACCESS_TOKEN` | Cesium Ion 토큰 |
-| `VITE_MEDIA_API_URL` | 미디어 서버 URL |
-| `VITE_MEDIA_WHEP_URL` | WHEP 스트리밍 URL |
+| 변수명                         | 설명                            |
+| ------------------------------ | ------------------------------- |
+| `VITE_API_URL`                 | API 서버 URL                    |
+| `VITE_CONTEXT_PATH`            | 앱 컨텍스트 경로 (예: `/admin`) |
+| `VITE_ION_CESIUM_ACCESS_TOKEN` | Cesium Ion 토큰                 |
+| `VITE_MEDIA_API_URL`           | 미디어 서버 URL                 |
+| `VITE_MEDIA_WHEP_URL`          | WHEP 스트리밍 URL               |
 
 ---
 
@@ -376,6 +372,34 @@ catalog:
   }
 }
 ```
+
+---
+
+## 스킬 자동 적용
+
+다음 상황에서 해당 스킬을 자동으로 사용하세요:
+
+### 개발 워크플로우
+
+- 새 기능 개발 요청 시 → `/pf-feature` 실행
+- 긴급 버그 수정 요청 시 → `/pf-hotfix` 실행
+- 버전 릴리즈 요청 시 → `/pf-release` 실행
+
+### 코드 품질
+
+- 코드 작성/수정 완료 후 → `/pf-code-review` 실행
+- React 컴포넌트 작성 시 → `react-best-practices` 규칙 적용
+- UI 작업 시 → `web-design-guidelines` 규칙 적용
+
+### 테스트
+
+- 컴포넌트 작성 후 → `/pf-test-component` 실행
+- hook 작성 후 → `/pf-test-hook` 실행
+
+### 이슈/PR
+
+- 이슈 생성 요청 시 → `/github-issue-manager` 실행
+- PR 생성 요청 시 → `/github-pr-workflow` 실행
 
 ---
 
