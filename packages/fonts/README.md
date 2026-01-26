@@ -26,7 +26,12 @@ import "@pf-dev/fonts/pretendard";
 ```css
 /* globals.css */
 body {
-  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-family:
+    "Pretendard Variable",
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 ```
 
@@ -64,8 +69,9 @@ function Dashboard() {
 /* globals.css */
 @layer base {
   :root {
-    --font-pretendard: "Pretendard Variable", "Pretendard", sans-serif;
-    --font-suit: "SUIT Variable", "SUIT", sans-serif;
+    --font-pretendard:
+      "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-suit: "SUIT Variable", "SUIT", -apple-system, BlinkMacSystemFont, sans-serif;
     --font-dseg7: "DSEG7 Classic", monospace;
     --font-dseg14: "DSEG14 Classic", monospace;
   }
@@ -99,7 +105,7 @@ module.exports = {
 | **Pretendard** | 한글/영문 범용    | Variable (100-900) | ~2MB      |
 | **SUIT**       | 한글 UI           | Variable (100-900) | ~624KB    |
 | **DSEG7**      | 7-segment 디지털  | Regular            | ~7KB      |
-| **DSEG14**     | 14-segment 디지털 | ~9KB               |
+| **DSEG14**     | 14-segment 디지털 | Regular            | ~9KB      |
 
 ## Exports
 
