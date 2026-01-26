@@ -19,6 +19,7 @@ const AttendancePage = lazy(() =>
 const ProcessStatusPage = lazy(() =>
   import("@/pages/process-status").then((m) => ({ default: m.ProcessStatusPage }))
 );
+const GoalsPage = lazy(() => import("@/pages/goals").then((m) => ({ default: m.GoalsPage })));
 const PasswordChangePage = lazy(() =>
   import("@/pages/settings").then((m) => ({ default: m.PasswordChangePage }))
 );
@@ -88,6 +89,17 @@ export const protectedRoutes: RouteConfig[] = [
       order: 2,
     },
   },
+  {
+    path: "/goals",
+    element: GoalsPage,
+    menu: {
+      label: "목표 관리",
+      icon: FileText,
+      sectionId: "main",
+      order: 5,
+    },
+  },
+  // 관리자 전용 페이지: ADMIN 역할만 접근 가능
   {
     path: "/settings/account",
     element: PasswordChangePage,
