@@ -155,26 +155,24 @@ function SidebarItem({
         </span>
       )}
       {!collapsed && (
-        <>
-          <span className="flex-1 truncate">
-            {Array.isArray(children) ? children.find((c) => typeof c === "string") : children}
-          </span>
-          {hasNestedItems && (
-            <span className="flex-shrink-0">
-              {expanded ? <ChevronDown size="sm" /> : <ChevronRight size="sm" />}
-            </span>
-          )}
-        </>
+        <span className="flex-1 truncate">
+          {Array.isArray(children) ? children.find((c) => typeof c === "string") : children}
+        </span>
+      )}
+      {hasNestedItems && !collapsed && (
+        <span className="flex-shrink-0">
+          {expanded ? <ChevronDown size="sm" /> : <ChevronRight size="sm" />}
+        </span>
       )}
     </>
   );
 
   const itemClasses = cn(
-    "group relative flex h-10 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm transition-colors",
+    "group relative flex h-10 cursor-pointer items-center rounded-lg text-sm transition-colors",
     active
       ? "bg-[#F5F8FF] font-bold text-brand"
       : "font-medium text-[#666673] hover:bg-[#F5F5F7] hover:text-[#333340]",
-    collapsed ? "w-10 justify-center px-0" : "w-full",
+    collapsed ? "w-10 justify-center px-0" : "w-full gap-3 px-3",
     className
   );
 
@@ -211,8 +209,13 @@ function SidebarSection({ label, children, className }: SidebarSectionProps) {
 
   return (
     <div className={cn("space-y-1", collapsed && "flex flex-col items-center", className)}>
-      {label && !collapsed && (
-        <div className="py-2 text-xs font-bold uppercase tracking-wider text-[#808088]">
+      {label && (
+        <div
+          className={cn(
+            "py-2 text-xs font-bold uppercase tracking-wider text-[#808088] transition-all duration-200",
+            collapsed ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100 delay-150"
+          )}
+        >
           {label}
         </div>
       )}
@@ -283,7 +286,11 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
                 </span>
               )}
             </div>
-            {title && <h2 className="text-lg font-bold text-[#333340]">{title}</h2>}
+            {title && (
+              <h2 className="text-lg font-bold text-[#333340] whitespace-nowrap transition-opacity duration-200 delay-150">
+                {title}
+              </h2>
+            )}
           </div>
           {children && (
             <div className="flex items-center gap-2">
@@ -365,7 +372,7 @@ function SidebarCollapseButton({
       ) : (
         <>
           <ChevronLeft size="md" />
-          <span>Collapse</span>
+          <span className="transition-opacity duration-200 delay-150">Collapse</span>
         </>
       )}
     </button>
@@ -405,7 +412,7 @@ function Sidebar({
     <SidebarContext.Provider value={contextValue}>
       <aside
         className={cn(
-          "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300",
+          "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300 overflow-hidden",
           collapsed ? "w-16" : "w-[280px]",
           className
         )}

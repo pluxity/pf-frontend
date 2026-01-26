@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "./apps/test" }, { "path": "./packages/ui" }]
+  "references": [{ "path": "./packages/ui" }]
 }
