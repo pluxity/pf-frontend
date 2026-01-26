@@ -1,0 +1,29 @@
+{
+  "name": "@pf-dev/fonts",
+  "version": "0.1.0",
+  "description": "Shared fonts package for pf-frontend monorepo",
+  "type": "module",
+  "exports": {
+    "./pretendard": {
+      "import": "./src/pretendard/index.ts",
+      "types": "./src/pretendard/index.ts"
+    },
+    "./suit": {
+      "import": "./src/suit/index.ts",
+      "types": "./src/suit/index.ts"
+    },
+    "./dseg": {
+      "import": "./src/dseg/index.ts",
+      "types": "./src/dseg/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}
