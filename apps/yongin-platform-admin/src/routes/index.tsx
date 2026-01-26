@@ -6,10 +6,9 @@ import { ProtectedRouter, useAuthStore, selectUser } from "@pf-dev/services";
 import { AdminLayout } from "@/layouts";
 
 import { publicRoutes, protectedRoutes } from "./config";
-import { flattenRoutes } from "./utils";
+import { flattenRoutes, hasPermission, extractDomainPermissions, getDefaultRoute } from "./utils";
 import type { RouteConfig } from "./types";
 
-// 페이지 로딩 중 표시할 컴포넌트
 function PageLoader() {
   return (
     <div className="flex h-full items-center justify-center">
@@ -39,6 +38,8 @@ function ForbiddenPage() {
 function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
   const user = useAuthStore(selectUser);
   const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
+  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
+  const isAdmin = userRoles.some((role) => role.toUpperCase() === "ADMIN");
 
   if (route.roles && route.roles.length > 0) {
     const hasRequiredRole = route.roles.some((role) => userRoles.includes(role));
@@ -47,7 +48,24 @@ function RoleGuard({ route, children }: { route: RouteConfig; children: React.Re
     }
   }
 
+  if (!isAdmin && !hasPermission(route.permissions, userPermissions)) {
+    return <Navigate to="/403" replace />;
+  }
+
   return <>{children}</>;
+}
+
+function DefaultRedirect() {
+  const user = useAuthStore(selectUser);
+  const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
+  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
+
+  const defaultPath = useMemo(
+    () => getDefaultRoute(protectedRoutes, userRoles, userPermissions),
+    [userRoles, userPermissions]
+  );
+
+  return <Navigate to={defaultPath} replace />;
 }
 
 export function AppRoutes() {
@@ -76,11 +94,11 @@ export function AppRoutes() {
             </ProtectedRouter>
           }
         >
+          <Route index element={<DefaultRedirect />} />
           {allProtectedRoutes.map((route) => (
             <Route
               key={route.path}
-              path={route.path === "/" ? undefined : route.path.slice(1)}
-              index={route.path === "/"}
+              path={route.path.slice(1)}
               element={
                 <RoleGuard route={route}>
                   <route.element />
