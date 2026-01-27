@@ -602,6 +602,7 @@ export function GoalsPage() {
                 rowData={displayData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
+                tooltipShowDelay={300}
                 animateRows={true}
                 rowSelection={{
                   mode: "multiRow",
