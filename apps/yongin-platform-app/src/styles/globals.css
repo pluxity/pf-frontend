@@ -22,5 +22,5 @@
 }
 
 @theme {
-  --animate-marquee: marquee 30s linear infinite;
+  --animate-marquee: marquee 20s linear infinite;
 }
