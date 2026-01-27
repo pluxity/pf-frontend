@@ -1,13 +1,9 @@
 import { Outlet } from "react-router-dom";
-import useSWR from "swr";
 import { Button, User } from "@pf-dev/ui";
-import { NoticeMarquee } from "../components/NoticeMarquee";
+import { Announcement } from "../components/Announcement";
 import { DateTime } from "../components/DateTime";
-import { announcementService } from "@/services";
 
 export function RootLayout() {
-  const { data: announcement } = useSWR("/announcement", () => announcementService.get());
-
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -45,14 +41,9 @@ export function RootLayout() {
         <Outlet />
       </main>
 
-      {/* Footer (optional) */}
+      {/* Footer */}
       <footer className="flex overflow-hidden items-center h-[var(--footer-height)] 4k:h-[var(--footer-height-4k)] px-4 bg-[#eff1f8] 4k:px-8">
-        <div className="flex items-center gap-4 4k:gap-8">
-          <Button className="rounded-full 4k:text-4xl 4k:h-20 4k:px-10">안내사항</Button>
-          <div className="flex-1 overflow-hidden">
-            <NoticeMarquee content={announcement?.content} />
-          </div>
-        </div>
+        <Announcement />
       </footer>
     </div>
   );
