@@ -40,7 +40,7 @@ export function Announcement({ className }: AnnouncementProps) {
           <span
             ref={contentRef}
             className={cn(
-              "inline-block whitespace-nowrap 4k:text-4xl",
+              "inline-block whitespace-nowrap text-lg 4k:text-4xl",
               shouldAnimate && "animate-marquee"
             )}
           >
