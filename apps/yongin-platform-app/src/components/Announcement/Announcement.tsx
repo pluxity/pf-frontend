@@ -1,6 +1,9 @@
-import { useRef, useState, useEffect } from "react";
 import { Button, cn } from "@pf-dev/ui";
 import { useAnnouncement } from "@/hooks";
+import { Marquee } from "../Marquee";
+
+/** Marquee 동작 기준 글자 수 */
+const MARQUEE_THRESHOLD = 50;
 
 interface AnnouncementProps {
   className?: string;
@@ -9,44 +12,21 @@ interface AnnouncementProps {
 /**
  * Footer용 안내사항 컴포넌트
  * - API에서 데이터 페칭
- * - 콘텐츠가 컨테이너보다 길면 Marquee 애니메이션
- * - 짧으면 정적 표시
+ * - 50자 초과 시 Marquee 애니메이션
+ * - 50자 이하 시 정적 표시
  */
 export function Announcement({ className }: AnnouncementProps) {
   const { content } = useAnnouncement();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLSpanElement>(null);
-  const [shouldAnimate, setShouldAnimate] = useState(false);
-
-  useEffect(() => {
-    const checkOverflow = () => {
-      if (containerRef.current && contentRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const contentWidth = contentRef.current.scrollWidth;
-        // 컨테이너의 80% 초과 시 애니메이션 동작
-        setShouldAnimate(contentWidth > containerWidth * 0.8);
-      }
-    };
-
-    checkOverflow();
-    window.addEventListener("resize", checkOverflow);
-    return () => window.removeEventListener("resize", checkOverflow);
-  }, [content]);
+  const shouldAnimate = content.length > MARQUEE_THRESHOLD;
 
   return (
     <div className={cn("flex items-center gap-4 4k:gap-8", className)}>
       <Button className="shrink-0 rounded-full 4k:text-4xl 4k:h-20 4k:px-10">안내사항</Button>
-      <div ref={containerRef} className="flex-1 overflow-hidden">
+      <div className="flex-1">
         {content && (
-          <span
-            ref={contentRef}
-            className={cn(
-              "inline-block whitespace-nowrap text-lg 4k:text-4xl",
-              shouldAnimate && "animate-marquee"
-            )}
-          >
+          <Marquee animate={shouldAnimate} className="text-lg 4k:text-4xl">
             {content}
-          </span>
+          </Marquee>
         )}
       </div>
     </div>
