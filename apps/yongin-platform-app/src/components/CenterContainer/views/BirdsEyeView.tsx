@@ -2,15 +2,14 @@
  * 조감도 뷰 컴포넌트
  * @see https://github.com/pluxity/pf-frontend/issues/167
  */
+
+const BIRDS_EYE_IMAGE_URL = `${import.meta.env.BASE_URL}assets/images/birdsvieweye.png`;
+
 export function BirdsEyeView() {
   return (
-    <div className="flex items-center justify-center h-full bg-gray-100">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-700 4k:text-5xl">조감도</h2>
-        <p className="mt-2 text-gray-500 4k:text-2xl">
-          #167 - 조감도 컴포넌트가 여기에 렌더링됩니다
-        </p>
-      </div>
-    </div>
+    <div
+      className="h-full w-full bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${BIRDS_EYE_IMAGE_URL})` }}
+    />
   );
 }
