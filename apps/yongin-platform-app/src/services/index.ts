@@ -7,3 +7,4 @@
 
 export { apiClient } from "./client";
 export * from "./user.service";
+export * from "./announcement.service";
