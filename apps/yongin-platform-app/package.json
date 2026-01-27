@@ -23,6 +23,7 @@
     "@hookform/resolvers": "catalog:",
     "@pf-dev/api": "workspace:*",
     "@pf-dev/ui": "workspace:*",
+    "swr": "^2.3.8",
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/map": "workspace:*",
     "cesium": "^1.121.0",
