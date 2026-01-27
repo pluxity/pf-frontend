@@ -1,13 +1,5 @@
 import { GridLayout, GridTemplate } from "@pf-dev/ui";
-import {
-  Weather,
-  Attendance,
-  ProcessStatus,
-  Viewer,
-  Management,
-  DailyStats,
-  Announcement,
-} from "./components";
+import { Weather, Attendance, ProcessStatus, Viewer, Management, DailyStats } from "./components";
 
 const dashboardTemplate: GridTemplate = {
   id: "dashboard-1",
@@ -20,8 +12,7 @@ const dashboardTemplate: GridTemplate = {
     { id: "processStatus", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공정현황
     { id: "viewer", colStart: 2, colSpan: 3, rowStart: 1, rowSpan: 3 }, // 메인 콘텐츠
     { id: "management", colStart: 5, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 주요 관리사항
-    { id: "dailyStats", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 일일목표
-    { id: "announcement", colStart: 5, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공지사항
+    { id: "dailyStats", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 2 }, // 일일목표 (2행 차지)
   ],
 };
 
@@ -32,7 +23,6 @@ const widgets = [
   { id: "viewer", component: Viewer },
   { id: "management", component: Management },
   { id: "dailyStats", component: DailyStats },
-  { id: "announcement", component: Announcement },
 ];
 
 export function HomePage() {

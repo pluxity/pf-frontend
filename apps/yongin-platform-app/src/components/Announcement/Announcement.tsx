@@ -23,7 +23,8 @@ export function Announcement({ className }: AnnouncementProps) {
       if (containerRef.current && contentRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
         const contentWidth = contentRef.current.scrollWidth;
-        setShouldAnimate(contentWidth > containerWidth);
+        // 컨테이너의 80% 초과 시 애니메이션 동작
+        setShouldAnimate(contentWidth > containerWidth * 0.8);
       }
     };
 

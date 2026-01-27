@@ -13,6 +13,4 @@ export type ViewerProps = BaseWidgetProps;
 
 export type DailyStatsProps = BaseWidgetProps;
 
-export type AnnouncementProps = BaseWidgetProps;
-
 export type ManagementProps = BaseWidgetProps;
