@@ -9,7 +9,7 @@ export type AttendanceProps = BaseWidgetProps;
 
 export type ProcessStatusProps = BaseWidgetProps;
 
-export type ViewerProps = BaseWidgetProps;
+export type MainContentProps = BaseWidgetProps;
 
 export type DailyStatsProps = BaseWidgetProps;
 
