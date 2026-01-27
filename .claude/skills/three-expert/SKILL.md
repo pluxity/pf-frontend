@@ -43,10 +43,7 @@ import { Canvas, SceneLighting, SceneGrid, Stats } from "@pf-dev/three";
 
 function Scene() {
   return (
-    <Canvas
-      camera={{ position: [10, 10, 10], fov: 50 }}
-      shadows
-    >
+    <Canvas camera={{ position: [10, 10, 10], fov: 50 }} shadows>
       <SceneLighting />
       <SceneGrid size={100} />
       <Stats />
@@ -145,6 +142,7 @@ const instances = createInstances(geometry, material, transforms);
 ### Q: 성능이 느려요
 
 **A: 최적화 방법**
+
 1. GPU Instancing 사용 (동일 오브젝트 100개 이상)
 2. LOD (Level of Detail) 설정
 3. Frustum Culling 확인
@@ -164,6 +162,7 @@ const instances = createInstances(geometry, material, transforms);
 ### Q: 모델이 안 보여요
 
 **A: 체크리스트**
+
 1. 경로 확인 (`/public` 폴더)
 2. 스케일 확인 (너무 작거나 큼)
 3. 카메라 위치 확인
@@ -180,6 +179,7 @@ const instances = createInstances(geometry, material, transforms);
 ### Q: 클릭이 안 돼요
 
 **A: raycaster 설정**
+
 ```tsx
 <Canvas
   raycaster={{
@@ -195,6 +195,7 @@ const instances = createInstances(geometry, material, transforms);
 ### Q: 그림자가 이상해요
 
 **A: 그림자 설정**
+
 ```tsx
 <Canvas shadows>
   <directionalLight
@@ -236,12 +237,7 @@ function Scene() {
   return (
     <>
       <PerspectiveCamera ref={cameraRef} makeDefault position={[10, 10, 10]} />
-      <OrbitControls
-        enableDamping
-        dampingFactor={0.05}
-        minDistance={5}
-        maxDistance={100}
-      />
+      <OrbitControls enableDamping dampingFactor={0.05} minDistance={5} maxDistance={100} />
     </>
   );
 }

@@ -21,11 +21,13 @@ $ARGUMENTS 파일 또는 변경사항을 리뷰합니다.
 
 ```tsx
 // ❌ 리뷰 포인트
-const MemoizedComponent = memo(forwardRef((props, ref) => {
-  const memoizedValue = useMemo(() => props.data, [props.data]);
-  const handleClick = useCallback(() => onClick(), [onClick]);
-  // ...
-}));
+const MemoizedComponent = memo(
+  forwardRef((props, ref) => {
+    const memoizedValue = useMemo(() => props.data, [props.data]);
+    const handleClick = useCallback(() => onClick(), [onClick]);
+    // ...
+  })
+);
 
 // ✅ React 19 개선
 function Component({ ref, data, onClick }) {
@@ -69,7 +71,7 @@ function Component({ items }: ComponentProps) {
 const { user, settings, theme } = useStore(); // user만 필요한데 전체 구독
 
 // ✅ Selector로 최적화
-const user = useStore(state => state.user);
+const user = useStore((state) => state.user);
 // 또는
 const user = useStore(selectUser);
 ```
@@ -97,7 +99,9 @@ const data = await userService.getUsers();
 
 ```tsx
 // ❌ 복잡한 조건부 렌더링
-{isLoading ? <Loading /> : error ? <Error /> : data ? <List data={data} /> : null}
+{
+  isLoading ? <Loading /> : error ? <Error /> : data ? <List data={data} /> : null;
+}
 
 // ✅ 분리
 if (isLoading) return <Loading />;
@@ -165,24 +169,28 @@ className={cn(buttonVariants({ variant, size }), className)}
 ## 코드 리뷰 결과
 
 ### ✅ 잘된 점
+
 - ...
 
 ### ⚠️ 개선 필요
+
 1. **[카테고리]** 설명
    - 현재: `코드`
    - 개선: `코드`
    - 이유: 설명
 
 ### 💡 제안
+
 - ...
 
 ### 📊 요약
-| 항목 | 상태 |
-|------|------|
+
+| 항목          | 상태     |
+| ------------- | -------- |
 | React 19 패턴 | ✅/⚠️/❌ |
-| TypeScript | ✅/⚠️/❌ |
-| 성능 | ✅/⚠️/❌ |
-| 접근성 | ✅/⚠️/❌ |
+| TypeScript    | ✅/⚠️/❌ |
+| 성능          | ✅/⚠️/❌ |
+| 접근성        | ✅/⚠️/❌ |
 ```
 
 ---

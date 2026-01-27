@@ -38,8 +38,7 @@ import type { VariantProps } from "class-variance-authority";
 import { componentVariants } from "./variants";
 
 export interface ComponentNameProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof componentVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof componentVariants> {
   /** 컴포넌트 설명 */
   children?: React.ReactNode;
   /** ref 전달 (React 19) */
@@ -91,20 +90,9 @@ import type { ComponentNameProps } from "./types";
  *   Content
  * </ComponentName>
  */
-function ComponentName({
-  className,
-  variant,
-  size,
-  children,
-  ref,
-  ...props
-}: ComponentNameProps) {
+function ComponentName({ className, variant, size, children, ref, ...props }: ComponentNameProps) {
   return (
-    <div
-      ref={ref}
-      className={cn(componentVariants({ variant, size, className }))}
-      {...props}
-    >
+    <div ref={ref} className={cn(componentVariants({ variant, size, className }))} {...props}>
       {children}
     </div>
   );

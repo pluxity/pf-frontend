@@ -25,6 +25,7 @@ $ARGUMENTS 컴포넌트/페이지의 접근성을 검사합니다.
 ```
 
 **체크리스트:**
+
 - [ ] 버튼은 `<button>` 사용
 - [ ] 링크는 `<a>` 사용
 - [ ] 제목은 `<h1>`-`<h6>` 순서대로
@@ -63,6 +64,7 @@ $ARGUMENTS 컴포넌트/페이지의 접근성을 검사합니다.
 ```
 
 **체크리스트:**
+
 - [ ] 모든 인터랙티브 요소가 Tab으로 접근 가능
 - [ ] Enter/Space로 활성화 가능
 - [ ] Escape로 모달/드롭다운 닫기
@@ -87,6 +89,7 @@ button:focus-visible {
 ```
 
 **Tailwind:**
+
 ```tsx
 <button className="focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
   버튼
@@ -148,6 +151,7 @@ button:focus-visible {
 ### 6. 색상 대비
 
 **최소 대비율:**
+
 - 일반 텍스트: 4.5:1
 - 큰 텍스트 (18px+): 3:1
 - UI 컴포넌트: 3:1
@@ -212,10 +216,11 @@ import { Dialog } from "@radix-ui/react-dialog";
       </Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog.Root>;
 ```
 
 **수동 구현 시:**
+
 - [ ] `role="dialog"` 또는 `role="alertdialog"`
 - [ ] `aria-modal="true"`
 - [ ] `aria-labelledby`로 제목 연결
@@ -259,6 +264,7 @@ if (process.env.NODE_ENV !== "production") {
 ```
 
 **수동 테스트:**
+
 1. Tab 키로 전체 페이지 탐색
 2. 스크린 리더 테스트 (NVDA, VoiceOver)
 3. 200% 확대 시 레이아웃 확인
@@ -269,6 +275,7 @@ if (process.env.NODE_ENV !== "production") {
 ## @pf-dev/ui 컴포넌트 접근성
 
 UI 패키지는 Radix UI 기반으로 접근성이 내장되어 있습니다.
+
 - Button, Dialog, Select, Tabs 등
 - 키보드 탐색 자동 지원
 - ARIA 속성 자동 적용

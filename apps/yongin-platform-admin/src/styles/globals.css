@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
+@import "@pf-dev/ui/globals.css";
+
+/* Dashboard Grid 반응형 스타일 */
+.dashboard-grid-responsive > div {
+  /* 모바일: 1 column */
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+@media (min-width: 640px) {
+  .dashboard-grid-responsive > div {
+    /* 태블릿: 2 columns */
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid-responsive > div {
+    /* 데스크톱: 4 columns (원래 설정된 값 사용) */
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* col-span-* 클래스들도 반응형으로 처리 */
+.dashboard-grid-responsive [class*="col-span-"] {
+  grid-column: span 1 !important;
+}
+
+@media (min-width: 640px) {
+  .dashboard-grid-responsive [class*="col-span-2"],
+  .dashboard-grid-responsive [class*="col-span-3"] {
+    grid-column: span 2 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid-responsive .col-span-2 {
+    grid-column: span 2 !important;
+  }
+  .dashboard-grid-responsive .col-span-3 {
+    grid-column: span 3 !important;
+  }
+  .dashboard-grid-responsive .col-span-4 {
+    grid-column: span 4 !important;
+  }
+}

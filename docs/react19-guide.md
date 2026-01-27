@@ -27,16 +27,14 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, ...props }, ref) => {
-    return (
-      <div>
-        {label && <label>{label}</label>}
-        <input ref={ref} {...props} />
-      </div>
-    );
-  }
-);
+const Input = forwardRef<HTMLInputElement, InputProps>(({ label, ...props }, ref) => {
+  return (
+    <div>
+      {label && <label>{label}</label>}
+      <input ref={ref} {...props} />
+    </div>
+  );
+});
 ```
 
 ### After (React 19)
@@ -151,7 +149,7 @@ function Counter() {
   const [count, setCount] = useState(0);
 
   const handleClick = useCallback(() => {
-    console.log(count);  // 항상 0 출력!
+    console.log(count); // 항상 0 출력!
     setCount(count + 1); // 항상 1로 설정됨
   }, []); // count가 의존성 배열에 없음
 
@@ -164,7 +162,7 @@ function Counter() {
 
   const handleClick = () => {
     console.log(count);
-    setCount(c => c + 1); // 함수형 업데이트
+    setCount((c) => c + 1); // 함수형 업데이트
   };
 
   return <button onClick={handleClick}>{count}</button>;
@@ -177,19 +175,22 @@ function Counter() {
 // ❌ 읽기 어려움
 const MemoizedComponent = memo(function Component({ data, onUpdate }) {
   const processedData = useMemo(() => {
-    return data.map(item => item);
+    return data.map((item) => item);
   }, [data]);
 
-  const handleUpdate = useCallback((id) => {
-    onUpdate(id);
-  }, [onUpdate]);
+  const handleUpdate = useCallback(
+    (id) => {
+      onUpdate(id);
+    },
+    [onUpdate]
+  );
 
   return <div onClick={() => handleUpdate(1)}>{processedData}</div>;
 });
 
 // ✅ 간결하고 명확
 function Component({ data, onUpdate }) {
-  const processedData = data.map(item => item);
+  const processedData = data.map((item) => item);
 
   return <div onClick={() => onUpdate(1)}>{processedData}</div>;
 }
@@ -197,13 +198,13 @@ function Component({ data, onUpdate }) {
 
 ### 언제 사용해야 하나?
 
-| 상황 | 사용 여부 | 이유 |
-|------|----------|------|
-| 단순 값/함수 | ❌ | 오버헤드가 더 큼 |
-| 복잡한 계산 (O(n²) 이상) | ✅ `useMemo` | 계산 비용이 비교 비용보다 큼 |
-| 외부 라이브러리에 전달하는 객체 | ✅ `useMemo` | 참조 동등성 필요 |
-| 수천 개 항목 렌더링 컴포넌트 | ✅ `memo` | 리렌더링 비용이 큼 |
-| 확실하지 않을 때 | ❌ | 성능 문제 생기면 그때 추가 |
+| 상황                            | 사용 여부    | 이유                         |
+| ------------------------------- | ------------ | ---------------------------- |
+| 단순 값/함수                    | ❌           | 오버헤드가 더 큼             |
+| 복잡한 계산 (O(n²) 이상)        | ✅ `useMemo` | 계산 비용이 비교 비용보다 큼 |
+| 외부 라이브러리에 전달하는 객체 | ✅ `useMemo` | 참조 동등성 필요             |
+| 수천 개 항목 렌더링 컴포넌트    | ✅ `memo`    | 리렌더링 비용이 큼           |
+| 확실하지 않을 때                | ❌           | 성능 문제 생기면 그때 추가   |
 
 ### 올바른 사용 예시
 
@@ -214,7 +215,7 @@ function SearchResults({ items, query, filters }) {
   // ✅ 복잡한 필터링 + 정렬 + 변환
   const results = useMemo(() => {
     return items
-      .filter(item => {
+      .filter((item) => {
         // 복잡한 필터 로직
         return matchesQuery(item, query) && matchesFilters(item, filters);
       })
@@ -222,7 +223,7 @@ function SearchResults({ items, query, filters }) {
         // 복잡한 정렬 로직
         return complexSort(a, b, filters.sortBy);
       })
-      .map(item => ({
+      .map((item) => ({
         ...item,
         highlight: highlightMatches(item.text, query),
       }));
@@ -237,16 +238,22 @@ function SearchResults({ items, query, filters }) {
 ```tsx
 function MapView({ center, zoom, markers }) {
   // ✅ Cesium은 options 객체가 바뀌면 전체 재초기화됨
-  const viewerOptions = useMemo(() => ({
-    terrainProvider: createWorldTerrain(),
-    baseLayerPicker: false,
-    geocoder: false,
-  }), []); // 한 번만 생성
+  const viewerOptions = useMemo(
+    () => ({
+      terrainProvider: createWorldTerrain(),
+      baseLayerPicker: false,
+      geocoder: false,
+    }),
+    []
+  ); // 한 번만 생성
 
   // ✅ 카메라 위치도 마찬가지
-  const cameraPosition = useMemo(() => ({
-    destination: Cartesian3.fromDegrees(center.lng, center.lat, zoom * 1000),
-  }), [center.lng, center.lat, zoom]);
+  const cameraPosition = useMemo(
+    () => ({
+      destination: Cartesian3.fromDegrees(center.lng, center.lat, zoom * 1000),
+    }),
+    [center.lng, center.lat, zoom]
+  );
 
   return <CesiumViewer options={viewerOptions} camera={cameraPosition} />;
 }
@@ -256,18 +263,14 @@ function MapView({ center, zoom, markers }) {
 
 ```tsx
 // ✅ 수천 행 테이블
-const DataTable = memo(function DataTable({
-  data,
-  columns,
-  onRowClick
-}: DataTableProps) {
+const DataTable = memo(function DataTable({ data, columns, onRowClick }: DataTableProps) {
   // 수천 개의 행 렌더링
   return (
     <table>
       <tbody>
-        {data.map(row => (
+        {data.map((row) => (
           <tr key={row.id} onClick={() => onRowClick(row)}>
-            {columns.map(col => (
+            {columns.map((col) => (
               <td key={col.key}>{row[col.key]}</td>
             ))}
           </tr>
@@ -294,9 +297,9 @@ const RevenueChart = memo(function RevenueChart({ data }: ChartProps) {
 
 // 2. console.time으로 측정
 function Component({ items }) {
-  console.time('calculation');
+  console.time("calculation");
   const result = expensiveCalculation(items);
-  console.timeEnd('calculation'); // 10ms 이상이면 useMemo 검토
+  console.timeEnd("calculation"); // 10ms 이상이면 useMemo 검토
 
   return <div>{result}</div>;
 }
@@ -357,13 +360,10 @@ interface Message {
 function Chat({ initialMessages }: { initialMessages: Message[] }) {
   const [messages, setMessages] = useState(initialMessages);
 
-  const [optimisticMessages, addOptimistic] = useOptimistic(
-    messages,
-    (state, newText: string) => [
-      ...state,
-      { id: `temp-${Date.now()}`, text: newText, sending: true },
-    ]
-  );
+  const [optimisticMessages, addOptimistic] = useOptimistic(messages, (state, newText: string) => [
+    ...state,
+    { id: `temp-${Date.now()}`, text: newText, sending: true },
+  ]);
 
   async function sendMessage(text: string) {
     // 1. 즉시 UI 업데이트 (낙관적)
@@ -373,7 +373,7 @@ function Chat({ initialMessages }: { initialMessages: Message[] }) {
     startTransition(async () => {
       try {
         const newMessage = await api.sendMessage(text);
-        setMessages(prev => [...prev, newMessage]);
+        setMessages((prev) => [...prev, newMessage]);
       } catch (error) {
         // 실패 시 자동으로 롤백됨
         console.error("전송 실패:", error);
@@ -383,18 +383,20 @@ function Chat({ initialMessages }: { initialMessages: Message[] }) {
 
   return (
     <div>
-      {optimisticMessages.map(msg => (
+      {optimisticMessages.map((msg) => (
         <div key={msg.id} style={{ opacity: msg.sending ? 0.5 : 1 }}>
           {msg.text}
           {msg.sending && " (전송 중...)"}
         </div>
       ))}
-      <input onKeyDown={e => {
-        if (e.key === "Enter") {
-          sendMessage(e.currentTarget.value);
-          e.currentTarget.value = "";
-        }
-      }} />
+      <input
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            sendMessage(e.currentTarget.value);
+            e.currentTarget.value = "";
+          }
+        }}
+      />
     </div>
   );
 }
@@ -412,10 +414,7 @@ interface FormState {
   success: boolean;
 }
 
-async function updateProfile(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
+async function updateProfile(prevState: FormState, formData: FormData): Promise<FormState> {
   const name = formData.get("name") as string;
 
   if (!name.trim()) {
@@ -431,28 +430,20 @@ async function updateProfile(
 }
 
 function ProfileForm() {
-  const [state, formAction, isPending] = useActionState(
-    updateProfile,
-    { error: null, success: false }
-  );
+  const [state, formAction, isPending] = useActionState(updateProfile, {
+    error: null,
+    success: false,
+  });
 
   return (
     <form action={formAction}>
-      <input
-        name="name"
-        placeholder="이름"
-        disabled={isPending}
-      />
+      <input name="name" placeholder="이름" disabled={isPending} />
       <button type="submit" disabled={isPending}>
         {isPending ? "저장 중..." : "저장"}
       </button>
 
-      {state.error && (
-        <p className="text-red-500">{state.error}</p>
-      )}
-      {state.success && (
-        <p className="text-green-500">저장되었습니다!</p>
-      )}
+      {state.error && <p className="text-red-500">{state.error}</p>}
+      {state.success && <p className="text-green-500">저장되었습니다!</p>}
     </form>
   );
 }
@@ -470,11 +461,7 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending, data } = useFormStatus();
 
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className={pending ? "opacity-50" : ""}
-    >
+    <button type="submit" disabled={pending} className={pending ? "opacity-50" : ""}>
       {pending ? (
         <>
           <Spinner className="mr-2" />

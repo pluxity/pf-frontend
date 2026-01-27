@@ -39,7 +39,9 @@ function TextInput({ ref }: { ref?: React.Ref<TextInputHandle> }) {
 
   useImperativeHandle(ref, () => ({
     focus: () => inputRef.current?.focus(),
-    clear: () => { if (inputRef.current) inputRef.current.value = ""; },
+    clear: () => {
+      if (inputRef.current) inputRef.current.value = "";
+    },
   }));
 
   return <input ref={inputRef} />;
@@ -64,7 +66,7 @@ const memoizedData = useMemo(() => data, [data]);
 
 // ❌ 불필요 - 간단한 콜백
 const handleClick = useCallback(() => {
-  setCount(c => c + 1);
+  setCount((c) => c + 1);
 }, []);
 
 // ❌ 불필요 - 가벼운 컴포넌트
@@ -73,29 +75,32 @@ const MemoizedItem = memo(({ name }) => <span>{name}</span>);
 
 ### 언제 사용해야 하나?
 
-| 상황 | 권장 |
-|------|------|
-| 단순 값/함수 | 그냥 쓰기 |
-| 복잡한 계산 (O(n²) 이상) | `useMemo` ✅ |
-| 외부 라이브러리에 전달하는 객체 | `useMemo` ✅ |
-| 수천 개 항목 렌더링하는 컴포넌트 | `memo` ✅ |
-| 확실하지 않으면 | **일단 안 쓰고, 성능 문제 생기면 추가** |
+| 상황                             | 권장                                    |
+| -------------------------------- | --------------------------------------- |
+| 단순 값/함수                     | 그냥 쓰기                               |
+| 복잡한 계산 (O(n²) 이상)         | `useMemo` ✅                            |
+| 외부 라이브러리에 전달하는 객체  | `useMemo` ✅                            |
+| 수천 개 항목 렌더링하는 컴포넌트 | `memo` ✅                               |
+| 확실하지 않으면                  | **일단 안 쓰고, 성능 문제 생기면 추가** |
 
 ```tsx
 // ✅ 필요 - 복잡한 계산 (O(n log n) 이상)
 const sortedAndFilteredItems = useMemo(() => {
   return items
-    .filter(item => item.active)
+    .filter((item) => item.active)
     .sort((a, b) => complexSort(a, b))
-    .map(item => transformItem(item));
+    .map((item) => transformItem(item));
 }, [items]);
 
 // ✅ 필요 - 참조 동등성이 중요 (Cesium, Three.js 등 외부 라이브러리)
 // 객체가 바뀌면 전체 재초기화되는 경우
-const mapOptions = useMemo(() => ({
-  center: [lat, lng],
-  zoom: 10,
-}), [lat, lng]);
+const mapOptions = useMemo(
+  () => ({
+    center: [lat, lng],
+    zoom: 10,
+  }),
+  [lat, lng]
+);
 
 // ✅ 필요 - 정말 무거운 컴포넌트 (수천 행 테이블, 복잡한 차트)
 const HeavyChart = memo(function HeavyChart({ data }) {
@@ -109,12 +114,12 @@ const HeavyChart = memo(function HeavyChart({ data }) {
 ```tsx
 // ❌ 버그: count가 항상 0 (stale closure)
 const handleClick = useCallback(() => {
-  setCount(count + 1);  // count가 의존성 배열에 없음!
+  setCount(count + 1); // count가 의존성 배열에 없음!
 }, []);
 
 // ✅ 그냥 이렇게 쓰면 버그 없음
 const handleClick = () => {
-  setCount(c => c + 1);
+  setCount((c) => c + 1);
 };
 ```
 
@@ -145,7 +150,7 @@ function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
 // 사용
 <Suspense fallback={<Skeleton />}>
   <UserProfile userPromise={fetchUser(id)} />
-</Suspense>
+</Suspense>;
 ```
 
 ### useOptimistic() - 낙관적 업데이트
@@ -156,13 +161,10 @@ import { useOptimistic, startTransition } from "react";
 function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
   const [todos, setTodos] = useState(initialTodos);
 
-  const [optimisticTodos, addOptimistic] = useOptimistic(
-    todos,
-    (state, newTodo: string) => [
-      ...state,
-      { id: "temp-" + Date.now(), title: newTodo, pending: true },
-    ]
-  );
+  const [optimisticTodos, addOptimistic] = useOptimistic(todos, (state, newTodo: string) => [
+    ...state,
+    { id: "temp-" + Date.now(), title: newTodo, pending: true },
+  ]);
 
   async function handleAdd(title: string) {
     // 1. 즉시 UI 업데이트
@@ -325,16 +327,16 @@ function BlogPost({ post }: { post: Post }) {
 
 ## 6. 권장 패턴 요약
 
-| 상황 | 권장 패턴 |
-|------|----------|
-| ref 전달 | prop으로 직접 전달 (forwardRef 제거) |
-| 간단한 상태 | useState (그대로) |
-| 폼 상태 | useActionState + useFormStatus |
-| 낙관적 업데이트 | useOptimistic |
-| 비동기 데이터 | use() + Suspense |
-| 메모이제이션 | 필요한 경우만 (복잡한 계산, 무거운 컴포넌트) |
-| Context 읽기 | use() (조건부 가능) 또는 useContext |
-| 로딩 상태 | Suspense (isPending 보다 선호) |
+| 상황            | 권장 패턴                                    |
+| --------------- | -------------------------------------------- |
+| ref 전달        | prop으로 직접 전달 (forwardRef 제거)         |
+| 간단한 상태     | useState (그대로)                            |
+| 폼 상태         | useActionState + useFormStatus               |
+| 낙관적 업데이트 | useOptimistic                                |
+| 비동기 데이터   | use() + Suspense                             |
+| 메모이제이션    | 필요한 경우만 (복잡한 계산, 무거운 컴포넌트) |
+| Context 읽기    | use() (조건부 가능) 또는 useContext          |
+| 로딩 상태       | Suspense (isPending 보다 선호)               |
 
 ---
 

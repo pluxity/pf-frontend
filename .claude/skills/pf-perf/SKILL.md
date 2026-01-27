@@ -75,7 +75,7 @@ function Routes() {
 ```tsx
 // 무거운 컴포넌트 지연 로드
 const HeavyChart = lazy(() => import("./components/HeavyChart"));
-const MapViewer = lazy(() => import("@pf-dev/map").then(m => ({ default: m.MapViewer })));
+const MapViewer = lazy(() => import("@pf-dev/map").then((m) => ({ default: m.MapViewer })));
 
 function Dashboard() {
   return (
@@ -105,11 +105,11 @@ import { Input } from "@pf-dev/ui/atoms/Input";
 
 ### 무거운 패키지 대체
 
-| 패키지 | 크기 | 대안 |
-|--------|------|------|
-| moment.js | 288KB | date-fns (30KB) |
-| lodash | 71KB | lodash-es + 개별 import |
-| chart.js | 200KB+ | lightweight-charts |
+| 패키지    | 크기   | 대안                    |
+| --------- | ------ | ----------------------- |
+| moment.js | 288KB  | date-fns (30KB)         |
+| lodash    | 71KB   | lodash-es + 개별 import |
+| chart.js  | 200KB+ | lightweight-charts      |
 
 ```tsx
 // ❌ 전체 lodash
@@ -132,19 +132,25 @@ debounce(fn, 300);
 // Components > Profiler > 녹화
 
 // 1. Selector로 Zustand 구독 최적화
-const user = useAuthStore(state => state.user);  // ✅ user만 구독
-const { user, settings } = useAuthStore();       // ❌ 전체 구독
+const user = useAuthStore((state) => state.user); // ✅ user만 구독
+const { user, settings } = useAuthStore(); // ❌ 전체 구독
 
 // 2. 객체/배열 props 메모이제이션 (필요시)
-const columns = useMemo(() => [
-  { key: "name", label: "이름" },
-  { key: "email", label: "이메일" },
-], []);
+const columns = useMemo(
+  () => [
+    { key: "name", label: "이름" },
+    { key: "email", label: "이메일" },
+  ],
+  []
+);
 
 // 3. 콜백 메모이제이션 (필요시)
-const handleClick = useCallback((id) => {
-  deleteItem(id);
-}, [deleteItem]);
+const handleClick = useCallback(
+  (id) => {
+    deleteItem(id);
+  },
+  [deleteItem]
+);
 ```
 
 ### 큰 리스트 가상화
@@ -158,7 +164,7 @@ function VirtualList({ items }: { items: Item[] }) {
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 50,  // 예상 아이템 높이
+    estimateSize: () => 50, // 예상 아이템 높이
   });
 
   return (
@@ -226,11 +232,7 @@ const posts = await fetchPosts();
 const comments = await fetchComments();
 
 // ✅ 병렬 요청
-const [users, posts, comments] = await Promise.all([
-  fetchUsers(),
-  fetchPosts(),
-  fetchComments(),
-]);
+const [users, posts, comments] = await Promise.all([fetchUsers(), fetchPosts(), fetchComments()]);
 ```
 
 ### 캐싱
@@ -240,7 +242,7 @@ const [users, posts, comments] = await Promise.all([
 const { data } = useQuery({
   queryKey: ["users"],
   queryFn: fetchUsers,
-  staleTime: 5 * 60 * 1000,  // 5분간 캐시
+  staleTime: 5 * 60 * 1000, // 5분간 캐시
 });
 ```
 
@@ -256,6 +258,7 @@ npx lighthouse http://localhost:3000 --view
 ```
 
 **목표 점수:**
+
 - Performance: 90+
 - Accessibility: 90+
 - Best Practices: 90+
@@ -266,14 +269,15 @@ npx lighthouse http://localhost:3000 --view
 ```tsx
 import { onCLS, onFID, onLCP, onFCP, onTTFB } from "web-vitals";
 
-onCLS(console.log);   // Cumulative Layout Shift
-onFID(console.log);   // First Input Delay
-onLCP(console.log);   // Largest Contentful Paint
-onFCP(console.log);   // First Contentful Paint
-onTTFB(console.log);  // Time to First Byte
+onCLS(console.log); // Cumulative Layout Shift
+onFID(console.log); // First Input Delay
+onLCP(console.log); // Largest Contentful Paint
+onFCP(console.log); // First Contentful Paint
+onTTFB(console.log); // Time to First Byte
 ```
 
 **목표:**
+
 - LCP: < 2.5초
 - FID: < 100ms
 - CLS: < 0.1
@@ -297,7 +301,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 500,  // KB
+    chunkSizeWarningLimit: 500, // KB
   },
 });
 ```

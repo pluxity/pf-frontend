@@ -33,6 +33,7 @@ $ARGUMENTS 기능을 체계적으로 개발합니다.
 ## 1단계: 요구사항 분석
 
 ### 체크리스트
+
 - [ ] 기능의 목적이 명확한가?
 - [ ] 사용자 시나리오가 정의되었는가?
 - [ ] 성공 기준이 있는가?
@@ -40,6 +41,7 @@ $ARGUMENTS 기능을 체계적으로 개발합니다.
 - [ ] 디자인/기획 문서가 있는가?
 
 ### 질문할 것
+
 ```
 - 이 기능의 주요 사용자는 누구인가?
 - 예외 상황은 어떻게 처리하나?
@@ -110,6 +112,7 @@ pages/profile/
 ### 순서
 
 1. **타입 정의**
+
 ```tsx
 // types.ts
 export interface UserProfile {
@@ -126,18 +129,18 @@ export interface UpdateProfileDto {
 ```
 
 2. **API 서비스**
+
 ```tsx
 // services/profile.service.ts
 export const profileService = {
   getProfile: () => apiClient.get<UserProfile>("/users/me"),
-  updateProfile: (data: UpdateProfileDto) =>
-    apiClient.put<UserProfile>("/users/me", data),
-  uploadAvatar: (file: File) =>
-    apiClient.upload<{ url: string }>("/users/avatar", file),
+  updateProfile: (data: UpdateProfileDto) => apiClient.put<UserProfile>("/users/me", data),
+  uploadAvatar: (file: File) => apiClient.upload<{ url: string }>("/users/avatar", file),
 };
 ```
 
 3. **컴포넌트 구현**
+
 ```tsx
 // 기본 구조 먼저, 스타일은 나중에
 function ProfileForm({ profile, onSubmit }) {
@@ -148,6 +151,7 @@ function ProfileForm({ profile, onSubmit }) {
 ```
 
 4. **페이지 조합**
+
 ```tsx
 // pages/profile/index.tsx
 export default function ProfilePage() {
@@ -165,11 +169,12 @@ export default function ProfilePage() {
 ```
 
 5. **라우트 추가**
+
 ```tsx
 // routes/index.tsx
 const ProfilePage = lazy(() => import("@/pages/profile"));
 
-<Route path="/profile" element={<ProfilePage />} />
+<Route path="/profile" element={<ProfilePage />} />;
 ```
 
 ---
@@ -208,6 +213,7 @@ pnpm tsc --noEmit
 ```
 
 ### 체크리스트
+
 - [ ] 타입 에러 없음
 - [ ] 린트 에러 없음
 - [ ] 불필요한 console.log 제거

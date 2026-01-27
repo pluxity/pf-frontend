@@ -184,7 +184,9 @@ export const Default: Story = {
 
       <Sidebar.Content>
         <Sidebar.Section label="메인">
-          <Sidebar.Item icon={<Home />} active>홈</Sidebar.Item>
+          <Sidebar.Item icon={<Home />} active>
+            홈
+          </Sidebar.Item>
           <Sidebar.Item icon={<Users />}>사용자</Sidebar.Item>
           <Sidebar.Item icon={<Settings />}>설정</Sidebar.Item>
         </Sidebar.Section>
@@ -198,11 +200,7 @@ export const Default: Story = {
 };
 
 export const Collapsed: Story = {
-  render: () => (
-    <Sidebar defaultCollapsed>
-      {/* ... */}
-    </Sidebar>
-  ),
+  render: () => <Sidebar defaultCollapsed>{/* ... */}</Sidebar>,
 };
 
 export const WithBadge: Story = {
@@ -295,14 +293,8 @@ export const Controlled: Story = {
 
     return (
       <div className="space-y-4">
-        <Input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="입력하세요"
-        />
-        <p className="text-sm text-gray-500">
-          입력값: {value || "(없음)"}
-        </p>
+        <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="입력하세요" />
+        <p className="text-sm text-gray-500">입력값: {value || "(없음)"}</p>
       </div>
     );
   },

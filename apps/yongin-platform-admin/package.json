@@ -1,0 +1,46 @@
+{
+  "name": "@pf-dev/yongin-platform-admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3001",
+    "dev:staging": "vite --mode staging --port 3001",
+    "build": "tsc && vite build",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:production": "tsc && vite build --mode production",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "catalog:",
+    "@pf-dev/api": "workspace:*",
+    "@pf-dev/services": "workspace:*",
+    "@pf-dev/ui": "workspace:*",
+    "ag-grid-community": "^35.0.0",
+    "ag-grid-react": "^35.0.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-hook-form": "catalog:",
+    "react-router-dom": "catalog:",
+    "swr": "^2.3.8",
+    "uuid": "^13.0.0",
+    "zod": "catalog:",
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@pf-dev/eslint-config": "workspace:*",
+    "@pf-dev/typescript-config": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/uuid": "^11.0.0",
+    "@vitejs/plugin-react": "catalog:",
+    "eslint": "catalog:",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
