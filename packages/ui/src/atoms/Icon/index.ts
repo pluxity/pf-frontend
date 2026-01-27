@@ -48,7 +48,12 @@ export {
   Menu,
   MoreVertical,
   Shrink,
+  Sliders,
 } from "./icons/action";
+
+export { Play, Pause, Stop, Replay } from "./icons/media";
+
+export { SentimentLow, SentimentNormal, SentimentHigh, SentimentDanger } from "./icons/sentiment";
 
 export {
   Info,
