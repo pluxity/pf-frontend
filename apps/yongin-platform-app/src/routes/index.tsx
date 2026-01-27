@@ -17,7 +17,6 @@ export function AppRoutes() {
       {/* Routes without authentication */}
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        {/* Add more routes here */}
       </Route>
 
       {/* 404 */}
