@@ -188,3 +188,44 @@ export function Shrink({ size = "md", className, ref, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function Sliders({ size = "md", className, ref, ...props }: IconProps) {
+  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  return (
+    <svg
+      ref={ref}
+      width={sizeValue}
+      height={sizeValue}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn("shrink-0", className)}
+      {...props}
+    >
+      <path
+        d="M6 23C5.45333 23 5 22.649 5 22.2258V7.77419C5 7.35097 5.45333 7 6 7C6.54667 7 7 7.35097 7 7.77419V22.2258C7 22.649 6.54667 23 6 23Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6 6C5.45333 6 5 5.62222 5 5.16667V1.83333C5 1.37778 5.45333 1 6 1C6.54667 1 7 1.37778 7 1.83333V5.16667C7 5.62222 6.54667 6 6 6Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17 23C16.4533 23 16 22.6222 16 22.1667V18.8333C16 18.3778 16.4533 18 17 18C17.5467 18 18 18.3778 18 18.8333V22.1667C18 22.6222 17.5467 23 17 23Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17 15C16.4533 15 16 14.6474 16 14.2222V1.77778C16 1.35259 16.4533 1 17 1C17.5467 1 18 1.35259 18 1.77778V14.2222C18 14.6474 17.5467 15 17 15Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6.86667 10.75H5.13333C3.64267 10.75 2.75 9.72 2.75 8V7C2.75 5.28 3.64267 4.25 5.13333 4.25H6.86667C8.35733 4.25 9.25 5.28 9.25 7V8C9.25 9.72 8.35733 10.75 6.86667 10.75Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17.8667 18.75H16.1333C14.6427 18.75 13.75 17.72 13.75 16V15C13.75 13.28 14.6427 12.25 16.1333 12.25H17.8667C19.3573 12.25 20.25 13.28 20.25 15V16C20.25 17.72 19.3573 18.75 17.8667 18.75Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
