@@ -2,7 +2,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
 import { RootLayout } from "@/layouts/RootLayout";
-import { HomePage, CenterPage } from "@/pages";
+import { HomePage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ export function AppRoutes() {
       {/* Routes without authentication */}
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="center" element={<CenterPage />} />
       </Route>
 
       {/* 404 */}
