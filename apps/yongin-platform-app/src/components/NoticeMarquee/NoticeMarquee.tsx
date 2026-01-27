@@ -1,15 +1,13 @@
-import useSWR from "swr";
 import { cn } from "@pf-dev/ui";
-import { announcementService } from "@/services";
 import { NoticeMarqueeProps } from "./types";
 
-export function NoticeMarquee({ speed = 30, gap = 4, className }: NoticeMarqueeProps) {
-  const { data } = useSWR("/announcement", () => announcementService.get());
-
-  // 마퀴 효과를 위해 콘텐츠 반복
-  const content = data?.content || "";
-  const repeatCount = 6;
-
+export function NoticeMarquee({
+  content,
+  speed = 30,
+  gap = 4,
+  repeatCount = 6,
+  className,
+}: NoticeMarqueeProps) {
   if (!content) {
     return null;
   }
