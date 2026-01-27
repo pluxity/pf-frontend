@@ -154,6 +154,7 @@ export function GoalsPage() {
       {
         headerName: "진행률",
         field: "progressRate",
+        headerTooltip: "누계량/전체량",
         flex: 1.5,
         editable: false,
         cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
@@ -177,12 +178,14 @@ export function GoalsPage() {
       {
         headerName: "누계량",
         field: "cumulativeQuantity",
+        headerTooltip: "전일 누계량+금일 작업량",
         flex: 1,
         editable: false,
       },
       {
         headerName: "목표량",
         field: "targetQuantity",
+        headerTooltip: "전체량/(준공일-착공일)",
         flex: 1,
         editable: false,
       },
@@ -197,6 +200,7 @@ export function GoalsPage() {
       {
         headerName: "공정률",
         field: "constructionRate",
+        headerTooltip: "작업량/목표량",
         flex: 0.8,
         editable: false,
         cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
@@ -223,12 +227,14 @@ export function GoalsPage() {
       {
         headerName: "계획작업일",
         field: "plannedWorkDays",
+        headerTooltip: "준공일-착공일",
         flex: 1,
         editable: false,
       },
       {
         headerName: "지연일",
         field: "delayDays",
+        headerTooltip: "(목표량*(일자-착공일)-누계량)/목표량",
         flex: 1,
         editable: false,
         cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
@@ -596,6 +602,7 @@ export function GoalsPage() {
                 rowData={displayData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
+                tooltipShowDelay={300}
                 animateRows={true}
                 rowSelection={{
                   mode: "multiRow",
