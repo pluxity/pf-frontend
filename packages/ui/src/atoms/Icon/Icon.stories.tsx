@@ -46,7 +46,12 @@ import {
   Menu,
   MoreVertical,
   Shrink,
+  Sliders,
 } from "./icons/action";
+
+import { Play, Pause, Stop, Replay } from "./icons/media";
+
+import { SentimentLow, SentimentNormal, SentimentHigh, SentimentDanger } from "./icons/sentiment";
 
 import { Info, Help, Calendar, Eye, EyeOff, Bell, User, Mic, Settings } from "./icons/status";
 
@@ -147,6 +152,35 @@ export const ActionIcons: Story = {
         { name: "Menu", Icon: Menu },
         { name: "MoreVertical", Icon: MoreVertical },
         { name: "Shrink", Icon: Shrink },
+        { name: "Sliders", Icon: Sliders },
+      ]}
+    />
+  ),
+};
+
+export const MediaIcons: Story = {
+  render: () => (
+    <IconGrid
+      title="Media Icons"
+      icons={[
+        { name: "Play", Icon: Play },
+        { name: "Pause", Icon: Pause },
+        { name: "Stop", Icon: Stop },
+        { name: "Replay", Icon: Replay },
+      ]}
+    />
+  ),
+};
+
+export const SentimentIcons: Story = {
+  render: () => (
+    <IconGrid
+      title="Sentiment Icons (Risk Level)"
+      icons={[
+        { name: "SentimentLow", Icon: SentimentLow },
+        { name: "SentimentNormal", Icon: SentimentNormal },
+        { name: "SentimentHigh", Icon: SentimentHigh },
+        { name: "SentimentDanger", Icon: SentimentDanger },
       ]}
     />
   ),
@@ -287,6 +321,25 @@ export const AllIcons: Story = {
           { name: "Menu", Icon: Menu },
           { name: "MoreVertical", Icon: MoreVertical },
           { name: "Shrink", Icon: Shrink },
+          { name: "Sliders", Icon: Sliders },
+        ]}
+      />
+      <IconGrid
+        title="Media Icons"
+        icons={[
+          { name: "Play", Icon: Play },
+          { name: "Pause", Icon: Pause },
+          { name: "Stop", Icon: Stop },
+          { name: "Replay", Icon: Replay },
+        ]}
+      />
+      <IconGrid
+        title="Sentiment Icons"
+        icons={[
+          { name: "SentimentLow", Icon: SentimentLow },
+          { name: "SentimentNormal", Icon: SentimentNormal },
+          { name: "SentimentHigh", Icon: SentimentHigh },
+          { name: "SentimentDanger", Icon: SentimentDanger },
         ]}
       />
       <IconGrid
