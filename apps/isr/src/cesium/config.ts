@@ -18,7 +18,7 @@ Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ION_TOKEN || "";
  * 환경변수로 설정하거나 기본값 사용
  */
 export const TILES_URL =
-  import.meta.env.VITE_3D_TILES_URL || "http://dev.pluxity.com/3d-tiles/farm11/tileset.json";
+  import.meta.env.VITE_3D_TILES_URL || "https://dev.pluxity.com/3d-tiles/farm11/tileset.json";
 
 /**
  * 기본 Viewer 옵션
