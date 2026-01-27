@@ -1,19 +1,19 @@
+import useSWR from "swr";
 import { cn } from "@pf-dev/ui";
+import { announcementService } from "@/services";
 import { NoticeMarqueeProps } from "./types";
 
-const notice = [
-  { content: "안내 방송이 들어갑니다." },
-  { content: "용인 플랫폼 시티 1공구 스마트 건설 현장입니다." },
-  { content: "안전에 유의하시기 바랍니다." },
-  { content: "안내 방송이 들어갑니다." },
-  { content: "용인 플랫폼 시티 1공구 스마트 건설 현장입니다." },
-  { content: "안전에 유의하시기 바랍니다." },
-  { content: "안내 방송이 들어갑니다." },
-  { content: "용인 플랫폼 시티 1공구 스마트 건설 현장입니다." },
-  { content: "안전에 유의하시기 바랍니다." },
-];
-
 export function NoticeMarquee({ speed = 30, gap = 4, className }: NoticeMarqueeProps) {
+  const { data } = useSWR("/announcement", () => announcementService.get());
+
+  // 마퀴 효과를 위해 콘텐츠 반복
+  const content = data?.content || "";
+  const repeatCount = 6;
+
+  if (!content) {
+    return null;
+  }
+
   return (
     <div
       className={cn(
@@ -23,8 +23,8 @@ export function NoticeMarquee({ speed = 30, gap = 4, className }: NoticeMarqueeP
       )}
       style={{ animationDuration: `${speed}` }}
     >
-      {notice.map((list, id) => (
-        <span key={id}>{list.content}</span>
+      {Array.from({ length: repeatCount }).map((_, id) => (
+        <span key={id}>{content}</span>
       ))}
     </div>
   );
