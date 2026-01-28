@@ -2,7 +2,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
 import { RootLayout } from "@/layouts/RootLayout";
-import { HomePage } from "@/pages";
+import { HomePage } from "@/views";
 
 function NotFoundPage() {
   const navigate = useNavigate();
