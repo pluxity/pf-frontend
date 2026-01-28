@@ -1,1 +1,1 @@
-export type { PageResponse } from "./api";
+export type { PageResponse, FileResponse } from "./api";

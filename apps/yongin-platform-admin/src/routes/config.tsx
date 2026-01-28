@@ -26,6 +26,9 @@ const PasswordChangePage = lazy(() =>
 const SystemSettingsPage = lazy(() =>
   import("@/pages/system").then((m) => ({ default: m.SystemSettingsPage }))
 );
+const KeyManagementPage = lazy(() =>
+  import("@/pages/key-management").then((m) => ({ default: m.KeyManagementPage }))
+);
 
 export const sectionConfigs: SectionConfig[] = [
   {
@@ -98,6 +101,17 @@ export const protectedRoutes: RouteConfig[] = [
       icon: FileText,
       sectionId: "management",
       order: 3,
+    },
+  },
+  {
+    path: "/key-management",
+    element: KeyManagementPage,
+    permissions: [{ resourceType: "KEY_MANAGEMENT", minLevel: "READ" }],
+    menu: {
+      label: "주요관리사항 관리",
+      icon: FileText,
+      sectionId: "management",
+      order: 4,
     },
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능
