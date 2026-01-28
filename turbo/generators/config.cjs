@@ -84,6 +84,12 @@ module.exports = function generator(plop) {
         default: false,
         when: (answers) => answers.useAuth,
       },
+      {
+        type: "confirm",
+        name: "useSpaStructure",
+        message: "Use SPA structure? (single dashboard page with views/)",
+        default: true,
+      },
     ],
     actions: [
       // Package files
@@ -161,16 +167,31 @@ module.exports = function generator(plop) {
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/layouts/RootLayout.tsx",
         templateFile: "templates/app/src/layouts/RootLayout.tsx.hbs",
       },
-      // Pages
+      // Pages (multi-page structure or login page)
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/index.ts",
         templateFile: "templates/app/src/pages/index.ts.hbs",
+        skip: function (answers) {
+          // pages/index.ts is needed for:
+          // 1. Multi-page structure (not SPA)
+          // 2. SPA with auth (needs to export LoginPage)
+          if (answers.useSpaStructure && !answers.useAuth) {
+            return "Skipping pages/index.ts (SPA without auth)";
+          }
+          return false;
+        },
       },
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
         templateFile: "templates/app/src/pages/home/index.tsx.hbs",
+        skip: function (answers) {
+          if (answers.useSpaStructure) {
+            return "Skipping pages/home (using views/HomePage)";
+          }
+          return false;
+        },
       },
       {
         type: "add",
@@ -179,6 +200,29 @@ module.exports = function generator(plop) {
         skip: function (answers) {
           if (!answers.useAuth) {
             return "Skipping login page (authentication not enabled)";
+          }
+          return false;
+        },
+      },
+      // Views (SPA structure)
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/views/index.ts",
+        templateFile: "templates/app/src/views/index.ts.hbs",
+        skip: function (answers) {
+          if (!answers.useSpaStructure) {
+            return "Skipping views/ (using pages/ structure)";
+          }
+          return false;
+        },
+      },
+      {
+        type: "add",
+        path: "{{ turbo.paths.root }}/apps/{{ name }}/src/views/HomePage.tsx",
+        templateFile: "templates/app/src/views/HomePage.tsx.hbs",
+        skip: function (answers) {
+          if (!answers.useSpaStructure) {
+            return "Skipping views/HomePage (using pages/home)";
           }
           return false;
         },
