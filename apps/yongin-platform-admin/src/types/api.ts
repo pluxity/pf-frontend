@@ -11,3 +11,16 @@ export interface PageResponse<T> {
   first: boolean;
   last: boolean;
 }
+
+/** 파일 응답 */
+export interface FileResponse {
+  id?: number;
+  url?: string;
+  originalFileName?: string;
+  contentType?: string;
+  fileStatus?: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}
