@@ -23,6 +23,11 @@ export function KeyManagementPage() {
   const { data, types, isLoading, isError, create, update, select, deselect, remove, refreshData } =
     useKeyManagement();
 
+  const dataRef = useRef(data);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
@@ -72,36 +77,33 @@ export function KeyManagementPage() {
   }, [data]);
 
   // 제목 클릭 핸들러 (모달 열기)
-  const handleTitleClick = useCallback(
-    (item: KeyManagementItem | null, typeCode: string) => {
-      if (item) {
-        setSelectedItem(item);
-      } else {
-        // 빈 셀 클릭 시 새 항목 생성 모드
-        const group = data.find((g) => g.type === typeCode);
+  const handleTitleClick = useCallback((item: KeyManagementItem | null, typeCode: string) => {
+    if (item) {
+      setSelectedItem(item);
+    } else {
+      // 빈 셀 클릭 시 새 항목 생성 모드
+      const group = dataRef.current?.find((g) => g.type === typeCode);
 
-        // 항상 해당 타입 그룹의 마지막 displayOrder + 1로 추가
-        const nextDisplayOrder = group?.items.length
-          ? Math.max(...group.items.map((item) => item.displayOrder)) + 1
-          : 1;
+      // 항상 해당 타입 그룹의 마지막 displayOrder + 1로 추가
+      const nextDisplayOrder = group?.items.length
+        ? Math.max(...group.items.map((item) => item.displayOrder)) + 1
+        : 1;
 
-        setSelectedItem({
-          id: -1,
-          type: typeCode,
-          title: "",
-          displayOrder: nextDisplayOrder,
-          selected: false,
-        } as KeyManagementItem);
-      }
-      setShowDialog(true);
-    },
-    [data]
-  );
+      setSelectedItem({
+        id: -1,
+        type: typeCode,
+        title: "",
+        displayOrder: nextDisplayOrder,
+        selected: false,
+      } as KeyManagementItem);
+    }
+    setShowDialog(true);
+  }, []);
 
   const handleCheckboxClick = useCallback(
     async (rowIndex: number, typeCode: string) => {
       const cellKey = `${rowIndex}_${typeCode}`;
-      const group = data.find((g) => g.type === typeCode);
+      const group = dataRef.current?.find((g) => g.type === typeCode);
       const item = group?.items[rowIndex];
 
       if (!item) return;
@@ -110,21 +112,9 @@ export function KeyManagementPage() {
         const isCurrentlySelected = selectedCells.has(cellKey);
 
         if (isCurrentlySelected) {
-          // 선택 해제
           await deselect(item.id);
-          setSelectedCells((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(cellKey);
-            return newSet;
-          });
         } else {
-          // 선택
           await select(item.id);
-          setSelectedCells((prev) => {
-            const newSet = new Set(prev);
-            newSet.add(cellKey);
-            return newSet;
-          });
         }
 
         await refreshData();
@@ -133,7 +123,7 @@ export function KeyManagementPage() {
         toast.error("선택 상태 변경에 실패했습니다.");
       }
     },
-    [selectedCells, data, select, deselect, refreshData, toast]
+    [selectedCells, select, deselect, refreshData, toast]
   );
 
   const cellRenderer = useCallback(
@@ -183,7 +173,7 @@ export function KeyManagementPage() {
         </div>
       );
     },
-    [selectedCells, handleTitleClick, handleCheckboxClick, data]
+    [selectedCells, handleTitleClick, handleCheckboxClick]
   );
 
   const columnDefs = useMemo<ColDef<MatrixRow>[]>(() => {
@@ -271,7 +261,7 @@ export function KeyManagementPage() {
         toast.error("저장에 실패했습니다.");
       }
     },
-    [selectedItem, create, update, remove, refreshData, toast, handleCloseModal, data]
+    [selectedItem, create, update, remove, refreshData, toast, handleCloseModal]
   );
 
   if (isLoading) {

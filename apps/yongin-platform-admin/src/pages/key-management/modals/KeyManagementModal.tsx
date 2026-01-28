@@ -42,6 +42,14 @@ export function KeyManagementModal({
     }
   }, [isOpen, selectedItem]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   if (!isOpen || !selectedItem) return null;
 
   const handleFileClick = () => {

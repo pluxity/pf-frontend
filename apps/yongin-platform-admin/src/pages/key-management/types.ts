@@ -1,15 +1,5 @@
-// File 타입
-export interface FileInfo {
-  id?: number;
-  url?: string;
-  originalFileName?: string;
-  contentType?: string;
-  fileStatus?: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
-}
+// File 응답
+import type { FileResponse } from "../../types";
 
 // KeyManagement 타입
 export interface KeyManagementType {
@@ -27,7 +17,7 @@ export interface KeyManagementItem {
   methodDirection?: string;
   displayOrder: number;
   fileId?: number | null;
-  file?: FileInfo;
+  file?: FileResponse;
   selected: boolean;
 }
 

@@ -11,7 +11,13 @@ export async function uploadFile(file: File): Promise<number> {
   formData.append("file", file);
 
   const result = await getApiClient().post<{ location: string }>("/files/upload", formData);
-  const fileId = parseInt(result.location.split("/").pop() || "0", 10);
+
+  const lastSegment = result.location?.split("/").pop();
+  const fileId = parseInt(lastSegment || "", 10);
+
+  if (isNaN(fileId)) {
+    throw new Error(`업로드 후 잘못된 파일 ID를 받았습니다: ${result.location}`);
+  }
 
   return fileId;
 }
