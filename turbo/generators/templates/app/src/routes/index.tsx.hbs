@@ -5,7 +5,14 @@ import { ProtectedRouter } from "@pf-dev/services";
 {{/if}}
 
 import { RootLayout } from "@/layouts/RootLayout";
+{{#if useSpaStructure}}
+import { HomePage } from "@/views";
+{{#if useAuth}}
+import { LoginPage } from "@/pages";
+{{/if}}
+{{else}}
 import { HomePage{{#if useAuth}}, LoginPage{{/if}} } from "@/pages";
+{{/if}}
 
 function NotFoundPage() {
   const navigate = useNavigate();
