@@ -6,3 +6,4 @@ export { AttendancePage } from "./attendance";
 export { ProcessStatusPage } from "./process-status";
 export { GoalsPage } from "./goals";
 export { PasswordChangePage } from "./settings";
+export { KeyManagementPage } from "./key-management";
