@@ -22,6 +22,21 @@ module.exports = function generator(plop) {
     return `Copied ${config.src} to ${destPath}`;
   });
 
+  // Helper functions for conditional file generation
+  const skipIfSpa = (message) => (answers) => {
+    if (answers.useSpaStructure) {
+      return message;
+    }
+    return false;
+  };
+
+  const skipIfNotSpa = (message) => (answers) => {
+    if (!answers.useSpaStructure) {
+      return message;
+    }
+    return false;
+  };
+
   plop.setGenerator("app", {
     description: "Create a new React application",
     prompts: [
@@ -186,12 +201,7 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/pages/home/index.tsx",
         templateFile: "templates/app/src/pages/home/index.tsx.hbs",
-        skip: function (answers) {
-          if (answers.useSpaStructure) {
-            return "Skipping pages/home (using views/HomePage)";
-          }
-          return false;
-        },
+        skip: skipIfSpa("Skipping pages/home (using views/HomePage)"),
       },
       {
         type: "add",
@@ -209,23 +219,13 @@ module.exports = function generator(plop) {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/views/index.ts",
         templateFile: "templates/app/src/views/index.ts.hbs",
-        skip: function (answers) {
-          if (!answers.useSpaStructure) {
-            return "Skipping views/ (using pages/ structure)";
-          }
-          return false;
-        },
+        skip: skipIfNotSpa("Skipping views/ (using pages/ structure)"),
       },
       {
         type: "add",
         path: "{{ turbo.paths.root }}/apps/{{ name }}/src/views/HomePage.tsx",
         templateFile: "templates/app/src/views/HomePage.tsx.hbs",
-        skip: function (answers) {
-          if (!answers.useSpaStructure) {
-            return "Skipping views/HomePage (using pages/home)";
-          }
-          return false;
-        },
+        skip: skipIfNotSpa("Skipping views/HomePage (using pages/home)"),
       },
       // Services
       {
