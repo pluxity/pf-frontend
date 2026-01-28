@@ -7,7 +7,7 @@ import {
   Management,
   DailyStats,
   Announcement,
-} from "./components";
+} from "@/components/widgets";
 
 const dashboardTemplate: GridTemplate = {
   id: "dashboard-1",

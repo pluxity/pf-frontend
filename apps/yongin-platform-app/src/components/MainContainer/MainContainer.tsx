@@ -26,7 +26,7 @@ const TABS: Tab[] = [
   { value: "cctv", label: "CCTV" },
 ];
 
-interface CenterContainerProps {
+interface MainContainerProps {
   className?: string;
   defaultTab?: TabValue;
 }
@@ -39,7 +39,7 @@ function LoadingFallback() {
   );
 }
 
-export function CenterContainer({ className, defaultTab = "birds-eye" }: CenterContainerProps) {
+export function MainContainer({ className, defaultTab = "birds-eye" }: MainContainerProps) {
   const [activeTab, setActiveTab] = useState<TabValue>(defaultTab);
 
   return (
