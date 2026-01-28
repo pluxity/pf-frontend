@@ -18,31 +18,13 @@ export function KeyManagementPage() {
   const { toast } = useToastContext();
   const [selectedItem, setSelectedItem] = useState<KeyManagementItem | null>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
 
-  const { data, types, isLoading, isError, create, update, select, deselect, remove, refreshData } =
+  const { data, types, isLoading, isError, create, update, select, deselect, remove, mutate } =
     useKeyManagement();
 
   const dataRef = useRef(data);
   useEffect(() => {
     dataRef.current = data;
-  }, [data]);
-
-  useEffect(() => {
-    if (!data || data.length === 0) return;
-
-    const initialSelectedCells = new Set<string>();
-
-    data.forEach((group) => {
-      group.items.forEach((item, rowIndex) => {
-        if (item.selected) {
-          const cellKey = `${rowIndex}_${group.type}`;
-          initialSelectedCells.add(cellKey);
-        }
-      });
-    });
-
-    setSelectedCells(initialSelectedCells);
   }, [data]);
 
   // KeyManagementGroup[] → MatrixRow[] 변환
@@ -102,28 +84,42 @@ export function KeyManagementPage() {
 
   const handleCheckboxClick = useCallback(
     async (rowIndex: number, typeCode: string) => {
-      const cellKey = `${rowIndex}_${typeCode}`;
-      const group = dataRef.current?.find((g) => g.type === typeCode);
+      const group = dataRef.current?.find((group) => group.type === typeCode);
       const item = group?.items[rowIndex];
 
       if (!item) return;
 
-      try {
-        const isCurrentlySelected = selectedCells.has(cellKey);
+      const nextSelected = !item.selected;
 
-        if (isCurrentlySelected) {
-          await deselect(item.id);
-        } else {
+      await mutate(
+        (prev) =>
+          prev?.map((group) =>
+            group.type !== typeCode
+              ? group
+              : {
+                  ...group,
+                  items: group.items.map((item, index) =>
+                    index === rowIndex ? { ...item, selected: nextSelected } : item
+                  ),
+                }
+          ),
+        { revalidate: false, rollbackOnError: true }
+      );
+
+      try {
+        if (nextSelected) {
           await select(item.id);
+        } else {
+          await deselect(item.id);
         }
 
-        await refreshData();
+        mutate();
       } catch (err) {
         console.error("Checkbox toggle error:", err);
         toast.error("선택 상태 변경에 실패했습니다.");
       }
     },
-    [selectedCells, select, deselect, refreshData, toast]
+    [mutate, select, deselect, toast]
   );
 
   const cellRenderer = useCallback(
@@ -131,8 +127,7 @@ export function KeyManagementPage() {
       const item = params.value as KeyManagementItem | undefined;
       const typeCode = params.colDef?.field || "";
       const rowIndex = params.data?.rowIndex ?? 0;
-      const cellKey = `${rowIndex}_${typeCode}`;
-      const isSelected = selectedCells.has(cellKey);
+      const isSelected = item?.selected ?? false;
 
       if (!item) {
         return (
@@ -144,8 +139,8 @@ export function KeyManagementPage() {
               클릭하여 입력
             </span>
             <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => handleCheckboxClick(rowIndex, typeCode)}
+              checked={false}
+              disabled
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -173,7 +168,7 @@ export function KeyManagementPage() {
         </div>
       );
     },
-    [selectedCells, handleTitleClick, handleCheckboxClick]
+    [handleTitleClick, handleCheckboxClick]
   );
 
   const columnDefs = useMemo<ColDef<MatrixRow>[]>(() => {
@@ -215,7 +210,7 @@ export function KeyManagementPage() {
         if (isEmpty && !isNewItem) {
           await remove(selectedItem.id);
           toast.success("항목이 삭제되었습니다.");
-          await refreshData();
+          await mutate();
           handleCloseModal();
           return;
         }
@@ -253,7 +248,7 @@ export function KeyManagementPage() {
           toast.success("항목이 수정되었습니다.");
         }
 
-        await refreshData();
+        await mutate();
 
         handleCloseModal();
       } catch (err) {
@@ -261,7 +256,7 @@ export function KeyManagementPage() {
         toast.error("저장에 실패했습니다.");
       }
     },
-    [selectedItem, create, update, remove, refreshData, toast, handleCloseModal]
+    [selectedItem, create, update, remove, mutate, toast, handleCloseModal]
   );
 
   if (isLoading) {

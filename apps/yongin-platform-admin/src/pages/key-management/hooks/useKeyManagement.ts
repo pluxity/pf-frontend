@@ -55,13 +55,15 @@ export function useKeyManagement() {
   // 선택
   const { trigger: select } = useSWRMutation(
     API_PATH.KEY_MANAGEMENT,
-    (_key, { arg }: { arg: number }) => selectKeyManagement(arg)
+    (_key, { arg }: { arg: number }) => selectKeyManagement(arg),
+    { revalidate: false }
   );
 
   // 선택 해제
   const { trigger: deselect } = useSWRMutation(
     API_PATH.KEY_MANAGEMENT,
-    (_key, { arg }: { arg: number }) => deselectKeyManagement(arg)
+    (_key, { arg }: { arg: number }) => deselectKeyManagement(arg),
+    { revalidate: false }
   );
 
   // 삭제
@@ -87,6 +89,6 @@ export function useKeyManagement() {
     select,
     deselect,
     remove,
-    refreshData,
+    mutate: refreshData,
   };
 }
