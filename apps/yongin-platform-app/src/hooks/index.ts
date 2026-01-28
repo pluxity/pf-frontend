@@ -1,7 +1,2 @@
-/**
- * Custom hooks barrel export
- *
- * Add your custom hooks here
- */
-
-export {};
+export { useAnnouncement } from "./useAnnouncement";
+export { useCCTVStreams } from "./useCCTVStreams";

@@ -10,6 +10,7 @@ export interface AnnouncementFormData {
 export interface Notice {
   id: number;
   title: string;
+  content: string;
   createdAt: string;
   createdBy: string;
   updatedAt: string;
@@ -18,4 +19,5 @@ export interface Notice {
 
 export interface NoticeFormData {
   title: string;
+  content: string;
 }
