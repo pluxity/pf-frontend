@@ -1,5 +1,5 @@
 import { Widget, cn } from "@pf-dev/ui";
-import { CenterContainer } from "../../../components/CenterContainer";
+import { MainContainer } from "../../../components/MainContainer";
 import { MainContentProps } from "./types";
 
 export function MainContent({ id, className }: MainContentProps) {
@@ -10,7 +10,7 @@ export function MainContent({ id, className }: MainContentProps) {
       className={cn(className, "4k:text-4xl")}
       contentClassName="h-full p-0"
     >
-      <CenterContainer />
+      <MainContainer />
     </Widget>
   );
 }
