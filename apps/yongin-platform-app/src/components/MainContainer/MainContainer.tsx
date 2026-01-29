@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@pf-dev/ui";
+import { Tabs, TabsContent } from "@pf-dev/ui";
 import { cn } from "@pf-dev/ui/utils";
 
 const BirdsEyeView = lazy(() =>
@@ -11,7 +11,7 @@ const GPSMapView = lazy(() =>
 );
 const CCTVView = lazy(() => import("./views/CCTVView").then((m) => ({ default: m.CCTVView })));
 
-type TabValue = "birds-eye" | "bim" | "gps" | "cctv";
+type TabValue = "birds-eye" | "bim" | "gps" | "management" | "cctv";
 
 interface Tab {
   value: TabValue;
@@ -22,6 +22,7 @@ const TABS: Tab[] = [
   { value: "birds-eye", label: "조감도" },
   { value: "bim", label: "BIM" },
   { value: "gps", label: "GPS" },
+  { value: "management", label: "주요 관리 사항" },
   { value: "cctv", label: "CCTV" },
 ];
 
@@ -45,9 +46,9 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
     <Tabs
       value={activeTab}
       onValueChange={(v) => setActiveTab(v as TabValue)}
-      className={cn("flex flex-col h-full", className)}
+      className={cn("relative h-full", className)}
     >
-      <div className="flex-1 overflow-hidden">
+      <div className="h-full overflow-hidden rounded-lg">
         <TabsContent value="birds-eye" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
             <BirdsEyeView />
@@ -66,6 +67,12 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
           </Suspense>
         </TabsContent>
 
+        <TabsContent value="management" className="h-full mt-0">
+          <div className="flex items-center justify-center h-full text-gray-400">
+            주요 관리 사항 (준비 중)
+          </div>
+        </TabsContent>
+
         <TabsContent value="cctv" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
             <CCTVView />
@@ -73,13 +80,22 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
         </TabsContent>
       </div>
 
-      <TabsList className="justify-center border-t border-gray-200 bg-white h-12 shrink-0">
+      <div className="absolute bottom-0 right-4 flex">
         {TABS.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className="px-6">
+          <button
+            key={tab.value}
+            onClick={() => setActiveTab(tab.value)}
+            className={cn(
+              "px-5 py-2 text-sm font-medium transition-all rounded-t-lg shadow-[0.25rem_0_0.5rem_0_rgba(0,0,0,0.4)]",
+              activeTab === tab.value
+                ? "bg-brand text-white z-10 scale-110 origin-bottom"
+                : "bg-[#55596C] text-gray-300 hover:text-white"
+            )}
+          >
             {tab.label}
-          </TabsTrigger>
+          </button>
         ))}
-      </TabsList>
+      </div>
     </Tabs>
   );
 }
