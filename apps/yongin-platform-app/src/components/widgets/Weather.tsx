@@ -44,11 +44,7 @@ export function Weather({ id, className }: WeatherProps) {
 
   if (isLoading) {
     return (
-      <Widget
-        id={id}
-        className={cn(className, "4k:text-4xl 4k:p-8 bg-white/30")}
-        contentClassName="h-full"
-      >
+      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
@@ -61,11 +57,7 @@ export function Weather({ id, className }: WeatherProps) {
 
   if (isError) {
     return (
-      <Widget
-        id={id}
-        className={cn(className, "4k:text-4xl 4k:p-8 bg-white/30")}
-        contentClassName="h-full"
-      >
+      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="text-red-500">
@@ -89,11 +81,7 @@ export function Weather({ id, className }: WeatherProps) {
 
   if (!weather) {
     return (
-      <Widget
-        id={id}
-        className={cn(className, "4k:text-4xl 4k:p-8 bg-white/30")}
-        contentClassName="h-full"
-      >
+      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="text-gray-400">
@@ -145,35 +133,31 @@ export function Weather({ id, className }: WeatherProps) {
   ];
 
   return (
-    <Widget
-      id={id}
-      className={cn(className, "4k:text-4xl 4k:p-8 bg-white/30")}
-      contentClassName="h-full"
-    >
-      <div className="flex items-center gap-2 text-xl mb-5 4k:text-4xl text-[#55596C]">
-        <DateTime format="YYYY년 MM월 DD일(ddd)" className="font-bold text-xl 4k:text-4xl" />
-        <DateTime format="HH:mm:ss" className="text-xl 4k:text-4xl" />
+    <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
+      <div className="flex items-center gap-2 text-lg mb-2 text-[#55596C]">
+        <DateTime format="YYYY년 MM월 DD일(ddd)" className="font-bold text-lg" />
+        <DateTime format="HH:mm:ss" className="text-lg" />
       </div>
-      <div className="flex flex-col justify-start gap-5 h-full 4k:gap-10">
-        <div className="grid grid-cols-3 gap-2 min-h-32 4k:gap-6 4k:min-h-46">
+      <div className="flex flex-col justify-start gap-3 h-full overflow-hidden">
+        <div className="grid grid-cols-3 gap-2">
           <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
             <img
               src={`${import.meta.env.BASE_URL}assets/icons/${getWeatherIcon()}`}
               alt="날씨"
-              className="w-15 h-15 4k:w-25 4k:h-25"
+              className="w-12 h-12"
             />
-            <span className="text-2xl 4k:text-4xl">{Math.round(weather.temperature)}°C</span>
+            <span className="text-2xl">{Math.round(weather.temperature)}°C</span>
           </div>
           <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
             <div className="flex items-end">
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm10Status.icon}`}
                 alt={weather.pm10Status}
-                className="w-15 h-15 4k:w-25 4k:h-25"
+                className="w-12 h-12"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold 4k:text-lg",
+                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold",
                   pm10Status.color
                 )}
               >
@@ -181,10 +165,8 @@ export function Weather({ id, className }: WeatherProps) {
               </span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-xs tracking-tight whitespace-nowrap 4k:text-lg">
-                미세먼지(PM10)
-              </span>
-              <span className="text-sm font-bold 4k:text-xl">{Math.round(weather.pm10)} ㎍/㎥</span>
+              <span className="text-xs tracking-tight whitespace-nowrap">미세먼지(PM10)</span>
+              <span className="text-sm font-bold">{Math.round(weather.pm10)} ㎍/㎥</span>
             </div>
           </div>
           <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
@@ -192,11 +174,11 @@ export function Weather({ id, className }: WeatherProps) {
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm25Status.icon}`}
                 alt={weather.pm25Status}
-                className="w-15 h-15 4k:w-25 4k:h-25"
+                className="w-12 h-12"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold 4k:text-lg",
+                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold",
                   pm25Status.color
                 )}
               >
@@ -204,22 +186,20 @@ export function Weather({ id, className }: WeatherProps) {
               </span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-xs tracking-tight whitespace-nowrap 4k:text-lg">
-                초미세먼지(PM2.5)
-              </span>
-              <span className="text-sm font-bold 4k:text-xl">{Math.round(weather.pm25)} ㎍/㎥</span>
+              <span className="text-xs tracking-tight whitespace-nowrap">초미세먼지(PM2.5)</span>
+              <span className="text-sm font-bold">{Math.round(weather.pm25)} ㎍/㎥</span>
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 4k:gap-4">
+        <div className="flex flex-col gap-1.5">
           {weatherData.map((data) => (
-            <div key={data.label} className="flex text-sm text-center 4k:text-xl">
-              <span className="bg-[#9499B1] text-white font-bold rounded-sm block flex-1 p-1 4k:p-2">
+            <div key={data.label} className="flex text-sm text-center">
+              <span className="bg-[#9499B1] text-white font-bold rounded-sm block flex-1 p-1">
                 {data.label}
               </span>
               <div className="flex flex-2 items-center">
                 <span className="flex-1">{data.value}</span>
-                <span className="w-0.5 bg-[#BBBFCF] h-4 4k:w-1 4k:h-8"></span>
+                <span className="w-0.5 bg-[#BBBFCF] h-4"></span>
                 <span className="flex-1">{data.status}</span>
               </div>
             </div>

@@ -7,7 +7,7 @@ export function MainContent({ id, className }: MainContentProps) {
     <Widget
       id={id}
       border={false}
-      className={cn(className, "4k:text-4xl")}
+      className={cn(className, " overflow-hidden")}
       contentClassName="h-full p-0"
     >
       <MainContainer />

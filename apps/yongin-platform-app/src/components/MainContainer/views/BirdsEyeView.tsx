@@ -14,18 +14,13 @@ export function BirdsEyeView() {
     <div className="relative h-full w-full">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/50">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand border-t-transparent 4k:h-16 4k:w-16 4k:border-4" />
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-brand border-t-transparent" />
         </div>
       )}
 
       {hasError ? (
-        <div className="flex flex-col items-center justify-center h-full text-neutral-400 4k:text-2xl">
-          <svg
-            className="w-12 h-12 mb-2 4k:w-24 4k:h-24 4k:mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <div className="flex flex-col items-center justify-center h-full text-neutral-400">
+          <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

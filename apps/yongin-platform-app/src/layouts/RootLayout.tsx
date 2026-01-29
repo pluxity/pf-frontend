@@ -1,48 +1,39 @@
 import { Outlet } from "react-router-dom";
-import { Button, User } from "@pf-dev/ui";
+import { Button, Settings } from "@pf-dev/ui";
 import { Announcement } from "../components/Announcement";
-import { DateTime } from "../components/DateTime";
+import ciLogo from "../assets/images/ci.svg";
+import hobanLogo from "../assets/images/hoban.svg";
 
 export function RootLayout() {
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
-      <header className="h-[var(--header-height)] px-3 bg-[#eff1f8] backdrop-blur-lg 4k:h-[var(--header-height-4k)] 4k:px-6">
+      <header className="h-[var(--header-height)] px-[0.75rem] bg-white">
         <div className="flex h-full items-center">
-          <h1 className="flex-1 flex justify-start">
-            <img
-              src={`${import.meta.env.BASE_URL}assets/images/ci.png`}
-              alt="HOBAN CI"
-              className="h-10 aspect-[504/87] 4k:h-25"
-            />
+          <h1 className="flex-1 flex justify-start items-center">
+            <img src={ciLogo} alt="경기주택도시공사" className="h-[1.875rem]" />
           </h1>
-          <div className="flex-1 flex flex-col items-center gap-2 h-full 4k:gap-8">
-            <div className="w-130 h-2 bg-white rounded-b-full shadow-[0_0_5px_0_#bac3e8] 4k:h-6 4k:w-330" />
-            <div className="font-extrabold text-3xl 4k:text-7xl">
-              용인 플랫폼 시티 1공구 스마트 건설
-            </div>
+          <div className="flex-1 flex items-center justify-center gap-[0.75rem]">
+            <img src={hobanLogo} alt="HOBAN" className="h-[1.625rem]" />
+            <span className="font-extrabold text-[1.25rem]">용인 플랫폼시티 1공구 스마트건설</span>
           </div>
-          <nav className="flex-1 flex justify-end items-center gap-4 4k:gap-10">
-            <DateTime />
+          <nav className="flex-1 flex justify-end items-center gap-[1rem]">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => (window.location.href = "/admin")}
-              className="bg-white 4k:w-26 4k:h-26"
+              className="bg-white rounded-lg w-[2.5rem] h-[2.5rem]"
             >
-              <User size="lg" className="text-gray-600 4k:scale-300" />
+              <Settings size="lg" className="text-gray-600" />
             </Button>
           </nav>
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="flex-1 bg-[#d6e1f4]/70">
+      <main className="flex-1 bg-surface-body/70">
         <Outlet />
       </main>
 
-      {/* Footer */}
-      <footer className="flex overflow-hidden items-center h-[var(--footer-height)] 4k:h-[var(--footer-height-4k)] px-4 bg-[#eff1f8] 4k:px-8">
+      <footer className="flex overflow-hidden items-center h-[var(--footer-height)] px-[1rem] bg-surface-footer">
         <Announcement />
       </footer>
     </div>

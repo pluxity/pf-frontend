@@ -1,16 +1,43 @@
 @import "tailwindcss";
 
 @theme {
+  --breakpoint-qhd: 2560px;
   --breakpoint-4k: 3840px;
-  --header-height: 65px;
-  --footer-height: 55px;
-  --header-height-4k: 180px;
-  --footer-height-4k: 110px;
+  --header-height: 3.75rem;
+  --footer-height: 2.1875rem;
+  --color-surface-dark: #55596c;
+  --color-surface-body: #d6e1f4;
+  --color-surface-footer: #eff1f8;
+  --color-surface-skeleton: #dde0ea;
+}
+
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 2560px) {
+  html {
+    font-size: 21.33px;
+  }
+}
+
+@media (min-width: 3840px) {
+  html {
+    font-size: 32px;
+  }
 }
 
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
 @import "@pf-dev/ui/globals.css";
+
+/* GridLayout이 인라인 스타일로 grid-template을 설정하므로 !important로 override 필요 */
+.dashboard-grid > div {
+  grid-template-columns: repeat(24, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(24, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+  overflow: hidden;
+}
 
 @keyframes marquee {
   0% {

@@ -50,7 +50,7 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
                   onClick={() => onCardClick?.(i)}
                 />
               ) : (
-                <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg text-gray-500 text-sm 4k:text-2xl">
+                <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg text-gray-500 text-sm">
                   No Signal
                 </div>
               )}
@@ -98,7 +98,7 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
                 onClick={() => onCardClick?.(i)}
               />
             ) : (
-              <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg text-gray-500 text-sm 4k:text-2xl">
+              <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg text-gray-500 text-sm">
                 No Signal
               </div>
             )}
