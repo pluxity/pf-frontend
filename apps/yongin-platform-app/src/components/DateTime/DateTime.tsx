@@ -2,8 +2,13 @@ import { cn } from "@pf-dev/ui";
 import { DateTimeProps } from "./types";
 import { useEffect, useState } from "react";
 
+const DAY_NAMES = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+const DAY_NAMES_SHORT = ["일", "월", "화", "수", "목", "금", "토"];
+
 const formatDate = (date: Date, format: string) => {
   return format
+    .replace("dddd", DAY_NAMES[date.getDay()] ?? "")
+    .replace("ddd", DAY_NAMES_SHORT[date.getDay()] ?? "")
     .replace("YYYY", String(date.getFullYear()))
     .replace("MM", String(date.getMonth() + 1).padStart(2, "0"))
     .replace("DD", String(date.getDate()).padStart(2, "0"))
