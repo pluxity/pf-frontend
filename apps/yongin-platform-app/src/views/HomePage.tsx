@@ -1,38 +1,28 @@
 import { GridLayout, GridTemplate } from "@pf-dev/ui";
-import {
-  Weather,
-  Attendance,
-  ProcessStatus,
-  MainContent,
-  Management,
-  DailyStats,
-  Announcement,
-} from "@/components/widgets";
+import { Weather, Attendance, ProcessStatus, MainContent } from "@/components/widgets";
 
 const dashboardTemplate: GridTemplate = {
   id: "dashboard-1",
   name: "대시보드 템플릿",
-  columns: 4,
-  rows: 3,
+  columns: 24,
+  rows: 24,
   cells: [
-    { id: "weather", colStart: 1, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 날씨
-    { id: "attendance", colStart: 1, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 출역현황
-    { id: "processStatus", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공정현황
-    { id: "mainContent", colStart: 2, colSpan: 3, rowStart: 1, rowSpan: 3 }, // 메인 콘텐츠
-    { id: "management", colStart: 5, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 주요 관리사항
-    { id: "dailyStats", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 일일목표
-    { id: "announcement", colStart: 5, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공지사항
+    { id: "mainContent", colStart: 1, colSpan: 19, rowStart: 1, rowSpan: 18 },
+    { id: "weather", colStart: 20, colSpan: 5, rowStart: 1, rowSpan: 9 },
+    { id: "processStatus", colStart: 20, colSpan: 5, rowStart: 10, rowSpan: 9 },
+    { id: "attendance-1", colStart: 1, colSpan: 8, rowStart: 19, rowSpan: 6 },
+    { id: "attendance-2", colStart: 9, colSpan: 8, rowStart: 19, rowSpan: 6 },
+    { id: "attendance-3", colStart: 17, colSpan: 8, rowStart: 19, rowSpan: 6 },
   ],
 };
 
 const widgets = [
-  { id: "weather", component: Weather },
-  { id: "attendance", component: Attendance },
-  { id: "processStatus", component: ProcessStatus },
   { id: "mainContent", component: MainContent },
-  { id: "management", component: Management },
-  { id: "dailyStats", component: DailyStats },
-  { id: "announcement", component: Announcement },
+  { id: "weather", component: Weather },
+  { id: "processStatus", component: ProcessStatus },
+  { id: "attendance-1", component: Attendance },
+  { id: "attendance-2", component: Attendance },
+  { id: "attendance-3", component: Attendance },
 ];
 
 export function HomePage() {
@@ -40,7 +30,7 @@ export function HomePage() {
     <GridLayout
       template={dashboardTemplate}
       gap={16}
-      className="p-4 4k:p-8 h-[calc(100vh-var(--header-height)-var(--footer-height))] 4k:h-[calc(100vh-var(--header-height-4k)-var(--footer-height-4k))]"
+      className="dashboard-grid p-[1rem] h-[calc(100vh-var(--header-height)-var(--footer-height))]"
     >
       {widgets.map(({ id, component: Component }) => (
         <Component key={id} id={id} />

@@ -28,9 +28,5 @@ export function DateTime({ format = "YYYY년 MM월 DD일 HH:mm:ss", className }:
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <span className={cn("text-sm 4k:text-4xl", className)}>
-      {formatDate(currentDateTime, format)}
-    </span>
-  );
+  return <span className={cn("text-sm", className)}>{formatDate(currentDateTime, format)}</span>;
 }

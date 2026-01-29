@@ -1,6 +1,6 @@
 import { Skeleton } from "@pf-dev/ui";
 import { useCCTVStreams } from "@/hooks";
-import { CCTVViewer } from "@/components/CCTVViewer";
+import { CCTVViewer } from "../CCTVViewer";
 
 /**
  * CCTV 뷰 컴포넌트
@@ -11,12 +11,12 @@ export function CCTVView() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col h-full bg-primary-50/30 p-4 gap-4 4k:p-8 4k:gap-8">
+      <div className="flex flex-col h-full bg-primary-50/30 p-4 gap-4">
         {/* 툴바 스켈레톤 */}
-        <Skeleton className="h-12 w-full 4k:h-24" />
+        <Skeleton className="h-12 w-full" />
 
         {/* 그리드 스켈레톤 (4x4) */}
-        <div className="flex-1 grid grid-cols-4 grid-rows-4 gap-2 4k:gap-4">
+        <div className="flex-1 grid grid-cols-4 grid-rows-4 gap-2">
           {Array.from({ length: 16 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-full" />
           ))}
@@ -29,8 +29,8 @@ export function CCTVView() {
     return (
       <div className="flex items-center justify-center h-full bg-primary-50/30">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-800 4k:text-5xl">CCTV</h2>
-          <p className="mt-2 text-primary-700 4k:text-2xl">
+          <h2 className="text-2xl font-bold text-primary-800">CCTV</h2>
+          <p className="mt-2 text-primary-700">
             {isError ? "스트림을 불러올 수 없습니다" : "등록된 CCTV가 없습니다"}
           </p>
         </div>

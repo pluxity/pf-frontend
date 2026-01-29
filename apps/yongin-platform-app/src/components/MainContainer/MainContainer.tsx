@@ -2,7 +2,6 @@ import { lazy, Suspense, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@pf-dev/ui";
 import { cn } from "@pf-dev/ui/utils";
 
-// Lazy load 컴포넌트 (선택 시 렌더링)
 const BirdsEyeView = lazy(() =>
   import("./views/BirdsEyeView").then((m) => ({ default: m.BirdsEyeView }))
 );
@@ -48,7 +47,6 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
       onValueChange={(v) => setActiveTab(v as TabValue)}
       className={cn("flex flex-col h-full", className)}
     >
-      {/* 메인 컨텐츠 영역 */}
       <div className="flex-1 overflow-hidden">
         <TabsContent value="birds-eye" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
@@ -75,10 +73,9 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
         </TabsContent>
       </div>
 
-      {/* 하단 탭 UI */}
-      <TabsList className="justify-center border-t border-gray-200 bg-white h-12 4k:h-24">
+      <TabsList className="justify-center border-t border-gray-200 bg-white h-12 shrink-0">
         {TABS.map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className="px-6 4k:px-12 4k:text-3xl">
+          <TabsTrigger key={tab.value} value={tab.value} className="px-6">
             {tab.label}
           </TabsTrigger>
         ))}
