@@ -12,7 +12,7 @@ import {
 const dashboardTemplate: GridTemplate = {
   id: "dashboard-1",
   name: "대시보드 템플릿",
-  columns: 5,
+  columns: 4,
   rows: 3,
   cells: [
     { id: "weather", colStart: 1, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 날씨
