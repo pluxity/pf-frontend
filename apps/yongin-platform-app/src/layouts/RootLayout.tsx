@@ -29,11 +29,11 @@ export function RootLayout() {
         </div>
       </header>
 
-      <main className="flex-1 bg-[#d6e1f4]/70">
+      <main className="flex-1 bg-surface-body/70">
         <Outlet />
       </main>
 
-      <footer className="flex overflow-hidden items-center h-[var(--footer-height)] px-[1rem] bg-[#eff1f8]">
+      <footer className="flex overflow-hidden items-center h-[var(--footer-height)] px-[1rem] bg-surface-footer">
         <Announcement />
       </footer>
     </div>

@@ -29,7 +29,7 @@ export function HomePage() {
   return (
     <GridLayout
       template={dashboardTemplate}
-      gap={16}
+      gap={0}
       className="dashboard-grid p-[1rem] h-[calc(100vh-var(--header-height)-var(--footer-height))]"
     >
       {widgets.map(({ id, component: Component }) => (

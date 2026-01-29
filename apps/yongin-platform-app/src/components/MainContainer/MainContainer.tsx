@@ -80,16 +80,18 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
         </TabsContent>
       </div>
 
-      <div className="absolute bottom-0 right-4 flex">
+      <div className="absolute bottom-0 right-4 flex" role="tablist">
         {TABS.map((tab) => (
           <button
             key={tab.value}
+            role="tab"
+            aria-selected={activeTab === tab.value}
             onClick={() => setActiveTab(tab.value)}
             className={cn(
               "px-5 py-2 text-sm font-medium transition-all rounded-t-lg shadow-[0.25rem_0_0.5rem_0_rgba(0,0,0,0.4)]",
               activeTab === tab.value
                 ? "bg-brand text-white z-10 scale-110 origin-bottom"
-                : "bg-[#55596C] text-gray-300 hover:text-white"
+                : "bg-surface-dark text-gray-300 hover:text-white"
             )}
           >
             {tab.label}
