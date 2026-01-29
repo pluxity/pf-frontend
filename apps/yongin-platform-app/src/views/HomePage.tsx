@@ -5,7 +5,7 @@ import {
   ProcessStatus,
   MainContent,
   Management,
-  DailyStats,
+  Goal,
   Announcement,
 } from "@/components/widgets";
 
@@ -16,11 +16,11 @@ const dashboardTemplate: GridTemplate = {
   rows: 3,
   cells: [
     { id: "weather", colStart: 1, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 날씨
-    { id: "attendance", colStart: 1, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 출역현황
+    { id: "goal", colStart: 1, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 목표관리
     { id: "processStatus", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공정현황
     { id: "mainContent", colStart: 2, colSpan: 3, rowStart: 1, rowSpan: 3 }, // 메인 콘텐츠
     { id: "management", colStart: 5, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 주요 관리사항
-    { id: "dailyStats", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 일일목표
+    { id: "attendance", colStart: 5, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 출역현황
     { id: "announcement", colStart: 5, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 공지사항
   ],
 };
@@ -31,7 +31,7 @@ const widgets = [
   { id: "processStatus", component: ProcessStatus },
   { id: "mainContent", component: MainContent },
   { id: "management", component: Management },
-  { id: "dailyStats", component: DailyStats },
+  { id: "goal", component: Goal },
   { id: "announcement", component: Announcement },
 ];
 
