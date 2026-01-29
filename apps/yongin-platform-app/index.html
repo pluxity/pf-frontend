@@ -4,10 +4,116 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>yongin-platform-app</title>
+    <title>용인 플랫폼시티 (1공구)</title>
+    <style>
+      html { font-size: 16px; }
+      @media (min-width: 2560px) { html { font-size: 21.33px; } }
+      @media (min-width: 3840px) { html { font-size: 32px; } }
+      body { margin: 0; }
+
+      .app-skeleton {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: #d6e1f4b3;
+      }
+      .app-skeleton-header {
+        height: 3.75rem;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        padding: 0 0.75rem;
+      }
+      .app-skeleton-header-left {
+        flex: 1;
+      }
+      .app-skeleton-header-left-block {
+        width: 9.375rem;
+        height: 1.875rem;
+        background: #dde0ea;
+        border-radius: 0.25rem;
+      }
+      .app-skeleton-header-center {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+      }
+      .app-skeleton-header-logo {
+        width: 6.25rem;
+        height: 1.625rem;
+        background: #dde0ea;
+        border-radius: 0.25rem;
+      }
+      .app-skeleton-header-title {
+        width: 17.5rem;
+        height: 1.375rem;
+        background: #dde0ea;
+        border-radius: 0.25rem;
+      }
+      .app-skeleton-header-right {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+      .app-skeleton-header-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: #dde0ea;
+        border-radius: 0.5rem;
+      }
+      .app-skeleton-body {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(24, minmax(0, 1fr));
+        grid-template-rows: repeat(24, minmax(0, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+      }
+      .app-skeleton-cell {
+        background: white;
+        border-radius: 0.75rem;
+        animation: skeleton-pulse 1.8s ease-in-out infinite;
+      }
+      .app-skeleton-footer {
+        height: 2.1875rem;
+        background: #eff1f8;
+      }
+      @keyframes skeleton-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="app-skeleton">
+        <div class="app-skeleton-header">
+          <div class="app-skeleton-header-left">
+            <div class="app-skeleton-header-left-block"></div>
+          </div>
+          <div class="app-skeleton-header-center">
+            <div class="app-skeleton-header-logo"></div>
+            <div class="app-skeleton-header-title"></div>
+          </div>
+          <div class="app-skeleton-header-right">
+            <div class="app-skeleton-header-btn"></div>
+            <div class="app-skeleton-header-btn"></div>
+          </div>
+        </div>
+        <div class="app-skeleton-body">
+          <div class="app-skeleton-cell" style="grid-column: 1 / 20; grid-row: 1 / 19; animation-delay: 0.1s"></div>
+          <div class="app-skeleton-cell" style="grid-column: 20 / 25; grid-row: 1 / 10; animation-delay: 0.2s"></div>
+          <div class="app-skeleton-cell" style="grid-column: 20 / 25; grid-row: 10 / 19; animation-delay: 0.3s"></div>
+          <div class="app-skeleton-cell" style="grid-column: 1 / 9; grid-row: 19 / 25; animation-delay: 0.4s"></div>
+          <div class="app-skeleton-cell" style="grid-column: 9 / 17; grid-row: 19 / 25; animation-delay: 0.5s"></div>
+          <div class="app-skeleton-cell" style="grid-column: 17 / 25; grid-row: 19 / 25; animation-delay: 0.6s"></div>
+        </div>
+        <div class="app-skeleton-footer"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

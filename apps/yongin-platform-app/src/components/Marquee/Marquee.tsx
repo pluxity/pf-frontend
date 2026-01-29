@@ -16,7 +16,7 @@ export function Marquee({ children, animate = false, className }: MarqueeProps) 
   }
 
   return (
-    <div className="relative h-6 overflow-hidden 4k:h-12">
+    <div className="relative h-6 overflow-hidden">
       <span className={cn("absolute top-0 whitespace-nowrap animate-marquee", className)}>
         {children}
       </span>

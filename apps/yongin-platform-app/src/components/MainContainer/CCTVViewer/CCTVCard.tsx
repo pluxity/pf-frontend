@@ -21,16 +21,16 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full 4k:w-16 4k:h-16" />
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full" />
         </div>
       )}
 
       {status === "failed" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/95 text-white">
           {/* 경고 아이콘 */}
-          <div className="w-12 h-12 mb-3 bg-brand/20 rounded-full flex items-center justify-center 4k:w-24 4k:h-24 4k:mb-6">
+          <div className="w-12 h-12 mb-3 bg-brand/20 rounded-full flex items-center justify-center">
             <svg
-              className="w-6 h-6 text-brand 4k:w-12 4k:h-12"
+              className="w-6 h-6 text-brand"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -45,8 +45,8 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
           </div>
 
           {/* 에러 메시지 */}
-          <p className="text-white font-medium mb-1 text-sm 4k:text-2xl">연결 실패</p>
-          {error && <p className="text-gray-400 text-xs mb-3 4k:text-lg">{error}</p>}
+          <p className="text-white font-medium mb-1 text-sm">연결 실패</p>
+          {error && <p className="text-gray-400 text-xs mb-3">{error}</p>}
 
           {/* 재연결 버튼 */}
           <button
@@ -54,7 +54,7 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
               e.stopPropagation();
               connect();
             }}
-            className="px-4 py-1.5 text-xs bg-brand rounded hover:bg-brand/80 transition-colors 4k:px-8 4k:py-3 4k:text-lg"
+            className="px-4 py-1.5 text-xs bg-brand rounded hover:bg-brand/80 transition-colors"
           >
             재연결
           </button>
@@ -62,14 +62,14 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
       )}
 
       {/* 하단 오버레이 */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent 4k:px-4 4k:py-3">
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent">
         {/* WebRTC 뱃지 */}
-        <span className="bg-purple-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded 4k:text-base 4k:px-4 4k:py-1">
+        <span className="bg-purple-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
           WebRTC
         </span>
 
         {/* CCTV 이름 */}
-        <span className="text-white text-xs font-medium 4k:text-lg">{name}</span>
+        <span className="text-white text-xs font-medium">{name}</span>
       </div>
     </div>
   );
