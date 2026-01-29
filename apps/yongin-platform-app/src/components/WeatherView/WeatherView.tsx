@@ -17,14 +17,12 @@ function getPMStatus(status: string) {
 }
 
 function getHumidityStatus(humidity: number): string {
-  if (humidity === 0) return "쾌적";
   if (humidity < 40) return "건조";
   if (humidity <= 60) return "쾌적";
   return "습함";
 }
 
 function getWindSpeedStatus(windSpeed: number): string {
-  if (windSpeed === 0) return "미풍";
   if (windSpeed < 4) return "미풍";
   if (windSpeed < 9) return "약풍";
   if (windSpeed < 13) return "중풍";
