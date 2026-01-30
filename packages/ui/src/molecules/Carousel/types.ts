@@ -1,6 +1,7 @@
 import type { ReactNode, ComponentPropsWithoutRef } from "react";
 
 export type CarouselTransition = "slide" | "fade" | "none";
+export type CarouselArrowVariant = "default" | "ghost";
 
 export interface CarouselProps extends Omit<ComponentPropsWithoutRef<"div">, "onChange"> {
   children: ReactNode[];
@@ -15,6 +16,8 @@ export interface CarouselProps extends Omit<ComponentPropsWithoutRef<"div">, "on
   activeIndex?: number;
   onChange?: (index: number) => void;
   transitionDuration?: number;
+  arrowVariant?: CarouselArrowVariant;
+  arrowClassName?: string;
 }
 
 export interface CarouselContextValue {
