@@ -47,6 +47,15 @@ const meta: Meta<typeof Carousel> = {
       control: "number",
       description: "전환 애니메이션 시간 (ms)",
     },
+    arrowVariant: {
+      control: "select",
+      options: ["default", "ghost"],
+      description: "화살표 버튼 스타일 변형",
+    },
+    arrowClassName: {
+      control: "text",
+      description: "화살표 버튼 커스텀 클래스",
+    },
   },
 };
 
@@ -259,6 +268,42 @@ export const Controlled: Story = {
       </div>
     );
   },
+};
+
+export const GhostArrows: Story = {
+  name: "화살표 Ghost 모드",
+  render: () => (
+    <div className="w-[600px] h-[300px]">
+      <Carousel arrowVariant="ghost">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+          >
+            {slide.text}
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  ),
+};
+
+export const CustomArrowPosition: Story = {
+  name: "화살표 위치 커스터마이징",
+  render: () => (
+    <div className="w-[600px] h-[300px]">
+      <Carousel arrowVariant="ghost" arrowClassName="!top-4 !translate-y-0">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+          >
+            {slide.text}
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  ),
 };
 
 export const AllTransitions: Story = {

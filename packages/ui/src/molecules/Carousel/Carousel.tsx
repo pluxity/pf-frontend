@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { cn } from "../../utils";
+import { Button } from "../../atoms/Button";
 import { ChevronLeft, ChevronRight } from "../../atoms/Icon";
 import type { CarouselProps, CarouselContextValue } from "./types";
 import { CarouselContext } from "./CarouselContext";
@@ -30,6 +31,8 @@ function Carousel({
   activeIndex: controlledIndex,
   onChange,
   transitionDuration = 300,
+  arrowVariant = "default",
+  arrowClassName,
   className,
   ref,
   ...props
@@ -161,6 +164,30 @@ function Carousel({
     return {};
   }, [activeIndex, transition, transitionDuration]);
 
+  const arrowButtonVariant = arrowVariant === "ghost" ? "ghost" : "secondary";
+
+  const renderArrowButton = (
+    direction: "prev" | "next",
+    onClick: () => void,
+    disabled: boolean
+  ) => (
+    <Button
+      variant={arrowButtonVariant}
+      size="icon"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "absolute top-1/2 -translate-y-1/2 z-10 rounded-full [&_svg]:size-5",
+        direction === "prev" ? "left-2" : "right-2",
+        arrowVariant === "default" && "bg-white/80 shadow-md hover:bg-white",
+        arrowClassName
+      )}
+      aria-label={direction === "prev" ? "Previous slide" : "Next slide"}
+    >
+      {direction === "prev" ? <ChevronLeft size="xl" /> : <ChevronRight size="xl" />}
+    </Button>
+  );
+
   return (
     <CarouselContext.Provider value={contextValue}>
       <div
@@ -199,38 +226,8 @@ function Carousel({
         {/* Navigation Arrows */}
         {showArrows && totalSlides > 1 && (
           <>
-            <button
-              type="button"
-              onClick={goPrev}
-              disabled={!loop && activeIndex === 0}
-              className={cn(
-                "absolute left-2 top-1/2 -translate-y-1/2 z-10",
-                "w-10 h-10 rounded-full bg-white/80 shadow-md",
-                "flex items-center justify-center",
-                "hover:bg-white transition-colors",
-                "disabled:opacity-50 disabled:cursor-not-allowed",
-                "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-              )}
-              aria-label="Previous slide"
-            >
-              <ChevronLeft size="lg" />
-            </button>
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={!loop && activeIndex === totalSlides - 1}
-              className={cn(
-                "absolute right-2 top-1/2 -translate-y-1/2 z-10",
-                "w-10 h-10 rounded-full bg-white/80 shadow-md",
-                "flex items-center justify-center",
-                "hover:bg-white transition-colors",
-                "disabled:opacity-50 disabled:cursor-not-allowed",
-                "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-              )}
-              aria-label="Next slide"
-            >
-              <ChevronRight size="lg" />
-            </button>
+            {renderArrowButton("prev", goPrev, !loop && activeIndex === 0)}
+            {renderArrowButton("next", goNext, !loop && activeIndex === totalSlides - 1)}
           </>
         )}
 
@@ -244,7 +241,7 @@ function Carousel({
                 onClick={() => goTo(index)}
                 className={cn(
                   "w-2 h-2 rounded-full transition-all",
-                  "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
                   index === activeIndex ? "bg-brand w-6" : "bg-gray-300 hover:bg-gray-400"
                 )}
                 aria-label={`Go to slide ${index + 1}`}
