@@ -39,6 +39,14 @@ html {
   overflow: hidden;
 }
 
+/* CCTV GridLayout: 비디오 intrinsic size가 셀을 밀어내지 않도록 minmax(0, 1fr) 적용 */
+.cctv-grid > div {
+  grid-template-columns: repeat(var(--cctv-cols), minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(var(--cctv-rows), minmax(0, 1fr)) !important;
+  gap: 0.5rem !important;
+  overflow: hidden;
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(100%);

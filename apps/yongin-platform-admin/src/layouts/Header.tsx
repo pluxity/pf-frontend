@@ -1,7 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { Button, User, Logout, Menu } from "@pf-dev/ui/atoms";
 import { useAuthStore, logout } from "@pf-dev/services";
 import { useToastContext } from "@/contexts/ToastContext";
+
+const APP_URL = import.meta.env.DEV
+  ? `${window.location.protocol}//${window.location.hostname}:3000`
+  : "/";
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -9,16 +12,13 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
-  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  const reset = useAuthStore((state) => state.reset);
   const { toast } = useToastContext();
 
   const handleLogout = async () => {
     try {
       await logout();
-      reset();
-      navigate("/login");
+      window.location.href = APP_URL;
     } catch (error) {
       console.error("Logout failed:", error);
       toast.error("로그아웃에 실패했습니다. 다시 시도해주세요.");
