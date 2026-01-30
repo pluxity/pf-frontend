@@ -14,7 +14,7 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
 
   return (
     <div
-      className="relative bg-gray-900 rounded-lg overflow-hidden cursor-pointer h-full group"
+      className="relative bg-gray-900 rounded-lg overflow-hidden cursor-pointer h-full min-h-0 group"
       onClick={onClick}
     >
       <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />

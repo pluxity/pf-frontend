@@ -22,17 +22,23 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
       columns: 3,
       rows: 3,
       cells: [
-        { id: "cell-1", colStart: 1, colSpan: 2, rowStart: 1, rowSpan: 2 }, // 큰 영역
-        { id: "cell-2", colStart: 3, colSpan: 1, rowStart: 1, rowSpan: 1 }, // 오른쪽 상단
-        { id: "cell-3", colStart: 3, colSpan: 1, rowStart: 2, rowSpan: 1 }, // 오른쪽 중간
-        { id: "cell-4", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 하단 왼쪽
-        { id: "cell-5", colStart: 2, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 하단 중간
-        { id: "cell-6", colStart: 3, colSpan: 1, rowStart: 3, rowSpan: 1 }, // 하단 오른쪽
+        { id: "cell-1", colStart: 1, colSpan: 2, rowStart: 1, rowSpan: 2 },
+        { id: "cell-2", colStart: 3, colSpan: 1, rowStart: 1, rowSpan: 1 },
+        { id: "cell-3", colStart: 3, colSpan: 1, rowStart: 2, rowSpan: 1 },
+        { id: "cell-4", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 },
+        { id: "cell-5", colStart: 2, colSpan: 1, rowStart: 3, rowSpan: 1 },
+        { id: "cell-6", colStart: 3, colSpan: 1, rowStart: 3, rowSpan: 1 },
       ],
     };
 
     return (
-      <GridLayout template={gridTemplate} gap={8} editable={true} className="h-full">
+      <GridLayout
+        template={gridTemplate}
+        gap={0}
+        editable={true}
+        className="cctv-grid h-full"
+        style={{ "--cctv-cols": 3, "--cctv-rows": 3 } as React.CSSProperties}
+      >
         {Array.from({ length: 6 }, (_, i) => {
           const cctv = cctvs[i];
           return (
@@ -61,7 +67,6 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
     );
   }
 
-  // 일반 그리드 (1x1, 2x2, 3x3, 4x4) - template 모드로 변환
   const cells = Array.from({ length: template.itemsPerPage }, (_, i) => ({
     id: `cell-${i + 1}`,
     colStart: (i % template.columns) + 1,
@@ -79,7 +84,15 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
   };
 
   return (
-    <GridLayout template={gridTemplate} gap={8} editable={true} className="h-full">
+    <GridLayout
+      template={gridTemplate}
+      gap={0}
+      editable={true}
+      className="cctv-grid h-full"
+      style={
+        { "--cctv-cols": template.columns, "--cctv-rows": template.rows } as React.CSSProperties
+      }
+    >
       {Array.from({ length: template.itemsPerPage }, (_, i) => {
         const cctv = cctvs[i];
 
