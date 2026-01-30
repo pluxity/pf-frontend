@@ -7,11 +7,18 @@ import { Carousel } from "@pf-dev/ui";
 import { keyManagementService } from "@/services";
 import type { KeyManagementItem, KeyManagementType } from "@/services";
 
-const SECTIONS: {
-  key: "methodFeature" | "methodContent" | "methodDirection";
+type SectionKey = keyof Pick<
+  KeyManagementItem,
+  "methodFeature" | "methodContent" | "methodDirection"
+>;
+
+interface Section {
+  key: SectionKey;
   label: string;
   step: number;
-}[] = [
+}
+
+const SECTIONS: Section[] = [
   { key: "methodFeature", label: "특징", step: 1 },
   { key: "methodContent", label: "내용", step: 2 },
   { key: "methodDirection", label: "추진방향", step: 3 },
@@ -37,7 +44,8 @@ export function KeyManagementView() {
           setItems(selectedItems);
           setTypes(typeList);
         }
-      } catch {
+      } catch (e) {
+        console.error("Failed to fetch key management data:", e);
         if (!cancelled) {
           setError("데이터를 불러올 수 없습니다");
         }
@@ -124,6 +132,7 @@ export function KeyManagementView() {
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
+                          aria-hidden="true"
                         >
                           <path
                             strokeLinecap="round"
