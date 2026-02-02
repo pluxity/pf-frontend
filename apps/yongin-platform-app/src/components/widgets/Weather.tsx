@@ -144,7 +144,7 @@ export function Weather({ id, className }: WeatherProps) {
             <img
               src={`${import.meta.env.BASE_URL}assets/icons/${getWeatherIcon()}`}
               alt="날씨"
-              className="w-12 h-12"
+              className="w-10 h-10"
             />
             <span className="text-2xl">{Math.round(weather.temperature)}°C</span>
           </div>
@@ -153,11 +153,11 @@ export function Weather({ id, className }: WeatherProps) {
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm10Status.icon}`}
                 alt={weather.pm10Status}
-                className="w-12 h-12"
+                className="w-10 h-10"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold",
+                  "text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
                   pm10Status.color
                 )}
               >
@@ -174,11 +174,11 @@ export function Weather({ id, className }: WeatherProps) {
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm25Status.icon}`}
                 alt={weather.pm25Status}
-                className="w-12 h-12"
+                className="w-10 h-10"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-2 whitespace-nowrap text-white font-bold",
+                  "text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
                   pm25Status.color
                 )}
               >
