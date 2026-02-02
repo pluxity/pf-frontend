@@ -10,6 +10,9 @@ const GPSMapView = lazy(() =>
   import("./views/GPSMapView").then((m) => ({ default: m.GPSMapView }))
 );
 const CCTVView = lazy(() => import("./views/CCTVView").then((m) => ({ default: m.CCTVView })));
+const KeyManagementView = lazy(() =>
+  import("./views/KeyManagementView").then((m) => ({ default: m.KeyManagementView }))
+);
 
 type TabValue = "birds-eye" | "bim" | "gps" | "management" | "cctv";
 
@@ -68,9 +71,9 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
         </TabsContent>
 
         <TabsContent value="management" className="h-full mt-0">
-          <div className="flex items-center justify-center h-full text-gray-400">
-            주요 관리 사항 (준비 중)
-          </div>
+          <Suspense fallback={<LoadingFallback />}>
+            <KeyManagementView />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="cctv" className="h-full mt-0">

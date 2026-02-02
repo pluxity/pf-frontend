@@ -1,5 +1,11 @@
 # @pf-dev/services
 
+## 0.2.1
+
+### Patch Changes
+
+- 1730ae3: auth 모듈 코드 품질 개선: useRef 콜백 안정화, localStorage 명시적 지정, useShallow 적용
+
 ## 0.2.0
 
 ### Minor Changes
