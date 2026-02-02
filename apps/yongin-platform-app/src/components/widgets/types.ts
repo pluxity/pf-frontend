@@ -11,7 +11,7 @@ export type ProcessStatusProps = BaseWidgetProps;
 
 export type MainContentProps = BaseWidgetProps;
 
-export type DailyStatsProps = BaseWidgetProps;
+export type GoalProps = BaseWidgetProps;
 
 export type AnnouncementProps = BaseWidgetProps;
 
