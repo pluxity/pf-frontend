@@ -26,7 +26,7 @@ export function Goal({ id, className }: GoalProps) {
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, "4k:text-4xl 4k:p-8")} contentClassName="h-full">
+      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
@@ -39,7 +39,7 @@ export function Goal({ id, className }: GoalProps) {
 
   if (isError) {
     return (
-      <Widget id={id} className={cn(className, "4k:text-4xl 4k:p-8")} contentClassName="h-full">
+      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="text-red-500">
@@ -62,12 +62,12 @@ export function Goal({ id, className }: GoalProps) {
   }
 
   return (
-    <Widget id={id} className={cn(className, "4k:text-4xl 4k:p-8")} contentClassName="h-full">
+    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
       <div className="flex gap-4 h-full">
-        <div className="font-bold 4k:text-4xl">목표관리</div>
+        <div className="font-bold">목표관리</div>
 
         <div className="flex-1 overflow-hidden">
-          <div className="max-h-[calc(4*2.25rem)] overflow-y-auto">
+          <div className="h-full overflow-y-auto">
             <Table>
               <TableHeader>
                 <TableRow>
