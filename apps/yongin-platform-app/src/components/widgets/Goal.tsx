@@ -12,17 +12,17 @@ import {
 import { GoalProps } from "./types";
 import { useGoal } from "@/hooks/useGoal";
 
+const goalHeader = [
+  { key: "section", label: "시공구간" },
+  { key: "progressRate", label: "진행률" },
+  { key: "targetQuantity", label: "목표량" },
+  { key: "workQuantity", label: "작업량" },
+  { key: "completionDate", label: "준공일" },
+  { key: "delayDays", label: "지연일" },
+] as const;
+
 export function Goal({ id, className }: GoalProps) {
   const { goals, isLoading, isError, error } = useGoal();
-
-  const goalHeader = [
-    { key: "section", label: "시공구간" },
-    { key: "progressRate", label: "진행률" },
-    { key: "targetQuantity", label: "목표량" },
-    { key: "workQuantity", label: "작업량" },
-    { key: "completionDate", label: "준공일" },
-    { key: "delayDays", label: "지연일" },
-  ] as const;
 
   if (isLoading) {
     return (
@@ -81,7 +81,7 @@ export function Goal({ id, className }: GoalProps) {
               <TableBody>
                 {goals.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-neutral-500">
+                    <TableCell colSpan={goalHeader.length} className="text-center text-neutral-500">
                       데이터가 없습니다.
                     </TableCell>
                   </TableRow>

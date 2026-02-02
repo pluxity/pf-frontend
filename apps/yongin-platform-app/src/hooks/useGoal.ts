@@ -4,7 +4,7 @@ import { goalService } from "@/services";
 const GOAL_KEY = "/goals";
 
 export function useGoal() {
-  const { data, error, isLoading } = useSWR(GOAL_KEY, () => goalService.getAll());
+  const { data, error, isLoading } = useSWR(GOAL_KEY, () => goalService.getGoals());
 
   return {
     goals: data ?? [],
