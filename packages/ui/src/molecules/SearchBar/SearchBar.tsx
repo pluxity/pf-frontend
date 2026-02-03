@@ -18,6 +18,7 @@ function SearchBar({
   value,
   onChange,
   placeholder = "Search...",
+  ariaLabelClear = "Clear search",
   ref,
   ...props
 }: SearchBarPropsWithRef) {
@@ -77,7 +78,7 @@ function SearchBar({
           type="button"
           onClick={handleClear}
           className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          aria-label="Clear search"
+          aria-label={ariaLabelClear}
         >
           <X size={iconSize} />
         </button>

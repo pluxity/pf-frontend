@@ -100,6 +100,7 @@ function FloatingMenuItem({
 }: FloatingMenuItemProps) {
   const itemClasses = cn(
     "flex h-10 w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-sm transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
     active ? "bg-[#66B3FF] font-bold text-brand" : "text-[#4D4D59] hover:bg-[#F5F5F7]",
     className
   );
@@ -195,7 +196,7 @@ function FloatingMenu({
             <button
               type="button"
               onClick={handleToggle}
-              className="flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340]"
+              className="flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340] focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
               aria-expanded={expanded}
               aria-label={expanded ? ariaLabelCollapse : ariaLabelExpand}
             >

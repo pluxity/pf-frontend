@@ -51,6 +51,7 @@ function NavigationBarItem({
         active ? "font-bold text-brand" : "font-medium text-[#666673] hover:text-brand",
         className
       )}
+      aria-current={active ? "page" : undefined}
       {...props}
     >
       {children}

@@ -35,6 +35,7 @@ function DropdownMenuSubTrigger({
       className={cn(
         "flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none",
         "focus:bg-gray-50 data-[state=open]:bg-gray-50",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         inset && "pl-8",
         className
       )}
@@ -116,6 +117,7 @@ function DropdownMenuItem({ className, inset, ref, ...props }: DropdownMenuItemP
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         inset && "pl-8",
         className
@@ -144,6 +146,7 @@ function DropdownMenuCheckboxItem({
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
@@ -173,6 +176,7 @@ function DropdownMenuRadioItem({ className, children, ref, ...props }: DropdownM
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
