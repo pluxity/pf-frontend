@@ -114,6 +114,9 @@ function Carousel({
 
   const getSlideStyle = (index: number) => {
     const isActive = index === activeIndex;
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (transition === "none") {
       return {
@@ -126,7 +129,7 @@ function Carousel({
         position: isActive ? ("relative" as const) : ("absolute" as const),
         inset: isActive ? undefined : 0,
         opacity: isActive ? 1 : 0,
-        transition: `opacity ${transitionDuration}ms ease-in-out`,
+        transition: prefersReducedMotion ? "none" : `opacity ${transitionDuration}ms ease-in-out`,
         pointerEvents: isActive ? ("auto" as const) : ("none" as const),
       };
     }
@@ -135,10 +138,14 @@ function Carousel({
   };
 
   const getContainerStyle = () => {
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (transition === "slide") {
       return {
         transform: `translateX(-${activeIndex * 100}%)`,
-        transition: `transform ${transitionDuration}ms ease-in-out`,
+        transition: prefersReducedMotion ? "none" : `transform ${transitionDuration}ms ease-in-out`,
       };
     }
     return {};
@@ -220,7 +227,8 @@ function Carousel({
                 type="button"
                 onClick={() => goTo(index)}
                 className={cn(
-                  "w-2 h-2 rounded-full transition-all",
+                  "w-2 h-2 rounded-full",
+                  "motion-safe:transition-all motion-reduce:transition-none",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
                   index === activeIndex ? "bg-brand w-6" : "bg-gray-300 hover:bg-gray-400"
                 )}

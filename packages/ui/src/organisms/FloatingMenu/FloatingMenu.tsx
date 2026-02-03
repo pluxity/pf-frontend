@@ -176,7 +176,9 @@ function FloatingMenu({
       <div
         ref={ref}
         className={cn(
-          "rounded-xl border border-[#E6E6E8] bg-white transition-all",
+          "rounded-xl border border-[#E6E6E8] bg-white",
+          "motion-safe:transition-[width,box-shadow]",
+          "motion-reduce:transition-none",
           expanded
             ? "w-60 shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
             : compact

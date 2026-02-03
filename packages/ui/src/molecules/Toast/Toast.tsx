@@ -69,10 +69,11 @@ function Toast({ className, variant = "default", children, ref, ...props }: Toas
       ref={ref}
       className={cn(
         toastVariants({ variant }),
-        "data-[state=open]:animate-in data-[state=closed]:animate-out",
-        "data-[swipe=end]:animate-out data-[state=closed]:fade-out-80",
-        "data-[state=closed]:slide-out-to-right-full",
-        "data-[state=open]:slide-in-from-bottom-full",
+        "motion-safe:data-[state=open]:animate-in motion-safe:data-[state=closed]:animate-out",
+        "motion-safe:data-[swipe=end]:animate-out motion-safe:data-[state=closed]:fade-out-80",
+        "motion-safe:data-[state=closed]:slide-out-to-right-full",
+        "motion-safe:data-[state=open]:slide-in-from-bottom-full",
+        "motion-reduce:data-[state=open]:fade-in-0 motion-reduce:data-[state=closed]:fade-out-0",
         "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]",
         "data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
         className
