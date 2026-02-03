@@ -1,5 +1,5 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import { createContext, useCallback, useContext, useMemo, useState, type JSX } from "react";
+import { createContext, useContext, useMemo, useState, type JSX } from "react";
 import { Check, ChevronDownSmall, Search } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import type {
@@ -43,33 +43,28 @@ function ComboBoxRoot<TValue, TMultiple extends boolean = false>({
   const open = controlledOpen ?? uncontrolledOpen;
   const onOpenChange = controlledOnOpenChange ?? setUncontrolledOpen;
 
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      onOpenChange(nextOpen);
-      if (!nextOpen) {
-        setSearch("");
-      }
-    },
-    [onOpenChange]
-  );
-
   const contextValue = useMemo(
     () => ({
       value,
       onValueChange: onValueChange as (value: unknown) => void,
       open,
-      onOpenChange: handleOpenChange,
+      onOpenChange: (nextOpen: boolean) => {
+        onOpenChange(nextOpen);
+        if (!nextOpen) {
+          setSearch("");
+        }
+      },
       search,
       onSearchChange: setSearch,
       disabled,
       multiple,
     }),
-    [value, onValueChange, open, handleOpenChange, search, disabled, multiple]
+    [value, onValueChange, open, onOpenChange, search, disabled, multiple]
   );
 
   return (
     <ComboBoxContext.Provider value={contextValue}>
-      <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+      <PopoverPrimitive.Root open={open} onOpenChange={contextValue.onOpenChange}>
         {children}
       </PopoverPrimitive.Root>
     </ComboBoxContext.Provider>

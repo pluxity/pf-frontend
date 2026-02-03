@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, Children, isValidElement, type ReactNode } from "react";
+import { useMemo, Children, isValidElement, type ReactNode } from "react";
 import { cn } from "../../utils";
 import { Carousel } from "../../molecules/Carousel";
 import type { GridLayoutProps, GridTemplate, GridLayoutContextValue } from "./types";
@@ -41,103 +41,97 @@ const EMPTY_TEMPLATE: GridTemplate = {
   cells: [],
 };
 
-export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
-  (
-    {
-      children,
-      columns = 12,
-      rows,
-      gap = 16,
-      pagination,
-      template,
-      editable = false,
-      onLayoutChange,
-      initialLayout,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const isTemplateMode = !!template;
-    const isPaginationMode = !!pagination;
+export function GridLayout({
+  children,
+  columns = 12,
+  rows,
+  gap = 16,
+  pagination,
+  template,
+  editable = false,
+  onLayoutChange,
+  initialLayout,
+  className,
+  ref,
+  ...props
+}: GridLayoutProps) {
+  const isTemplateMode = !!template;
+  const isPaginationMode = !!pagination;
 
-    const widgetIds = useMemo(() => extractWidgetIds(children), [children]);
+  const widgetIds = useMemo(() => extractWidgetIds(children), [children]);
 
-    const { layoutState, handleSwap, getCellForWidget } = useGridLayoutState(
-      template || EMPTY_TEMPLATE,
-      initialLayout,
-      onLayoutChange,
-      widgetIds
-    );
+  const { layoutState, handleSwap, getCellForWidget } = useGridLayoutState(
+    template || EMPTY_TEMPLATE,
+    initialLayout,
+    onLayoutChange,
+    widgetIds
+  );
 
-    const dragDropState = useDragDropState(editable, handleSwap);
+  const dragDropState = useDragDropState(editable, handleSwap);
 
-    const gridLayoutContextValue: GridLayoutContextValue = {
-      template: template || null,
-      placements: layoutState.placements,
-      getCellForWidget,
-    };
+  const gridLayoutContextValue: GridLayoutContextValue = {
+    template: template || null,
+    placements: layoutState.placements,
+    getCellForWidget,
+  };
 
-    if (isPaginationMode && pagination) {
-      const childArray = Children.toArray(children);
-      const perPage = pagination.perPage || columns * (rows || 1);
-      const pages = chunkArray(childArray, perPage);
-      const gridStyle = createGridStyle(columns, rows, gap);
+  if (isPaginationMode && pagination) {
+    const childArray = Children.toArray(children);
+    const perPage = pagination.perPage || columns * (rows || 1);
+    const pages = chunkArray(childArray, perPage);
+    const gridStyle = createGridStyle(columns, rows, gap);
 
-      if (pagination.type === "carousel") {
-        return (
-          <div ref={ref} className={cn("h-full p-4", className)} {...props}>
-            <Carousel
-              transition={pagination.transition || "slide"}
-              showArrows={true}
-              showIndicators={true}
-              lazy={true}
-              className="h-full"
-            >
-              {pages.map((pageChildren, pageIndex) => (
-                <div key={pageIndex} className="grid h-full" style={gridStyle}>
-                  {pageChildren}
-                </div>
-              ))}
-            </Carousel>
-          </div>
-        );
-      }
-
+    if (pagination.type === "carousel") {
       return (
         <div ref={ref} className={cn("h-full p-4", className)} {...props}>
-          <div className="grid h-full" style={gridStyle}>
-            {pages[0]}
-          </div>
-        </div>
-      );
-    }
-
-    if (isTemplateMode && template) {
-      return (
-        <DragDropContext.Provider value={dragDropState}>
-          <GridLayoutContext.Provider value={gridLayoutContextValue}>
-            <div ref={ref} className={cn("h-full overflow-y-auto p-4", className)} {...props}>
-              <div
-                className="grid h-full"
-                style={createGridStyle(template.columns, template.rows, gap)}
-              >
-                {children}
+          <Carousel
+            transition={pagination.transition || "slide"}
+            showArrows={true}
+            showIndicators={true}
+            lazy={true}
+            className="h-full"
+          >
+            {pages.map((pageChildren, pageIndex) => (
+              <div key={pageIndex} className="grid h-full" style={gridStyle}>
+                {pageChildren}
               </div>
-            </div>
-          </GridLayoutContext.Provider>
-        </DragDropContext.Provider>
+            ))}
+          </Carousel>
+        </div>
       );
     }
 
     return (
-      <div ref={ref} className={cn("h-full p-4", !rows && "overflow-y-auto", className)} {...props}>
-        <div className={cn("grid", rows && "h-full")} style={createGridStyle(columns, rows, gap)}>
-          {children}
+      <div ref={ref} className={cn("h-full p-4", className)} {...props}>
+        <div className="grid h-full" style={gridStyle}>
+          {pages[0]}
         </div>
       </div>
     );
   }
-);
 
-GridLayout.displayName = "GridLayout";
+  if (isTemplateMode && template) {
+    return (
+      <DragDropContext.Provider value={dragDropState}>
+        <GridLayoutContext.Provider value={gridLayoutContextValue}>
+          <div ref={ref} className={cn("h-full overflow-y-auto p-4", className)} {...props}>
+            <div
+              className="grid h-full"
+              style={createGridStyle(template.columns, template.rows, gap)}
+            >
+              {children}
+            </div>
+          </div>
+        </GridLayoutContext.Provider>
+      </DragDropContext.Provider>
+    );
+  }
+
+  return (
+    <div ref={ref} className={cn("h-full p-4", !rows && "overflow-y-auto", className)} {...props}>
+      <div className={cn("grid", rows && "h-full")} style={createGridStyle(columns, rows, gap)}>
+        {children}
+      </div>
+    </div>
+  );
+}

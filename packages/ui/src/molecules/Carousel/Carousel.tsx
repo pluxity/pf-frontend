@@ -1,8 +1,6 @@
 import {
   useState,
   useEffect,
-  useCallback,
-  useMemo,
   Children,
   type ComponentRef,
   type Ref,
@@ -44,49 +42,40 @@ function Carousel({
   const slides = Children.toArray(children);
   const totalSlides = slides.length;
 
-  const setActiveIndex = useCallback(
-    (index: number) => {
-      if (!isControlled) {
-        setInternalIndex(index);
-      }
-      onChange?.(index);
-    },
-    [isControlled, onChange]
-  );
+  const setActiveIndex = (index: number) => {
+    if (!isControlled) {
+      setInternalIndex(index);
+    }
+    onChange?.(index);
+  };
 
-  const goTo = useCallback(
-    (index: number) => {
-      let nextIndex = index;
-      if (loop) {
-        nextIndex = ((index % totalSlides) + totalSlides) % totalSlides;
-      } else {
-        nextIndex = Math.max(0, Math.min(index, totalSlides - 1));
-      }
-      setActiveIndex(nextIndex);
-    },
-    [loop, totalSlides, setActiveIndex]
-  );
+  const goTo = (index: number) => {
+    let nextIndex = index;
+    if (loop) {
+      nextIndex = ((index % totalSlides) + totalSlides) % totalSlides;
+    } else {
+      nextIndex = Math.max(0, Math.min(index, totalSlides - 1));
+    }
+    setActiveIndex(nextIndex);
+  };
 
-  const goNext = useCallback(() => {
+  const goNext = () => {
     goTo(activeIndex + 1);
-  }, [activeIndex, goTo]);
+  };
 
-  const goPrev = useCallback(() => {
+  const goPrev = () => {
     goTo(activeIndex - 1);
-  }, [activeIndex, goTo]);
+  };
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        goPrev();
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        goNext();
-      }
-    },
-    [goPrev, goNext]
-  );
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goPrev();
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goNext();
+    }
+  };
 
   useEffect(() => {
     if (!autoPlay || totalSlides <= 1) return;
@@ -96,65 +85,56 @@ function Carousel({
     }, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [autoPlay, autoPlayInterval, goNext, totalSlides]);
+  }, [autoPlay, autoPlayInterval, totalSlides, goNext]);
 
-  const shouldRenderSlide = useCallback(
-    (index: number): boolean => {
-      if (!lazy) return true;
-      if (index === activeIndex) return true;
-      if (preloadAdjacent) {
-        if (loop) {
-          const prevIndex = (activeIndex - 1 + totalSlides) % totalSlides;
-          const nextIndex = (activeIndex + 1) % totalSlides;
-          if (index === prevIndex || index === nextIndex) return true;
-        } else {
-          if (index === activeIndex - 1 || index === activeIndex + 1) return true;
-        }
+  const shouldRenderSlide = (index: number): boolean => {
+    if (!lazy) return true;
+    if (index === activeIndex) return true;
+    if (preloadAdjacent) {
+      if (loop) {
+        const prevIndex = (activeIndex - 1 + totalSlides) % totalSlides;
+        const nextIndex = (activeIndex + 1) % totalSlides;
+        if (index === prevIndex || index === nextIndex) return true;
+      } else {
+        if (index === activeIndex - 1 || index === activeIndex + 1) return true;
       }
-      return false;
-    },
-    [lazy, activeIndex, preloadAdjacent, totalSlides, loop]
-  );
+    }
+    return false;
+  };
 
-  const contextValue = useMemo<CarouselContextValue>(
-    () => ({
-      activeIndex,
-      totalSlides,
-      goTo,
-      goNext,
-      goPrev,
-      transition,
-      transitionDuration,
-    }),
-    [activeIndex, totalSlides, goTo, goNext, goPrev, transition, transitionDuration]
-  );
+  const contextValue: CarouselContextValue = {
+    activeIndex,
+    totalSlides,
+    goTo,
+    goNext,
+    goPrev,
+    transition,
+    transitionDuration,
+  };
 
-  const getSlideStyle = useCallback(
-    (index: number) => {
-      const isActive = index === activeIndex;
+  const getSlideStyle = (index: number) => {
+    const isActive = index === activeIndex;
 
-      if (transition === "none") {
-        return {
-          display: isActive ? "block" : "none",
-        };
-      }
+    if (transition === "none") {
+      return {
+        display: isActive ? "block" : "none",
+      };
+    }
 
-      if (transition === "fade") {
-        return {
-          position: isActive ? ("relative" as const) : ("absolute" as const),
-          inset: isActive ? undefined : 0,
-          opacity: isActive ? 1 : 0,
-          transition: `opacity ${transitionDuration}ms ease-in-out`,
-          pointerEvents: isActive ? ("auto" as const) : ("none" as const),
-        };
-      }
+    if (transition === "fade") {
+      return {
+        position: isActive ? ("relative" as const) : ("absolute" as const),
+        inset: isActive ? undefined : 0,
+        opacity: isActive ? 1 : 0,
+        transition: `opacity ${transitionDuration}ms ease-in-out`,
+        pointerEvents: isActive ? ("auto" as const) : ("none" as const),
+      };
+    }
 
-      return {};
-    },
-    [activeIndex, transition, transitionDuration]
-  );
+    return {};
+  };
 
-  const getContainerStyle = useCallback(() => {
+  const getContainerStyle = () => {
     if (transition === "slide") {
       return {
         transform: `translateX(-${activeIndex * 100}%)`,
@@ -162,7 +142,7 @@ function Carousel({
       };
     }
     return {};
-  }, [activeIndex, transition, transitionDuration]);
+  };
 
   const arrowButtonVariant = arrowVariant === "ghost" ? "ghost" : "secondary";
 
