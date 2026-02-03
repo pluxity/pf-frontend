@@ -1,4 +1,4 @@
-import type { ReactNode, HTMLAttributes } from "react";
+import type { ReactNode, HTMLAttributes, Ref } from "react";
 
 export interface GridCell {
   id: string;
@@ -48,6 +48,7 @@ export interface GridLayoutProps extends Omit<HTMLAttributes<HTMLDivElement>, "o
   editable?: boolean;
   onLayoutChange?: (event: LayoutChangeEvent) => void;
   initialLayout?: GridLayoutState;
+  ref?: Ref<HTMLDivElement>;
 }
 
 export interface GridLayoutContextValue {
