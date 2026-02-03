@@ -57,7 +57,7 @@ interface AlertDescriptionPropsWithRef extends AlertDescriptionProps {
 }
 
 function AlertDescription({ className, ref, ...props }: AlertDescriptionPropsWithRef) {
-  return <div ref={ref} className={cn("text-[13px] text-gray-700", className)} {...props} />;
+  return <div ref={ref} className={cn("text-sm text-gray-700", className)} {...props} />;
 }
 
 export { Alert, AlertTitle, AlertDescription };

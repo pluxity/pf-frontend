@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>;
 export const Text: Story = {
   args: {
     variant: "text",
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -33,13 +33,13 @@ export const Avatar: Story = {
 export const Card: Story = {
   args: {
     variant: "card",
-    className: "w-[240px] h-[120px]",
+    className: "w-60 h-32",
   },
 };
 
 export const CardWithContent: Story = {
   render: () => (
-    <div className="w-[300px] space-y-4 p-4 border border-gray-200 rounded-lg">
+    <div className="w-72 space-y-4 p-4 border border-gray-200 rounded-lg">
       <div className="flex items-center gap-4">
         <Skeleton variant="avatar" size="md" />
         <div className="space-y-2 flex-1">

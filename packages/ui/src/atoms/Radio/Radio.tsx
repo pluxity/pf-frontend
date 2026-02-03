@@ -15,6 +15,8 @@ function RadioGroupItem({ className, ref, ...props }: RadioGroupItemProps) {
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[state=checked]:border-brand data-[state=checked]:bg-brand",
+        "dark:border-dark-border-default dark:text-primary-400",
+        "dark:data-[state=checked]:border-primary-500 dark:data-[state=checked]:bg-primary-600",
         className
       )}
       {...props}

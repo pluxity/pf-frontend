@@ -125,7 +125,7 @@ function StepWithContext(props: StepperStepProps) {
               ? "bg-brand text-white"
               : isCurrent
                 ? "border-2 border-brand bg-white text-brand"
-                : "border-2 border-[#E6E6E8] bg-white text-[#808088]"
+                : "border-2 border-neutral-100 bg-white text-muted"
           )}
         >
           {isCompleted ? <Check size="md" /> : stepIndex + 1}
@@ -136,7 +136,7 @@ function StepWithContext(props: StepperStepProps) {
             className={cn(
               "transition-colors",
               isHorizontal ? "mx-2 h-0.5 flex-1" : "ml-5 mt-2 h-12 w-0.5",
-              isCompleted ? "bg-brand" : "bg-[#E6E6E8]"
+              isCompleted ? "bg-brand" : "bg-neutral-100"
             )}
           />
         )}
@@ -146,12 +146,12 @@ function StepWithContext(props: StepperStepProps) {
         <h4
           className={cn(
             "text-sm font-bold",
-            isCurrent || isCompleted ? "text-[#333340]" : "text-[#808088]"
+            isCurrent || isCompleted ? "text-secondary" : "text-muted"
           )}
         >
           {title}
         </h4>
-        {description && <p className="mt-1 text-xs text-[#808088]">{description}</p>}
+        {description && <p className="mt-1 text-xs text-muted">{description}</p>}
       </div>
     </div>
   );

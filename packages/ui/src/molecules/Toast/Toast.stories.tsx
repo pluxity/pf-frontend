@@ -109,7 +109,7 @@ function InteractiveToastDemo() {
   const { toasts, toast, dismissToast } = useToast();
 
   return (
-    <div className="min-h-[400px] p-8">
+    <div className="min-h-96 p-8">
       <div className="flex flex-wrap gap-4">
         <button
           onClick={() => toast("기본 토스트 메시지입니다.")}
@@ -156,7 +156,7 @@ function PositionDemo() {
   const { toasts, toast, dismissToast } = useToast();
 
   return (
-    <div className="min-h-[500px] p-8">
+    <div className="min-h-[31.25rem] p-8">
       <div className="mb-4 text-sm text-gray-500">
         우측 하단에 토스트가 표시됩니다. 버튼을 클릭해보세요.
       </div>
@@ -188,7 +188,7 @@ function ActionDemo() {
   const { toasts, toast, dismissToast } = useToast();
 
   return (
-    <div className="min-h-[400px] p-8">
+    <div className="min-h-96 p-8">
       <button
         onClick={() =>
           toast({

@@ -313,7 +313,7 @@ export const WithCustomContent: Story = {
       />
 
       <NotificationCenter.Custom>
-        <div className="border-t border-[#F0F0F2] bg-blue-50 px-5 py-3">
+        <div className="border-t border-neutral-100 bg-blue-50 px-5 py-3">
           <p className="text-xs font-medium text-blue-900">Special Offer!</p>
           <p className="mt-1 text-xs text-blue-700">Get 20% off your next order</p>
         </div>

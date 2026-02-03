@@ -91,7 +91,7 @@ export const NegativeTrend: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div className="grid grid-cols-2 gap-4 w-[600px]">
+    <div className="grid grid-cols-2 gap-4 w-[37.5rem]">
       <StatisticsCard title="Total Users" value="12,345" variant="default" icon={<UsersIcon />} />
       <StatisticsCard
         title="Active Users"

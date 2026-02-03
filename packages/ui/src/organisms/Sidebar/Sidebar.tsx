@@ -148,7 +148,7 @@ function SidebarItem({
         <span
           className={cn(
             "flex h-5 w-5 flex-shrink-0 items-center justify-center",
-            active ? "text-brand" : "text-[#666673]"
+            active ? "text-brand" : "text-muted"
           )}
         >
           {icon}
@@ -170,8 +170,8 @@ function SidebarItem({
   const itemClasses = cn(
     "group relative flex h-10 cursor-pointer items-center rounded-lg text-sm transition-colors",
     active
-      ? "bg-[#F5F8FF] font-bold text-brand"
-      : "font-medium text-[#666673] hover:bg-[#F5F5F7] hover:text-[#333340]",
+      ? "bg-primary-50 font-bold text-brand dark:bg-primary-900/30 dark:text-primary-400"
+      : "font-medium text-muted hover:bg-neutral-50 hover:text-secondary dark:text-dark-text-muted dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-secondary",
     collapsed ? "w-10 justify-center px-0" : "w-full gap-3 px-3",
     className
   );
@@ -191,7 +191,7 @@ function SidebarItem({
           {...props}
         >
           {active && (
-            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
+            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand dark:bg-primary-500" />
           )}
           {content}
         </a>
@@ -204,7 +204,7 @@ function SidebarItem({
           {...props}
         >
           {active && (
-            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
+            <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand dark:bg-primary-500" />
           )}
           {content}
         </button>
@@ -224,7 +224,7 @@ function SidebarSection({ label, children, className }: SidebarSectionProps) {
       {label && (
         <div
           className={cn(
-            "py-2 text-xs font-bold uppercase tracking-wider text-[#808088] transition-all duration-200",
+            "py-2 text-xs font-bold uppercase tracking-wider text-muted transition-all duration-200",
             collapsed ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100 delay-150"
           )}
         >
@@ -253,7 +253,7 @@ function SidebarContent({ children, className }: SidebarContentProps) {
 }
 
 function SidebarSeparator({ className }: SidebarSeparatorProps) {
-  return <div className={cn("my-2 h-px bg-[#E6E6E8]", className)} />;
+  return <div className={cn("my-2 h-px bg-neutral-100 dark:bg-dark-border-default", className)} />;
 }
 
 function SidebarCustom({ children, className }: SidebarCustomProps) {
@@ -266,7 +266,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
   return (
     <div
       className={cn(
-        "flex items-center border-b border-[#E6E6E8]",
+        "flex items-center border-b border-neutral-100 dark:border-dark-border-default",
         collapsed ? "flex-col justify-center gap-3 py-3 px-2" : "h-14 justify-between px-4",
         className
       )}
@@ -283,7 +283,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
           </div>
           {children && (
             <>
-              <div className="h-px w-full bg-[#E6E6E8]" />
+              <div className="h-px w-full bg-neutral-100 dark:bg-dark-border-default" />
               {children}
             </>
           )}
@@ -299,14 +299,14 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
               )}
             </div>
             {title && (
-              <h2 className="text-lg font-bold text-[#333340] whitespace-nowrap transition-opacity duration-200 delay-150">
+              <h2 className="text-lg font-bold text-secondary whitespace-nowrap transition-opacity duration-200 delay-150">
                 {title}
               </h2>
             )}
           </div>
           {children && (
             <div className="flex items-center gap-2">
-              <div className="h-6 w-px bg-[#E6E6E8]" />
+              <div className="h-6 w-px bg-neutral-100 dark:bg-dark-border-default" />
               {children}
             </div>
           )}
@@ -322,7 +322,7 @@ function SidebarFooter({ children, className, ...props }: SidebarFooterProps) {
   return (
     <div
       className={cn(
-        "border-t border-[#E6E6E8] p-3",
+        "border-t border-neutral-100 dark:border-dark-border-default p-3",
         collapsed && "flex flex-col items-center gap-3",
         className
       )}
@@ -364,7 +364,7 @@ function SidebarCollapseButton({
         type="button"
         onClick={handleToggleCollapse}
         className={cn(
-          "flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340]",
+          "flex h-8 w-8 items-center justify-center text-muted transition-colors hover:text-secondary",
           "focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
           className
         )}
@@ -382,7 +382,7 @@ function SidebarCollapseButton({
       type="button"
       onClick={handleToggleCollapse}
       className={cn(
-        "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-[#666673] transition-colors hover:bg-[#F5F5F7] hover:text-[#333340]",
+        "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted transition-colors hover:bg-neutral-50 hover:text-secondary",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         collapsed ? "w-10 justify-center px-0" : "w-full",
         className
@@ -434,10 +434,11 @@ function Sidebar({
     <SidebarContext.Provider value={contextValue}>
       <aside
         className={cn(
-          "flex h-full flex-col border-r border-[#E6E6E8] bg-white overflow-hidden",
+          "flex h-full flex-col border-r border-neutral-100 bg-white overflow-hidden",
+          "dark:border-dark-border-default dark:bg-dark-bg-secondary",
           "motion-safe:transition-[width] motion-safe:duration-300",
           "motion-reduce:transition-none",
-          collapsed ? "w-16" : "w-[280px]",
+          collapsed ? "w-16" : "w-72",
           className
         )}
         {...props}

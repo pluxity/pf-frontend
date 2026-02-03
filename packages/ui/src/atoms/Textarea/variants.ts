@@ -5,9 +5,9 @@ export const textareaVariants = cva(
   {
     variants: {
       textareaSize: {
-        sm: "min-h-[80px] text-xs",
-        md: "min-h-[120px] text-sm",
-        lg: "min-h-[160px] text-base",
+        sm: "min-h-20 text-xs",
+        md: "min-h-32 text-sm",
+        lg: "min-h-40 text-base",
       },
     },
     defaultVariants: {

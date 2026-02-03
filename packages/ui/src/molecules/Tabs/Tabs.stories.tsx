@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 export const UnderlineStyle: Story = {
   name: "기본스타일 (Underline)",
   render: () => (
-    <Tabs defaultValue="all" className="w-[400px]">
+    <Tabs defaultValue="all" className="w-96">
       <TabsList variant="underline">
         <TabsTrigger variant="underline" value="all">
           전체장비
@@ -58,7 +58,7 @@ export const UnderlineStyle: Story = {
 export const UnderlineWithIcons: Story = {
   name: "기본스타일 - 아이콘",
   render: () => (
-    <Tabs defaultValue="all" className="w-[450px]">
+    <Tabs defaultValue="all" className="w-96">
       <TabsList variant="underline">
         <TabsTrigger variant="underline" value="all">
           <Grid size="xs" />
@@ -96,7 +96,7 @@ export const UnderlineWithIcons: Story = {
 export const FilledStyle: Story = {
   name: "볼드스타일 (Filled)",
   render: () => (
-    <Tabs defaultValue="all" className="w-[300px]">
+    <Tabs defaultValue="all" className="w-72">
       <TabsList variant="filled">
         <TabsTrigger variant="filled" value="all">
           전체장비
@@ -130,7 +130,7 @@ export const FilledStyle: Story = {
 export const FilledWithIcons: Story = {
   name: "볼드스타일 - 아이콘",
   render: () => (
-    <Tabs defaultValue="all" className="w-[380px]">
+    <Tabs defaultValue="all" className="w-96">
       <TabsList variant="filled">
         <TabsTrigger variant="filled" value="all">
           <Grid size="xs" />
@@ -171,7 +171,7 @@ export const AllVariants: Story = {
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-bold mb-4">기본스타일 (Underline)</h3>
-        <Tabs defaultValue="tab1" className="w-[300px]">
+        <Tabs defaultValue="tab1" className="w-[18.75rem]">
           <TabsList variant="underline">
             <TabsTrigger variant="underline" value="tab1">
               탭 메뉴
@@ -187,7 +187,7 @@ export const AllVariants: Story = {
       </div>
       <div>
         <h3 className="text-lg font-bold mb-4">볼드스타일 (Filled)</h3>
-        <Tabs defaultValue="tab1" className="w-[250px]">
+        <Tabs defaultValue="tab1" className="w-60">
           <TabsList variant="filled">
             <TabsTrigger variant="filled" value="tab1">
               탭 메뉴

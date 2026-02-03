@@ -152,43 +152,43 @@ function DateTimePicker({
         disabled={disabled}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         className={cn(
-          "flex h-10 w-full items-center justify-between rounded-lg border border-[#E6E6E8] bg-white px-3 text-sm",
-          "hover:border-[#CCCCCC] focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20",
-          disabled && "cursor-not-allowed bg-[#F5F5F5] opacity-50",
-          !value && "text-[#808088]"
+          "flex h-10 w-full items-center justify-between rounded-lg border border-neutral-100 bg-white px-3 text-sm",
+          "hover:border-neutral-300 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20",
+          disabled && "cursor-not-allowed bg-gray-50 opacity-50",
+          !value && "text-muted"
         )}
       >
         <span>{value ? formatDateTime(value) : placeholder}</span>
-        <div className="flex items-center gap-2 text-[#808088]">
+        <div className="flex items-center gap-2 text-muted">
           <Calendar size="sm" />
           <Clock size="sm" />
         </div>
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-1 w-[400px] overflow-hidden rounded-xl border border-[#E6E6E8] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
-          <div className="bg-[#FAFAFC] px-6 py-4">
-            <h3 className="text-base font-bold text-[#1A1A26]">Select Date & Time</h3>
+        <div className="absolute left-0 top-full z-50 mt-1 w-96 overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-[0_0.25rem_1rem_rgba(0,0,0,0.12)]">
+          <div className="bg-neutral-50 px-6 py-4">
+            <h3 className="text-base font-bold text-primary">Select Date & Time</h3>
           </div>
 
-          <div className="h-px bg-[#EAEAEC]" />
+          <div className="h-px bg-neutral-100" />
 
           <div className="p-4">
             <div className="mb-4 flex items-center justify-between">
               <Button variant="ghost" size="sm" onClick={prevMonth} className="h-8 w-8 p-0">
-                <ChevronLeft size="sm" className="text-[#808088]" />
+                <ChevronLeft size="sm" className="text-muted" />
               </Button>
-              <span className="text-[15px] font-bold text-[#1A1A26]">
+              <span className="text-base font-bold text-primary">
                 {MONTHS[currentMonth]} {currentYear}
               </span>
               <Button variant="ghost" size="sm" onClick={nextMonth} className="h-8 w-8 p-0">
-                <ChevronRight size="sm" className="text-[#808088]" />
+                <ChevronRight size="sm" className="text-muted" />
               </Button>
             </div>
 
             <div className="mb-2 grid grid-cols-7 gap-1">
               {DAYS.map((day) => (
-                <div key={day} className="py-1 text-center text-xs font-bold text-[#808088]">
+                <div key={day} className="py-1 text-center text-xs font-bold text-muted">
                   {day}
                 </div>
               ))}
@@ -220,7 +220,7 @@ function DateTimePicker({
                         ? "bg-brand font-bold text-white"
                         : isToday
                           ? "border border-brand text-brand"
-                          : "text-[#333340] hover:bg-[#F5F5F5]",
+                          : "text-secondary hover:bg-gray-50",
                       isDisabled && "cursor-not-allowed opacity-40"
                     )}
                   >
@@ -231,12 +231,12 @@ function DateTimePicker({
             </div>
           </div>
 
-          <div className="h-px bg-[#EAEAEC]" />
+          <div className="h-px bg-neutral-100" />
 
           <div className="p-4">
             <div className="mb-3 flex items-center gap-2">
-              <Clock size="sm" className="text-[#808088]" />
-              <span className="text-sm font-bold text-[#333340]">Time</span>
+              <Clock size="sm" className="text-muted" />
+              <span className="text-sm font-bold text-secondary">Time</span>
             </div>
 
             <div className="flex items-center justify-center gap-4">
@@ -244,7 +244,7 @@ function DateTimePicker({
                 <Button variant="ghost" size="sm" onClick={incrementHour} className="h-7 w-7 p-0">
                   <ChevronUp size="sm" />
                 </Button>
-                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                   {hour.toString().padStart(2, "0")}
                 </div>
                 <Button variant="ghost" size="sm" onClick={decrementHour} className="h-7 w-7 p-0">
@@ -252,13 +252,13 @@ function DateTimePicker({
                 </Button>
               </div>
 
-              <span className="text-xl font-bold text-[#333340]">:</span>
+              <span className="text-xl font-bold text-secondary">:</span>
 
               <div className="flex flex-col items-center">
                 <Button variant="ghost" size="sm" onClick={incrementMinute} className="h-7 w-7 p-0">
                   <ChevronUp size="sm" />
                 </Button>
-                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                   {minute.toString().padStart(2, "0")}
                 </div>
                 <Button variant="ghost" size="sm" onClick={decrementMinute} className="h-7 w-7 p-0">
@@ -271,7 +271,7 @@ function DateTimePicker({
                   <Button variant="ghost" size="sm" onClick={togglePeriod} className="h-7 w-7 p-0">
                     <ChevronUp size="sm" />
                   </Button>
-                  <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                  <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                     {period}
                   </div>
                   <Button variant="ghost" size="sm" onClick={togglePeriod} className="h-7 w-7 p-0">
@@ -282,7 +282,7 @@ function DateTimePicker({
             </div>
           </div>
 
-          <div className="flex gap-2 border-t border-[#E6E6E8] p-4">
+          <div className="flex gap-2 border-t border-neutral-100 p-4">
             <Button variant="outline" className="flex-1" onClick={() => setIsOpen(false)}>
               Cancel
             </Button>

@@ -15,7 +15,7 @@ type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
-    <Accordion type="single" collapsible className="w-[400px]">
+    <Accordion type="single" collapsible className="w-96">
       <AccordionItem value="item-1">
         <AccordionTrigger>이용약관</AccordionTrigger>
         <AccordionContent>
@@ -38,7 +38,7 @@ export const Default: Story = {
 
 export const Multiple: Story = {
   render: () => (
-    <Accordion type="multiple" className="w-[400px]">
+    <Accordion type="multiple" className="w-96">
       <AccordionItem value="item-1">
         <AccordionTrigger>섹션 1</AccordionTrigger>
         <AccordionContent>여러 개의 아코디언을 동시에 열 수 있습니다.</AccordionContent>

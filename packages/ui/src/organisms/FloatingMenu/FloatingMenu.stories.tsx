@@ -14,7 +14,7 @@ const meta: Meta<typeof FloatingMenu> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex min-h-[400px] items-start justify-center bg-gray-100 p-8">
+      <div className="flex min-h-400 items-start justify-center bg-gray-100 p-8">
         <Story />
       </div>
     ),
@@ -152,17 +152,13 @@ export const WithBadges: Story = {
       <FloatingMenu.Item icon={<BarChart size="sm" />}>
         <div className="flex w-full items-center justify-between">
           <span>Analytics</span>
-          <Badge variant="primary" size="sm">
-            New
-          </Badge>
+          <Badge variant="primary">New</Badge>
         </div>
       </FloatingMenu.Item>
       <FloatingMenu.Item icon={<Users size="sm" />}>
         <div className="flex w-full items-center justify-between">
           <span>Users</span>
-          <Badge variant="secondary" size="sm">
-            23
-          </Badge>
+          <Badge variant="default">23</Badge>
         </div>
       </FloatingMenu.Item>
       <FloatingMenu.Item icon={<Settings size="sm" />}>Settings</FloatingMenu.Item>
@@ -208,8 +204,8 @@ export const WithCustomContent: Story = {
           <FloatingMenu.Custom>
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#666673]">Scale</span>
-                <span className="font-medium text-[#333340]">{scale.toFixed(2)}</span>
+                <span className="text-gray-600">Scale</span>
+                <span className="font-medium text-gray-800">{scale.toFixed(2)}</span>
               </div>
               <Slider
                 value={[scale]}
@@ -250,9 +246,7 @@ export const ComplexExample: Story = {
           <FloatingMenu.Item icon={<Upload size="sm" />}>
             <div className="flex w-full items-center justify-between">
               <span>Import Model</span>
-              <Badge variant="success" size="sm">
-                GLB
-              </Badge>
+              <Badge variant="success">GLB</Badge>
             </div>
           </FloatingMenu.Item>
           <FloatingMenu.Item icon={<Package size="sm" />}>Export</FloatingMenu.Item>
@@ -269,8 +263,8 @@ export const ComplexExample: Story = {
             <div className="space-y-3">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#666673]">Quality</span>
-                  <span className="font-medium text-[#333340]">{quality}%</span>
+                  <span className="text-gray-600">Quality</span>
+                  <span className="font-medium text-gray-800">{quality}%</span>
                 </div>
                 <Slider
                   value={[quality]}
@@ -281,11 +275,11 @@ export const ComplexExample: Story = {
                 />
               </div>
 
-              <div className="flex items-center gap-2 rounded-lg bg-[#F5F5F7] p-2">
+              <div className="flex items-center gap-2 rounded-lg bg-neutral-50 p-2">
                 <div className="flex h-6 w-6 items-center justify-center rounded bg-yellow-500 text-xs">
                   ⚠
                 </div>
-                <div className="text-xs text-[#666673]">High quality uses more memory</div>
+                <div className="text-xs text-gray-600">High quality uses more memory</div>
               </div>
             </div>
           </FloatingMenu.Custom>

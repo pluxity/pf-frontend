@@ -128,7 +128,7 @@ export const EventScheduler: Story = {
     const [endDate, setEndDate] = useState<Date | undefined>();
 
     return (
-      <div className="space-y-4 w-[400px]">
+      <div className="space-y-4 w-96">
         <h3 className="font-bold">Schedule Event</h3>
         <div className="space-y-2">
           <label className="text-sm font-medium">Start</label>

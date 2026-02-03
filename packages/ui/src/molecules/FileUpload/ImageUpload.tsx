@@ -138,7 +138,7 @@ function ImageUpload({
       )}
 
       {value.length > 0 && (
-        <p className="text-xs text-[#808088]">
+        <p className="text-xs text-muted">
           {value.length} / {maxFiles} 이미지
         </p>
       )}

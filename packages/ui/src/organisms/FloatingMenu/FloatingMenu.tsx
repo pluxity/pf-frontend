@@ -101,7 +101,9 @@ function FloatingMenuItem({
   const itemClasses = cn(
     "flex h-10 w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-sm transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
-    active ? "bg-[#66B3FF] font-bold text-brand" : "text-[#4D4D59] hover:bg-[#F5F5F7]",
+    active
+      ? "bg-blue-200 font-bold text-brand dark:bg-primary-900/30 dark:text-primary-400"
+      : "text-secondary hover:bg-gray-50 dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover",
     className
   );
 
@@ -128,13 +130,17 @@ function FloatingMenuItem({
 }
 
 function FloatingMenuSeparator({ className }: FloatingMenuSeparatorProps) {
-  return <div className={cn("mx-2 my-1 h-px bg-[#EDEDED]", className)} />;
+  return (
+    <div className={cn("mx-2 my-1 h-px bg-neutral-100 dark:bg-dark-border-default", className)} />
+  );
 }
 
 function FloatingMenuGroup({ label, children, className }: FloatingMenuGroupProps) {
   return (
     <div className={cn("space-y-1", className)}>
-      <div className="px-3 py-1.5 text-xs font-semibold text-[#999999]">{label}</div>
+      <div className="px-3 py-1.5 text-xs font-semibold text-placeholder dark:text-dark-text-placeholder">
+        {label}
+      </div>
       {children}
     </div>
   );
@@ -176,29 +182,30 @@ function FloatingMenu({
       <div
         ref={ref}
         className={cn(
-          "rounded-xl border border-[#E6E6E8] bg-white",
+          "rounded-xl border border-neutral-100 bg-white",
+          "dark:border-dark-border-default dark:bg-dark-bg-card",
           "motion-safe:transition-[width,box-shadow]",
           "motion-reduce:transition-none",
           expanded
-            ? "w-60 shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
+            ? "w-60 shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.15)]"
             : compact
-              ? "w-[100px] shadow-[0_4px_12px_rgba(0,0,0,0.10)]"
-              : "w-[200px] shadow-[0_4px_12px_rgba(0,0,0,0.10)]",
+              ? "w-24 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]"
+              : "w-48 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]",
           className
         )}
         {...props}
       >
         <div className="flex h-12 items-center justify-between px-4">
-          <div className="text-base font-bold text-brand">
+          <div className="text-base font-bold text-brand dark:text-primary-400">
             {typeof logo === "string" ? logo : logo}
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="h-6 w-px bg-[#E6E6E8]" />
+            <div className="h-6 w-px bg-neutral-100 dark:bg-dark-border-default" />
             <button
               type="button"
               onClick={handleToggle}
-              className="flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340] focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="flex h-8 w-8 items-center justify-center text-muted transition-colors hover:text-secondary focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 dark:text-dark-text-muted dark:hover:text-dark-text-secondary"
               aria-expanded={expanded}
               aria-label={expanded ? ariaLabelCollapse : ariaLabelExpand}
             >
@@ -209,7 +216,7 @@ function FloatingMenu({
 
         {expanded && (
           <>
-            <div className="mx-4 h-px bg-[#EDEDED]" />
+            <div className="mx-4 h-px bg-neutral-100 dark:bg-dark-border-default" />
 
             <div className="space-y-1 p-3">{children}</div>
           </>
