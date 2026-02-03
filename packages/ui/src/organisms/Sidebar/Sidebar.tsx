@@ -183,14 +183,26 @@ function SidebarItem({
   return (
     <div>
       {href ? (
-        <a href={href} className={itemClasses} onClick={handleClick} {...props}>
+        <a
+          href={href}
+          className={itemClasses}
+          onClick={handleClick}
+          aria-current={active ? "page" : undefined}
+          {...props}
+        >
           {active && (
             <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
           {content}
         </a>
       ) : (
-        <button type="button" className={itemClasses} onClick={handleClick} {...props}>
+        <button
+          type="button"
+          className={itemClasses}
+          onClick={handleClick}
+          aria-current={active ? "page" : undefined}
+          {...props}
+        >
           {active && (
             <span className="absolute -left-3 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-brand" />
           )}
@@ -332,7 +344,15 @@ function SidebarCollapseButton({
 
   if (children) {
     return (
-      <button type="button" onClick={handleToggleCollapse} className={className} {...props}>
+      <button
+        type="button"
+        onClick={handleToggleCollapse}
+        className={cn(
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
+          className
+        )}
+        {...props}
+      >
         {children}
       </button>
     );
@@ -345,6 +365,7 @@ function SidebarCollapseButton({
         onClick={handleToggleCollapse}
         className={cn(
           "flex h-8 w-8 items-center justify-center text-[#666673] transition-colors hover:text-[#333340]",
+          "focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
           className
         )}
         aria-expanded={!collapsed}
@@ -362,6 +383,7 @@ function SidebarCollapseButton({
       onClick={handleToggleCollapse}
       className={cn(
         "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-[#666673] transition-colors hover:bg-[#F5F5F7] hover:text-[#333340]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         collapsed ? "w-10 justify-center px-0" : "w-full",
         className
       )}

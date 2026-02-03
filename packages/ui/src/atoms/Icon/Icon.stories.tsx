@@ -274,6 +274,64 @@ export const Colors: Story = {
   ),
 };
 
+export const Accessibility: Story = {
+  render: () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold border-b pb-2">Accessibility Examples</h3>
+
+      <div className="space-y-4">
+        <div>
+          <h4 className="text-sm font-medium mb-2">Decorative Icon (기본 - aria-hidden="true")</h4>
+          <p className="text-sm text-gray-600 mb-2">
+            버튼 텍스트가 의미를 전달하므로 아이콘은 장식용입니다.
+          </p>
+          <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded">
+            <Home size="sm" />
+            <span>홈으로 가기</span>
+          </button>
+          <pre className="mt-2 text-xs bg-gray-100 p-2 rounded">
+            {`<button>
+  <Home size="sm" /> {/* aria-hidden="true" 자동 적용 */}
+  <span>홈으로 가기</span>
+</button>`}
+          </pre>
+        </div>
+
+        <div>
+          <h4 className="text-sm font-medium mb-2">Semantic Icon (aria-label 제공)</h4>
+          <p className="text-sm text-gray-600 mb-2">
+            텍스트 없이 아이콘만 사용하는 경우 aria-label 필수입니다.
+          </p>
+          <button className="p-2 bg-blue-500 text-white rounded" aria-label="홈으로 가기">
+            <Home size="md" aria-label="홈" />
+          </button>
+          <pre className="mt-2 text-xs bg-gray-100 p-2 rounded">
+            {`<button aria-label="홈으로 가기">
+  <Home size="md" aria-label="홈" />
+  {/* aria-hidden 없음, 스크린 리더가 읽음 */}
+</button>`}
+          </pre>
+        </div>
+
+        <div>
+          <h4 className="text-sm font-medium mb-2">Icon Only Button (권장 패턴)</h4>
+          <p className="text-sm text-gray-600 mb-2">
+            button에 aria-label을 제공하고, 아이콘은 decorative로 유지합니다.
+          </p>
+          <button className="p-2 bg-blue-500 text-white rounded" aria-label="설정 열기">
+            <Settings size="md" />
+          </button>
+          <pre className="mt-2 text-xs bg-gray-100 p-2 rounded">
+            {`<button aria-label="설정 열기">
+  <Settings size="md" /> {/* aria-hidden="true" */}
+</button>`}
+          </pre>
+        </div>
+      </div>
+    </div>
+  ),
+};
+
 export const AllIcons: Story = {
   render: () => (
     <div className="space-y-8 max-w-4xl">
