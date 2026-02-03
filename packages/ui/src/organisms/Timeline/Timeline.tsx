@@ -58,10 +58,10 @@ function TimelineItem({
 
       <div className="flex-1 pt-0.5">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="text-sm font-bold text-[#333340]">{title}</h4>
-          {time && <span className="flex-shrink-0 text-xs text-[#808088]">{time}</span>}
+          <h4 className="text-sm font-bold text-secondary">{title}</h4>
+          {time && <span className="flex-shrink-0 text-xs text-muted">{time}</span>}
         </div>
-        {description && <p className="mt-1 text-sm text-[#666673]">{description}</p>}
+        {description && <p className="mt-1 text-sm text-muted">{description}</p>}
       </div>
     </div>
   );
@@ -76,7 +76,7 @@ function Timeline({ children, className, ...props }: TimelineProps) {
 
   return (
     <div className={cn("relative space-y-0", className)} {...props}>
-      <div className="absolute left-[11px] top-6 h-[calc(100%-48px)] w-0.5 bg-[#E6E6E8]" />
+      <div className="absolute left-[0.6875rem] top-6 h-[calc(100%-3rem)] w-0.5 bg-neutral-100" />
       {childrenArray}
     </div>
   );

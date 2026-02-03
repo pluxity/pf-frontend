@@ -72,12 +72,12 @@ const slides = [
 export const Default: Story = {
   name: "기본",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel>
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -90,12 +90,12 @@ export const Default: Story = {
 export const SlideTransition: Story = {
   name: "슬라이드 전환",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel transition="slide">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -108,12 +108,12 @@ export const SlideTransition: Story = {
 export const FadeTransition: Story = {
   name: "페이드 전환",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel transition="fade">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -126,12 +126,12 @@ export const FadeTransition: Story = {
 export const AutoPlay: Story = {
   name: "자동 재생",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel autoPlay autoPlayInterval={2000}>
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -144,12 +144,12 @@ export const AutoPlay: Story = {
 export const NoLoop: Story = {
   name: "루프 없음",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel loop={false}>
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -162,12 +162,12 @@ export const NoLoop: Story = {
 export const NoArrows: Story = {
   name: "화살표 숨김",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel showArrows={false}>
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -180,12 +180,12 @@ export const NoArrows: Story = {
 export const NoIndicators: Story = {
   name: "인디케이터 숨김",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel showIndicators={false}>
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -198,7 +198,7 @@ export const NoIndicators: Story = {
 function LazySlide({ index }: { index: number }) {
   return (
     <div
-      className={`${slides[index]?.bg || "bg-gray-500"} w-full h-[300px] flex flex-col items-center justify-center text-white`}
+      className={`${slides[index]?.bg || "bg-gray-500"} w-full h-72 flex flex-col items-center justify-center text-white`}
     >
       <span className="text-2xl font-bold">슬라이드 {index + 1}</span>
       <span className="text-sm mt-2">마운트됨 (콘솔 확인)</span>
@@ -209,7 +209,7 @@ function LazySlide({ index }: { index: number }) {
 export const LazyRendering: Story = {
   name: "Lazy 렌더링 (콘솔 확인)",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel lazy={true}>
         {slides.map((_, index) => (
           <LazySlide key={index} index={index} />
@@ -222,7 +222,7 @@ export const LazyRendering: Story = {
 export const PreloadAdjacent: Story = {
   name: "인접 슬라이드 미리 로드",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel lazy={true} preloadAdjacent={true}>
         {slides.map((_, index) => (
           <LazySlide key={index} index={index} />
@@ -252,12 +252,12 @@ export const Controlled: Story = {
             </button>
           ))}
         </div>
-        <div className="w-[600px] h-[300px]">
+        <div className="w-[37.5rem] h-72">
           <Carousel activeIndex={activeIndex} onChange={setActiveIndex} showIndicators={false}>
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+                className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
               >
                 {slide.text}
               </div>
@@ -273,12 +273,12 @@ export const Controlled: Story = {
 export const GhostArrows: Story = {
   name: "화살표 Ghost 모드",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel arrowVariant="ghost">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -291,12 +291,12 @@ export const GhostArrows: Story = {
 export const CustomArrowPosition: Story = {
   name: "화살표 위치 커스터마이징",
   render: () => (
-    <div className="w-[600px] h-[300px]">
+    <div className="w-[37.5rem] h-72">
       <Carousel arrowVariant="ghost" arrowClassName="!top-4 !translate-y-0">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`${slide.bg} w-full h-[300px] flex items-center justify-center text-white text-2xl font-bold`}
+            className={`${slide.bg} w-full h-72 flex items-center justify-center text-white text-2xl font-bold`}
           >
             {slide.text}
           </div>
@@ -312,12 +312,12 @@ export const AllTransitions: Story = {
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-bold mb-4">슬라이드 (Slide)</h3>
-        <div className="w-[400px] h-[200px]">
+        <div className="w-96 h-48">
           <Carousel transition="slide">
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`${slide.bg} w-full h-[200px] flex items-center justify-center text-white text-xl font-bold`}
+                className={`${slide.bg} w-full h-48 flex items-center justify-center text-white text-xl font-bold`}
               >
                 {slide.text}
               </div>
@@ -327,12 +327,12 @@ export const AllTransitions: Story = {
       </div>
       <div>
         <h3 className="text-lg font-bold mb-4">페이드 (Fade)</h3>
-        <div className="w-[400px] h-[200px]">
+        <div className="w-96 h-48">
           <Carousel transition="fade">
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`${slide.bg} w-full h-[200px] flex items-center justify-center text-white text-xl font-bold`}
+                className={`${slide.bg} w-full h-48 flex items-center justify-center text-white text-xl font-bold`}
               >
                 {slide.text}
               </div>
@@ -342,12 +342,12 @@ export const AllTransitions: Story = {
       </div>
       <div>
         <h3 className="text-lg font-bold mb-4">없음 (None)</h3>
-        <div className="w-[400px] h-[200px]">
+        <div className="w-96 h-48">
           <Carousel transition="none">
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`${slide.bg} w-full h-[200px] flex items-center justify-center text-white text-xl font-bold`}
+                className={`${slide.bg} w-full h-48 flex items-center justify-center text-white text-xl font-bold`}
               >
                 {slide.text}
               </div>

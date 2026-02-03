@@ -19,7 +19,7 @@ export const Default: Story = {
     defaultValue: [50],
     max: 100,
     step: 1,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -28,7 +28,7 @@ export const Range: Story = {
     defaultValue: [25, 75],
     max: 100,
     step: 1,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -37,7 +37,7 @@ export const WithSteps: Story = {
     defaultValue: [50],
     max: 100,
     step: 10,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -45,7 +45,7 @@ export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState([33]);
     return (
-      <div className="w-[300px] space-y-4">
+      <div className="w-72 space-y-4">
         <Slider value={value} onValueChange={setValue} max={100} step={1} />
         <p className="text-sm text-gray-600">Value: {value[0]}</p>
       </div>

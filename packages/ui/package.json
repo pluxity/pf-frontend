@@ -56,6 +56,7 @@
     "@pf-dev/eslint-config": "workspace:*",
     "@pf-dev/typescript-config": "workspace:*",
     "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-themes": "^10.2.4",
     "@storybook/react": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@tailwindcss/vite": "catalog:",

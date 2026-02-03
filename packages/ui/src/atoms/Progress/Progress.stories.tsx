@@ -16,27 +16,27 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     value: 50,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
 export const Empty: Story = {
   args: {
     value: 0,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
 export const Full: Story = {
   args: {
     value: 100,
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
 export const Various: Story = {
   render: () => (
-    <div className="w-[300px] space-y-4">
+    <div className="w-72 space-y-4">
       <Progress value={25} />
       <Progress value={50} />
       <Progress value={75} />

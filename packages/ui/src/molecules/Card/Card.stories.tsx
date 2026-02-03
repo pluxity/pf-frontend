@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <Card className="w-[350px]">
+    <Card className="w-80">
       <CardHeader>
         <CardTitle>카드 제목</CardTitle>
         <CardDescription>카드에 대한 설명이 들어갑니다.</CardDescription>
@@ -37,7 +37,7 @@ export const Default: Story = {
 
 export const WithForm: Story = {
   render: () => (
-    <Card className="w-[350px]">
+    <Card className="w-80">
       <CardHeader>
         <CardTitle>계정 생성</CardTitle>
         <CardDescription>새 계정을 만들어 시작하세요.</CardDescription>
@@ -62,7 +62,7 @@ export const WithForm: Story = {
 
 export const Simple: Story = {
   render: () => (
-    <Card className="w-[300px] p-6">
+    <Card className="w-72 p-6">
       <p className="text-sm text-gray-600">간단한 카드 내용입니다.</p>
     </Card>
   ),

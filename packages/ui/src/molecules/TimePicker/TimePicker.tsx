@@ -88,19 +88,19 @@ function TimePicker({
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className="cursor-pointer pr-10"
         />
-        <Clock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#808088]" />
+        <Clock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted" />
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-1 rounded-lg border border-[#E6E6E8] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.10)]">
+        <div className="absolute left-0 top-full z-50 mt-1 rounded-lg border border-neutral-100 bg-white p-4 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]">
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-center">
-              <span className="mb-2 text-xs text-[#808088]">Hour</span>
+              <span className="mb-2 text-xs text-muted">Hour</span>
               <div className="flex flex-col items-center">
                 <Button variant="ghost" size="sm" onClick={incrementHour} className="h-8 w-8 p-0">
                   <ChevronUp size="sm" />
                 </Button>
-                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                   {hour.toString().padStart(2, "0")}
                 </div>
                 <Button variant="ghost" size="sm" onClick={decrementHour} className="h-8 w-8 p-0">
@@ -109,15 +109,15 @@ function TimePicker({
               </div>
             </div>
 
-            <span className="mt-6 text-xl font-bold text-[#333340]">:</span>
+            <span className="mt-6 text-xl font-bold text-secondary">:</span>
 
             <div className="flex flex-col items-center">
-              <span className="mb-2 text-xs text-[#808088]">Min</span>
+              <span className="mb-2 text-xs text-muted">Min</span>
               <div className="flex flex-col items-center">
                 <Button variant="ghost" size="sm" onClick={incrementMinute} className="h-8 w-8 p-0">
                   <ChevronUp size="sm" />
                 </Button>
-                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                   {minute.toString().padStart(2, "0")}
                 </div>
                 <Button variant="ghost" size="sm" onClick={decrementMinute} className="h-8 w-8 p-0">
@@ -128,12 +128,12 @@ function TimePicker({
 
             {use12Hour && (
               <div className="flex flex-col items-center">
-                <span className="mb-2 text-xs text-[#808088]">AM/PM</span>
+                <span className="mb-2 text-xs text-muted">AM/PM</span>
                 <div className="flex flex-col items-center">
                   <Button variant="ghost" size="sm" onClick={togglePeriod} className="h-8 w-8 p-0">
                     <ChevronUp size="sm" />
                   </Button>
-                  <div className="flex h-10 w-12 items-center justify-center rounded-md border border-[#E6E6E8] text-lg font-bold text-[#333340]">
+                  <div className="flex h-10 w-12 items-center justify-center rounded-md border border-neutral-100 text-lg font-bold text-secondary">
                     {period}
                   </div>
                   <Button variant="ghost" size="sm" onClick={togglePeriod} className="h-8 w-8 p-0">

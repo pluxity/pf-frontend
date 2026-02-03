@@ -72,7 +72,7 @@ export const Error: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex w-[300px] flex-col gap-4">
+    <div className="flex w-72 flex-col gap-4">
       <Input placeholder="기본 상태" />
       <Input placeholder="에러 상태" error />
       <Input placeholder="비활성화" disabled />

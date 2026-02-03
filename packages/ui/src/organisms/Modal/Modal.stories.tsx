@@ -122,7 +122,7 @@ export const LongContent: Story = {
           <ModalTitle>Terms & Conditions</ModalTitle>
           <ModalDescription>Please read and accept our terms and conditions.</ModalDescription>
         </ModalHeader>
-        <ModalBody className="max-h-[400px] overflow-y-auto">
+        <ModalBody className="max-h-96 overflow-y-auto">
           <div className="space-y-4 text-sm text-gray-600">
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor

@@ -95,7 +95,7 @@ function InteractiveFileUploadDemo() {
   };
 
   return (
-    <div className="w-[500px]">
+    <div className="w-[31.25rem]">
       <FileUpload
         value={files}
         onChange={setFiles}
@@ -115,7 +115,7 @@ export const Interactive: Story = {
 
 export const UploadZoneBasic: Story = {
   render: () => (
-    <div className="w-[400px]">
+    <div className="w-96">
       <UploadZone
         onFilesSelected={(files) => console.log("Selected:", files)}
         title="파일을 드래그하거나 클릭하여 업로드"
@@ -153,7 +153,7 @@ const sampleFiles: FileItemData[] = [
 
 export const FileItemVariants: Story = {
   render: () => (
-    <div className="w-[400px] space-y-3">
+    <div className="w-96 space-y-3">
       <h3 className="text-sm font-semibold text-gray-700">완료됨</h3>
       <FileItem file={sampleFiles[0]!} onRemove={(id) => console.log("Remove:", id)} />
 
@@ -273,7 +273,7 @@ function InteractiveImageUploadDemo() {
   };
 
   return (
-    <div className="w-[600px]">
+    <div className="w-[37.5rem]">
       <ImageUpload
         value={images}
         onChange={setImages}
@@ -314,7 +314,7 @@ function ImageUploadWithPreloadedDemo() {
   ]);
 
   return (
-    <div className="w-[600px]">
+    <div className="w-[37.5rem]">
       <ImageUpload value={images} onChange={setImages} multiple maxFiles={9} thumbnailSize="md" />
     </div>
   );

@@ -45,7 +45,7 @@ function DataTableBulkActionBar({
   return (
     <div
       ref={ref}
-      className="mb-4 flex h-12 items-center justify-between rounded-lg bg-brand px-4 text-white"
+      className="mb-4 flex h-12 items-center justify-between rounded-lg bg-brand px-4 text-white dark:bg-primary-700"
     >
       <span className="text-sm font-bold">
         ✓ {selectedCount} item{selectedCount > 1 ? "s" : ""} selected
@@ -57,7 +57,7 @@ function DataTableBulkActionBar({
             size="sm"
             variant="error"
             onClick={onDelete}
-            className="h-8 rounded-md bg-[#DE4545] hover:bg-[#c93c3c]"
+            className="h-8 rounded-md bg-error-500 hover:bg-error-600"
           >
             🗑 Delete
           </Button>
@@ -109,11 +109,13 @@ function DataTablePagination({
 
   return (
     <div ref={ref} className="mt-2 flex flex-col items-center justify-center gap-1">
-      <div className="flex w-full items-center gap-1 text-xs text-[#9499B1]">
+      <div className="flex w-full items-center gap-1 text-xs text-muted dark:text-dark-text-muted">
         <span>전체</span>
-        <span className="font-semibold text-[#555555]">{totalItems.toLocaleString()}</span>
+        <span className="font-semibold text-secondary dark:text-dark-text-secondary">
+          {totalItems.toLocaleString()}
+        </span>
         <span>건</span>
-        <span className="text-[#BBBFCF]">
+        <span className="text-neutral-300">
           ({startItem.toLocaleString()} - {endItem.toLocaleString()})
         </span>
       </div>
@@ -123,7 +125,7 @@ function DataTablePagination({
           size="sm"
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="h-8 w-8 p-0 font-medium text-[#999999]"
+          className="h-8 w-8 p-0 font-medium text-placeholder"
         >
           <ChevronLeft size="sm" />
         </Button>
@@ -146,8 +148,9 @@ function DataTablePagination({
               size="sm"
               onClick={() => onPageChange(pageNum)}
               className={cn(
-                "h-8 w-8 p-0 text-xs font-medium text-[#555555]",
-                isActive && "bg-[#DAE4F4] text-[#0057FF] hover:bg-[#DAE4F4]"
+                "h-8 w-8 p-0 text-xs font-medium text-secondary dark:text-dark-text-secondary",
+                isActive &&
+                  "bg-primary-200 text-brand hover:bg-primary-200 dark:bg-primary-800 dark:text-primary-300"
               )}
             >
               {pageNum}
@@ -159,7 +162,7 @@ function DataTablePagination({
           size="sm"
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="h-8 w-8 p-1 font-medium text-[#999999]"
+          className="h-8 w-8 p-1 font-medium text-placeholder"
         >
           <ChevronRight size="sm" />
         </Button>
@@ -249,12 +252,12 @@ function DataTableComponent<T>({
         }}
       />
 
-      <div className="w-full overflow-auto border-y border-t-2 border-[#BBBFCF]">
+      <div className="w-full overflow-auto border-y border-t-2 border-neutral-300 dark:border-dark-border-default">
         <table className="w-full caption-bottom text-xs">
-          <thead className="bg-[#DFE4EB]/90">
-            <tr className="border-b border-[#BBBFCF]">
+          <thead className="bg-neutral-200/90 dark:bg-dark-bg-tertiary">
+            <tr className="border-b border-neutral-300 dark:border-dark-border-default">
               {selectable && (
-                <th className="h-9 w-12 px-4 border-r border-[#BBBFCF]">
+                <th className="h-9 w-12 px-4 border-r border-neutral-300 dark:border-dark-border-default">
                   <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                 </th>
               )}
@@ -262,7 +265,8 @@ function DataTableComponent<T>({
                 <th
                   key={String(column.key)}
                   className={cn(
-                    "h-9 px-4 text-center text-xs font-bold text-[#9499B1] border-r border-[#BBBFCF] last:border-r-0",
+                    "h-9 px-4 text-center text-xs font-bold text-muted border-r border-neutral-300 last:border-r-0",
+                    "dark:text-dark-text-muted dark:border-dark-border-default",
                     column.sortable && "cursor-pointer select-none",
                     column.className
                   )}
@@ -291,12 +295,13 @@ function DataTableComponent<T>({
                 <tr
                   key={actualIndex}
                   className={cn(
-                    "h-9 border-b border-[#BBBFCF] transition-colors",
-                    selectedRows.has(actualIndex) && "bg-blue-50"
+                    "h-9 border-b border-neutral-300 transition-colors",
+                    "dark:border-dark-border-default",
+                    selectedRows.has(actualIndex) && "bg-blue-50 dark:bg-primary-900/30"
                   )}
                 >
                   {selectable && (
-                    <td className="w-12 px-4 text-center align-middle border-r border-[#BBBFCF]">
+                    <td className="w-12 px-4 text-center align-middle border-r border-neutral-300 dark:border-dark-border-default">
                       <Checkbox
                         checked={selectedRows.has(actualIndex)}
                         onCheckedChange={(checked) =>
@@ -309,7 +314,8 @@ function DataTableComponent<T>({
                     <td
                       key={String(column.key)}
                       className={cn(
-                        "px-4 py-3 text-center align-middle text-xs text-[#333333] border-r border-[#BBBFCF] last:border-r-0",
+                        "px-4 py-3 text-center align-middle text-xs text-secondary border-r border-neutral-300 last:border-r-0",
+                        "dark:text-dark-text-secondary dark:border-dark-border-default",
                         column.className
                       )}
                     >

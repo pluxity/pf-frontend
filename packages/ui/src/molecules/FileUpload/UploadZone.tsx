@@ -91,8 +91,8 @@ function UploadZone({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={cn(
-        "relative flex min-h-[180px] w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed bg-[#F9F9FC] p-6 transition-colors",
-        isDragging ? "border-brand bg-[#F0F4FF]" : "border-[#CCCCD8] hover:border-brand",
+        "relative flex min-h-44 w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed bg-neutral-50 p-6 transition-colors",
+        isDragging ? "border-brand bg-primary-50" : "border-neutral-200 hover:border-brand",
         disabled && "cursor-not-allowed opacity-50",
         className
       )}
@@ -108,11 +108,11 @@ function UploadZone({
         className="hidden"
       />
 
-      <Upload size="xl" className="text-[#808088]" />
+      <Upload size="xl" className="text-muted" />
 
       <div className="text-center">
-        <p className="text-sm font-medium text-[#333340]">{title}</p>
-        <p className="mt-1 text-xs text-[#808088]">{defaultDescription}</p>
+        <p className="text-sm font-medium text-secondary">{title}</p>
+        <p className="mt-1 text-xs text-muted">{defaultDescription}</p>
       </div>
 
       <Button

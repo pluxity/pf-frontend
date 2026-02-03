@@ -52,7 +52,7 @@ export const Horizontal: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <div style={{ width: 300 }}>
+    <div className="w-72">
       <Stepper currentStep={1} orientation="vertical">
         <Stepper.Step title="Account" description="Create your account" />
         <Stepper.Step title="Profile" description="Set up your profile" />
@@ -125,7 +125,7 @@ export const Interactive: Story = {
 
 export const VerticalManySteps: Story = {
   render: () => (
-    <div style={{ width: 350 }}>
+    <div className="w-80">
       <Stepper currentStep={2} orientation="vertical">
         <Stepper.Step title="Registration" description="Create your account" />
         <Stepper.Step title="Verification" description="Verify your email" />

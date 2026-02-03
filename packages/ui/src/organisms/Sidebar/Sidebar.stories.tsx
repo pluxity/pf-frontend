@@ -35,7 +35,7 @@ export const Default: Story = {
       <Sidebar.Header title="Dashboard" />
 
       <Sidebar.Content>
-        <Sidebar.Section label="General">
+        <Sidebar.Section label="General" className="dark:text-dark-text-primary">
           <Sidebar.Item icon={<Home size="sm" />} active>
             Home
           </Sidebar.Item>
@@ -43,13 +43,13 @@ export const Default: Story = {
           <Sidebar.Item icon={<FileText size="sm" />}>Reports</Sidebar.Item>
         </Sidebar.Section>
 
-        <Sidebar.Section label="Management">
+        <Sidebar.Section label="Management" className="dark:text-dark-text-primary">
           <Sidebar.Item icon={<Users size="sm" />}>Users</Sidebar.Item>
           <Sidebar.Item icon={<Bell size="sm" />}>Notifications</Sidebar.Item>
           <Sidebar.Item icon={<Settings size="sm" />}>Settings</Sidebar.Item>
         </Sidebar.Section>
 
-        <Sidebar.Section label="Support">
+        <Sidebar.Section label="Support" className="dark:text-dark-text-primary">
           <Sidebar.Item icon={<Help size="sm" />}>Help Center</Sidebar.Item>
         </Sidebar.Section>
       </Sidebar.Content>

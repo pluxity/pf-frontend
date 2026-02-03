@@ -41,7 +41,7 @@ export const Default: Story = {
 
     return (
       <Listbox value={value} onValueChange={setValue}>
-        <ListboxTrigger className="w-[220px]">
+        <ListboxTrigger className="w-56">
           <ListboxValue placeholder="Choose a language" />
           <ListboxIcon />
         </ListboxTrigger>
@@ -69,7 +69,7 @@ export const WithGroups: Story = {
 
     return (
       <Listbox value={value} onValueChange={setValue}>
-        <ListboxTrigger className="w-[280px]">
+        <ListboxTrigger className="w-72">
           <ListboxValue placeholder="Pick a theme" />
           <ListboxIcon />
         </ListboxTrigger>
@@ -97,7 +97,7 @@ export const WithSeparator: Story = {
 
     return (
       <Listbox value={value} onValueChange={setValue}>
-        <ListboxTrigger className="w-[220px]">
+        <ListboxTrigger className="w-56">
           <ListboxValue placeholder="Select option" />
           <ListboxIcon />
         </ListboxTrigger>
@@ -123,7 +123,7 @@ export const Disabled: Story = {
   render: () => {
     return (
       <Listbox value="" disabled>
-        <ListboxTrigger className="w-[220px]">
+        <ListboxTrigger className="w-56">
           <ListboxValue placeholder="Disabled" />
           <ListboxIcon />
         </ListboxTrigger>
@@ -141,7 +141,7 @@ export const DisabledItem: Story = {
 
     return (
       <Listbox value={value} onValueChange={setValue}>
-        <ListboxTrigger className="w-[220px]">
+        <ListboxTrigger className="w-56">
           <ListboxValue placeholder="Select option" />
           <ListboxIcon />
         </ListboxTrigger>

@@ -26,13 +26,13 @@ function FormContainer({
   return (
     <div
       ref={ref}
-      className={cn("rounded-lg border border-[#E6E6E8] bg-white p-8", className)}
+      className={cn("rounded-lg border border-neutral-100 bg-white p-8", className)}
       {...props}
     >
       {(title || description) && (
         <div className="mb-6">
-          {title && <h2 className="text-2xl font-bold text-[#1A1A26]">{title}</h2>}
-          {description && <p className="mt-2 text-sm text-[#808088]">{description}</p>}
+          {title && <h2 className="text-2xl font-bold text-primary">{title}</h2>}
+          {description && <p className="mt-2 text-sm text-muted">{description}</p>}
         </div>
       )}
       {children}
@@ -50,13 +50,16 @@ function FormSection({ className, title, description, children, ref, ...props }:
   return (
     <div
       ref={ref}
-      className={cn("space-y-4 border-b border-[#E6E6E8] pb-6 last:border-0 last:pb-0", className)}
+      className={cn(
+        "space-y-4 border-b border-neutral-100 pb-6 last:border-0 last:pb-0",
+        className
+      )}
       {...props}
     >
       {(title || description) && (
         <div className="mb-4">
-          {title && <h3 className="text-base font-bold text-[#333340]">{title}</h3>}
-          {description && <p className="mt-1 text-sm text-[#808088]">{description}</p>}
+          {title && <h3 className="text-base font-bold text-secondary">{title}</h3>}
+          {description && <p className="mt-1 text-sm text-muted">{description}</p>}
         </div>
       )}
       {children}
@@ -81,7 +84,7 @@ function FormField({
   error,
   hint,
   horizontal = false,
-  labelWidth = "180px",
+  labelWidth = "11.25rem",
   children,
   ref,
   ...props
@@ -95,7 +98,7 @@ function FormField({
       {label && (
         <label
           className={cn(
-            "text-sm font-bold text-[#333340]",
+            "text-sm font-bold text-secondary",
             horizontal && "flex-shrink-0 pt-2.5",
             horizontal && `w-[${labelWidth}]`
           )}
@@ -107,7 +110,7 @@ function FormField({
       )}
       <div className={cn("flex-1", horizontal && "min-w-0")}>
         {children}
-        {hint && !error && <p className="mt-1 text-xs text-[#808088]">{hint}</p>}
+        {hint && !error && <p className="mt-1 text-xs text-muted">{hint}</p>}
         {error && <p className="mt-1 text-xs text-error-brand">{error}</p>}
       </div>
     </div>
@@ -131,7 +134,7 @@ function FormActions({ className, align = "right", children, ref, ...props }: Fo
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-3 border-t border-[#E6E6E8] pt-6",
+        "flex items-center gap-3 border-t border-neutral-100 pt-6",
         alignClasses[align],
         className
       )}

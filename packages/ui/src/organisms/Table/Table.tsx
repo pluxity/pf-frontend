@@ -7,7 +7,7 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 
 function Table({ className, ref, ...props }: TableProps) {
   return (
-    <div className="w-full overflow-auto border-y border-t-2 border-[#BBBFCF]">
+    <div className="w-full overflow-auto border-y border-t-2 border-neutral-300">
       <table ref={ref} className={cn("w-full caption-bottom text-xs", className)} {...props} />
     </div>
   );
@@ -19,7 +19,7 @@ interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement>
 
 function TableHeader({ className, ref, ...props }: TableHeaderProps) {
   return (
-    <thead ref={ref} className={cn("bg-[#DFE4EB]/90 [&_tr]:border-b", className)} {...props} />
+    <thead ref={ref} className={cn("bg-neutral-200/90 [&_tr]:border-b", className)} {...props} />
   );
 }
 
@@ -40,7 +40,7 @@ function TableFooter({ className, ref, ...props }: TableFooterProps) {
     <tfoot
       ref={ref}
       className={cn(
-        "border-t border-[#BBBFCF] text-xs font-bold [&>tr]:last:border-b-0",
+        "border-t border-neutral-300 text-xs font-bold [&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -57,7 +57,7 @@ function TableRow({ className, ref, ...props }: TableRowProps) {
     <tr
       ref={ref}
       className={cn(
-        "h-9 border-b border-[#BBBFCF] transition-colors data-[state=selected]:bg-blue-50",
+        "h-9 border-b border-neutral-300 transition-colors data-[state=selected]:bg-blue-50",
         className
       )}
       {...props}
@@ -74,7 +74,7 @@ function TableHead({ className, ref, ...props }: TableHeadProps) {
     <th
       ref={ref}
       className={cn(
-        "h-9 px-4 text-center align-middle text-xs font-bold text-[#9499B1] border-r border-[#BBBFCF] last:border-r-0 [&:has([role=checkbox])]:pr-0",
+        "h-9 px-4 text-center align-middle text-xs font-bold text-muted border-r border-neutral-300 last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -91,7 +91,7 @@ function TableCell({ className, ref, ...props }: TableCellProps) {
     <td
       ref={ref}
       className={cn(
-        "px-4 py-3 align-middle text-center text-xs text-[#333333] border-r border-[#BBBFCF] last:border-r-0 [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3 align-middle text-center text-xs text-secondary border-r border-neutral-300 last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -104,7 +104,7 @@ interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement
 }
 
 function TableCaption({ className, ref, ...props }: TableCaptionProps) {
-  return <caption ref={ref} className={cn("mt-4 text-xs text-[#333333]", className)} {...props} />;
+  return <caption ref={ref} className={cn("mt-4 text-xs text-secondary", className)} {...props} />;
 }
 
 interface TableStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {

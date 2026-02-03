@@ -80,8 +80,8 @@ export const WithIllustration: Story = {
   args: {
     variant: "404",
     illustration: (
-      <div className="flex h-32 w-32 items-center justify-center rounded-full bg-[#FFF3E6] mx-auto">
-        <AlertTriangle size={64} className="text-[#FF9500]" />
+      <div className="flex h-32 w-32 items-center justify-center rounded-full bg-warning-50 mx-auto">
+        <AlertTriangle size={64} className="text-warning-brand" />
       </div>
     ),
     primaryAction: {

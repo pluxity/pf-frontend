@@ -109,7 +109,7 @@ export const Default: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -123,7 +123,7 @@ export const WithDefaultExpanded: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -135,7 +135,7 @@ export const WithSelection: Story = {
     const [selectedId, setSelectedId] = useState<string | undefined>();
 
     return (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <TreeView
           data={sampleData}
           defaultExpandedIds={["1"]}
@@ -193,7 +193,7 @@ export const WithCustomIcons: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -208,7 +208,7 @@ export const WithoutIcons: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -258,7 +258,7 @@ export const FileExplorer: Story = {
     const [selectedId, setSelectedId] = useState<string | undefined>();
 
     return (
-      <div className="w-[300px] rounded-lg border border-gray-200 bg-white p-2">
+      <div className="w-72 rounded-lg border border-gray-200 bg-white p-2">
         <div className="mb-2 border-b border-gray-100 pb-2">
           <span className="text-xs font-medium text-gray-500">EXPLORER</span>
         </div>
@@ -300,7 +300,7 @@ export const DisabledNodes: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -312,7 +312,7 @@ export const WithCheckbox: Story = {
     const [checkedIds, setCheckedIds] = useState<string[]>([]);
 
     return (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <TreeView
           data={sampleData}
           defaultExpandedIds={["1", "1-1", "2"]}
@@ -338,7 +338,7 @@ export const CheckboxWithDefaultChecked: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 300 }}>
+      <div className="w-72">
         <Story />
       </div>
     ),
@@ -388,7 +388,7 @@ export const FixedHeightWithCheckbox: Story = {
     ];
 
     return (
-      <div style={{ width: 320 }}>
+      <div className="w-80">
         <TreeView
           data={largeData}
           height={250}
@@ -417,9 +417,7 @@ export const WithRenderProp: Story = {
         render: (
           <div className="flex items-center justify-between w-full">
             <span>Documents</span>
-            <Badge variant="secondary" size="sm">
-              23
-            </Badge>
+            <Badge variant="default">23</Badge>
           </div>
         ),
         children: [
@@ -429,9 +427,7 @@ export const WithRenderProp: Story = {
             render: (
               <div className="flex items-center gap-2">
                 <span>Work</span>
-                <Badge variant="primary" size="sm">
-                  New
-                </Badge>
+                <Badge variant="primary">New</Badge>
               </div>
             ),
             children: [{ id: "1-1-1", label: "Reports" }],
@@ -454,9 +450,7 @@ export const WithRenderProp: Story = {
         render: (
           <div className="flex items-center justify-between w-full">
             <span className="font-semibold">Downloads</span>
-            <Badge variant="success" size="sm">
-              Active
-            </Badge>
+            <Badge variant="success">Active</Badge>
           </div>
         ),
       },
@@ -465,7 +459,7 @@ export const WithRenderProp: Story = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 350 }}>
+      <div className="w-80">
         <Story />
       </div>
     ),
@@ -483,9 +477,7 @@ export const WithBadgesAndStatus: Story = {
         render: (
           <div className="flex items-center gap-2">
             <span>Servers</span>
-            <Badge variant="secondary" size="sm">
-              3
-            </Badge>
+            <Badge variant="default">3</Badge>
           </div>
         ),
         children: [
@@ -527,16 +519,14 @@ export const WithBadgesAndStatus: Story = {
         render: (
           <div className="flex items-center justify-between w-full">
             <span>Tasks</span>
-            <Badge variant="warning" size="sm">
-              5 pending
-            </Badge>
+            <Badge variant="warning">5 pending</Badge>
           </div>
         ),
       },
     ];
 
     return (
-      <div style={{ width: 350 }}>
+      <div className="w-80">
         <TreeView
           data={dataWithStatus}
           defaultExpandedIds={["servers"]}
@@ -593,7 +583,7 @@ export const WithSearchHighlight: Story = {
     );
 
     return (
-      <div style={{ width: 350 }}>
+      <div className="w-80">
         <div className="mb-3">
           <input
             type="text"

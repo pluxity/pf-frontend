@@ -53,8 +53,8 @@ function FileItem({
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-3 rounded-lg border bg-[#F9F9FC] p-3",
-        isError ? "border-error-brand bg-[#FEF2F2]" : "border-[#E5E5EA]",
+        "flex items-center gap-3 rounded-lg border bg-neutral-50 p-3",
+        isError ? "border-error-brand bg-red-50" : "border-neutral-100",
         className
       )}
       {...props}
@@ -62,14 +62,14 @@ function FileItem({
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white">
         <FileIconComponent
           type={file.type}
-          className={isError ? "text-error-brand" : "text-[#808088]"}
+          className={isError ? "text-error-brand" : "text-muted"}
         />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-[#333340]">{file.name}</p>
+        <p className="truncate text-sm font-medium text-secondary">{file.name}</p>
         <div className="flex items-center gap-2">
-          <span className={cn("text-xs", isError ? "text-error-brand" : "text-[#808088]")}>
+          <span className={cn("text-xs", isError ? "text-error-brand" : "text-muted")}>
             {file.error || formatFileSize(file.size)}
           </span>
           {isUploading && file.progress !== undefined && (
@@ -78,7 +78,7 @@ function FileItem({
         </div>
 
         {showProgress && isUploading && file.progress !== undefined && (
-          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-[#E5E5EA]">
+          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-neutral-100">
             <div
               className="h-full bg-brand transition-all duration-300"
               style={{ width: `${file.progress}%` }}
@@ -95,7 +95,7 @@ function FileItem({
           variant="ghost"
           size="sm"
           onClick={() => onRemove(file.id)}
-          className="h-8 w-8 flex-shrink-0 p-0 text-[#808088] hover:bg-[#E5E5EA] hover:text-error-brand"
+          className="h-8 w-8 flex-shrink-0 p-0 text-muted hover:bg-neutral-100 hover:text-error-brand"
         >
           <X size="sm" />
         </Button>

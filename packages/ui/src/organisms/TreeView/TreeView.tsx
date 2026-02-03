@@ -95,9 +95,9 @@ const TreeNodeItem = ({
     if (!showIcons || defaultIcon === "none") return null;
 
     if (hasChildren || defaultIcon === "folder") {
-      return <Folder size="sm" className="text-[#808088]" />;
+      return <Folder size="sm" className="text-muted" />;
     }
-    return <File size="sm" className="text-[#808088]" />;
+    return <File size="sm" className="text-muted" />;
   };
 
   return (
@@ -121,7 +121,7 @@ const TreeNodeItem = ({
         }}
         className={cn(
           "flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-sm transition-colors",
-          isSelected ? "bg-[#EBF2FF] text-brand" : "text-[#333340] hover:bg-[#F5F5F5]",
+          isSelected ? "bg-primary-50 text-brand" : "text-secondary hover:bg-gray-50",
           node.disabled && "cursor-not-allowed opacity-50"
         )}
         style={{ paddingLeft: `${level * indentSize + 8}px` }}
@@ -137,9 +137,9 @@ const TreeNodeItem = ({
         >
           {hasChildren &&
             (isExpanded ? (
-              <ChevronDown size="sm" className="text-[#808088]" />
+              <ChevronDown size="sm" className="text-muted" />
             ) : (
-              <ChevronRight size="sm" className="text-[#808088]" />
+              <ChevronRight size="sm" className="text-muted" />
             ))}
         </button>
 
@@ -153,7 +153,7 @@ const TreeNodeItem = ({
                 ? "border-brand bg-brand text-white"
                 : checkState === "indeterminate"
                   ? "border-brand bg-brand text-white"
-                  : "border-[#D9D9D9] bg-white"
+                  : "border-border-default bg-white"
             )}
             tabIndex={-1}
           >
@@ -311,7 +311,7 @@ function TreeView({
     <div
       ref={ref}
       role="tree"
-      className={cn("w-full overflow-auto rounded-md border border-[#D9D9D9] p-2", className)}
+      className={cn("w-full overflow-auto rounded-md border border-border-default p-2", className)}
       style={{ height, ...style }}
       {...props}
     >

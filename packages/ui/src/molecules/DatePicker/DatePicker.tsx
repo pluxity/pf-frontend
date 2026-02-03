@@ -113,16 +113,16 @@ function DatePicker({
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className="cursor-pointer pr-10"
         />
-        <Calendar size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#808088]" />
+        <Calendar size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted" />
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-1 w-[280px] rounded-lg border border-[#E6E6E8] bg-white p-4 shadow-[0_4px_12px_rgba(0,0,0,0.10)]">
+        <div className="absolute left-0 top-full z-50 mt-1 w-72 rounded-lg border border-neutral-100 bg-white p-4 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]">
           <div className="mb-4 flex items-center justify-between">
             <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="h-8 w-8 p-0">
               <ChevronLeft size="sm" />
             </Button>
-            <span className="text-sm font-bold text-[#333340]">
+            <span className="text-sm font-bold text-secondary">
               {MONTHS[viewDate.getMonth()]} {viewDate.getFullYear()}
             </span>
             <Button variant="ghost" size="sm" onClick={handleNextMonth} className="h-8 w-8 p-0">
@@ -134,7 +134,7 @@ function DatePicker({
             {DAYS.map((day) => (
               <div
                 key={day}
-                className="flex h-8 items-center justify-center text-xs font-medium text-[#808088]"
+                className="flex h-8 items-center justify-center text-xs font-medium text-muted"
               >
                 {day}
               </div>
@@ -155,7 +155,7 @@ function DatePicker({
                         ? "bg-brand font-bold text-white"
                         : isToday(date)
                           ? "border border-brand text-brand"
-                          : "text-[#333340] hover:bg-[#F5F5F7]",
+                          : "text-secondary hover:bg-neutral-50",
                       isDateDisabled(date) && "cursor-not-allowed opacity-50"
                     )}
                   >

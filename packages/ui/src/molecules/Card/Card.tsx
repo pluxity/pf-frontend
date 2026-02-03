@@ -17,7 +17,10 @@ function Card({ className, ref, ...props }: CardPropsWithRef) {
   return (
     <div
       ref={ref}
-      className={cn("rounded-xl border border-border-light bg-white shadow-card", className)}
+      className={cn(
+        "rounded-xl border border-border-light bg-white shadow-card dark:border-dark-border-light dark:bg-dark-bg-card",
+        className
+      )}
       {...props}
     />
   );
@@ -40,7 +43,7 @@ function CardTitle({ className, ref, ...props }: CardTitlePropsWithRef) {
     <h3
       ref={ref}
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-text-primary",
+        "text-lg font-semibold leading-none tracking-tight text-text-primary dark:text-dark-text-primary",
         className
       )}
       {...props}
@@ -53,7 +56,13 @@ interface CardDescriptionPropsWithRef extends CardDescriptionProps {
 }
 
 function CardDescription({ className, ref, ...props }: CardDescriptionPropsWithRef) {
-  return <p ref={ref} className={cn("text-sm text-text-muted", className)} {...props} />;
+  return (
+    <p
+      ref={ref}
+      className={cn("text-sm text-text-muted dark:text-dark-text-muted", className)}
+      {...props}
+    />
+  );
 }
 
 interface CardContentPropsWithRef extends CardContentProps {

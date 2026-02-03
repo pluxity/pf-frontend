@@ -13,21 +13,21 @@ export interface ChipProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles = {
-  default: "bg-[#F2F2F5] text-[#4D4D59]",
+  default: "bg-neutral-50 text-secondary",
   primary: "bg-brand text-white",
-  success: "bg-[#3AB58F] text-white",
-  warning: "bg-[#F5A623] text-white",
-  error: "bg-[#DE4545] text-white",
+  success: "bg-success-400 text-white",
+  warning: "bg-warning-400 text-white",
+  error: "bg-error-500 text-white",
 };
 
 const sizeStyles = {
-  sm: "h-6 px-2 text-[10px] gap-1",
+  sm: "h-6 px-2 text-xs gap-1",
   md: "h-8 px-3 text-xs gap-1.5",
   lg: "h-9 px-4 text-sm gap-2",
 };
 
 const removeButtonStyles = {
-  default: "hover:bg-[#E0E0E5] text-[#4D4D59]",
+  default: "hover:bg-neutral-200 text-secondary",
   primary: "hover:bg-white/20 text-white",
   success: "hover:bg-white/20 text-white",
   warning: "hover:bg-white/20 text-white",

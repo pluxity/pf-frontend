@@ -12,7 +12,7 @@ const meta = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="w-[600px]">
+      <div className="w-[37.5rem]">
         <Story />
       </div>
     ),
@@ -162,15 +162,13 @@ export const WithCustomContent: Story = {
           <div className="rounded-lg border border-warning-brand/20 bg-warning-brand/10 p-3">
             <div className="flex items-start justify-between gap-2">
               <h4 className="text-sm font-bold text-warning-brand">Warning</h4>
-              <span className="flex-shrink-0 text-xs text-[#808088]">14:15</span>
+              <span className="flex-shrink-0 text-xs text-gray-500">14:15</span>
             </div>
-            <p className="mt-1 text-sm text-[#666673]">
+            <p className="mt-1 text-sm text-gray-600">
               Database migration required before continuing
             </p>
             <div className="mt-2 flex gap-2">
-              <Badge variant="warning" size="sm">
-                Action Required
-              </Badge>
+              <Badge variant="warning">Action Required</Badge>
             </div>
           </div>
         </div>

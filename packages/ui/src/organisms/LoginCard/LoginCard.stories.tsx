@@ -77,7 +77,7 @@ export const WithCustomLinks: Story = {
 
 export const FullExample: Story = {
   render: () => (
-    <div className="min-h-[600px] bg-gray-100 flex items-center justify-center p-8">
+    <div className="min-h-[37.5rem] bg-gray-100 flex items-center justify-center p-8">
       <LoginCard
         logo={
           <div className="flex items-center gap-2">
