@@ -207,15 +207,7 @@ export function KeyManagementPage() {
         const isNewItem = selectedItem.id < 0;
         const isEmpty = !formData.title.trim();
 
-        if (isEmpty && !isNewItem) {
-          await remove(selectedItem.id);
-          toast.success("항목이 삭제되었습니다.");
-          await mutate();
-          handleCloseModal();
-          return;
-        }
-
-        if (isEmpty && isNewItem) {
+        if (isEmpty) {
           toast.error("제목을 입력해주세요.");
           return;
         }

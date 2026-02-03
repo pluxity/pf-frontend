@@ -8,6 +8,16 @@ export interface GridTemplate {
   itemsPerPage: number;
 }
 
+/** 1+5 레이아웃의 GridLayout 셀 정의 */
+export const GRID_TEMPLATE_1_PLUS_5_CELLS = [
+  { id: "cell-1", colStart: 1, colSpan: 2, rowStart: 1, rowSpan: 2 },
+  { id: "cell-2", colStart: 3, colSpan: 1, rowStart: 1, rowSpan: 1 },
+  { id: "cell-3", colStart: 3, colSpan: 1, rowStart: 2, rowSpan: 1 },
+  { id: "cell-4", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 },
+  { id: "cell-5", colStart: 2, colSpan: 1, rowStart: 3, rowSpan: 1 },
+  { id: "cell-6", colStart: 3, colSpan: 1, rowStart: 3, rowSpan: 1 },
+];
+
 export const GRID_TEMPLATES: Record<TemplateId, GridTemplate> = {
   "1x1": {
     id: "1x1",

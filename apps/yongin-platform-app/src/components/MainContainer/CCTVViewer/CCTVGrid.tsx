@@ -1,5 +1,6 @@
 import { GridLayout, Widget } from "@pf-dev/ui";
 import { CCTVCard } from "./CCTVCard";
+import { GRID_TEMPLATE_1_PLUS_5_CELLS } from "./types";
 import type { GridTemplate } from "./types";
 import type { CCTVPath } from "@/services/types";
 
@@ -21,14 +22,7 @@ export function CCTVGrid({ template, cctvs, getStreamUrl, onCardClick }: CCTVGri
       name: "1+5",
       columns: 3,
       rows: 3,
-      cells: [
-        { id: "cell-1", colStart: 1, colSpan: 2, rowStart: 1, rowSpan: 2 },
-        { id: "cell-2", colStart: 3, colSpan: 1, rowStart: 1, rowSpan: 1 },
-        { id: "cell-3", colStart: 3, colSpan: 1, rowStart: 2, rowSpan: 1 },
-        { id: "cell-4", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 },
-        { id: "cell-5", colStart: 2, colSpan: 1, rowStart: 3, rowSpan: 1 },
-        { id: "cell-6", colStart: 3, colSpan: 1, rowStart: 3, rowSpan: 1 },
-      ],
+      cells: GRID_TEMPLATE_1_PLUS_5_CELLS,
     };
 
     return (
