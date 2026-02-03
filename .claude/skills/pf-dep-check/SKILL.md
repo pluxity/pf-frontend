@@ -58,6 +58,7 @@ catalog:
 ```
 
 **주의사항:**
+
 - React 19는 forwardRef 불필요
 - 새 Hooks (use, useOptimistic 등) 사용 가능
 - React Compiler 호환성 확인
@@ -71,6 +72,7 @@ catalog:
 ```
 
 **주의사항:**
+
 - vite.config.ts 변경사항 확인
 - 플러그인 호환성 확인
 
@@ -82,6 +84,7 @@ catalog:
 ```
 
 **주의사항:**
+
 - tsconfig.json 새 옵션 확인
 - 타입 에러 발생 가능성
 
@@ -93,6 +96,7 @@ catalog:
 ```
 
 **주의사항:**
+
 - v4는 설정 방식 변경됨
 - postcss 설정 확인
 
@@ -143,13 +147,13 @@ pnpm dev
 # pnpm-workspace.yaml
 catalog:
   # ^ (caret) - minor 업데이트 허용 (권장)
-  react: ^19.2.0      # 19.2.0 ~ 19.x.x
+  react: ^19.2.0 # 19.2.0 ~ 19.x.x
 
   # ~ (tilde) - patch만 허용 (안정성 중시)
-  cesium: ~1.120.0    # 1.120.0 ~ 1.120.x
+  cesium: ~1.120.0 # 1.120.0 ~ 1.120.x
 
   # 정확한 버전 (외부 라이브러리)
-  three: 0.170.0      # 정확히 0.170.0
+  three: 0.170.0 # 정확히 0.170.0
 ```
 
 ---

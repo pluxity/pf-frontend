@@ -69,10 +69,9 @@ describe("useCounter", () => {
   // 3. props 변경 테스트
   describe("props 변경", () => {
     it("initialValue 변경 시 reset하면 새 값으로", () => {
-      const { result, rerender } = renderHook(
-        ({ initial }) => useCounter(initial),
-        { initialProps: { initial: 0 } }
-      );
+      const { result, rerender } = renderHook(({ initial }) => useCounter(initial), {
+        initialProps: { initial: 0 },
+      });
 
       rerender({ initial: 100 });
 
@@ -174,9 +173,7 @@ import { ReactNode } from "react";
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <ThemeProvider defaultTheme="light">
-    <AuthProvider>
-      {children}
-    </AuthProvider>
+    <AuthProvider>{children}</AuthProvider>
   </ThemeProvider>
 );
 

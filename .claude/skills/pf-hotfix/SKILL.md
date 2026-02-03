@@ -31,6 +31,7 @@ $ARGUMENTS 긴급 버그를 빠르게 수정합니다.
 ## 1단계: 버그 재현 & 원인 파악
 
 ### 정보 수집
+
 ```
 - 어떤 페이지/기능에서 발생?
 - 재현 단계?
@@ -71,6 +72,7 @@ git checkout -b fix/456-login-crash
 ## 3단계: 최소한의 수정
 
 ### 원칙
+
 - **오직 버그만 수정** - 리팩토링 금지
 - **영향 범위 최소화** - 관련 파일만 수정
 - **테스트 가능한 수정** - 수정 후 바로 확인 가능
@@ -88,7 +90,7 @@ git checkout -b fix/456-login-crash
 
 // Before (버그)
 const user = users[0];
-console.log(user.name);  // users가 빈 배열이면 에러
+console.log(user.name); // users가 빈 배열이면 에러
 
 // After (수정)
 const user = users[0];
@@ -118,6 +120,7 @@ pnpm --filter 앱이름 dev
 ```
 
 ### 체크리스트
+
 - [ ] 버그가 수정되었는가?
 - [ ] 다른 기능이 깨지지 않았는가?
 - [ ] 빌드가 성공하는가?

@@ -121,9 +121,7 @@ describe("useAuthStore (persist)", () => {
 
     expect(localStorageMock.setItem).toHaveBeenCalled();
 
-    const savedData = JSON.parse(
-      localStorageMock.setItem.mock.calls[0][1]
-    );
+    const savedData = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
     expect(savedData.state.user).toEqual(mockUser);
   });
 
@@ -134,9 +132,7 @@ describe("useAuthStore (persist)", () => {
       tempData: "should not persist",
     });
 
-    const savedData = JSON.parse(
-      localStorageMock.setItem.mock.calls[0][1]
-    );
+    const savedData = JSON.parse(localStorageMock.setItem.mock.calls[0][1]);
 
     expect(savedData.state.user).toBeDefined();
     expect(savedData.state.tempData).toBeUndefined();
@@ -175,9 +171,7 @@ describe("useUserStore 비동기 액션", () => {
   });
 
   it("fetchUsers가 실패하면 error를 설정한다", async () => {
-    vi.mocked(userService.getUsers).mockRejectedValue(
-      new Error("Network error")
-    );
+    vi.mocked(userService.getUsers).mockRejectedValue(new Error("Network error"));
 
     await useUserStore.getState().fetchUsers();
 
@@ -219,10 +213,7 @@ describe("스토어 구독", () => {
   it("selector로 특정 값만 구독한다", () => {
     const listener = vi.fn();
 
-    const unsubscribe = useAuthStore.subscribe(
-      (state) => state.user,
-      listener
-    );
+    const unsubscribe = useAuthStore.subscribe((state) => state.user, listener);
 
     // user 변경 → 호출됨
     useAuthStore.getState().setUser({ id: 1 });

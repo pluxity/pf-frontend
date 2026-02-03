@@ -35,6 +35,7 @@ error TS2322: Type 'string' is not assignable to type 'number'
 ```
 
 **해결:**
+
 1. 해당 파일의 타입 정의 확인
 2. Props 인터페이스와 실제 사용 비교
 3. tsconfig.json의 strict 설정 확인
@@ -46,6 +47,7 @@ error TS2307: Cannot find module '@pf-dev/ui' or its corresponding type declarat
 ```
 
 **해결:**
+
 ```bash
 # 1. 의존성 재설치
 pnpm install
@@ -64,6 +66,7 @@ error TS18048: 'items[0]' is possibly 'undefined'
 ```
 
 **해결:**
+
 ```tsx
 // ❌ 에러
 const first = items[0];
@@ -90,6 +93,7 @@ error: could not find output "dist" in cache
 ```
 
 **해결:**
+
 ```bash
 # 캐시 삭제
 pnpm clean
@@ -105,12 +109,13 @@ rm -rf node_modules/.cache/turbo
 ```
 
 **해결:**
+
 ```json
 // turbo.json
 {
   "tasks": {
     "build": {
-      "dependsOn": ["^build"]  // 의존 패키지 먼저 빌드
+      "dependsOn": ["^build"] // 의존 패키지 먼저 빌드
     }
   }
 }
@@ -123,6 +128,7 @@ Circular dependency detected
 ```
 
 **해결:**
+
 1. `pnpm why 패키지명`으로 의존성 트리 확인
 2. 공통 타입을 별도 패키지로 분리
 3. 인터페이스와 구현 분리
@@ -138,12 +144,13 @@ Uncaught ReferenceError: process is not defined
 ```
 
 **해결:**
+
 ```ts
 // vite.config.ts
 export default defineConfig({
   define: {
-    'process.env': {}
-  }
+    "process.env": {},
+  },
 });
 ```
 
@@ -154,17 +161,18 @@ export default defineConfig({
 ```
 
 **해결:**
+
 ```ts
 // vite.config.ts
 export default defineConfig({
   optimizeDeps: {
-    include: ['cesium']
+    include: ["cesium"],
   },
   build: {
     commonjsOptions: {
-      include: [/cesium/, /node_modules/]
-    }
-  }
+      include: [/cesium/, /node_modules/],
+    },
+  },
 });
 ```
 
@@ -179,6 +187,7 @@ ERR_PNPM_SPEC_NOT_SUPPORTED_BY_ANY_RESOLVER  catalog: is not supported
 ```
 
 **해결:**
+
 ```yaml
 # pnpm-workspace.yaml에 catalog 정의 확인
 catalog:
@@ -192,6 +201,7 @@ WARN  Issues with peer dependencies found
 ```
 
 **해결:**
+
 ```bash
 # .npmrc에 추가
 auto-install-peers=true
@@ -209,6 +219,7 @@ error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-
 ```
 
 **해결 옵션:**
+
 ```bash
 # 1. 린트 무시하고 빌드 (임시)
 pnpm build --no-lint

@@ -1,0 +1,58 @@
+import { Button, User, Logout, Menu } from "@pf-dev/ui/atoms";
+import { useAuthStore, logout } from "@pf-dev/services";
+import { useToastContext } from "@/contexts/ToastContext";
+
+const APP_URL = import.meta.env.DEV
+  ? `${window.location.protocol}//${window.location.hostname}:3000`
+  : "/";
+
+interface HeaderProps {
+  onMenuClick?: () => void;
+  showMenuButton?: boolean;
+}
+
+export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
+  const user = useAuthStore((state) => state.user);
+  const { toast } = useToastContext();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.href = APP_URL;
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("로그아웃에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  return (
+    <header className="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-3 sm:px-4">
+      <div className="flex items-center gap-3">
+        {showMenuButton && (
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={onMenuClick}
+            className="lg:hidden"
+            aria-label="메뉴 열기"
+          >
+            <Menu />
+          </Button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-4">
+        {user && (
+          <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+            <User size="sm" />
+            <span>{user.name || user.username}</span>
+          </div>
+        )}
+        <Button variant="outline" size="sm" onClick={handleLogout}>
+          <Logout size="sm" />
+          <span className="ml-1.5 hidden sm:inline">로그아웃</span>
+        </Button>
+      </div>
+    </header>
+  );
+}

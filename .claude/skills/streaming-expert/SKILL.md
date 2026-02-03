@@ -30,10 +30,10 @@ packages/cctv/src/
 
 ## 프로토콜 비교
 
-| 프로토콜 | 지연시간 | 장점 | 단점 |
-|----------|----------|------|------|
-| **HLS** | 1-3초 | 안정적, 널리 지원 | 지연 있음 |
-| **WHEP** | ~1초 | 초저지연 (WebRTC) | 서버 구성 복잡 |
+| 프로토콜 | 지연시간 | 장점              | 단점           |
+| -------- | -------- | ----------------- | -------------- |
+| **HLS**  | 1-3초    | 안정적, 널리 지원 | 지연 있음      |
+| **WHEP** | ~1초     | 초저지연 (WebRTC) | 서버 구성 복잡 |
 
 ---
 
@@ -58,9 +58,7 @@ function CCTVView({ streamUrl }: { streamUrl: string }) {
     <div>
       <video ref={videoRef} muted playsInline />
       {error && <p className="text-red-500">{error.message}</p>}
-      <button onClick={isPlaying ? pause : play}>
-        {isPlaying ? "일시정지" : "재생"}
-      </button>
+      <button onClick={isPlaying ? pause : play}>{isPlaying ? "일시정지" : "재생"}</button>
     </div>
   );
 }
@@ -153,6 +151,7 @@ function CustomPlayer({ url, protocol }) {
 ### Q: 영상이 안 나와요
 
 **A: 체크리스트**
+
 1. URL 확인 (CORS, 인증)
 2. 네트워크 탭에서 m3u8/segment 요청 확인
 3. 브라우저 콘솔 에러 확인
@@ -164,7 +163,7 @@ useHLSStream({
   url,
   videoRef,
   hlsConfig: {
-    debug: true,  // HLS.js 디버그 로그
+    debug: true, // HLS.js 디버그 로그
   },
 });
 ```
@@ -172,6 +171,7 @@ useHLSStream({
 ### Q: 지연이 너무 커요
 
 **A: HLS 최적화**
+
 ```tsx
 hlsConfig: {
   lowLatencyMode: true,
@@ -182,6 +182,7 @@ hlsConfig: {
 ```
 
 **A: WHEP로 전환**
+
 ```tsx
 // WHEP는 ~1초 지연
 <CCTVPlayer protocol="whep" url={whepUrl} />
@@ -190,6 +191,7 @@ hlsConfig: {
 ### Q: 끊김이 심해요
 
 **A: 버퍼 설정**
+
 ```tsx
 hlsConfig: {
   maxBufferLength: 30,           // 버퍼 증가
@@ -201,16 +203,17 @@ hlsConfig: {
 ### Q: 여러 CCTV를 동시에 보고 싶어요
 
 **A: 그리드 레이아웃**
+
 ```tsx
 function CCTVGrid({ streams }: { streams: StreamInfo[] }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      {streams.map(stream => (
+      {streams.map((stream) => (
         <CCTVPlayer
           key={stream.id}
           url={stream.url}
           protocol={stream.protocol}
-          muted  // 여러 개일 때 음소거 필수
+          muted // 여러 개일 때 음소거 필수
         />
       ))}
     </div>
@@ -234,10 +237,12 @@ VITE_MEDIA_WHEP_URL=https://media.example.com/whep
 ## 서버 요구사항
 
 ### HLS
+
 - Nginx + nginx-rtmp-module
 - 또는 FFmpeg + HLS 출력
 
 ### WHEP
+
 - MediaMTX (권장)
 - 또는 Janus Gateway
 - 또는 Pion WebRTC

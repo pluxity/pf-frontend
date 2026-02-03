@@ -31,12 +31,12 @@ import { ComponentName } from "@pf-dev/ui";
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `"default" \| "secondary"` | `"default"` | 스타일 변형 |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 크기 |
-| `disabled` | `boolean` | `false` | 비활성화 |
-| `onClick` | `() => void` | - | 클릭 핸들러 |
+| Prop       | Type                       | Default     | Description |
+| ---------- | -------------------------- | ----------- | ----------- |
+| `variant`  | `"default" \| "secondary"` | `"default"` | 스타일 변형 |
+| `size`     | `"sm" \| "md" \| "lg"`     | `"md"`      | 크기        |
+| `disabled` | `boolean`                  | `false`     | 비활성화    |
+| `onClick`  | `() => void`               | -           | 클릭 핸들러 |
 
 ## 예제
 
@@ -59,15 +59,15 @@ import { ComponentName } from "@pf-dev/ui";
 
 \`\`\`tsx
 <ComponentName>
-  <Icon className="mr-2" />
-  With Icon
+<Icon className="mr-2" />
+With Icon
 </ComponentName>
 \`\`\`
 
 ## 접근성
 
 - 키보드: Tab으로 포커스, Enter/Space로 활성화
-- ARIA: 적절한 role과 aria-* 속성 자동 적용
+- ARIA: 적절한 role과 aria-\* 속성 자동 적용
 - 포커스: focus-visible 스타일 제공
 
 ## 관련 컴포넌트
@@ -95,16 +95,16 @@ import { Sidebar } from "@pf-dev/ui";
 
 \`\`\`tsx
 <Sidebar defaultCollapsed={false}>
-  <Sidebar.Header title="Dashboard" />
-  <Sidebar.Content>
-    <Sidebar.Section label="메뉴">
-      <Sidebar.Item icon={<HomeIcon />} active>홈</Sidebar.Item>
-      <Sidebar.Item icon={<SettingsIcon />}>설정</Sidebar.Item>
-    </Sidebar.Section>
-  </Sidebar.Content>
-  <Sidebar.Footer>
-    <Sidebar.Item icon={<LogOutIcon />}>로그아웃</Sidebar.Item>
-  </Sidebar.Footer>
+<Sidebar.Header title="Dashboard" />
+<Sidebar.Content>
+<Sidebar.Section label="메뉴">
+<Sidebar.Item icon={<HomeIcon />} active>홈</Sidebar.Item>
+<Sidebar.Item icon={<SettingsIcon />}>설정</Sidebar.Item>
+</Sidebar.Section>
+</Sidebar.Content>
+<Sidebar.Footer>
+<Sidebar.Item icon={<LogOutIcon />}>로그아웃</Sidebar.Item>
+</Sidebar.Footer>
 </Sidebar>
 \`\`\`
 
@@ -112,41 +112,41 @@ import { Sidebar } from "@pf-dev/ui";
 
 ### Sidebar (Root)
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `defaultCollapsed` | `boolean` | `false` | 초기 접힘 상태 |
-| `collapsed` | `boolean` | - | 제어 모드용 접힘 상태 |
-| `onCollapsedChange` | `(collapsed: boolean) => void` | - | 접힘 상태 변경 콜백 |
-| `width` | `number` | `240` | 펼친 상태 너비 |
-| `collapsedWidth` | `number` | `64` | 접힌 상태 너비 |
+| Prop                | Type                           | Default | Description           |
+| ------------------- | ------------------------------ | ------- | --------------------- |
+| `defaultCollapsed`  | `boolean`                      | `false` | 초기 접힘 상태        |
+| `collapsed`         | `boolean`                      | -       | 제어 모드용 접힘 상태 |
+| `onCollapsedChange` | `(collapsed: boolean) => void` | -       | 접힘 상태 변경 콜백   |
+| `width`             | `number`                       | `240`   | 펼친 상태 너비        |
+| `collapsedWidth`    | `number`                       | `64`    | 접힌 상태 너비        |
 
 ### Sidebar.Header
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | - | 헤더 제목 |
-| `logo` | `ReactNode` | - | 로고 이미지 |
+| Prop    | Type        | Default | Description |
+| ------- | ----------- | ------- | ----------- |
+| `title` | `string`    | -       | 헤더 제목   |
+| `logo`  | `ReactNode` | -       | 로고 이미지 |
 
 ### Sidebar.Item
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `icon` | `ReactNode` | - | 아이콘 |
-| `active` | `boolean` | `false` | 활성 상태 |
-| `badge` | `number` | - | 뱃지 숫자 |
-| `onClick` | `() => void` | - | 클릭 핸들러 |
+| Prop      | Type         | Default | Description |
+| --------- | ------------ | ------- | ----------- |
+| `icon`    | `ReactNode`  | -       | 아이콘      |
+| `active`  | `boolean`    | `false` | 활성 상태   |
+| `badge`   | `number`     | -       | 뱃지 숫자   |
+| `onClick` | `() => void` | -       | 클릭 핸들러 |
 
 ### Sidebar.Section
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | - | 섹션 레이블 |
+| Prop          | Type      | Default | Description    |
+| ------------- | --------- | ------- | -------------- |
+| `label`       | `string`  | -       | 섹션 레이블    |
 | `collapsible` | `boolean` | `false` | 접을 수 있는지 |
 
 ### Sidebar.CollapseButton
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Prop       | Type      | Default | Description   |
+| ---------- | --------- | ------- | ------------- |
 | `iconOnly` | `boolean` | `false` | 아이콘만 표시 |
 
 ## Context Hook
@@ -155,13 +155,13 @@ import { Sidebar } from "@pf-dev/ui";
 import { useSidebarContext } from "@pf-dev/ui";
 
 function CustomItem() {
-  const { collapsed, toggleCollapse } = useSidebarContext();
+const { collapsed, toggleCollapse } = useSidebarContext();
 
-  return (
-    <button onClick={toggleCollapse}>
-      {collapsed ? "펼치기" : "접기"}
-    </button>
-  );
+return (
+<button onClick={toggleCollapse}>
+{collapsed ? "펼치기" : "접기"}
+</button>
+);
 }
 \`\`\`
 
@@ -169,16 +169,16 @@ function CustomItem() {
 
 \`\`\`tsx
 function App() {
-  const [collapsed, setCollapsed] = useState(false);
+const [collapsed, setCollapsed] = useState(false);
 
-  return (
-    <Sidebar
+return (
+<Sidebar
       collapsed={collapsed}
       onCollapsedChange={setCollapsed}
     >
-      {/* ... */}
-    </Sidebar>
-  );
+{/_ ... _/}
+</Sidebar>
+);
 }
 \`\`\`
 
@@ -186,9 +186,9 @@ function App() {
 
 \`\`\`tsx
 <Sidebar className="bg-gray-900">
-  <Sidebar.Item className="hover:bg-gray-800">
-    커스텀 스타일
-  </Sidebar.Item>
+<Sidebar.Item className="hover:bg-gray-800">
+커스텀 스타일
+</Sidebar.Item>
 </Sidebar>
 \`\`\`
 ```

@@ -63,7 +63,7 @@ function Controls() {
 
   const handleFlyToSeoul = () => {
     flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(126.9780, 37.5665, 10000),
+      destination: Cesium.Cartesian3.fromDegrees(126.978, 37.5665, 10000),
       duration: 2,
     });
   };
@@ -108,6 +108,7 @@ function FeatureManager() {
 ### Q: 성능이 느려요
 
 **A: 최적화 방법**
+
 1. `requestRenderMode: true` 설정 (필요할 때만 렌더)
 2. 3D 타일셋 LOD 설정
 3. 엔티티 수 제한 (1000개 이상이면 Primitive 사용)
@@ -125,6 +126,7 @@ function FeatureManager() {
 ### Q: 이미지 레이어 안 보여요
 
 **A: 토큰 확인**
+
 ```env
 VITE_ION_CESIUM_ACCESS_TOKEN=your-token
 VITE_VWORLD_API_KEY=your-key
@@ -133,6 +135,7 @@ VITE_VWORLD_API_KEY=your-key
 ### Q: 카메라가 지하로 들어가요
 
 **A: 지형 충돌 설정**
+
 ```tsx
 viewer.scene.globe.depthTestAgainstTerrain = true;
 viewer.scene.screenSpaceCameraController.enableCollisionDetection = true;
@@ -144,7 +147,7 @@ viewer.scene.screenSpaceCameraController.enableCollisionDetection = true;
 import { useMapStore } from "@pf-dev/map";
 
 function ClickHandler() {
-  const viewer = useMapStore(state => state.viewer);
+  const viewer = useMapStore((state) => state.viewer);
 
   useEffect(() => {
     if (!viewer) return;
@@ -169,7 +172,7 @@ function ClickHandler() {
 
 ```tsx
 // 위경도 → Cartesian3
-const position = Cesium.Cartesian3.fromDegrees(126.9780, 37.5665, 100);
+const position = Cesium.Cartesian3.fromDegrees(126.978, 37.5665, 100);
 
 // Cartesian3 → 위경도
 const cartographic = Cesium.Cartographic.fromCartesian(position);
@@ -178,10 +181,7 @@ const lat = Cesium.Math.toDegrees(cartographic.latitude);
 const height = cartographic.height;
 
 // 화면 좌표 → Cartesian3
-const cartesian = viewer.camera.pickEllipsoid(
-  screenPosition,
-  viewer.scene.globe.ellipsoid
-);
+const cartesian = viewer.camera.pickEllipsoid(screenPosition, viewer.scene.globe.ellipsoid);
 ```
 
 ---
@@ -204,7 +204,7 @@ import { Tiles3D } from "@pf-dev/map";
       ],
     },
   }}
-/>
+/>;
 ```
 
 ---

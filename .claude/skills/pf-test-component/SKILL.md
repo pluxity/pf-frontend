@@ -60,7 +60,11 @@ describe("Button", () => {
 
     it("disabled일 때 클릭이 무시된다", () => {
       const handleClick = vi.fn();
-      render(<Button onClick={handleClick} disabled>클릭</Button>);
+      render(
+        <Button onClick={handleClick} disabled>
+          클릭
+        </Button>
+      );
 
       fireEvent.click(screen.getByRole("button"));
 
@@ -127,8 +131,8 @@ describe("buttonVariants", () => {
     const variants = ["default", "secondary", "outline", "ghost"] as const;
     const sizes = ["sm", "md", "lg"] as const;
 
-    variants.forEach(variant => {
-      sizes.forEach(size => {
+    variants.forEach((variant) => {
+      sizes.forEach((size) => {
         expect(() => buttonVariants({ variant, size })).not.toThrow();
       });
     });

@@ -174,9 +174,9 @@ export default [...baseConfig];
 
 \`\`\`json
 {
-  "dependencies": {
-    "@pf-dev/새패키지": "workspace:*"
-  }
+"dependencies": {
+"@pf-dev/새패키지": "workspace:\*"
+}
 }
 \`\`\`
 

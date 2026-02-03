@@ -21,6 +21,7 @@
 ```
 
 예시:
+
 ```
 /pf-test-component Button
 /cesium-expert 마커 클릭 이벤트 어떻게 해?
@@ -43,52 +44,52 @@
 
 ### 🆕 새로 만들 때
 
-| 상황 | 추천 스킬 |
-|------|----------|
-| 새 기능 개발 시작 | `/pf-feature` |
-| 새 컴포넌트 만들기 | `/pf-component` |
-| 새 패키지 추가 | `/pf-new-package` |
-| Storybook 스토리 추가 | `/pf-storybook` |
+| 상황                  | 추천 스킬         |
+| --------------------- | ----------------- |
+| 새 기능 개발 시작     | `/pf-feature`     |
+| 새 컴포넌트 만들기    | `/pf-component`   |
+| 새 패키지 추가        | `/pf-new-package` |
+| Storybook 스토리 추가 | `/pf-storybook`   |
 
 ### 🧪 테스트할 때
 
-| 상황 | 추천 스킬 |
-|------|----------|
+| 상황            | 추천 스킬            |
+| --------------- | -------------------- |
 | 컴포넌트 테스트 | `/pf-test-component` |
-| 훅 테스트 | `/pf-test-hook` |
-| 스토어 테스트 | `/pf-test-store` |
+| 훅 테스트       | `/pf-test-hook`      |
+| 스토어 테스트   | `/pf-test-store`     |
 
 ### 🔧 문제 해결할 때
 
-| 상황 | 추천 스킬 |
-|------|----------|
-| 빌드 에러 | `/pf-build-fix` |
-| 긴급 버그 수정 | `/pf-hotfix` |
-| 성능 문제 | `/pf-perf` |
-| 의존성 문제 | `/pf-dep-check` |
+| 상황           | 추천 스킬       |
+| -------------- | --------------- |
+| 빌드 에러      | `/pf-build-fix` |
+| 긴급 버그 수정 | `/pf-hotfix`    |
+| 성능 문제      | `/pf-perf`      |
+| 의존성 문제    | `/pf-dep-check` |
 
 ### 📝 문서화할 때
 
-| 상황 | 추천 스킬 |
-|------|----------|
+| 상황            | 추천 스킬           |
+| --------------- | ------------------- |
 | 컴포넌트 README | `/pf-doc-component` |
-| 릴리즈 노트 | `/pf-release` |
+| 릴리즈 노트     | `/pf-release`       |
 
 ### 🔍 코드 품질
 
-| 상황 | 추천 스킬 |
-|------|----------|
-| 코드 리뷰 | `/pf-code-review` |
-| 접근성 검사 | `/pf-a11y` |
+| 상황               | 추천 스킬           |
+| ------------------ | ------------------- |
+| 코드 리뷰          | `/pf-code-review`   |
+| 접근성 검사        | `/pf-a11y`          |
 | React 19 패턴 확인 | `/react19-patterns` |
 
 ### 🗺️ 도메인 전문 지식
 
-| 상황 | 추천 스킬 |
-|------|----------|
-| 3D 지도 (Cesium) | `/cesium-expert` |
-| 3D 뷰어 (Three.js) | `/three-expert` |
-| 영상 스트리밍 | `/streaming-expert` |
+| 상황               | 추천 스킬           |
+| ------------------ | ------------------- |
+| 3D 지도 (Cesium)   | `/cesium-expert`    |
+| 3D 뷰어 (Three.js) | `/three-expert`     |
+| 영상 스트리밍      | `/streaming-expert` |
 
 ---
 
@@ -97,6 +98,7 @@
 ### 테스트 관련
 
 #### `/pf-test-component`
+
 UI 컴포넌트 테스트 파일 생성 (Vitest + RTL)
 
 ```
@@ -105,6 +107,7 @@ UI 컴포넌트 테스트 파일 생성 (Vitest + RTL)
 ```
 
 #### `/pf-test-hook`
+
 커스텀 훅 테스트 파일 생성
 
 ```
@@ -113,6 +116,7 @@ UI 컴포넌트 테스트 파일 생성 (Vitest + RTL)
 ```
 
 #### `/pf-test-store`
+
 Zustand 스토어 테스트 파일 생성
 
 ```
@@ -125,6 +129,7 @@ Zustand 스토어 테스트 파일 생성
 ### 개발 워크플로우
 
 #### `/pf-feature`
+
 새 기능 개발 전체 플로우 가이드
 
 ```
@@ -132,6 +137,7 @@ Zustand 스토어 테스트 파일 생성
 ```
 
 #### `/pf-hotfix`
+
 긴급 버그 수정 플로우
 
 ```
@@ -139,6 +145,7 @@ Zustand 스토어 테스트 파일 생성
 ```
 
 #### `/pf-release`
+
 버전 릴리즈 플로우 (changeset, tag, 배포)
 
 ```
@@ -150,6 +157,7 @@ Zustand 스토어 테스트 파일 생성
 ### 코드 품질
 
 #### `/pf-code-review`
+
 React 19 + 프로젝트 컨벤션 기반 코드 리뷰
 
 ```
@@ -158,6 +166,7 @@ React 19 + 프로젝트 컨벤션 기반 코드 리뷰
 ```
 
 #### `/pf-a11y`
+
 접근성 검사 (시맨틱 HTML, 키보드, ARIA 등)
 
 ```
@@ -165,6 +174,7 @@ React 19 + 프로젝트 컨벤션 기반 코드 리뷰
 ```
 
 #### `/pf-perf`
+
 성능 최적화 제안 (번들, 렌더링, API 등)
 
 ```
@@ -176,6 +186,7 @@ React 19 + 프로젝트 컨벤션 기반 코드 리뷰
 ### 모노레포 관리
 
 #### `/pf-build-fix`
+
 Turborepo 빌드 에러 해결
 
 ```
@@ -184,6 +195,7 @@ Turborepo 빌드 에러 해결
 ```
 
 #### `/pf-dep-check`
+
 의존성 검사 및 업데이트 가이드
 
 ```
@@ -192,6 +204,7 @@ Turborepo 빌드 에러 해결
 ```
 
 #### `/pf-new-package`
+
 새 공유 패키지 생성 가이드
 
 ```
@@ -203,6 +216,7 @@ Turborepo 빌드 에러 해결
 ### 문서화
 
 #### `/pf-doc-component`
+
 컴포넌트 README 생성
 
 ```
@@ -211,6 +225,7 @@ Turborepo 빌드 에러 해결
 ```
 
 #### `/pf-storybook`
+
 Storybook 스토리 생성
 
 ```
@@ -223,6 +238,7 @@ Storybook 스토리 생성
 ### 도메인 전문가
 
 #### `/cesium-expert`
+
 CesiumJS 3D 지도 관련 질문/구현
 
 ```
@@ -232,6 +248,7 @@ CesiumJS 3D 지도 관련 질문/구현
 ```
 
 #### `/three-expert`
+
 Three.js/React Three Fiber 관련 질문/구현
 
 ```
@@ -241,6 +258,7 @@ Three.js/React Three Fiber 관련 질문/구현
 ```
 
 #### `/streaming-expert`
+
 HLS/WHEP 영상 스트리밍 관련 질문/구현
 
 ```
@@ -254,6 +272,7 @@ HLS/WHEP 영상 스트리밍 관련 질문/구현
 ### React 19 & 베스트 프랙티스
 
 #### `/react19-patterns`
+
 React 19 최신 패턴 가이드 (forwardRef 제거, 새 Hooks 등)
 
 ```
@@ -262,9 +281,11 @@ React 19 최신 패턴 가이드 (forwardRef 제거, 새 Hooks 등)
 ```
 
 #### `react-best-practices` (Vercel)
+
 React/Next.js 성능 최적화 규칙 40+개 (자동 적용)
 
 #### `web-design-guidelines` (Vercel)
+
 UI 베스트 프랙티스 100+개 (자동 적용)
 
 ---
@@ -307,6 +328,7 @@ UI 베스트 프랙티스 100+개 (자동 적용)
 스킬 파일 위치: `.claude/skills/스킬이름/SKILL.md`
 
 새 스킬 추가 시:
+
 1. `.claude/skills/새스킬/SKILL.md` 생성
 2. YAML 프론트매터 작성 (name, description, allowed-tools)
 3. 마크다운으로 가이드 작성

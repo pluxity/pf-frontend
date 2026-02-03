@@ -54,25 +54,27 @@ git diff --staged
 ### 형식
 
 ```
-타입(스코프): 제목
+#이슈번호 - 타입(스코프): 제목
 
 본문 (선택)
 
 Footer (선택)
 ```
 
+**중요**: 이슈번호는 제일 앞에 `#번호 - ` 형식으로 작성합니다.
+
 ### 타입
 
-| 타입       | 설명      | 예시                                |
-| ---------- | --------- | ----------------------------------- |
-| `feat`     | 새 기능   | feat(ui): Button 컴포넌트 추가      |
-| `fix`      | 버그 수정 | fix(map): 마커 클릭 이벤트 수정     |
-| `docs`     | 문서      | docs: README 업데이트               |
-| `style`    | 포맷팅    | style: 코드 포맷 정리               |
-| `refactor` | 리팩토링  | refactor(core): API 클라이언트 개선 |
-| `perf`     | 성능 개선 | perf(ui): Table 가상화 적용         |
-| `test`     | 테스트    | test(ui): Button 테스트 추가        |
-| `chore`    | 빌드/설정 | chore: 의존성 업데이트              |
+| 타입       | 설명      | 예시                                       |
+| ---------- | --------- | ------------------------------------------ |
+| `feat`     | 새 기능   | #123 - feat(ui): Button 컴포넌트 추가      |
+| `fix`      | 버그 수정 | #456 - fix(map): 마커 클릭 이벤트 수정     |
+| `docs`     | 문서      | #789 - docs: README 업데이트               |
+| `style`    | 포맷팅    | #101 - style: 코드 포맷 정리               |
+| `refactor` | 리팩토링  | #202 - refactor(core): API 클라이언트 개선 |
+| `perf`     | 성능 개선 | #303 - perf(ui): Table 가상화 적용         |
+| `test`     | 테스트    | #404 - test(ui): Button 테스트 추가        |
+| `chore`    | 빌드/설정 | #505 - chore: 의존성 업데이트              |
 
 ### 스코프 (선택)
 
@@ -88,20 +90,20 @@ Footer (선택)
 
 ```bash
 # 단일 커밋
-git commit -m "feat(ui): DatePicker 컴포넌트 추가
+git commit -m "#123 - feat(ui): DatePicker 컴포넌트 추가
 
 - 날짜 선택 기능
 - 범위 선택 기능
 - 한국어 로케일 지원
 
-Closes #123"
+Refs #123"
 
 # 버그 수정
-git commit -m "fix(map): 3D 모델 로딩 실패 수정
+git commit -m "#456 - fix(map): 3D 모델 로딩 실패 수정
 
 nullish 체크 누락으로 인한 크래시 수정
 
-Fixes #456"
+Refs #456"
 ```
 
 ---
@@ -148,7 +150,7 @@ git push
 gh pr create \
   --repo pluxity/pf-frontend \
   --base main \
-  --title "feat(ui): DatePicker 컴포넌트 추가" \
+  --title "#123 - feat(ui): DatePicker 컴포넌트 추가" \
   --body "$(cat <<'EOF'
 ## 개요
 DatePicker 컴포넌트를 @pf-dev/ui 패키지에 추가합니다.
@@ -187,7 +189,7 @@ EOF
 ```bash
 gh pr create \
   --repo pluxity/pf-frontend \
-  --title "feat(스코프): 제목" \
+  --title "#이슈번호 - feat(스코프): 제목" \
   --label "enhancement" \
   --body "$(cat <<'EOF'
 ## 개요
@@ -220,7 +222,7 @@ EOF
 ```bash
 gh pr create \
   --repo pluxity/pf-frontend \
-  --title "fix(스코프): 제목" \
+  --title "#이슈번호 - fix(스코프): 제목" \
   --label "bug" \
   --body "$(cat <<'EOF'
 ## 버그 설명
@@ -252,7 +254,7 @@ EOF
 ```bash
 gh pr create \
   --repo pluxity/pf-frontend \
-  --title "refactor(스코프): 제목" \
+  --title "#이슈번호 - refactor(스코프): 제목" \
   --label "refactor" \
   --body "$(cat <<'EOF'
 ## 개요
@@ -328,7 +330,7 @@ gh pr merge 123 --repo pluxity/pf-frontend --rebase
 /pf-code-review src/components/Button
 
 # 2. 수정 후 PR 생성
-/pf-pr feat(ui): Button 접근성 개선
+/pf-pr #123 - feat(ui): Button 접근성 개선
 ```
 
 ### 기능 개발 후 PR
@@ -338,7 +340,7 @@ gh pr merge 123 --repo pluxity/pf-frontend --rebase
 /pf-feature #123 사용자 프로필
 
 # 2. PR 생성
-/pf-pr feat: 사용자 프로필 페이지 추가
+/pf-pr #123 - feat: 사용자 프로필 페이지 추가
 ```
 
 ### 핫픽스 후 PR
@@ -348,7 +350,7 @@ gh pr merge 123 --repo pluxity/pf-frontend --rebase
 /pf-hotfix #456 로그인 크래시
 
 # 2. PR 생성
-/pf-pr fix: 로그인 페이지 크래시 수정
+/pf-pr #456 - fix: 로그인 페이지 크래시 수정
 ```
 
 ---
