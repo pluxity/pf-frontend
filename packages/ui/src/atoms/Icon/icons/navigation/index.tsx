@@ -16,7 +16,7 @@ export function ChevronLeft({ size = "md", className, ref, ...props }: IconProps
       {...props}
     >
       <path
-        d="M8.4 1.2515L7.126 0L0 7L7.126 14L8.4 12.7485L2.5481 7L8.4 1.2515Z"
+        d="M11.2 1.2515L9.926 0L2.8 7L9.926 14L11.2 12.7485L5.3481 7L11.2 1.2515Z"
         fill="currentColor"
       />
     </svg>
@@ -37,7 +37,7 @@ export function ChevronRight({ size = "md", className, ref, ...props }: IconProp
       {...props}
     >
       <path
-        d="M5.6 1.2515L6.874 0L14 7L6.874 14L5.6 12.7485L11.4519 7L5.6 1.2515Z"
+        d="M2.8 1.2515L4.074 0L11.2 7L4.074 14L2.8 12.7485L8.6519 7L2.8 1.2515Z"
         fill="currentColor"
       />
     </svg>
@@ -58,7 +58,7 @@ export function ChevronUp({ size = "md", className, ref, ...props }: IconProps) 
       {...props}
     >
       <path
-        d="M12.748 11L14 9.7108L7 2.5L0 9.7108L1.251 11L7 5.0784L12.748 11Z"
+        d="M12.748 11.25L14 9.9608L7 2.75L0 9.9608L1.251 11.25L7 5.3284L12.748 11.25Z"
         fill="currentColor"
       />
     </svg>
@@ -79,7 +79,7 @@ export function ChevronDown({ size = "md", className, ref, ...props }: IconProps
       {...props}
     >
       <path
-        d="M1.252 2.5L0 3.7892L7 11L14 3.7892L12.749 2.5L7 8.4216L1.252 2.5Z"
+        d="M1.252 2.75L0 4.0392L7 11.25L14 4.0392L12.749 2.75L7 8.6716L1.252 2.75Z"
         fill="currentColor"
       />
     </svg>
@@ -100,11 +100,11 @@ export function ChevronLeftDouble({ size = "md", className, ref, ...props }: Ico
       {...props}
     >
       <path
-        d="M8.4 1.2515L7.126 0L0 7L7.126 14L8.4 12.7485L2.5481 7L8.4 1.2515Z"
+        d="M11.2 1.2515L9.926 0L2.8 7L9.926 14L11.2 12.7485L5.3481 7L11.2 1.2515Z"
         fill="currentColor"
       />
       <path
-        d="M13.8 1.2515L12.526 0L5.4 7L12.526 14L13.8 12.7485L7.9481 7L13.8 1.2515Z"
+        d="M16.6 1.2515L15.326 0L8.2 7L15.326 14L16.6 12.7485L10.7481 7L16.6 1.2515Z"
         fill="currentColor"
       />
     </svg>
@@ -125,11 +125,11 @@ export function ChevronRightDouble({ size = "md", className, ref, ...props }: Ic
       {...props}
     >
       <path
-        d="M5.6 1.2515L6.874 0L14 7L6.874 14L5.6 12.7485L11.452 7L5.6 1.2515Z"
+        d="M2.8 1.2515L4.074 0L11.2 7L4.074 14L2.8 12.7485L8.652 7L2.8 1.2515Z"
         fill="currentColor"
       />
       <path
-        d="M0.6 1.2515L1.874 0L9 7L1.874 14L0.6 12.7485L6.452 7L0.6 1.2515Z"
+        d="M-2.2 1.2515L-0.926 0L6.2 7L-0.926 14L-2.2 12.7485L3.652 7L-2.2 1.2515Z"
         fill="currentColor"
       />
     </svg>
@@ -174,7 +174,10 @@ export function ChevronLeftSmall({ size = "md", className, ref, ...props }: Icon
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path d="M6 7.2848L5.242 8L1 4L5.242 0L6 0.7152L2.517 4L6 7.2848Z" fill="currentColor" />
+      <path
+        d="M7.5 8.2848L6.742 9L2.5 5L6.742 1L7.5 1.7152L4.017 5L7.5 8.2848Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -192,7 +195,10 @@ export function ChevronRightSmall({ size = "md", className, ref, ...props }: Ico
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path d="M4 7.2848L4.758 8L9 4L4.758 0L4 0.7152L7.483 4L4 7.2848Z" fill="currentColor" />
+      <path
+        d="M2.5 8.2848L3.258 9L7.5 5L3.258 1L2.5 1.7152L5.983 5L2.5 8.2848Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -210,7 +216,10 @@ export function ChevronUpSmall({ size = "md", className, ref, ...props }: IconPr
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path d="M7.285 6L8 5.2416L4 1L0 5.2416L0.715 6L4 2.5167L7.285 6Z" fill="currentColor" />
+      <path
+        d="M8.285 7.5L9 6.7416L5 2.5L1 6.7416L1.715 7.5L5 4.0167L8.285 7.5Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -228,7 +237,10 @@ export function ChevronDownSmall({ size = "md", className, ref, ...props }: Icon
       className={cn("shrink-0", className)}
       {...props}
     >
-      <path d="M7.285 2L8 2.7584L4 7L0 2.7584L0.715 2L4 5.4833L7.285 2Z" fill="currentColor" />
+      <path
+        d="M8.285 2.5L9 3.2584L5 7.5L1 3.2584L1.715 2.5L5 5.9833L8.285 2.5Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
