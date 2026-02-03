@@ -434,7 +434,9 @@ function Sidebar({
     <SidebarContext.Provider value={contextValue}>
       <aside
         className={cn(
-          "flex h-full flex-col border-r border-[#E6E6E8] bg-white transition-all duration-300 overflow-hidden",
+          "flex h-full flex-col border-r border-[#E6E6E8] bg-white overflow-hidden",
+          "motion-safe:transition-[width] motion-safe:duration-300",
+          "motion-reduce:transition-none",
           collapsed ? "w-16" : "w-[280px]",
           className
         )}
