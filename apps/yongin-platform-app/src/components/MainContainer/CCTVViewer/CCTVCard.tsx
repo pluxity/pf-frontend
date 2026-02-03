@@ -15,7 +15,15 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
   return (
     <div
       className="relative bg-gray-900 rounded-lg overflow-hidden cursor-pointer h-full min-h-0 group"
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />
 

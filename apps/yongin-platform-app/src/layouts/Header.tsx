@@ -21,6 +21,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
+            aria-label="관리자 페이지로 이동"
             onClick={() => (window.location.href = ADMIN_URL)}
             className="bg-white rounded-lg w-[2.5rem] h-[2.5rem]"
           >

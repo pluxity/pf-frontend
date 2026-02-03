@@ -1,5 +1,5 @@
 import { Button, Input, Textarea, FormField } from "@pf-dev/ui";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import type { KeyManagementModalProps } from "../types";
 import { uploadFile } from "../../../services/fileService";
 import { useToastContext } from "../../../contexts/ToastContext";
@@ -49,6 +49,47 @@ export function KeyManagementModal({
       }
     };
   }, [previewUrl]);
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last?.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first?.focus();
+          }
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isOpen]
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      dialogRef.current?.focus();
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, handleKeyDown]);
 
   if (!isOpen || !selectedItem) return null;
 
@@ -129,9 +170,15 @@ export function KeyManagementModal({
     <div
       className="fixed inset-0 backdrop-blur-xs flex items-center justify-center z-10"
       onClick={handleClose}
+      role="presentation"
     >
       <div
-        className="bg-white rounded-lg p-8 w-[56rem] max-h-[90vh] overflow-y-auto shadow-lg"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="주요관리사항 편집"
+        tabIndex={-1}
+        className="bg-white rounded-lg p-8 w-[56rem] max-h-[90vh] overflow-y-auto shadow-lg outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="space-y-6">

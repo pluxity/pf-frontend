@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@pf-dev/ui/molecules";
 import { Button, Input, Label } from "@pf-dev/ui/atoms";
 import { useAuthStore, selectUser } from "@pf-dev/services";
-import { getApiClient } from "@pf-dev/api";
+import { changePassword } from "../../services/userService";
 import { useToastContext } from "@/contexts";
 
 const passwordSchema = z
@@ -41,7 +41,10 @@ export function PasswordChangePage() {
   const onSubmit = async (data: PasswordFormData) => {
     setIsLoading(true);
     try {
-      await getApiClient().put(`/users/${user?.id}/password`, {
+      if (!user?.id) {
+        throw new Error("사용자 정보를 찾을 수 없습니다");
+      }
+      await changePassword(user.id, {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
