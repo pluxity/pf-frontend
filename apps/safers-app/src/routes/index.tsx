@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 
-import { DashboardPage, LoginPage, SitePage } from "@/pages";
+import { DashboardPage, GridDashboardPage, LoginPage, SitePage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -16,8 +16,11 @@ export function AppRoutes() {
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* 대시보드 */}
+      {/* 대시보드 - 1안 (Flex 기반) */}
       <Route index element={<DashboardPage />} />
+
+      {/* 대시보드 - 2안 (GridLayout 기반) */}
+      <Route path="grid" element={<GridDashboardPage />} />
 
       {/* 현장 상세 */}
       <Route path="site" element={<SitePage />} />
