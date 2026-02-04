@@ -1,8 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
-// import { ProtectedRouter } from "@pf-dev/services"; // 개발 중 임시 제거
 
-import { RootLayout } from "@/layouts/RootLayout";
 import { DashboardPage, LoginPage, SitePage } from "@/pages";
 
 function NotFoundPage() {
@@ -18,11 +16,11 @@ export function AppRoutes() {
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* Protected routes - 인증 임시 제거 */}
-      <Route element={<RootLayout />}>
-        <Route index element={<DashboardPage />} />
-        <Route path="site" element={<SitePage />} />
-      </Route>
+      {/* 대시보드 */}
+      <Route index element={<DashboardPage />} />
+
+      {/* 현장 상세 */}
+      <Route path="site" element={<SitePage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
