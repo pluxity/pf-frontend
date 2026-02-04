@@ -51,7 +51,7 @@ function PasswordChangeCard({
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text-secondary">{title}</h1>
           <p className="text-sm text-gray-500">{subtitle}</p>
         </div>
 

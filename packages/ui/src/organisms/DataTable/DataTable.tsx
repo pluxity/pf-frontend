@@ -310,20 +310,24 @@ function DataTableComponent<T>({
                       />
                     </td>
                   )}
-                  {columns.map((column) => (
-                    <td
-                      key={String(column.key)}
-                      className={cn(
-                        "px-4 py-3 text-center align-middle text-xs text-secondary border-r border-neutral-300 last:border-r-0",
-                        "dark:text-dark-text-secondary dark:border-dark-border-default",
-                        column.className
-                      )}
-                    >
-                      {column.render
-                        ? column.render(row, actualIndex)
-                        : String(row[column.key as keyof T] ?? "")}
-                    </td>
-                  ))}
+                  {columns.map((column) => {
+                    const key = column.key;
+                    const render = column.render;
+                    const className = column.className;
+
+                    return (
+                      <td
+                        key={String(key)}
+                        className={cn(
+                          "px-4 py-3 text-center align-middle text-xs text-secondary border-r border-neutral-300 last:border-r-0",
+                          "dark:text-dark-text-muted dark:border-dark-border-default",
+                          className
+                        )}
+                      >
+                        {render ? render(row, actualIndex) : String(row[key as keyof T] ?? "")}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}

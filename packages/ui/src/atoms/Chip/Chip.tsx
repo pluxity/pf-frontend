@@ -13,7 +13,7 @@ export interface ChipProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles = {
-  default: "bg-neutral-50 text-secondary",
+  default: "bg-neutral-50 text-secondary dark:text-dark-text-muted",
   primary: "bg-brand text-white",
   success: "bg-success-400 text-white",
   warning: "bg-warning-400 text-white",
