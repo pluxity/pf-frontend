@@ -3,6 +3,17 @@
 
 @import "@pf-dev/ui/globals.css";
 
+/*
+ * 해상도별 반응형 root font-size
+ * - FHD (1920px): 16px
+ * - QHD (2560px): ~21px
+ * - UHD (3840px): 32px
+ * - 0.833vw = 16px at 1920px viewport
+ */
+html {
+  font-size: clamp(14px, 0.833vw, 32px);
+}
+
 body {
   font-family:
     "Pretendard Variable",
