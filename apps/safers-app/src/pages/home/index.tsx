@@ -2,7 +2,6 @@ import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
 
-// 1안: Flex 기반 레이아웃
 export function DashboardPage() {
   return (
     <DashboardLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />}>
@@ -10,6 +9,3 @@ export function DashboardPage() {
     </DashboardLayout>
   );
 }
-
-// 2안: GridLayout 기반 레이아웃
-export { GridDashboardPage } from "./GridDashboardPage";
