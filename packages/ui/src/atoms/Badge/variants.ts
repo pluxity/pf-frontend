@@ -5,13 +5,13 @@ export const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-neutral-50 text-text-secondary dark:bg-gray-800 dark:text-gray-100",
+        default: "bg-neutral-50 text-text-secondary dark:bg-gray-800 dark:text-gray-200",
         primary: "bg-brand text-white dark:bg-primary-600",
         success: "bg-success-brand text-white dark:bg-success-600",
         warning: "bg-warning-brand text-white dark:bg-warning-600",
         error: "bg-error-brand text-white dark:bg-error-600",
         outline:
-          "border border-border-default bg-transparent text-text-secondary dark:border-dark-border-default dark:text-dark-text-secondary",
+          "border border-border-default bg-transparent text-text-secondary dark:border-dark-border-default dark:text-dark-text-muted",
       },
     },
     defaultVariants: {

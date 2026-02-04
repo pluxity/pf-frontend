@@ -8,7 +8,7 @@ export const buttonVariants = cva(
         default:
           "bg-brand text-white hover:bg-brand-hover active:bg-brand-active dark:bg-primary-600 dark:hover:bg-primary-700 dark:active:bg-primary-800",
         secondary:
-          "bg-neutral-50 text-text-secondary hover:bg-gray-100 active:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600",
+          "bg-neutral-50 text-text-secondary hover:bg-gray-100 active:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600",
         outline:
           "border border-border-default bg-white text-brand hover:bg-gray-50 active:bg-gray-100 dark:border-dark-border-default dark:bg-dark-bg-primary dark:text-primary-400 dark:hover:bg-dark-bg-hover dark:active:bg-dark-bg-tertiary",
         ghost:

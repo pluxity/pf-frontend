@@ -76,6 +76,41 @@ Composition Pattern으로 구축된 복잡한 컴포넌트:
 - **Stepper** - 단계별 진행 표시기
 - **Timeline** - 세로 타임라인
 
+## 번들 최적화 (Tree Shaking)
+
+이 패키지는 Tree Shaking을 지원합니다. 사용하는 컴포넌트만 번들에 포함되도록 최적화할 수 있습니다.
+
+### 권장: 카테고리별 Import
+
+카테고리별로 import하면 사용하지 않는 컴포넌트는 자동으로 제외됩니다.
+
+```tsx
+// ✅ 권장: atoms만 가져오기
+import { Button, Input } from "@pf-dev/ui/atoms";
+
+// ✅ 권장: organisms만 가져오기
+import { Sidebar, FloatingMenu } from "@pf-dev/ui/organisms";
+
+// ✅ 권장: molecules만 가져오기
+import { Carousel, Widget } from "@pf-dev/ui/molecules";
+```
+
+### 대안: 루트에서 Import
+
+루트에서 import해도 Tree Shaking이 동작하지만, 카테고리별 import가 더 명확합니다.
+
+```tsx
+// ⚠️ 동작하지만 명확하지 않음
+import { Button, Sidebar, Carousel } from "@pf-dev/ui";
+```
+
+### 예상 번들 사이즈 절감
+
+| Import 방식                                       | 번들 사이즈 절감         |
+| ------------------------------------------------- | ------------------------ |
+| 카테고리별 (`/atoms`, `/molecules`, `/organisms`) | 5-15KB (gzip)            |
+| 전체 (`@pf-dev/ui`)                               | 0KB (모든 컴포넌트 포함) |
+
 ## 사용법
 
 ### Composition Pattern
