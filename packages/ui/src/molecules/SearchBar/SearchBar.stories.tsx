@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     placeholder: "Search...",
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -25,7 +25,7 @@ export const WithValue: Story = {
   args: {
     defaultValue: "Search term",
     placeholder: "Search...",
-    className: "w-[300px]",
+    className: "w-72",
   },
 };
 
@@ -33,7 +33,7 @@ export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState("");
     return (
-      <div className="w-[300px] space-y-2">
+      <div className="w-72 space-y-2">
         <SearchBar
           value={value}
           onChange={(e) => setValue(e.target.value)}

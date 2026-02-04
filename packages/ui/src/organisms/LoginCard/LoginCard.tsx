@@ -68,7 +68,7 @@ function LoginCard({
     <div
       ref={ref}
       className={cn(
-        "w-full max-w-md rounded-2xl border border-[#E6E6E8] bg-white p-8 shadow-[0_8px_24px_rgba(0,0,0,0.10)]",
+        "w-full max-w-md rounded-2xl border border-neutral-100 bg-white p-8 shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.10)]",
         className
       )}
       {...props}
@@ -76,14 +76,14 @@ function LoginCard({
       {logo && <div className="mb-6 flex justify-center">{logo}</div>}
 
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-[#1A1A26]">{title}</h1>
-        {subtitle && <p className="mt-2 text-sm text-[#808088]">{subtitle}</p>}
+        <h1 className="text-2xl font-bold text-primary">{title}</h1>
+        {subtitle && <p className="mt-2 text-sm text-muted">{subtitle}</p>}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="username" className="text-sm font-medium text-[#333340]">
+            <label htmlFor="username" className="text-sm font-medium text-secondary">
               {usernameLabel}
             </label>
             <Input
@@ -97,7 +97,7 @@ function LoginCard({
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-[#333340]">
+            <label htmlFor="password" className="text-sm font-medium text-secondary">
               {passwordLabel}
             </label>
             <Input
@@ -120,7 +120,7 @@ function LoginCard({
                   disabled={loading}
                   defaultChecked={defaultRemember}
                 />
-                <label htmlFor="remember" className="text-sm text-[#666673]">
+                <label htmlFor="remember" className="text-sm text-muted">
                   {rememberMeLabel}
                 </label>
               </div>
@@ -139,7 +139,7 @@ function LoginCard({
       </form>
 
       {signUpHref && (
-        <p className="mt-6 text-center text-sm text-[#666673]">
+        <p className="mt-6 text-center text-sm text-muted">
           {signUpPrompt}{" "}
           <a href={signUpHref} className="font-medium text-brand hover:underline">
             {signUpLabel}

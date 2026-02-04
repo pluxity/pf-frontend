@@ -67,7 +67,7 @@ export const CustomIcon: Story = {
 
 export const SearchNoResults: Story = {
   render: () => (
-    <div className="w-[500px]">
+    <div className="w-[31.25rem]">
       <EmptyState
         variant="no-results"
         title="'디자인 시스템' 검색 결과 없음"

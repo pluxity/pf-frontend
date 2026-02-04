@@ -127,10 +127,10 @@
   --radius-full: 9999px;
 
   /* ===== Shadows ===== */
-  --shadow-soft: 0 2px 8px -2px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 4px 16px -4px rgba(0, 0, 0, 0.15);
-  --shadow-glow: 0 0 24px rgba(13, 89, 242, 0.2);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-soft: 0 0.125rem 0.5rem -0.125rem rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 0.25rem 1rem -0.25rem rgba(0, 0, 0, 0.15);
+  --shadow-glow: 0 0 1.5rem rgba(13, 89, 242, 0.2);
+  --shadow-card: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 
   /* ===== Font Family from Figma ===== */
   --font-sans: "Arial", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -142,6 +142,25 @@
   --animate-spin: spin 1s linear infinite;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-tree-expand: tree-expand 0.15s ease-out;
+
+  /* ===== Dark Mode Colors ===== */
+  /* Background colors for dark mode */
+  --color-dark-bg-primary: #1a1a26;
+  --color-dark-bg-secondary: #24272e;
+  --color-dark-bg-tertiary: #363b45;
+  --color-dark-bg-card: #2a2d35;
+  --color-dark-bg-hover: #3a3d45;
+
+  /* Text colors for dark mode */
+  --color-dark-text-primary: #f5f5f5;
+  --color-dark-text-secondary: #d6d6d6;
+  --color-dark-text-muted: #b8b8b8;
+  --color-dark-text-placeholder: #808080;
+
+  /* Border colors for dark mode */
+  --color-dark-border-default: #4c5361;
+  --color-dark-border-light: #363b45;
+  --color-dark-border-focus: #4f79e3;
 }
 
 @keyframes accordion-down {
@@ -184,7 +203,7 @@
 @keyframes tree-expand {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-0.5rem);
   }
   to {
     opacity: 1;
@@ -242,6 +261,22 @@
     color: var(--color-text-primary);
     background-color: white;
   }
+
+  /* Dark mode base styles */
+  .dark {
+    color-scheme: dark;
+  }
+
+  .dark body {
+    color: var(--color-dark-text-primary);
+    background-color: var(--color-dark-bg-primary);
+  }
+
+  .dark *,
+  .dark *::before,
+  .dark *::after {
+    border-color: var(--color-dark-border-default);
+  }
 }
 
 /* ===== Toast Animation Utilities ===== */
@@ -277,5 +312,76 @@
     animation-duration: 150ms;
     animation-timing-function: ease-in;
     animation-fill-mode: both;
+  }
+
+  /* ===== Dark Mode Utilities ===== */
+  /* Custom dark mode colors */
+  .dark .bg-white {
+    background-color: var(--color-dark-bg-card);
+  }
+  .dark .dark\:bg-dark-bg-primary {
+    background-color: var(--color-dark-bg-primary);
+  }
+  .dark .dark\:bg-dark-bg-secondary {
+    background-color: var(--color-dark-bg-secondary);
+  }
+  .dark .dark\:bg-dark-bg-tertiary {
+    background-color: var(--color-dark-bg-tertiary);
+  }
+  .dark .dark\:bg-dark-bg-card {
+    background-color: var(--color-dark-bg-card);
+  }
+  .dark .dark\:bg-dark-bg-hover {
+    background-color: var(--color-dark-bg-hover);
+  }
+  .dark .dark\:hover\:bg-dark-bg-hover:hover {
+    background-color: var(--color-dark-bg-hover);
+  }
+
+  .dark .dark\:text-dark-text-primary {
+    color: var(--color-dark-text-primary);
+  }
+  .dark .dark\:text-dark-text-secondary {
+    color: var(--color-dark-text-secondary);
+  }
+  .dark .dark\:text-dark-text-muted {
+    color: var(--color-dark-text-muted);
+  }
+  .dark .dark\:text-dark-text-placeholder {
+    color: var(--color-dark-text-placeholder);
+  }
+  .dark .dark\:hover\:text-dark-text-secondary:hover {
+    color: var(--color-dark-text-secondary);
+  }
+  .dark .dark\:hover\:text-dark-text-primary:hover {
+    color: var(--color-dark-text-primary);
+  }
+  .dark .dark\:focus\:text-dark-text-primary:focus {
+    color: var(--color-dark-text-primary);
+  }
+
+  .dark .dark\:border-dark-border-default {
+    border-color: var(--color-dark-border-default);
+  }
+  .dark .dark\:border-dark-border-light {
+    border-color: var(--color-dark-border-light);
+  }
+  .dark .dark\:border-dark-border-focus {
+    border-color: var(--color-dark-border-focus);
+  }
+
+  .dark .dark\:focus\:bg-dark-bg-hover:focus {
+    background-color: var(--color-dark-bg-hover);
+  }
+  .dark .dark\:data-\[state\=open\]\:bg-dark-bg-hover[data-state="open"] {
+    background-color: var(--color-dark-bg-hover);
+  }
+
+  /* Standard Tailwind dark mode utilities (only used ones) */
+  .dark .dark\:bg-gray-700 {
+    background-color: var(--color-gray-700);
+  }
+  .dark .dark\:text-gray-100 {
+    color: var(--color-gray-100);
   }
 }

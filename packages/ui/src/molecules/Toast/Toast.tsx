@@ -37,7 +37,7 @@ function ToastViewport({
     <ToastPrimitives.Viewport
       ref={ref}
       className={cn(
-        "fixed z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:max-w-[420px]",
+        "fixed z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:max-w-md",
         positionClasses[position],
         className
       )}
@@ -69,10 +69,11 @@ function Toast({ className, variant = "default", children, ref, ...props }: Toas
       ref={ref}
       className={cn(
         toastVariants({ variant }),
-        "data-[state=open]:animate-in data-[state=closed]:animate-out",
-        "data-[swipe=end]:animate-out data-[state=closed]:fade-out-80",
-        "data-[state=closed]:slide-out-to-right-full",
-        "data-[state=open]:slide-in-from-bottom-full",
+        "motion-safe:data-[state=open]:animate-in motion-safe:data-[state=closed]:animate-out",
+        "motion-safe:data-[swipe=end]:animate-out motion-safe:data-[state=closed]:fade-out-80",
+        "motion-safe:data-[state=closed]:slide-out-to-right-full",
+        "motion-safe:data-[state=open]:slide-in-from-bottom-full",
+        "motion-reduce:data-[state=open]:fade-in-0 motion-reduce:data-[state=closed]:fade-out-0",
         "data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]",
         "data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none",
         className
@@ -126,7 +127,7 @@ function ToastClose({ className, ref, ...props }: ToastCloseProps) {
       className={cn(
         "absolute right-2 top-2 rounded-md p-1 opacity-70 transition-opacity",
         "hover:opacity-100 hover:bg-black/5",
-        "focus:outline-none focus:ring-2 focus:ring-brand",
+        "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         className
       )}
       toast-close=""
@@ -149,7 +150,7 @@ function ToastAction({ className, ref, ...props }: ToastActionProps) {
         "inline-flex shrink-0 items-center justify-center rounded-md px-3 py-1.5",
         "text-sm font-medium transition-colors",
         "bg-transparent border border-current",
-        "hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-brand",
+        "hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         className
       )}

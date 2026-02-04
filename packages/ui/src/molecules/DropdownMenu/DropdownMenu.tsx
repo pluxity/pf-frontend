@@ -35,6 +35,8 @@ function DropdownMenuSubTrigger({
       className={cn(
         "flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none",
         "focus:bg-gray-50 data-[state=open]:bg-gray-50",
+        "dark:focus:bg-dark-bg-hover dark:data-[state=open]:bg-dark-bg-hover",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         inset && "pl-8",
         className
       )}
@@ -58,6 +60,7 @@ function DropdownMenuSubContent({ className, ref, ...props }: DropdownMenuSubCon
       ref={ref}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-text-primary shadow-lg",
+        "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -89,6 +92,7 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         className={cn(
           "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-text-primary shadow-md",
+          "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -116,6 +120,8 @@ function DropdownMenuItem({ className, inset, ref, ...props }: DropdownMenuItemP
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         inset && "pl-8",
         className
@@ -144,6 +150,8 @@ function DropdownMenuCheckboxItem({
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
@@ -173,6 +181,8 @@ function DropdownMenuRadioItem({ className, children, ref, ...props }: DropdownM
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
         "focus:bg-gray-50 focus:text-text-primary",
+        "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
@@ -201,6 +211,7 @@ function DropdownMenuLabel({ className, inset, ref, ...props }: DropdownMenuLabe
       ref={ref}
       className={cn(
         "px-2 py-1.5 text-sm font-semibold text-text-primary",
+        "dark:text-dark-text-primary",
         inset && "pl-8",
         className
       )}
@@ -219,7 +230,7 @@ function DropdownMenuSeparator({ className, ref, ...props }: DropdownMenuSeparat
   return (
     <DropdownMenuPrimitive.Separator
       ref={ref}
-      className={cn("-mx-1 my-1 h-px bg-border-light", className)}
+      className={cn("-mx-1 my-1 h-px bg-border-light dark:bg-dark-border-light", className)}
       {...props}
     />
   );
@@ -227,7 +238,13 @@ function DropdownMenuSeparator({ className, ref, ...props }: DropdownMenuSeparat
 
 const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   return (
-    <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
+    <span
+      className={cn(
+        "ml-auto text-xs tracking-widest text-text-muted dark:text-dark-text-muted",
+        className
+      )}
+      {...props}
+    />
   );
 };
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut";

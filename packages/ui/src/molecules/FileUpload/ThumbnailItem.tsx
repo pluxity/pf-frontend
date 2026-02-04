@@ -21,9 +21,9 @@ export interface ThumbnailItemProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 const sizeMap = {
-  sm: { container: "w-[80px]", image: "h-[80px]" },
-  md: { container: "w-[120px]", image: "h-[100px]" },
-  lg: { container: "w-[160px]", image: "h-[130px]" },
+  sm: { container: "w-20", image: "h-20" },
+  md: { container: "w-32", image: "h-24" },
+  lg: { container: "w-40", image: "h-32" },
 };
 
 function ThumbnailItem({
@@ -51,8 +51,8 @@ function ThumbnailItem({
     >
       <div
         className={cn(
-          "relative overflow-hidden rounded-lg border bg-[#F9F9FC]",
-          isError ? "border-error-brand" : "border-[#E5E5EA]",
+          "relative overflow-hidden rounded-lg border bg-neutral-50",
+          isError ? "border-error-brand" : "border-neutral-100",
           sizeClasses.image
         )}
       >
@@ -65,7 +65,7 @@ function ThumbnailItem({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <ImageIcon size="lg" className="text-[#C4C4CC]" />
+            <ImageIcon size="lg" className="text-neutral-300" />
           </div>
         )}
 
@@ -85,7 +85,7 @@ function ThumbnailItem({
 
         {isComplete && (
           <div className="absolute bottom-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm">
-            <CheckCircle size="sm" className="text-[#3AB58E]" />
+            <CheckCircle size="sm" className="text-success-400" />
           </div>
         )}
         {isError && (
@@ -98,14 +98,14 @@ function ThumbnailItem({
           <button
             type="button"
             onClick={() => onRemove(item.id)}
-            className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#F24C4C] text-white shadow-sm transition-colors hover:bg-[#D93636]"
+            className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-error-500 text-white shadow-sm transition-colors hover:bg-error-600"
           >
             <X size="xs" />
           </button>
         )}
       </div>
 
-      <p className="mt-1.5 truncate text-xs text-[#808088]" title={item.name}>
+      <p className="mt-1.5 truncate text-xs text-muted" title={item.name}>
         {item.name}
       </p>
 

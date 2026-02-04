@@ -10,8 +10,12 @@ export interface AvatarProps
   ref?: Ref<ComponentRef<typeof AvatarPrimitive.Root>>;
 }
 
-export interface AvatarImageProps extends ComponentPropsWithoutRef<typeof AvatarPrimitive.Image> {
+export interface AvatarImageProps extends Omit<
+  ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>,
+  "alt"
+> {
   ref?: Ref<ComponentRef<typeof AvatarPrimitive.Image>>;
+  alt: string;
 }
 
 export interface AvatarFallbackProps extends ComponentPropsWithoutRef<

@@ -9,4 +9,5 @@ export interface SearchBarProps
   onSearch?: (value: string) => void;
   onClear?: () => void;
   loading?: boolean;
+  ariaLabelClear?: string;
 }

@@ -1,4 +1,4 @@
-import { useId, type Ref } from "react";
+import { useId, cloneElement, isValidElement, type ReactElement, type Ref } from "react";
 import { cn } from "../../utils";
 import type {
   FormFieldProps,
@@ -62,6 +62,10 @@ function FormField({
   const descriptionId = description ? `${id}-description` : undefined;
   const errorId = error ? `${id}-error` : undefined;
 
+  const enhancedChildren = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
+    : children;
+
   return (
     <div ref={ref} className={cn("space-y-2", className)} {...props}>
       {label && (
@@ -70,7 +74,7 @@ function FormField({
         </FormFieldLabel>
       )}
       {description && <FormFieldDescription id={descriptionId}>{description}</FormFieldDescription>}
-      <div>{children}</div>
+      <div>{enhancedChildren}</div>
       {error && <FormFieldError id={errorId}>{error}</FormFieldError>}
     </div>
   );

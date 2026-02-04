@@ -13,6 +13,9 @@ function Checkbox({ className, ref, ...props }: CheckboxProps) {
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[state=checked]:border-brand data-[state=checked]:bg-brand data-[state=checked]:text-white",
         "data-[state=indeterminate]:border-brand data-[state=indeterminate]:bg-brand data-[state=indeterminate]:text-white",
+        "dark:border-dark-border-default dark:bg-dark-bg-secondary",
+        "dark:data-[state=checked]:border-primary-500 dark:data-[state=checked]:bg-primary-600",
+        "dark:data-[state=indeterminate]:border-primary-500 dark:data-[state=indeterminate]:bg-primary-600",
         className
       )}
       {...props}

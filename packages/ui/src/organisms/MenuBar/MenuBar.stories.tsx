@@ -29,7 +29,7 @@ type Story = StoryObj<typeof Menubar>;
 export const Default: Story = {
   name: "기본 메뉴바",
   render: () => (
-    <Menubar className="w-[800px] border-b">
+    <Menubar className="w-[50rem] border-b">
       <MenubarMenu>
         <MenubarTrigger>파일</MenubarTrigger>
         <MenubarContent>
@@ -131,7 +131,7 @@ export const Default: Story = {
 export const WithSubmenu: Story = {
   name: "2단계 서브메뉴",
   render: () => (
-    <Menubar className="w-[400px] border-b">
+    <Menubar className="w-96 border-b">
       <MenubarMenu>
         <MenubarTrigger>파일</MenubarTrigger>
         <MenubarContent>
@@ -155,7 +155,7 @@ export const WithSubmenu: Story = {
 export const WithRadioGroup: Story = {
   name: "라디오 그룹",
   render: () => (
-    <Menubar className="w-[200px] border-b">
+    <Menubar className="w-48 border-b">
       <MenubarMenu>
         <MenubarTrigger>보기</MenubarTrigger>
         <MenubarContent>

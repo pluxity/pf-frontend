@@ -156,7 +156,7 @@ export const Bottom: Story = {
       <SheetTrigger asChild>
         <Button>Open Bottom Sheet</Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[300px]">
+      <SheetContent side="bottom" className="h-72">
         <SheetHeader>
           <SheetTitle>Quick Actions</SheetTitle>
           <SheetDescription>Select an action to perform</SheetDescription>

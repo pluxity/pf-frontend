@@ -11,8 +11,10 @@ interface CreateIconOptions {
 export function createIcon(path: React.ReactNode, options: CreateIconOptions) {
   const { displayName, viewBox = "0 0 24 24", defaultClassName } = options;
 
-  function Icon({ size = "md", className, ref, ...props }: IconProps) {
+  function Icon({ size = "md", className, ref, "aria-label": ariaLabel, ...props }: IconProps) {
     const sizeValue = typeof size === "number" ? size : iconSizes[size];
+
+    const ariaHidden = ariaLabel === undefined ? true : undefined;
 
     return (
       <svg
@@ -23,6 +25,8 @@ export function createIcon(path: React.ReactNode, options: CreateIconOptions) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={cn("shrink-0", defaultClassName, className)}
+        aria-label={ariaLabel}
+        aria-hidden={ariaHidden}
         {...props}
       >
         {path}

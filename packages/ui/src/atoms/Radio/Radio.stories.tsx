@@ -62,13 +62,13 @@ export const Disabled: Story = {
     <RadioGroup defaultValue="option1" disabled>
       <div className="flex items-center gap-2">
         <RadioGroupItem value="option1" id="d-option1" />
-        <label htmlFor="d-option1" className="text-sm text-[#808088]">
+        <label htmlFor="d-option1" className="text-sm text-gray-500">
           비활성화됨 (선택됨)
         </label>
       </div>
       <div className="flex items-center gap-2">
         <RadioGroupItem value="option2" id="d-option2" />
-        <label htmlFor="d-option2" className="text-sm text-[#808088]">
+        <label htmlFor="d-option2" className="text-sm text-gray-500">
           비활성화됨
         </label>
       </div>

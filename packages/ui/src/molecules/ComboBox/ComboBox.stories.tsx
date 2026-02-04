@@ -86,11 +86,11 @@ export const Default: Story = {
 
     return (
       <ComboBox value={value} onValueChange={setValue}>
-        <ComboBoxTrigger className="w-[260px]">
+        <ComboBoxTrigger className="w-64">
           <ComboBoxValue placeholder="Search countries..." />
           <ComboBoxIcon />
         </ComboBoxTrigger>
-        <ComboBoxContent className="w-[260px]">
+        <ComboBoxContent className="w-64">
           <ComboBoxInput placeholder="Type to search..." />
           <ComboBoxList>
             <FilteredList items={countries} />
@@ -153,11 +153,11 @@ export const WithGroups: Story = {
 
     return (
       <ComboBox value={value} onValueChange={setValue}>
-        <ComboBoxTrigger className="w-[300px]">
+        <ComboBoxTrigger className="w-72">
           <ComboBoxValue placeholder="Search teammates..." />
           <ComboBoxIcon />
         </ComboBoxTrigger>
-        <ComboBoxContent className="w-[300px]">
+        <ComboBoxContent className="w-72">
           <ComboBoxInput placeholder="Mention someone..." />
           <ComboBoxList>
             <GroupedList />
@@ -179,11 +179,11 @@ export const Controlled: Story = {
           Selected: <strong>{value ?? "None"}</strong>
         </div>
         <ComboBox value={value} onValueChange={setValue} open={open} onOpenChange={setOpen}>
-          <ComboBoxTrigger className="w-[260px]">
+          <ComboBoxTrigger className="w-64">
             <ComboBoxValue placeholder="Search countries..." />
             <ComboBoxIcon />
           </ComboBoxTrigger>
-          <ComboBoxContent className="w-[260px]">
+          <ComboBoxContent className="w-64">
             <ComboBoxInput />
             <ComboBoxList>
               <FilteredList items={countries} />
@@ -205,11 +205,11 @@ export const Disabled: Story = {
   render: () => {
     return (
       <ComboBox value={null} onValueChange={() => {}} disabled>
-        <ComboBoxTrigger className="w-[260px]">
+        <ComboBoxTrigger className="w-64">
           <ComboBoxValue placeholder="Disabled" />
           <ComboBoxIcon />
         </ComboBoxTrigger>
-        <ComboBoxContent className="w-[260px]">
+        <ComboBoxContent className="w-64">
           <ComboBoxInput />
           <ComboBoxList>
             {countries.map((country) => (
@@ -253,11 +253,11 @@ export const DisabledItems: Story = {
 
     return (
       <ComboBox value={value} onValueChange={setValue}>
-        <ComboBoxTrigger className="w-[260px]">
+        <ComboBoxTrigger className="w-64">
           <ComboBoxValue placeholder="Some items disabled..." />
           <ComboBoxIcon />
         </ComboBoxTrigger>
-        <ComboBoxContent className="w-[260px]">
+        <ComboBoxContent className="w-64">
           <ComboBoxInput />
           <ComboBoxList>
             <ListWithDisabled />
@@ -298,11 +298,11 @@ export const Multiple: Story = {
     return (
       <div className="flex flex-col gap-4">
         <ComboBox value={value} onValueChange={setValue} multiple>
-          <ComboBoxTrigger className="w-[300px]">
+          <ComboBoxTrigger className="w-72">
             <ComboBoxValue placeholder="Select countries..." />
             <ComboBoxIcon />
           </ComboBoxTrigger>
-          <ComboBoxContent className="w-[300px]">
+          <ComboBoxContent className="w-72">
             <ComboBoxInput placeholder="Search countries..." />
             <ComboBoxList>
               <MultipleFilteredList items={countries} />
@@ -368,11 +368,11 @@ export const MultipleWithGroups: Story = {
     return (
       <div className="flex flex-col gap-4">
         <ComboBox value={value} onValueChange={setValue} multiple>
-          <ComboBoxTrigger className="w-[300px]">
+          <ComboBoxTrigger className="w-72">
             <ComboBoxValue placeholder="Select filters..." />
             <ComboBoxIcon />
           </ComboBoxTrigger>
-          <ComboBoxContent className="w-[300px]">
+          <ComboBoxContent className="w-72">
             <ComboBoxInput placeholder="Search options..." />
             <ComboBoxList>
               <ColorSizeList />

@@ -40,7 +40,7 @@ export const Default: Story = {
         <FormField>
           <div className="flex items-center gap-2">
             <Checkbox id="terms" />
-            <label htmlFor="terms" className="text-sm text-[#333340]">
+            <label htmlFor="terms" className="text-sm text-gray-800">
               I agree to the Terms of Service and Privacy Policy
             </label>
           </div>
@@ -78,7 +78,7 @@ export const Horizontal: Story = {
         <FormField label="Notifications" horizontal>
           <div className="flex items-center gap-2 pt-2">
             <Switch />
-            <span className="text-sm text-[#333340]">Receive email notifications</span>
+            <span className="text-sm text-gray-800">Receive email notifications</span>
           </div>
         </FormField>
 

@@ -38,7 +38,8 @@ function TabsTrigger({ className, ref, variant = "underline", ...props }: TabsTr
       ref={ref}
       data-variant={variant}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap transition-all",
+        "inline-flex items-center justify-center whitespace-nowrap",
+        "motion-safe:transition-all motion-reduce:transition-none",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         variant === "underline" && [

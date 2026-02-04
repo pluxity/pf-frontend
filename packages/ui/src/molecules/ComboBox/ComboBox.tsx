@@ -1,5 +1,5 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import { createContext, useCallback, useContext, useMemo, useState, type JSX } from "react";
+import { createContext, useContext, useMemo, useState, type JSX } from "react";
 import { Check, ChevronDownSmall, Search } from "../../atoms/Icon";
 import { cn } from "../../utils";
 import type {
@@ -43,33 +43,28 @@ function ComboBoxRoot<TValue, TMultiple extends boolean = false>({
   const open = controlledOpen ?? uncontrolledOpen;
   const onOpenChange = controlledOnOpenChange ?? setUncontrolledOpen;
 
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      onOpenChange(nextOpen);
-      if (!nextOpen) {
-        setSearch("");
-      }
-    },
-    [onOpenChange]
-  );
-
   const contextValue = useMemo(
     () => ({
       value,
       onValueChange: onValueChange as (value: unknown) => void,
       open,
-      onOpenChange: handleOpenChange,
+      onOpenChange: (nextOpen: boolean) => {
+        onOpenChange(nextOpen);
+        if (!nextOpen) {
+          setSearch("");
+        }
+      },
       search,
       onSearchChange: setSearch,
       disabled,
       multiple,
     }),
-    [value, onValueChange, open, handleOpenChange, search, disabled, multiple]
+    [value, onValueChange, open, onOpenChange, search, disabled, multiple]
   );
 
   return (
     <ComboBoxContext.Provider value={contextValue}>
-      <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+      <PopoverPrimitive.Root open={open} onOpenChange={contextValue.onOpenChange}>
         {children}
       </PopoverPrimitive.Root>
     </ComboBoxContext.Provider>
@@ -85,7 +80,7 @@ function ComboBoxTrigger({ className, children, ref, ...props }: ComboBoxTrigger
       disabled={disabled}
       className={cn(
         "flex h-10 w-full cursor-pointer items-center justify-between rounded-lg border border-gray-300 bg-white px-3 text-sm",
-        "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+        "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "[&>span]:line-clamp-1",
         className

@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Horizontal: Story = {
   render: () => (
-    <div className="w-[300px]">
+    <div className="w-72">
       <div className="space-y-1">
         <h4 className="text-sm font-medium">PF-Dev UI</h4>
         <p className="text-sm text-gray-500">디자인 시스템 컴포넌트</p>

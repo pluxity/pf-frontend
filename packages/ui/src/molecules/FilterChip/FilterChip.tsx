@@ -46,12 +46,12 @@ function FilterChip({
       onClick={handleClick}
       disabled={disabled}
       className={cn(
-        "inline-flex h-9 items-center gap-2 rounded-full px-4 text-[13px] transition-all",
+        "inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm transition-all",
         selected
-          ? "bg-[#2458DB] font-bold text-white"
+          ? "bg-brand font-bold text-white"
           : disabled
-            ? "cursor-not-allowed bg-[#F2F2F5] text-[#B3B3B8]"
-            : "border border-[#D9D9E0] bg-white text-[#4D4D59] hover:border-[#CCCCCC] hover:bg-[#FAFAFA]",
+            ? "cursor-not-allowed bg-neutral-50 text-neutral-300"
+            : "border border-border-default bg-white text-secondary hover:border-neutral-300 hover:bg-neutral-50",
         className
       )}
       {...props}
@@ -60,7 +60,7 @@ function FilterChip({
 
       {category ? (
         <span className="flex items-center gap-1">
-          <span className={cn(selected ? "text-white/70" : "text-[#666673]")}>{category}:</span>
+          <span className={cn(selected ? "text-white/70" : "text-muted")}>{category}:</span>
           <span>{children}</span>
         </span>
       ) : (
