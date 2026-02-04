@@ -12,12 +12,17 @@ export function DashboardLayout({ leftPanel, rightPanel, children }: DashboardLa
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-slate-100">
       {/* Header */}
-      <header className="absolute inset-x-0 top-0 z-50 flex h-[3.75rem] items-center justify-between bg-transparent px-4">
-        <HeaderClock />
-        <div className="w-[30.625rem]">
+      <header className="absolute inset-x-0 top-0 z-50 h-[3.75rem] bg-transparent">
+        {/* 타이틀 - 정중앙 고정 */}
+        <div className="absolute left-1/2 top-0 w-[30.625rem] -translate-x-1/2">
           <HeaderTitle logo="HOBAN" title="SUMMIT" subtitle="통합관제 플랫폼" />
         </div>
-        <HeaderUserInfo />
+
+        {/* 좌우 요소 */}
+        <div className="flex h-full items-center justify-between px-4">
+          <HeaderClock />
+          <HeaderUserInfo />
+        </div>
       </header>
 
       {/* Main */}
