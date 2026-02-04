@@ -14,7 +14,7 @@ const meta: Meta<typeof FloatingMenu> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="flex min-h-400 items-start justify-center bg-gray-100 p-8">
+      <div className="flex min-h-96 items-start justify-center bg-gray-100 p-8">
         <Story />
       </div>
     ),
