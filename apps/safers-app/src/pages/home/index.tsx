@@ -1,0 +1,19 @@
+import { Button } from "@pf-dev/ui";
+
+export function DashboardPage() {
+  return (
+    <div className="container py-10">
+      <div className="max-w-2xl mx-auto text-center space-y-6">
+        <h1 className="text-4xl font-bold tracking-tight">Welcome to safers-app</h1>
+        <p className="text-lg text-muted-foreground">
+          Built with React, TypeScript, Vite, Zustand, and Tailwind CSS
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Button>Get Started</Button>
+          <Button variant="outline">Learn More</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
