@@ -1,4 +1,4 @@
-import { CurveHeader } from "./components/CurveHeader";
+import { HeaderTitle } from "./components/HeaderTitle";
 import { HeaderClock } from "./components/HeaderClock";
 import { HeaderUserInfo } from "./components/HeaderUserInfo";
 
@@ -15,7 +15,7 @@ export function DashboardLayout({ leftPanel, rightPanel, children }: DashboardLa
       <header className="absolute inset-x-0 top-0 z-50 flex h-[3.75rem] items-center justify-between bg-transparent px-4">
         <HeaderClock />
         <div className="w-[30.625rem]">
-          <CurveHeader logo="HOBAN" title="SUMMIT" subtitle="통합관제 플랫폼" />
+          <HeaderTitle logo="HOBAN" title="SUMMIT" subtitle="통합관제 플랫폼" />
         </div>
         <HeaderUserInfo />
       </header>

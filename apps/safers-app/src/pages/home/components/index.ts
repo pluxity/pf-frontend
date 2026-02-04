@@ -1,4 +1,4 @@
-export { CurveHeader } from "./CurveHeader";
+export { HeaderTitle } from "./HeaderTitle";
 export { HeaderClock } from "./HeaderClock";
 export { HeaderUserInfo } from "./HeaderUserInfo";
 export { LeftPanel } from "./LeftPanel";

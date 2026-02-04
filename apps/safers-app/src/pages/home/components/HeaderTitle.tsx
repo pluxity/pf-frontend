@@ -1,16 +1,16 @@
-interface CurveHeaderProps {
+interface HeaderTitleProps {
   logo?: string;
   title?: string;
   subtitle?: string;
   className?: string;
 }
 
-export function CurveHeader({
+export function HeaderTitle({
   logo = "HOBAN",
   title = "SUMMIT",
   subtitle = "통합관제 플랫폼",
   className = "",
-}: CurveHeaderProps) {
+}: HeaderTitleProps) {
   return (
     <div className={`relative w-full ${className}`}>
       {/* SVG 배경 */}
@@ -28,12 +28,12 @@ export function CurveHeader({
           y1="58.5"
           x2="425"
           y2="58.5"
-          stroke="url(#curveHeaderGradient)"
+          stroke="url(#headerTitleGradient)"
           strokeWidth="3"
         />
 
         {/* 흰색 커브 배경 (드롭섀도우 포함) */}
-        <g filter="url(#curveHeaderShadow)">
+        <g filter="url(#headerTitleShadow)">
           <path
             d="M5 0H495L483.763 31.4564C478.076 47.3746 462.998 58 446.094 58H53.9058C37.0023 58 21.9236 47.3746 16.2371 31.4563L5 0Z"
             fill="white"
@@ -43,7 +43,7 @@ export function CurveHeader({
         <defs>
           {/* 드롭 섀도우 필터 */}
           <filter
-            id="curveHeaderShadow"
+            id="headerTitleShadow"
             x="0"
             y="-5"
             width="500"
@@ -71,7 +71,7 @@ export function CurveHeader({
 
           {/* 주황색 그라데이션 (양쪽 페이드) */}
           <linearGradient
-            id="curveHeaderGradient"
+            id="headerTitleGradient"
             x1="75"
             y1="60.5"
             x2="425"
