@@ -1,25 +1,54 @@
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
 import { KoreaMap, type POI } from "./components/KoreaMap";
+import { sitesService, type Site, type SiteStatus } from "@/services";
 
-// 테스트용 POI 데이터 (size: rem 단위 마커 높이)
-const testPOIs: POI[] = [
-  { id: "poi-1", longitude: 126.978, latitude: 37.566, label: "서울", color: "#4D7EFF", size: 2 },
-  { id: "poi-2", longitude: 129.076, latitude: 35.18, label: "부산", color: "#DE4545", size: 2 },
-  { id: "poi-3", longitude: 126.705, latitude: 37.456, label: "인천", color: "#00C48C", size: 2 },
-  { id: "poi-4", longitude: 127.385, latitude: 36.35, label: "대전", color: "#FFA26B", size: 2 },
-  { id: "poi-5", longitude: 126.531, latitude: 33.5, label: "제주", color: "#9B59B6", size: 2 },
-];
+// 상태별 색상
+const STATUS_COLORS: Record<SiteStatus, string> = {
+  normal: "#00C48C", // 녹색
+  warning: "#FFA26B", // 주황
+  danger: "#DE4545", // 빨강
+};
+
+// Site를 POI로 변환
+function siteToPOI(site: Site): POI | null {
+  if (site.latitude == null || site.longitude == null) return null;
+
+  return {
+    id: site.id,
+    longitude: site.longitude,
+    latitude: site.latitude,
+    color: STATUS_COLORS[site.status],
+    size: 1.5,
+    data: { name: site.name, status: site.status, regionId: site.regionId },
+  };
+}
 
 export function DashboardPage() {
+  const [pois, setPois] = useState<POI[]>([]);
+
+  useEffect(() => {
+    async function fetchSites() {
+      try {
+        const res = await sitesService.getSites();
+        const sitePOIs = res.data.map(siteToPOI).filter((poi): poi is POI => poi !== null);
+        setPois(sitePOIs);
+      } catch (error) {
+        console.error("Failed to fetch sites:", error);
+      }
+    }
+    fetchSites();
+  }, []);
+
   const handlePOIClick = (poi: POI) => {
-    console.log("POI clicked:", poi);
+    console.log("Site clicked:", poi.data);
   };
 
   const handlePOIHover = (poi: POI | null) => {
     if (poi) {
-      console.log("POI hover:", poi.label);
+      console.log("Site hover:", poi.data?.name);
     }
   };
 
@@ -27,7 +56,7 @@ export function DashboardPage() {
     <DashboardLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />}>
       <KoreaMap
         className="w-full h-full"
-        pois={testPOIs}
+        pois={pois}
         onPOIClick={handlePOIClick}
         onPOIHover={handlePOIHover}
       />
