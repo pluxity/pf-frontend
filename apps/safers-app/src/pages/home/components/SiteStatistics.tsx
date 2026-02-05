@@ -1,5 +1,5 @@
-import { Building2 } from "lucide-react";
 import type { SiteStatistics as SiteStatisticsData } from "@/services";
+import BuildingIcon from "@/assets/icons/building.svg";
 
 interface StatItemProps {
   count: number;
@@ -38,7 +38,7 @@ function StatItem({ count, label, variant }: StatItemProps) {
     >
       <span className="text-4xl font-bold text-gray-700">{count}</span>
       <div>
-        {isTotal && <Building2 className="size-7 text-brand" />}
+        {isTotal && <img src={BuildingIcon} alt="" className="size-7" />}
         <span className={`text-xl font-medium ${styles.label}`}>{label}</span>
       </div>
     </div>
