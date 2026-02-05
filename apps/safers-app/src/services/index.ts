@@ -1,2 +1,3 @@
 export * from "./types";
-export * from "./dashboard.service";
+export * from "./events.service";
+export * from "./sites.service";

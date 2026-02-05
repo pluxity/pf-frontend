@@ -4,7 +4,8 @@ import { SiteStatistics } from "./SiteStatistics";
 import { RegionSiteTree } from "./RegionSiteTree";
 import { RealtimeEvents } from "./RealtimeEvents";
 import {
-  dashboardService,
+  eventsService,
+  sitesService,
   type SiteStatistics as SiteStatisticsType,
   type Region,
   type Event,
@@ -21,9 +22,9 @@ export function LeftPanel() {
     async function fetchData() {
       try {
         const [statsRes, regionsRes, eventsRes] = await Promise.all([
-          dashboardService.getStatistics(),
-          dashboardService.getRegions(),
-          dashboardService.getEvents(),
+          sitesService.getStatistics(),
+          sitesService.getRegions(),
+          eventsService.getEvents(),
         ]);
         setStatistics(statsRes.data);
         setRegions(regionsRes.data);

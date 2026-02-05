@@ -1,1 +1,2 @@
-export * from "./dashboard.types";
+export * from "./events.types";
+export * from "./sites.types";

@@ -18,11 +18,10 @@
     "@pf-dev/api": "workspace:*",
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/fonts": "workspace:*",
-    "@pf-dev/map": "workspace:*",
     "@pf-dev/services": "workspace:*",
     "@pf-dev/three": "workspace:*",
     "@pf-dev/ui": "workspace:*",
-    "cesium": "^1.121.0",
+    "d3": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
@@ -33,6 +32,8 @@
   "devDependencies": {
     "@pf-dev/eslint-config": "workspace:*",
     "@pf-dev/typescript-config": "workspace:*",
+    "@types/d3": "^7.4.3",
+    "@types/geojson": "^7946.0.16",
     "@tailwindcss/vite": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
@@ -41,7 +42,6 @@
     "rimraf": "^6.0.1",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
-    "vite-plugin-cesium": "^1.2.23"
+    "vite": "catalog:"
   }
 }
