@@ -1,12 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
-import type { POI } from "./components/KoreaMap";
+import { KoreaMap, type POI } from "./components/KoreaMap";
 import { sitesService, type Site, type SiteStatus } from "@/services";
-
-// KoreaMap lazy loading (D3.js 포함)
-const KoreaMap = lazy(() => import("./components/KoreaMap").then((m) => ({ default: m.KoreaMap })));
 
 // 상태별 색상
 const STATUS_COLORS: Record<SiteStatus, string> = {
@@ -57,23 +54,12 @@ export function DashboardPage() {
 
   return (
     <DashboardLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />}>
-      <Suspense
-        fallback={
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#E8EEF5] to-[#DCE4ED]">
-            <div className="flex items-center gap-3 rounded-lg bg-white/80 px-6 py-4 shadow-lg">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-              <span className="text-sm text-neutral-700">지도 로딩 중...</span>
-            </div>
-          </div>
-        }
-      >
-        <KoreaMap
-          className="w-full h-full"
-          pois={pois}
-          onPOIClick={handlePOIClick}
-          onPOIHover={handlePOIHover}
-        />
-      </Suspense>
+      <KoreaMap
+        className="w-full h-full"
+        pois={pois}
+        onPOIClick={handlePOIClick}
+        onPOIHover={handlePOIHover}
+      />
     </DashboardLayout>
   );
 }

@@ -12,8 +12,8 @@ import Outline1 from "@/assets/images/outline_1.svg";
 import Outline2 from "@/assets/images/outline_2.svg";
 import Outline3 from "@/assets/images/outline_3.svg";
 
-// 시도 GeoJSON 파일 경로 (최적화 버전)
-const SIDO_GEOJSON_PATH = "/geojson/sido_optimized.geojson";
+// 시도 GeoJSON 파일 경로 (원본)
+const SIDO_GEOJSON_PATH = "/geojson/sido_no_islands_ver20260201.geojson";
 
 // 제주도 시도 코드
 const JEJU_CODE = "50";
