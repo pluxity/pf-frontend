@@ -7,6 +7,7 @@ import {
   findT1H,
   extractHourFromBaseTime,
   extractWeatherState,
+  extractSkyFromFcst,
 } from "../utils/weather";
 import type { UltraSrtNcstResponse, UltraSrtFcstResponse } from "../services/types";
 
@@ -96,10 +97,11 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
             const baseHour = extractHourFromBaseTime(baseTimeItem.baseTime);
 
             const weatherState = extractWeatherState(ncst);
+            const sky = extractSkyFromFcst(fcst, baseHour);
 
             useWeatherStore
               .getState()
-              .addHourlyCache(baseHour, baseTimeItem.obsrValue, weatherState.pty, weatherState.sky);
+              .addHourlyCache(baseHour, baseTimeItem.obsrValue, weatherState.pty, sky);
           }
         }
 
@@ -120,14 +122,16 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
           let sky: string | null = null;
 
           if (hour === currentHourNum) {
-            // 현재 시간: ncst (실황)에서 가져오기
+            // 현재 시간: temp & pty는 ncst (실황), sky는 fcst (예보)에서 가져오기
             const ncstTemp = findT1H(ncst);
             temp = ncstTemp?.obsrValue ?? "--";
             const weatherState = extractWeatherState(ncst);
             pty = weatherState.pty;
-            sky = weatherState.sky;
+
+            // sky는 ncst에 없으므로 fcst에서 가져오기
+            sky = extractSkyFromFcst(fcst, hourStr);
           } else if (hour < currentHourNum) {
-            // 과거 시간: Store의 캐시에서 가져오rl
+            // 과거 시간: Store의 캐시에서 가져오기
             temp = storeGetHourlyCache(hourStr) ?? "--";
             const cachedWeather = storeGetHourlyWeather(hourStr);
             if (cachedWeather) {
@@ -149,12 +153,9 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
               temp = "--";
             }
 
-            // 미래 시간의 날씨 정보도 추출
+            // 미래 시간의 날씨 정보 추출
             const ptyCandidates = fcst.filter(
               (item) => item.category === "PTY" && item.fcstTime === `${hourStr}00`
-            );
-            const skyCandidates = fcst.filter(
-              (item) => item.category === "SKY" && item.fcstTime === `${hourStr}00`
             );
 
             if (ptyCandidates.length > 0) {
@@ -164,12 +165,8 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
               pty = fcstPty?.fcstValue ?? null;
             }
 
-            if (skyCandidates.length > 0) {
-              const fcstSky = skyCandidates.reduce((latest, current) =>
-                parseInt(current.baseTime, 10) > parseInt(latest.baseTime, 10) ? current : latest
-              );
-              sky = fcstSky?.fcstValue ?? null;
-            }
+            // sky는 헬퍼 함수로 추출
+            sky = extractSkyFromFcst(fcst, hourStr);
           }
 
           const isCurrent = hour === currentHourNum;

@@ -1,4 +1,4 @@
-import type { UltraSrtNcstItem } from "../services/types";
+import type { UltraSrtNcstItem, UltraSrtFcstItem } from "../services/types";
 
 /**
  * 기상청 API 호출용 base_date, base_time 계산 (-40분 offset)
@@ -145,21 +145,39 @@ export function getWeatherIcon(
 }
 
 /**
- * ncstData에서 날씨 상태 데이터 추출
+ * ncstData에서 강수형태(PTY) 추출
+ * ncst(초단기실황)는 SKY 데이터를 제공하지 않습니다.
  * @param ncstItems ncstData 배열
- * @returns { pty: string, sky: string } 또는 null
+ * @returns { pty: 강수형태(PTY) 또는 null }
  */
-export function extractWeatherState(ncstItems: unknown[]): {
+export function extractWeatherState(ncstItems: UltraSrtNcstItem[]): {
   pty: string | null;
-  sky: string | null;
 } {
-  const ptyItem = ncstItems.find((item) => (item as Record<string, unknown>).category === "PTY");
-  const skyItem = ncstItems.find((item) => (item as Record<string, unknown>).category === "SKY");
-
+  const ptyItem = ncstItems.find((item) => item.category === "PTY");
   return {
-    pty: ((ptyItem as Record<string, unknown>)?.obsrValue as string) ?? null,
-    sky: ((skyItem as Record<string, unknown>)?.obsrValue as string) ?? null,
+    pty: ptyItem?.obsrValue ?? null,
   };
+}
+
+/**
+ * fcstData에서 주어진 시간의 SKY(하늘상태) 추출
+ * @param fcstItems
+ * @param hourStr
+ * @returns SKY 값 또는 null (최신 baseTime 기준)
+ */
+export function extractSkyFromFcst(fcstItems: UltraSrtFcstItem[], hourStr: string): string | null {
+  const skyCandidates = fcstItems.filter(
+    (item) => item.category === "SKY" && item.fcstTime === `${hourStr}00`
+  );
+
+  if (skyCandidates.length > 0) {
+    const latestSky = skyCandidates.reduce((latest, current) =>
+      parseInt(current.baseTime, 10) > parseInt(latest.baseTime, 10) ? current : latest
+    );
+    return latestSky?.fcstValue ?? null;
+  }
+
+  return null;
 }
 
 /**

@@ -176,7 +176,8 @@ export const weatherService = {
       }
 
       return pastDataList;
-    } catch {
+    } catch (err) {
+      console.error("Failed to get past weather data:", err);
       return [];
     }
   },
