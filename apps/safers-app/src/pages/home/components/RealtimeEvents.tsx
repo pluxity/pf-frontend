@@ -13,7 +13,7 @@ function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-2 border-b border-neutral-100 px-1 py-3 text-left last:border-b-0 hover:bg-brand/5"
+      className="flex w-full items-center gap-2 border-b border-neutral-100 px-1 py-3 text-left last:border-b-0 hover:bg-primary-500/5"
     >
       <Badge className={`shrink-0 rounded ${style.bg} ${style.text}`}>{style.label}</Badge>
       <span className="truncate text-sm text-neutral-700">
@@ -49,10 +49,10 @@ function EventList({
 
 export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
   return (
-    <div className="flex h-full flex-col rounded-lg border border-brand/80 bg-white px-4 py-2 shadow-md shadow-brand/50">
+    <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-md shadow-primary-500/50">
       {/* 헤더 */}
       <div className="pt-2">
-        <h3 className="text-lg font-bold text-brand">전국 실시간 이벤트</h3>
+        <h3 className="text-lg font-bold text-primary-500">전국 실시간 이벤트</h3>
       </div>
 
       {/* 탭 */}

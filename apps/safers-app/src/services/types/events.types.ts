@@ -34,8 +34,9 @@ export interface Event {
   code: string;
   message: string;
   region: string;
-  siteId?: string;
-  createdAt?: string;
+  siteId: string;
+  siteName: string;
+  createdAt: string;
 }
 
 // API 응답

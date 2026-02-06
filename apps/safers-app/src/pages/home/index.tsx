@@ -8,7 +8,7 @@ import { sitesService, type Site, type SiteStatus } from "@/services";
 // 상태별 색상
 const STATUS_COLORS: Record<SiteStatus, string> = {
   normal: "#00C48C", // 녹색
-  warning: "#FFA26B", // 주황
+  warning: "#FFCC00", // 노란색
   danger: "#DE4545", // 빨강
 };
 

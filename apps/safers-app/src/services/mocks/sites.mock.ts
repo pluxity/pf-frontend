@@ -1,7 +1,7 @@
 import type { Site, Region, SiteStatistics } from "../types/sites.types";
 
 export const mockSites: Site[] = [
-  // 서울
+  // 서울 (3개)
   {
     id: "s1",
     name: "강남구 개포",
@@ -12,14 +12,6 @@ export const mockSites: Site[] = [
   },
   {
     id: "s2",
-    name: "용산구 한남로",
-    status: "normal",
-    regionId: "seoul",
-    latitude: 37.534,
-    longitude: 127.0026,
-  },
-  {
-    id: "s3",
     name: "구로구 개봉",
     status: "warning",
     regionId: "seoul",
@@ -27,32 +19,17 @@ export const mockSites: Site[] = [
     longitude: 126.8576,
   },
   {
-    id: "s4",
-    name: "관악구 신림",
-    status: "normal",
-    regionId: "seoul",
-    latitude: 37.4763,
-    longitude: 126.9284,
-  },
-  {
-    id: "s5",
+    id: "s3",
     name: "서초구 우면",
     status: "normal",
     regionId: "seoul",
     latitude: 37.4653,
     longitude: 127.0178,
   },
-  // 경기
+
+  // 경기 (4개)
   {
     id: "g1",
-    name: "수원시 영통구",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.2596,
-    longitude: 127.0446,
-  },
-  {
-    id: "g2",
     name: "성남시 분당구",
     status: "warning",
     regionId: "gyeonggi",
@@ -60,47 +37,15 @@ export const mockSites: Site[] = [
     longitude: 127.1231,
   },
   {
+    id: "g2",
+    name: "수원시 영통구",
+    status: "normal",
+    regionId: "gyeonggi",
+    latitude: 37.2596,
+    longitude: 127.0446,
+  },
+  {
     id: "g3",
-    name: "용인시 기흥구",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.2804,
-    longitude: 127.115,
-  },
-  {
-    id: "g4",
-    name: "고양시 일산동구",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.6684,
-    longitude: 126.7739,
-  },
-  {
-    id: "g5",
-    name: "안양시 동안구",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.3943,
-    longitude: 126.9568,
-  },
-  {
-    id: "g6",
-    name: "부천시 원미구",
-    status: "warning",
-    regionId: "gyeonggi",
-    latitude: 37.5005,
-    longitude: 126.7831,
-  },
-  {
-    id: "g7",
-    name: "화성시 동탄",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.2063,
-    longitude: 127.0738,
-  },
-  {
-    id: "g8",
     name: "평택시 송탄",
     status: "danger",
     regionId: "gyeonggi",
@@ -108,22 +53,15 @@ export const mockSites: Site[] = [
     longitude: 127.0537,
   },
   {
-    id: "g9",
-    name: "의정부시 호원동",
+    id: "g4",
+    name: "고양시 일산",
     status: "normal",
     regionId: "gyeonggi",
-    latitude: 37.7509,
-    longitude: 127.0339,
+    latitude: 37.6684,
+    longitude: 126.7739,
   },
-  {
-    id: "g10",
-    name: "파주시 운정",
-    status: "normal",
-    regionId: "gyeonggi",
-    latitude: 37.7149,
-    longitude: 126.7608,
-  },
-  // 강원
+
+  // 강원 (2개)
   {
     id: "gw1",
     name: "춘천시 퇴계동",
@@ -135,12 +73,13 @@ export const mockSites: Site[] = [
   {
     id: "gw2",
     name: "원주시 단계동",
-    status: "normal",
+    status: "warning",
     regionId: "gangwon",
     latitude: 37.3422,
     longitude: 127.9202,
   },
-  // 충청
+
+  // 충청 (3개)
   {
     id: "c1",
     name: "대전시 유성구",
@@ -157,7 +96,16 @@ export const mockSites: Site[] = [
     latitude: 36.8151,
     longitude: 127.1139,
   },
-  // 경상
+  {
+    id: "c3",
+    name: "청주시 상당구",
+    status: "normal",
+    regionId: "chungcheong",
+    latitude: 36.6424,
+    longitude: 127.489,
+  },
+
+  // 경상 (5개) - 경북 추가
   {
     id: "gs1",
     name: "부산시 해운대구",
@@ -174,7 +122,32 @@ export const mockSites: Site[] = [
     latitude: 35.8584,
     longitude: 128.6305,
   },
-  // 전라
+  {
+    id: "gs3",
+    name: "포항시 북구",
+    status: "normal",
+    regionId: "gyeongsang",
+    latitude: 36.019,
+    longitude: 129.3435,
+  },
+  {
+    id: "gs4",
+    name: "경주시 동천동",
+    status: "warning",
+    regionId: "gyeongsang",
+    latitude: 35.8562,
+    longitude: 129.2247,
+  },
+  {
+    id: "gs5",
+    name: "구미시 원평동",
+    status: "normal",
+    regionId: "gyeongsang",
+    latitude: 36.1195,
+    longitude: 128.3446,
+  },
+
+  // 전라 (4개) - 전북 추가
   {
     id: "j1",
     name: "광주시 서구",
@@ -183,7 +156,32 @@ export const mockSites: Site[] = [
     latitude: 35.1525,
     longitude: 126.8895,
   },
-  // 제주
+  {
+    id: "j2",
+    name: "전주시 완산구",
+    status: "warning",
+    regionId: "jeolla",
+    latitude: 35.8242,
+    longitude: 127.148,
+  },
+  {
+    id: "j3",
+    name: "익산시 영등동",
+    status: "normal",
+    regionId: "jeolla",
+    latitude: 35.9483,
+    longitude: 126.9577,
+  },
+  {
+    id: "j4",
+    name: "군산시 나운동",
+    status: "danger",
+    regionId: "jeolla",
+    latitude: 35.9676,
+    longitude: 126.7369,
+  },
+
+  // 제주 (1개)
   {
     id: "jj1",
     name: "제주시 연동",

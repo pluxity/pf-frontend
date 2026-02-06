@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import type { FeatureCollection, Geometry } from "geojson";
+import { useSitesStore, selectSelectedSiteId, selectSite } from "@/stores";
 
 // 해안선 아웃라인 SVG
 import Outline1 from "@/assets/images/outline_1.svg";
@@ -44,11 +45,11 @@ export interface POI {
   data?: Record<string, unknown>;
 }
 
-// Point 마커 SVG path (30x37 viewBox 기준)
+// Point 마커 SVG path (30x31 - tip이 y=31에 위치)
 const POINT_MARKER_PATH =
   "M14.5 1C20.8513 1 26 6.22371 26 12.667C25.9999 15.9322 24.676 18.8824 22.5449 21H22.5479L14.5 31L6.50391 21.0469C4.34468 18.9261 3.00011 15.9567 3 12.667C3 6.22374 8.14872 1.00005 14.5 1Z";
 const POINT_MARKER_WIDTH = 30;
-const POINT_MARKER_HEIGHT = 37;
+const POINT_MARKER_HEIGHT = 31; // tip의 실제 y 위치
 
 interface KoreaMapProps {
   className?: string;
@@ -64,16 +65,27 @@ const MAP_SETTINGS = {
   scaleFactor: 0.55,
   referenceHeight: 1080, // FHD 기준 높이
   translateXOffset: -9.5, // rem
-  translateYOffset: 5, // rem (아래로 더 이동)
+  translateYOffset: 7, // rem (아래로 더 이동)
 };
+
+// 브랜드 컬러
+const BRAND_COLOR = "#FF7500";
 
 export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: KoreaMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<d3.Selection<SVGSVGElement, unknown, null, undefined> | null>(null);
   const mainProjectionRef = useRef<d3.GeoProjection | null>(null);
   const jejuProjectionRef = useRef<d3.GeoProjection | null>(null);
+  const pulseIntervalsRef = useRef<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [coastlineScale, setCoastlineScale] = useState(1.05);
+
+  // 스토어 연결 (Selector 패턴으로 리렌더링 최적화)
+  const selectedSiteId = useSitesStore(selectSelectedSiteId);
+  const selectSiteAction = useSitesStore(selectSite);
+
+  // 이전 선택 값 추적 (외부 변경 감지용)
+  const prevSelectedSiteIdRef = useRef<string | null>(null);
 
   // POI 클릭 핸들러를 ref로 저장 (의존성 배열 문제 방지)
   const onPOIClickRef = useRef(onPOIClick);
@@ -100,10 +112,22 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       .attr("viewBox", `0 0 ${width} ${height}`)
       .style("background", "transparent")
       .style("position", "relative")
-      .style("z-index", "1")
-      .style("pointer-events", "none"); // 지도 자체 이벤트 비활성화
+      .style("z-index", "1");
 
     svgRef.current = svg;
+
+    // 배경 클릭 영역 (POI 선택 해제용)
+    svg
+      .append("rect")
+      .attr("class", "click-background")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("fill", "transparent")
+      .style("pointer-events", "all")
+      .on("click", function () {
+        // 배경 클릭 시 스토어 클리어 (POI 시각적 복원은 useEffect에서 처리)
+        selectSiteAction(null);
+      });
 
     // 그림자 필터 정의
     svg.append("defs").html(`
@@ -128,8 +152,14 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     const jejuShadowGroup = jejuInset.append("g").attr("class", "jeju-shadow");
     const jejuMapGroup = jejuInset.append("g").attr("class", "jeju-map");
 
-    // POI 그룹 (최상위에 렌더링)
+    // 리플 그룹 (POI 아래에 렌더링)
+    svg.append("g").attr("class", "ripple-layer").style("pointer-events", "none");
+
+    // POI 그룹
     svg.append("g").attr("class", "poi-layer").style("pointer-events", "all");
+
+    // POI 정보 그룹 (최상위에 렌더링)
+    svg.append("g").attr("class", "poi-info-layer").style("pointer-events", "none");
 
     // rem to px 변환 (UHD 대응)
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -191,14 +221,14 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
 
         // === 본토 bounds 계산 후 제주도 인셋 위치 결정 ===
         const mainBounds = mainMapGroup.node()?.getBBox();
-        const jejuInsetWidth = 11.25 * rootFontSize; // 11.25rem
-        const jejuInsetHeight = 7.5 * rootFontSize; // 7.5rem
+        const jejuInsetWidth = 9 * rootFontSize; // 9rem (축소)
+        const jejuInsetHeight = 5.5 * rootFontSize; // 5.5rem (축소)
         const jejuInsetX = mainBounds
-          ? mainBounds.x + mainBounds.width - jejuInsetWidth + 2 * rootFontSize
-          : width - jejuInsetWidth - 1.25 * rootFontSize;
+          ? mainBounds.x + mainBounds.width - jejuInsetWidth + 3 * rootFontSize
+          : width - jejuInsetWidth - 0.25 * rootFontSize;
         const jejuInsetY = mainBounds
-          ? mainBounds.y + mainBounds.height - 6 * rootFontSize
-          : height - jejuInsetHeight - 1.25 * rootFontSize; // 2rem 아래로
+          ? mainBounds.y + mainBounds.height - 4.5 * rootFontSize
+          : height - jejuInsetHeight - 1.25 * rootFontSize;
 
         // 인셋 배경 (제주도 뒤에)
         const jejuBgRect = jejuInset
@@ -215,21 +245,21 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
         jejuInset
           .append("text")
           .attr("x", jejuInsetX + jejuInsetWidth / 2)
-          .attr("y", jejuInsetY + 0.75 * rootFontSize)
+          .attr("y", jejuInsetY + 0.625 * rootFontSize)
           .attr("text-anchor", "middle")
           .attr("fill", "#666")
-          .attr("font-size", `${0.75 * rootFontSize}px`)
+          .attr("font-size", `${0.625 * rootFontSize}px`)
           .text("제주특별자치도");
 
         // 제주도 프로젝션 (인셋용) - 스케일도 rootFontSize 비례
-        const jejuScale = 468.75 * rootFontSize; // 7500 / 16 = 468.75
+        const jejuScale = 350 * rootFontSize; // 축소된 스케일
         const jejuProjection = d3
           .geoMercator()
-          .center([126.5, 33.38])
+          .center([126.55, 33.38]) // 중심 좌표 미세 조정
           .scale(jejuScale)
           .translate([
             jejuInsetX + jejuInsetWidth / 2,
-            jejuInsetY + jejuInsetHeight / 2 + 0.9375 * rootFontSize,
+            jejuInsetY + jejuInsetHeight / 2 + 0.5 * rootFontSize,
           ]);
 
         const jejuPath = d3.geoPath().projection(jejuProjection);
@@ -293,7 +323,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       window.removeEventListener("resize", handleResize);
       d3.select(container).select("svg").remove();
     };
-  }, []); // 지도 초기화는 한 번만
+  }, [selectSiteAction]); // 지도 초기화는 한 번만
 
   // POI 렌더링 (pois 변경 시 업데이트)
   useEffect(() => {
@@ -304,12 +334,21 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     if (!svg || !mainProjection) return;
 
     const poiLayer = svg.select<SVGGElement>(".poi-layer");
-    if (poiLayer.empty()) return;
+    const rippleLayer = svg.select<SVGGElement>(".ripple-layer");
+    if (poiLayer.empty() || rippleLayer.empty()) return;
 
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
-    // 기존 POI 제거
+    // 기존 펄스 인터벌 정리
+    pulseIntervalsRef.current.forEach((id) => clearInterval(id));
+    pulseIntervalsRef.current = [];
+
+    // 기존 POI 및 리플 제거
     poiLayer.selectAll("*").remove();
+    rippleLayer.selectAll("*").remove();
+
+    // warning/danger POI 좌표 저장 (펄스 리플용)
+    const pulsePOIs: { x: number; y: number; color: string }[] = [];
 
     // POI 렌더링
     pois.forEach((poi) => {
@@ -324,6 +363,12 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       const size = poi.size ?? 1;
       const scale = (size * rootFontSize) / POINT_MARKER_HEIGHT; // 마커 높이 기준 스케일
       const color = poi.color ?? "#4D7EFF";
+
+      // warning/danger POI는 펄스 리플 대상
+      const status = poi.data?.status as string | undefined;
+      if (status === "warning" || status === "danger") {
+        pulsePOIs.push({ x, y, color });
+      }
 
       // 마커 중심점 오프셋 (마커 하단 뾰족한 부분이 좌표에 위치하도록)
       const offsetX = (POINT_MARKER_WIDTH / 2) * scale;
@@ -354,24 +399,43 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       // POI 이벤트
       poiGroup
         .on("mouseenter", function () {
-          d3.select(this)
-            .transition()
-            .duration(150)
-            .attr(
-              "transform",
-              `translate(${x - offsetX * 1.15}, ${y - offsetY * 1.15}) scale(${scale * 1.15})`
-            );
+          // 선택된 상태가 아닐 때만 호버 효과
+          const currentSelected = useSitesStore.getState().selectedSiteId;
+          if (currentSelected !== poi.id) {
+            d3.select(this)
+              .transition()
+              .duration(150)
+              .attr(
+                "transform",
+                `translate(${x - offsetX * 1.15}, ${y - offsetY * 1.15}) scale(${scale * 1.15})`
+              );
+          }
           onPOIHoverRef.current?.(poi);
         })
         .on("mouseleave", function () {
-          d3.select(this)
-            .transition()
-            .duration(150)
-            .attr("transform", `translate(${x - offsetX}, ${y - offsetY}) scale(${scale})`);
+          // 선택된 상태가 아닐 때만 원래대로
+          const currentSelected = useSitesStore.getState().selectedSiteId;
+          if (currentSelected !== poi.id) {
+            d3.select(this)
+              .transition()
+              .duration(150)
+              .attr("transform", `translate(${x - offsetX}, ${y - offsetY}) scale(${scale})`);
+          }
           onPOIHoverRef.current?.(null);
         })
         .on("click", function (event: MouseEvent) {
           event.stopPropagation();
+
+          // 스토어의 현재 선택 상태 확인
+          const currentSelected = useSitesStore.getState().selectedSiteId;
+
+          // 이미 선택된 POI면 해제, 아니면 새로 선택 (스토어 업데이트 → useEffect에서 시각적 처리)
+          if (currentSelected === poi.id) {
+            selectSiteAction(null);
+          } else {
+            selectSiteAction(poi.id);
+          }
+
           // 클릭 리플 효과
           createPOIRipple(poiLayer, x, y, color, rootFontSize);
           onPOIClickRef.current?.(poi);
@@ -392,7 +456,120 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
           .text(poi.label);
       }
     });
-  }, [pois]);
+
+    // 펄스 리플 시작 (warning/danger POI)
+    if (pulsePOIs.length > 0) {
+      // 즉시 한 번 실행
+      pulsePOIs.forEach(({ x, y, color }) => {
+        createPulseRipple(rippleLayer, x, y, color, rootFontSize);
+      });
+
+      // 2초마다 반복
+      const intervalId = window.setInterval(() => {
+        pulsePOIs.forEach(({ x, y, color }) => {
+          createPulseRipple(rippleLayer, x, y, color, rootFontSize);
+        });
+      }, 2000);
+      pulseIntervalsRef.current.push(intervalId);
+    }
+
+    // cleanup
+    return () => {
+      pulseIntervalsRef.current.forEach((id) => clearInterval(id));
+      pulseIntervalsRef.current = [];
+    };
+  }, [pois, selectSiteAction]);
+
+  // 스토어 선택 상태 변경 시 POI 시각 업데이트 (외부 선택 포함)
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const poiLayer = svg.select<SVGGElement>(".poi-layer");
+    const poiInfoLayer = svg.select<SVGGElement>(".poi-info-layer");
+    if (poiLayer.empty() || poiInfoLayer.empty()) return;
+
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const prevId = prevSelectedSiteIdRef.current;
+
+    // 이전 선택된 POI 원래대로 복원
+    if (prevId && prevId !== selectedSiteId) {
+      const prevPoi = poiLayer.select(`[data-poi-id="${prevId}"]`);
+      if (!prevPoi.empty()) {
+        prevPoi
+          .transition()
+          .duration(200)
+          .attr("transform", prevPoi.attr("data-original-transform") ?? "")
+          .select("path")
+          .attr("fill", prevPoi.attr("data-original-color") ?? "#4D7EFF");
+      }
+    }
+
+    // 선택 해제된 경우
+    if (!selectedSiteId) {
+      clearPOIInfo(poiInfoLayer);
+      prevSelectedSiteIdRef.current = null;
+      return;
+    }
+
+    // 새 POI 선택
+    const newPoi = poiLayer.select(`[data-poi-id="${selectedSiteId}"]`);
+    if (!newPoi.empty()) {
+      // POI 데이터 찾기
+      const poiData = pois.find((p) => p.id === selectedSiteId);
+      if (poiData) {
+        const mainProjection = mainProjectionRef.current;
+        const jejuProjection = jejuProjectionRef.current;
+        if (!mainProjection) return;
+
+        // 좌표 계산
+        const isJeju =
+          poiData.latitude < 34.0 && poiData.longitude >= 125.5 && poiData.longitude <= 127.5;
+        const projection = isJeju && jejuProjection ? jejuProjection : mainProjection;
+        const coords = projection([poiData.longitude, poiData.latitude]);
+        if (!coords) return;
+
+        const [x, y] = coords;
+        const size = poiData.size ?? 1;
+        const scale = (size * rootFontSize) / POINT_MARKER_HEIGHT;
+        const color = poiData.color ?? "#4D7EFF";
+
+        const offsetX = (POINT_MARKER_WIDTH / 2) * scale;
+        const offsetY = POINT_MARKER_HEIGHT * scale;
+        const selectedScale = scale * 1.5;
+        const selectedOffsetX = (POINT_MARKER_WIDTH / 2) * selectedScale;
+        const selectedOffsetY = POINT_MARKER_HEIGHT * selectedScale;
+
+        // 원본 정보 저장 (아직 없으면)
+        if (!newPoi.attr("data-original-transform")) {
+          newPoi
+            .attr(
+              "data-original-transform",
+              `translate(${x - offsetX}, ${y - offsetY}) scale(${scale})`
+            )
+            .attr("data-original-color", color);
+        }
+
+        // 1.5배 확대 + 브랜드 컬러
+        newPoi
+          .transition()
+          .duration(200)
+          .attr(
+            "transform",
+            `translate(${x - selectedOffsetX}, ${y - selectedOffsetY}) scale(${selectedScale})`
+          )
+          .select("path")
+          .attr("fill", BRAND_COLOR);
+
+        // 정보 표시
+        clearPOIInfo(poiInfoLayer);
+        const siteName = (poiData.data?.name as string) ?? poiData.id;
+        showPOIInfo(poiInfoLayer, x, y, siteName, rootFontSize);
+      }
+    }
+
+    prevSelectedSiteIdRef.current = selectedSiteId;
+  }, [selectedSiteId, pois]);
 
   return (
     <div
@@ -406,7 +583,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       <div
         className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center"
         style={{
-          transform: `translate(-8rem, 2.875rem) scale(${coastlineScale})`,
+          transform: `translate(-8rem, 4.875rem) scale(${coastlineScale})`,
         }}
       >
         <img src={Outline1} alt="" className="absolute" style={{ opacity: 0.5 }} />
@@ -470,4 +647,112 @@ function createPOIRipple(
     .on("end", function () {
       rippleGroup.remove();
     });
+}
+
+// 펄스 리플 효과 함수 (반복용, fill 기반)
+function createPulseRipple(
+  layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+  x: number,
+  y: number,
+  color: string,
+  rootFontSize: number
+) {
+  const delays = [0, 1000];
+
+  delays.forEach((delay) => {
+    const ripple = layer
+      .append("circle")
+      .attr("class", "pulse-ripple")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 0.2 * rootFontSize)
+      .style("fill", color)
+      .style("fill-opacity", delay === 0 ? 0.4 : 0)
+      .style("stroke", "none")
+      .style("pointer-events", "none");
+
+    ripple
+      .transition()
+      .delay(delay)
+      .duration(0)
+      .style("fill-opacity", 0.4)
+      .transition()
+      .duration(2000)
+      .ease(d3.easeQuadOut)
+      .attr("r", 1.5 * rootFontSize)
+      .style("fill-opacity", 0)
+      .remove();
+  });
+}
+
+// POI 정보 표시 함수
+function showPOIInfo(
+  layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+  x: number,
+  y: number,
+  siteName: string,
+  rootFontSize: number
+) {
+  // 기존 정보 제거
+  clearPOIInfo(layer);
+
+  const infoGroup = layer.append("g").attr("class", "poi-info");
+
+  // 연결선 시작/끝점 (좌표 위치에서 시작)
+  const lineStartX = x;
+  const lineStartY = y; // 정확한 좌표 위치에서 시작
+  const lineEndX = x + 2 * rootFontSize;
+  const lineY = lineStartY;
+
+  // pill 박스 크기 계산
+  const textLength = siteName.length;
+  const boxWidth = Math.max(5, textLength * 0.55 + 1.5) * rootFontSize;
+  const boxHeight = 1.5 * rootFontSize;
+  const boxX = lineEndX;
+  const boxY = lineY - boxHeight / 2;
+
+  // 연결선 (애니메이션)
+  infoGroup
+    .append("line")
+    .attr("x1", lineStartX)
+    .attr("y1", lineStartY)
+    .attr("x2", lineStartX)
+    .attr("y2", lineStartY)
+    .attr("stroke", BRAND_COLOR)
+    .attr("stroke-width", 0.125 * rootFontSize)
+    .transition()
+    .duration(200)
+    .attr("x2", lineEndX);
+
+  // pill 박스 (둥근 사각형)
+  const pillGroup = infoGroup.append("g").attr("class", "poi-info-pill").style("opacity", 0);
+
+  pillGroup
+    .append("rect")
+    .attr("x", boxX)
+    .attr("y", boxY)
+    .attr("width", boxWidth)
+    .attr("height", boxHeight)
+    .attr("rx", boxHeight / 2)
+    .attr("fill", BRAND_COLOR);
+
+  // 텍스트
+  pillGroup
+    .append("text")
+    .attr("x", boxX + boxWidth / 2)
+    .attr("y", boxY + boxHeight / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", "middle")
+    .attr("fill", "white")
+    .attr("font-size", `${0.75 * rootFontSize}px`)
+    .attr("font-weight", "500")
+    .text(siteName);
+
+  // pill 페이드 인
+  pillGroup.transition().delay(150).duration(200).style("opacity", 1);
+}
+
+// POI 정보 제거 함수
+function clearPOIInfo(layer: d3.Selection<SVGGElement, unknown, null, undefined>) {
+  layer.selectAll(".poi-info").transition().duration(150).style("opacity", 0).remove();
 }
