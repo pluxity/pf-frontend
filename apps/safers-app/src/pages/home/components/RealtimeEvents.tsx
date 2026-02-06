@@ -16,7 +16,9 @@ function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
       onClick={onClick}
       className="flex w-full items-center gap-2 border-b border-neutral-100 px-1 py-3 text-left last:border-b-0 hover:bg-primary-500/5"
     >
-      <Badge className={`shrink-0 rounded ${style.bg} ${style.text}`}>{style.label}</Badge>
+      <Badge variant={null} className={`shrink-0 rounded ${style.bg} ${style.text}`}>
+        {style.label}
+      </Badge>
       <span className="truncate text-sm text-neutral-700">
         <span className="text-neutral-400">[{event.code}]</span> {event.message}
       </span>
