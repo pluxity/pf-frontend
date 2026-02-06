@@ -18,12 +18,12 @@
   "peerDependencies": {
     "react": "catalog:",
     "react-dom": "catalog:",
-    "three": "catalog:",
-    "@react-three/fiber": "catalog:"
+    "three": "^0.182.0",
+    "@react-three/fiber": "^9.4.2"
   },
   "dependencies": {
-    "@react-three/drei": "catalog:",
-    "three-stdlib": "catalog:",
+    "@react-three/drei": "^10.7.7",
+    "three-stdlib": "^2.36.1",
     "zustand": "catalog:"
   },
   "devDependencies": {
@@ -31,11 +31,11 @@
     "@pf-dev/typescript-config": "workspace:*",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/three": "catalog:",
+    "@types/three": "^0.182.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "three": "catalog:",
-    "@react-three/fiber": "catalog:",
+    "three": "^0.182.0",
+    "@react-three/fiber": "^9.4.2",
     "rimraf": "^6.0.1",
     "typescript": "catalog:"
   }
