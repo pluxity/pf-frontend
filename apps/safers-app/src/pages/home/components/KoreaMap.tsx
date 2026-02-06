@@ -255,15 +255,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     const handleResize = () => {
       const newWidth = container.clientWidth;
       const newHeight = container.clientHeight;
-      const newRootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
       svg.attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
-      mainProjection.translate([
-        newWidth / 2 + MAP_SETTINGS.translateXOffset * newRootFontSize,
-        newHeight / 2 + MAP_SETTINGS.translateYOffset * newRootFontSize,
-      ]);
-      mainProjection.scale(
-        Math.min(newWidth, newHeight) * MAP_SETTINGS.scaleFactor * newRootFontSize
-      );
     };
 
     window.addEventListener("resize", handleResize);
@@ -272,7 +264,8 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       window.removeEventListener("resize", handleResize);
       select(container).select("svg").remove();
     };
-  }, [selectSiteAction]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** POI 마커 렌더링 및 이벤트 바인딩 */
   useEffect(() => {

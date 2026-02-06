@@ -32,7 +32,7 @@ export function RegionSiteTree({ regions, onSiteSelect, selectedSiteId }: Region
       collapsible
       value={openRegionId}
       onValueChange={setOpenRegionId}
-      className="h-full overflow-y-none p-2"
+      className="h-full overflow-y-auto p-2"
     >
       {regions.map((region) => (
         <AccordionItem key={region.id} value={region.id} className="mb-1.5 border-b-0 last:mb-0">

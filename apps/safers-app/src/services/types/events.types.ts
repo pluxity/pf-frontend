@@ -1,3 +1,5 @@
+import type { RegionName } from "./sites.types";
+
 // 이벤트 레벨
 export type EventLevel = "warning" | "alert" | "danger";
 
@@ -11,18 +13,18 @@ export interface EventLevelStyle {
 // 이벤트 레벨 스타일 맵
 export const EVENT_LEVEL_STYLES: Record<EventLevel, EventLevelStyle> = {
   warning: {
-    bg: "bg-amber-100 dark:bg-amber-100",
-    text: "text-amber-700 dark:text-amber-700",
+    bg: "bg-amber-100",
+    text: "text-amber-700",
     label: "주의",
   },
   alert: {
-    bg: "bg-orange-100 dark:bg-orange-100",
-    text: "text-orange-700 dark:text-orange-700",
+    bg: "bg-orange-100",
+    text: "text-orange-700",
     label: "경고",
   },
   danger: {
-    bg: "bg-red-100 dark:bg-red-100",
-    text: "text-red-700 dark:text-red-700",
+    bg: "bg-red-100",
+    text: "text-red-700",
     label: "위험",
   },
 };
@@ -33,7 +35,7 @@ export interface Event {
   level: EventLevel;
   code: string;
   message: string;
-  region: string;
+  region: RegionName;
   siteId: string;
   siteName: string;
   createdAt: string;
