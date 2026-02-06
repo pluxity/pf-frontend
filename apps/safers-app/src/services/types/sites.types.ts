@@ -2,7 +2,7 @@
 export type SiteStatus = "normal" | "warning" | "danger";
 
 // 지역 목록
-export const REGIONS = ["서울", "경기", "강원", "충청", "전라", "경상", "제주"] as const;
+export const REGIONS = ["서울", "경기", "충청", "전라", "경상", "제주"] as const;
 export type RegionName = (typeof REGIONS)[number];
 
 // 현장

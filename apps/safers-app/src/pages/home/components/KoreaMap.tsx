@@ -371,7 +371,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
             selectSiteAction(poi.id);
           }
 
-          createPOIRipple(poiLayer, x, y, color, rootFontSize);
+          createPOIRipple(poiLayer, x, y, BRAND_COLOR, rootFontSize);
           onPOIClickRef.current?.(poi);
         });
 
@@ -497,7 +497,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       ref={containerRef}
       className={className}
       style={{
-        background: "linear-gradient(135deg, #E8EEF5 0%, #DCE4ED 100%)",
+        background: "radial-gradient(ellipse at center, #D8E2ED 0%, #E8EEF5 50%, #F2F5F9 100%)",
       }}
     >
       <div

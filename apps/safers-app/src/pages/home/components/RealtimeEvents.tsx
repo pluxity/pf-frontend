@@ -49,10 +49,9 @@ function EventList({
 
 export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
   return (
-    <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-md shadow-primary-500/50">
-      {/* 헤더 */}
+    <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-[0_0_24px_rgba(30,74,184,0.5)]">
       <div className="pt-2">
-        <h3 className="text-lg font-bold text-primary-500">전국 실시간 이벤트</h3>
+        <h3 className="text-lg font-bold text-primary-600">전국 실시간 이벤트</h3>
       </div>
 
       {/* 탭 */}
