@@ -11,17 +11,17 @@ import {
   type Event,
   type Site,
 } from "@/services";
-import { useSitesStore, selectSelectedSiteId, selectSite } from "@/stores";
+import { useSitesStore, selectSelectedSiteId, selectSelectSiteAction } from "@/stores";
 
+/** 대시보드 좌측 패널 - 현황, 지역 목록, 실시간 이벤트 표시 */
 export function LeftPanel() {
   const [statistics, setStatistics] = useState<SiteStatisticsType | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 스토어 연결 (Selector 패턴으로 리렌더링 최적화)
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
-  const selectSiteAction = useSitesStore(selectSite);
+  const selectSiteAction = useSitesStore(selectSelectSiteAction);
 
   useEffect(() => {
     async function fetchData() {
@@ -44,7 +44,6 @@ export function LeftPanel() {
   }, []);
 
   const handleSiteSelect = (site: Site) => {
-    // 이미 선택된 사이트면 선택 해제, 아니면 새로 선택
     if (selectedSiteId === site.id) {
       selectSiteAction(null);
     } else {
@@ -66,10 +65,8 @@ export function LeftPanel() {
 
   return (
     <aside className="z-10 flex h-full w-[25rem] flex-shrink-0 flex-col gap-4 p-4">
-      {/* 전국 현황 (600px로 지도 위에 삐져나감) */}
       <div className="w-[37.5rem]">{statistics && <SiteStatistics data={statistics} />}</div>
 
-      {/* 지역별 현장 목록 */}
       <div className="h-[29rem] w-[25rem] overflow-hidden rounded-lg backdrop-blur-sm">
         <RegionSiteTree
           regions={regions}
@@ -78,7 +75,6 @@ export function LeftPanel() {
         />
       </div>
 
-      {/* 실시간 이벤트 */}
       <div className="h-[20rem] w-[25rem]">
         <RealtimeEvents events={events} onEventClick={handleEventClick} />
       </div>

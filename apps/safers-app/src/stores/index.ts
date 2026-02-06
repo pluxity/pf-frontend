@@ -2,6 +2,8 @@ export {
   useSitesStore,
   selectSelectedSiteId,
   selectHoveredSiteId,
-  selectSite,
-  selectHoverSite,
+  selectSelectSiteAction,
+  selectHoverSiteAction,
 } from "./sites.store";
+
+export type { SitesState, SitesActions, SitesStore } from "./sites.store";

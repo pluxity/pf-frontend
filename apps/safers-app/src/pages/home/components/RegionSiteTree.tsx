@@ -8,16 +8,12 @@ interface RegionSiteTreeProps {
   selectedSiteId?: string;
 }
 
+/** 지역별 사이트 목록을 아코디언 형태로 표시하는 컴포넌트 */
 export function RegionSiteTree({ regions, onSiteSelect, selectedSiteId }: RegionSiteTreeProps) {
   const firstRegionId = regions[0]?.id ?? "";
-
-  // 아코디언 열림 상태 (controlled mode)
   const [openRegionId, setOpenRegionId] = useState<string>(firstRegionId);
-
-  // 이전 selectedSiteId 추적 (렌더링 중 상태 조정 패턴)
   const [prevSelectedSiteId, setPrevSelectedSiteId] = useState<string | undefined>(selectedSiteId);
 
-  // selectedSiteId가 변경되면 해당 지역 아코디언 열기 (렌더링 중 처리)
   if (selectedSiteId !== prevSelectedSiteId) {
     setPrevSelectedSiteId(selectedSiteId);
     if (selectedSiteId) {
