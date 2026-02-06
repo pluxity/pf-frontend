@@ -255,9 +255,39 @@ importers:
       '@pf-dev/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@types/d3-ease':
+        specifier: ^3.0.2
+        version: 3.0.2
+      '@types/d3-fetch':
+        specifier: ^3.0.7
+        version: 3.0.7
+      '@types/d3-geo':
+        specifier: ^3.1.0
+        version: 3.1.0
+      '@types/d3-selection':
+        specifier: ^3.0.11
+        version: 3.0.11
+      '@types/d3-transition':
+        specifier: ^3.0.9
+        version: 3.0.9
       d3:
         specifier: 'catalog:'
         version: 7.9.0
+      d3-ease:
+        specifier: ^3.0.1
+        version: 3.0.1
+      d3-fetch:
+        specifier: ^3.0.1
+        version: 3.0.1
+      d3-geo:
+        specifier: ^3.1.1
+        version: 3.1.1
+      d3-selection:
+        specifier: ^3.0.0
+        version: 3.0.0
+      d3-transition:
+        specifier: ^3.0.1
+        version: 3.0.1(d3-selection@3.0.0)
       react:
         specifier: 'catalog:'
         version: 19.2.3

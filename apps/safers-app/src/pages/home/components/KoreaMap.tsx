@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import * as d3 from "d3";
+import { select, type Selection } from "d3-selection";
+import { json } from "d3-fetch";
+import { geoMercator, geoPath, type GeoProjection } from "d3-geo";
+import { easeQuadOut } from "d3-ease";
+import "d3-transition"; // transition 확장 메서드 등록
 import type { FeatureCollection, Geometry } from "geojson";
 import { useSitesStore, selectSelectedSiteId, selectSite } from "@/stores";
 
@@ -8,8 +12,8 @@ import Outline1 from "@/assets/images/outline_1.svg";
 import Outline2 from "@/assets/images/outline_2.svg";
 import Outline3 from "@/assets/images/outline_3.svg";
 
-// 시도 GeoJSON 파일 경로 (섬 제외 버전)
-const SIDO_GEOJSON_PATH = "/geojson/sido_no_islands_ver20260201.geojson";
+// 시도 GeoJSON 파일 경로 (최적화 버전)
+const SIDO_GEOJSON_PATH = "/geojson/sido_optimized.geojson";
 
 // 제주도 시도 코드
 const JEJU_CODE = "50";
@@ -73,9 +77,9 @@ const BRAND_COLOR = "#FF7500";
 
 export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: KoreaMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<d3.Selection<SVGSVGElement, unknown, null, undefined> | null>(null);
-  const mainProjectionRef = useRef<d3.GeoProjection | null>(null);
-  const jejuProjectionRef = useRef<d3.GeoProjection | null>(null);
+  const svgRef = useRef<Selection<SVGSVGElement, unknown, null, undefined> | null>(null);
+  const mainProjectionRef = useRef<GeoProjection | null>(null);
+  const jejuProjectionRef = useRef<GeoProjection | null>(null);
   const pulseIntervalsRef = useRef<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [coastlineScale, setCoastlineScale] = useState(1.05);
@@ -101,11 +105,10 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     const height = container.clientHeight;
 
     // 기존 SVG 제거
-    d3.select(container).select("svg").remove();
+    select(container).select("svg").remove();
 
     // SVG 생성 (배경은 컨테이너에) - 이동/줌 비활성화
-    const svg = d3
-      .select(container)
+    const svg = select(container)
       .append("svg")
       .attr("width", "100%")
       .attr("height", "100%")
@@ -171,8 +174,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     // FHD(1080p) 기준으로 스케일 고정, 모든 해상도에서 동일한 비율 유지
     const baseScale = MAP_SETTINGS.referenceHeight * MAP_SETTINGS.scaleFactor * rootFontSize;
 
-    const mainProjection = d3
-      .geoMercator()
+    const mainProjection = geoMercator()
       .center([MAP_SETTINGS.centerLng, MAP_SETTINGS.centerLat])
       .scale(baseScale)
       .translate([
@@ -181,11 +183,11 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
       ]);
 
     mainProjectionRef.current = mainProjection;
-    const mainPath = d3.geoPath().projection(mainProjection);
+    const mainPath = geoPath().projection(mainProjection);
 
     // GeoJSON 로드
     setIsLoading(true);
-    d3.json<SidoFeatureCollection>(SIDO_GEOJSON_PATH)
+    json<SidoFeatureCollection>(SIDO_GEOJSON_PATH)
       .then((data) => {
         if (!data) return;
 
@@ -253,8 +255,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
 
         // 제주도 프로젝션 (인셋용) - 스케일도 rootFontSize 비례
         const jejuScale = 350 * rootFontSize; // 축소된 스케일
-        const jejuProjection = d3
-          .geoMercator()
+        const jejuProjection = geoMercator()
           .center([126.55, 33.38]) // 중심 좌표 미세 조정
           .scale(jejuScale)
           .translate([
@@ -262,7 +263,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
             jejuInsetY + jejuInsetHeight / 2 + 0.5 * rootFontSize,
           ]);
 
-        const jejuPath = d3.geoPath().projection(jejuProjection);
+        const jejuPath = geoPath().projection(jejuProjection);
 
         // === 제주도 인셋 렌더링 ===
         // 그림자 레이어 (rem 기반)
@@ -321,7 +322,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      d3.select(container).select("svg").remove();
+      select(container).select("svg").remove();
     };
   }, [selectSiteAction]); // 지도 초기화는 한 번만
 
@@ -402,7 +403,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
           // 선택된 상태가 아닐 때만 호버 효과
           const currentSelected = useSitesStore.getState().selectedSiteId;
           if (currentSelected !== poi.id) {
-            d3.select(this)
+            select(this)
               .transition()
               .duration(150)
               .attr(
@@ -416,7 +417,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
           // 선택된 상태가 아닐 때만 원래대로
           const currentSelected = useSitesStore.getState().selectedSiteId;
           if (currentSelected !== poi.id) {
-            d3.select(this)
+            select(this)
               .transition()
               .duration(150)
               .attr("transform", `translate(${x - offsetX}, ${y - offsetY}) scale(${scale})`);
@@ -605,7 +606,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
 
 // POI 클릭 리플 효과 함수
 function createPOIRipple(
-  layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+  layer: Selection<SVGGElement, unknown, null, undefined>,
   x: number,
   y: number,
   color: string,
@@ -624,7 +625,7 @@ function createPOIRipple(
     .attr("opacity", 1)
     .transition()
     .duration(400)
-    .ease(d3.easeQuadOut)
+    .ease(easeQuadOut)
     .attr("r", 1.5 * rootFontSize)
     .attr("opacity", 0)
     .remove();
@@ -641,7 +642,7 @@ function createPOIRipple(
     .transition()
     .delay(80)
     .duration(400)
-    .ease(d3.easeQuadOut)
+    .ease(easeQuadOut)
     .attr("r", 2 * rootFontSize)
     .attr("opacity", 0)
     .on("end", function () {
@@ -651,7 +652,7 @@ function createPOIRipple(
 
 // 펄스 리플 효과 함수 (반복용, fill 기반)
 function createPulseRipple(
-  layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+  layer: Selection<SVGGElement, unknown, null, undefined>,
   x: number,
   y: number,
   color: string,
@@ -678,7 +679,7 @@ function createPulseRipple(
       .style("fill-opacity", 0.4)
       .transition()
       .duration(2000)
-      .ease(d3.easeQuadOut)
+      .ease(easeQuadOut)
       .attr("r", 1.5 * rootFontSize)
       .style("fill-opacity", 0)
       .remove();
@@ -687,7 +688,7 @@ function createPulseRipple(
 
 // POI 정보 표시 함수
 function showPOIInfo(
-  layer: d3.Selection<SVGGElement, unknown, null, undefined>,
+  layer: Selection<SVGGElement, unknown, null, undefined>,
   x: number,
   y: number,
   siteName: string,
@@ -753,6 +754,6 @@ function showPOIInfo(
 }
 
 // POI 정보 제거 함수
-function clearPOIInfo(layer: d3.Selection<SVGGElement, unknown, null, undefined>) {
+function clearPOIInfo(layer: Selection<SVGGElement, unknown, null, undefined>) {
   layer.selectAll(".poi-info").transition().duration(150).style("opacity", 0).remove();
 }
