@@ -26,15 +26,15 @@ export function DashboardLayout({ leftPanel, rightPanel, children }: DashboardLa
       </header>
 
       {/* Main */}
-      <main className="flex h-full w-full pt-[3.75rem]">
-        {/* 좌측 패널 */}
-        {leftPanel}
+      <main className="relative h-full w-full">
+        {/* 중앙 영역 (전체 배경) - 헤더 뒤까지 확장 */}
+        <div className="absolute inset-0">{children}</div>
 
-        {/* 중앙 영역 */}
-        <div className="relative flex-1">{children}</div>
+        {/* 좌측 패널 (오버레이) */}
+        <div className="absolute left-0 top-[3.75rem] bottom-0 z-10">{leftPanel}</div>
 
-        {/* 우측 패널 */}
-        {rightPanel}
+        {/* 우측 패널 (오버레이) */}
+        <div className="absolute right-0 top-[3.75rem] bottom-0 z-10">{rightPanel}</div>
       </main>
     </div>
   );

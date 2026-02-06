@@ -3,6 +3,13 @@
 
 @import "@pf-dev/ui/globals.css";
 
+/* safers-app 브랜드 컬러 오버라이드 */
+@theme {
+  --color-brand: #ff7500;
+  --color-brand-hover: #e66a00;
+  --color-brand-active: #cc5e00;
+}
+
 /*
  * 해상도별 반응형 root font-size
  * - FHD (1920px): 16px
