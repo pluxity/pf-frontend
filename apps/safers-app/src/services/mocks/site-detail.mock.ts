@@ -54,12 +54,11 @@ const monthlyProgress: ProgressDataPoint[] = [
 
 /** 직종별 인원 현황 */
 const mockPersonnel: PersonnelByOccupation[] = [
-  { occupation: "철근공", count: 45, color: "#4D7EFF" },
-  { occupation: "형틀목공", count: 32, color: "#00C48C" },
-  { occupation: "콘크리트공", count: 28, color: "#FFA26B" },
-  { occupation: "용접공", count: 18, color: "#DE4545" },
-  { occupation: "배관공", count: 15, color: "#9B59B6" },
-  { occupation: "전기공", count: 12, color: "#F1C40F" },
+  { occupation: "철근공", count: 85, color: "#5E81F4" },
+  { occupation: "안전관리자", count: 48, color: "#9F31FF" },
+  { occupation: "콘크리트공", count: 62, color: "#8AF1B9" },
+  { occupation: "형틀목공", count: 38, color: "#FF808B" },
+  { occupation: "기타", count: 17, color: "#BBBFCF" },
 ];
 
 /** 날씨 정보 */

@@ -57,7 +57,9 @@ export function SitePage() {
       leftPanel={<EventPanel />}
       rightTopPanel={<WeatherPanel />}
       rightMiddlePanel={<SafetyScorePanel data={_detail.safetyScore} />}
-      rightBottomPanel={<WorkerInfoPanel />}
+      rightBottomPanel={
+        <WorkerInfoPanel personnel={_detail.personnel} totalPersonnel={_detail.totalPersonnel} />
+      }
     >
       <ViewerPlaceholder />
     </SiteDetailLayout>
