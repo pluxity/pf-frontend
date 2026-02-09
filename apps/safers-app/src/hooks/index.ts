@@ -1,1 +1,1 @@
-export { useWeather } from "./useWeather";
+export { useWeather, type HourlyTemp } from "./useWeather";

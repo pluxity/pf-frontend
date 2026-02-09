@@ -16,7 +16,7 @@ interface UseWeatherOptions {
   ny: number;
 }
 
-interface HourlyTemp {
+export interface HourlyTemp {
   hour: string;
   temp: string;
   pty: string | null;
