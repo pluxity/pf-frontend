@@ -17,10 +17,10 @@ const SAFETYNET_PATTERN = /safetynet/i;
 
 // ─── 씬 조명 상수 ───
 const LIGHTING = {
-  toneMappingExposure: 1.9,
-  ambient: 2.0,
-  hemisphere: 1.4,
-  directional: 2.9,
+  toneMappingExposure: 1.4,
+  ambient: 1.0,
+  hemisphere: 0.8,
+  directional: 2.0,
 } as const;
 
 // ─── Material PBR 프리셋 ───
@@ -33,13 +33,13 @@ const MATERIAL_PRESET = {
     transparent: true,
     opacity: 1.0,
   },
-  default: { roughness: 1.0, metalness: 1.0, envMapIntensity: 0.0 },
+  default: { roughness: 0.8, metalness: 0.0, envMapIntensity: 0.0 },
 } as const;
 
 function getMaterialPreset(name: string) {
   if (METAL_PATTERN.test(name)) return MATERIAL_PRESET.metal;
   if (SAFETYNET_PATTERN.test(name)) return MATERIAL_PRESET.safetynet;
-  return MATERIAL_PRESET.default;
+  return null; // default: GLB 원본 유지
 }
 
 /** Canvas 내부에서 호버 인터랙션을 활성화하는 컴포넌트 */
@@ -101,7 +101,7 @@ export function ViewerPlaceholder() {
           shadow-camera-right={400}
           shadow-camera-top={400}
           shadow-camera-bottom={-400}
-          shadow-bias={-0.001}
+          shadow-bias={-0.0005}
         />
 
         <GLTFModel
@@ -111,8 +111,10 @@ export function ViewerPlaceholder() {
           onLoaded={(gltf) => {
             traverseMeshes(gltf.scene, (mesh) => {
               const applyPreset = (mat: typeof mesh.material) => {
+                const preset = getMaterialPreset(mat.name);
+                if (!preset) return mat; // 원본 유지
                 const cloned = mat.clone();
-                updateMaterialProps(cloned, getMaterialPreset(mat.name));
+                updateMaterialProps(cloned, preset);
                 return cloned;
               };
 
