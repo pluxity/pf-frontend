@@ -85,6 +85,8 @@ export {
   setMaterialColor,
   setMaterialOpacity,
   getAllMaterials,
+  findMatchingPreset,
+  applyMaterialPresets,
 } from "./utils/index";
 export type { TraverseCallback, MeshCallback, MeshInfoData } from "./utils/index";
 
@@ -105,6 +107,9 @@ export type {
   AssetType,
   Asset,
   Feature,
+  MaterialPreset,
+  MaterialPresetRule,
+  MaterialPresetsConfig,
 } from "./types/index";
 
 export { initializeScene } from "./initialize";
