@@ -20,7 +20,7 @@ export function AppRoutes() {
       <Route index element={<DashboardPage />} />
 
       {/* 현장 상세 */}
-      <Route path="site" element={<SitePage />} />
+      <Route path="site/:id" element={<SitePage />} />
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
