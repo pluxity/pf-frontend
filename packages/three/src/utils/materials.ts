@@ -63,6 +63,8 @@ export function findMatchingPreset(
 }
 
 function applyPresetToMaterial(material: Material, preset: MaterialPreset): void {
+  if (!("metalness" in material) || !("roughness" in material)) return;
+
   const mat = material as MeshStandardMaterial;
   const { color, emissive, ...rest } = preset;
 
