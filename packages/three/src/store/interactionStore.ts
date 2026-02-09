@@ -7,7 +7,7 @@ export const useInteractionStore = create<InteractionState & InteractionActions>
   selectedMesh: null,
   enableHover: true,
   enableOutline: true,
-  outlineColor: "#00ff00",
+  outlineColor: "#00cc44",
   outlineThickness: 2,
   hoverTarget: "all",
 

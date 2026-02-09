@@ -48,3 +48,5 @@ export type {
   FeatureActions,
   FeatureStore,
 } from "./feature";
+
+export type { MaterialPreset, MaterialPresetRule, MaterialPresetsConfig } from "./material";

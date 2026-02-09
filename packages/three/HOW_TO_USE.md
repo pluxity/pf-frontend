@@ -181,7 +181,120 @@ WebGL 렌더러와 기본 씬 설정을 제공하는 메인 컴포넌트입니�
 - `scale?: number | [number, number, number]` - 스케일
 - `castShadow?: boolean` - 그림자 투사 (기본값: false)
 - `receiveShadow?: boolean` - 그림자 수신 (기본값: false)
+- `materialPresets?: MaterialPresetsConfig` - Material 이름 기반 PBR 프리셋 (v0.4.1)
 - `onLoaded?: (gltf) => void` - 로드 완료 콜백
+
+## 🎨 Material Presets (v0.4.1)
+
+Material 이름 패턴(정규식)에 따라 PBR 속성을 선언적으로 커스터마이징하는 기능입니다.
+
+### 기본 사용 - GLTFModel/FBXModel prop
+
+```tsx
+import { GLTFModel } from "@pf-dev/three";
+
+<GLTFModel
+  url="/model.glb"
+  materialPresets={{
+    rules: [
+      { pattern: /^Material\s*#\d+$/i, preset: { roughness: 0.85, metalness: 0.86 } },
+      { pattern: /safetynet/i, preset: { roughness: 1.0, transparent: true, opacity: 0.45 } },
+      { pattern: "concrete", preset: { roughness: 0.9, metalness: 0.0 } },
+    ],
+    default: { roughness: 1.0, metalness: 1.0 },
+  }}
+/>;
+```
+
+`rules` 배열을 순서대로 검사하여 Material 이름에 **첫 번째로 매칭되는 룰**의 preset을 적용합니다. 어떤 룰에도 매칭되지 않으면 `default` 프리셋을 적용합니다.
+
+### 유틸리티 직접 사용
+
+`applyMaterialPresets`를 독립적으로 사용할 수도 있습니다:
+
+```tsx
+import { applyMaterialPresets, traverseMeshes } from "@pf-dev/three";
+
+// onLoaded 콜백에서 직접 사용
+<GLTFModel
+  url="/model.glb"
+  onLoaded={(gltf) => {
+    applyMaterialPresets(gltf.scene, {
+      rules: [{ pattern: /steel/i, preset: { metalness: 0.9, roughness: 0.3 } }],
+      default: { roughness: 0.8 },
+    });
+  }}
+/>;
+```
+
+### MaterialPreset 속성
+
+```typescript
+interface MaterialPreset {
+  color?: string | number;
+  roughness?: number;
+  metalness?: number;
+  envMapIntensity?: number;
+  transparent?: boolean;
+  opacity?: number;
+  side?: number;
+  depthWrite?: boolean;
+  emissive?: string | number;
+  emissiveIntensity?: number;
+}
+```
+
+### 패턴 매칭 규칙
+
+- **RegExp**: `pattern: /safetynet/i` - Material 이름에 정규식 매칭
+- **string**: `pattern: "concrete"` - Material 이름에 문자열 포함 여부 (`includes`)
+- 매칭 순서: `rules` 배열의 순서대로 검사, **첫 번째 매칭만 적용**
+- Material은 **clone 후** 속성을 적용하므로 원본이 보존됩니다
+
+### Before → After
+
+**Before** - 앱에서 직접 Material 순회:
+
+```tsx
+<GLTFModel
+  url="/model.glb"
+  onLoaded={(gltf) => {
+    traverseMeshes(gltf.scene, (mesh) => {
+      const applyPreset = (mat) => {
+        const cloned = mat.clone();
+        if (/^Material\s*#\d+$/i.test(mat.name)) {
+          updateMaterialProps(cloned, { roughness: 0.85, metalness: 0.86 });
+        } else if (/safetynet/i.test(mat.name)) {
+          updateMaterialProps(cloned, { roughness: 1.0, transparent: true, opacity: 0.45 });
+        } else {
+          updateMaterialProps(cloned, { roughness: 1.0, metalness: 1.0 });
+        }
+        return cloned;
+      };
+      if (Array.isArray(mesh.material)) {
+        mesh.material = mesh.material.map(applyPreset);
+      } else {
+        mesh.material = applyPreset(mesh.material);
+      }
+    });
+  }}
+/>
+```
+
+**After** - 선언적 prop:
+
+```tsx
+<GLTFModel
+  url="/model.glb"
+  materialPresets={{
+    rules: [
+      { pattern: /^Material\s*#\d+$/i, preset: { roughness: 0.85, metalness: 0.86 } },
+      { pattern: /safetynet/i, preset: { roughness: 1.0, transparent: true, opacity: 0.45 } },
+    ],
+    default: { roughness: 1.0, metalness: 1.0 },
+  }}
+/>
+```
 
 ### Stats
 
@@ -548,6 +661,13 @@ mesh.userData = {
 - `getMeshInfo(mesh)` - Mesh 정보 추출
 - `computeBoundingBox(object)` - BoundingBox 계산
 - `cloneMaterial(material)` - Material 복제
+- `applyMaterialPresets(object, config)` - Material 이름 기반 PBR 프리셋 적용 (v0.4.1)
+
+### Types (v0.4.1)
+
+- `MaterialPreset` - PBR 속성 프리셋 (roughness, metalness, opacity 등)
+- `MaterialPresetRule` - 패턴 + 프리셋 매핑 룰
+- `MaterialPresetsConfig` - rules 배열 + default 프리셋 설정
 
 ## 📝 라이선스
 
