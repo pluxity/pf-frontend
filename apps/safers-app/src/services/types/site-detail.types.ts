@@ -1,3 +1,21 @@
+// 안전율 상태
+export type SafetyStatus = "safe" | "warning" | "danger";
+
+// 안전율 카테고리 항목
+export interface SafetyCategory {
+  id: string;
+  name: string;
+  current: number; // 발생 건수
+  total: number; // 전체 점검 건수
+  status: SafetyStatus;
+}
+
+// 안전율 데이터
+export interface SafetyScoreData {
+  score: number; // 0~100 안전 점수
+  categories: SafetyCategory[];
+}
+
 // 기성률 데이터 포인트
 export interface ProgressDataPoint {
   label: string; // x축 라벨 (예: "1일", "1주차", "1월")
@@ -25,6 +43,7 @@ export interface SiteWeather {
 
 // 현장 상세 데이터
 export interface SiteDetail {
+  safetyScore: SafetyScoreData;
   progress: Record<ProgressPeriod, ProgressDataPoint[]>;
   personnel: PersonnelByOccupation[];
   totalPersonnel: number;

@@ -4,7 +4,20 @@ import type {
   SiteWeather,
   SiteDetail,
   ProgressPeriod,
+  SafetyScoreData,
 } from "../types/site-detail.types";
+
+/** 안전율 데이터 */
+const mockSafetyScore: SafetyScoreData = {
+  score: 95,
+  categories: [
+    { id: "1", name: "공정 안전 점검", current: 5, total: 155, status: "safe" },
+    { id: "2", name: "안전 시설 관리", current: 2, total: 35, status: "safe" },
+    { id: "3", name: "위험 작업 관리", current: 3, total: 155, status: "danger" },
+    { id: "4", name: "안전 교육 이수", current: 5, total: 23, status: "safe" },
+    { id: "5", name: "화재 예방 점검", current: 5, total: 12, status: "warning" },
+  ],
+};
 
 /** 기성률 일간 데이터 (최근 7일) */
 const dailyProgress: ProgressDataPoint[] = [
@@ -66,6 +79,7 @@ const progressMap: Record<ProgressPeriod, ProgressDataPoint[]> = {
 
 /** 전체 현장 상세 mock 데이터 */
 export const mockSiteDetail: SiteDetail = {
+  safetyScore: mockSafetyScore,
   progress: progressMap,
   personnel: mockPersonnel,
   totalPersonnel: mockPersonnel.reduce((sum, p) => sum + p.count, 0),
