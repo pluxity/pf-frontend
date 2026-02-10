@@ -120,7 +120,8 @@ export const weatherService = {
         // 예보 조회 실패해도 실황 데이터는 계속 수집
       }
 
-      for (let i = 1; i <= 3; i++) {
+      const pastDataPromises = Array.from({ length: 3 }, (_, index) => {
+        const i = index + 1;
         const { dateStr, hour } = getDateAndHourForPastData(today, i);
         const time = String(hour).padStart(2, "0") + "00";
 
@@ -135,45 +136,40 @@ export const weatherService = {
           authKey: WEATHER_API_KEY,
         });
 
-        try {
-          const ncstResponse = await fetch(`/weather-api/forecast/getUltraSrtNcst?${params}`);
+        return fetch(`/weather-api/forecast/getUltraSrtNcst?${params}`)
+          .then((res) => (res.ok ? res.json() : Promise.reject(new Error(res.statusText))))
+          .then((ncstData) => {
+            if (ncstData?.response?.header?.resultCode !== "00") return null;
 
-          if (!ncstResponse.ok) {
-            continue;
-          }
+            const ncstItems: UltraSrtNcstItem[] = ncstData.response.body.items.item || [];
+            const t1h = findT1H(ncstItems);
 
-          const ncstData = await ncstResponse.json();
-
-          if (ncstData.response.header.resultCode !== "00") {
-            continue;
-          }
-
-          const ncstItems: UltraSrtNcstItem[] = ncstData.response.body.items.item || [];
-          const t1h = findT1H(ncstItems);
-
-          if (t1h) {
-            const ptyItem = ncstItems.find((item) => item.category === "PTY");
-
-            const skyItem = allFcstItems.find(
-              (item) =>
-                item.fcstDate === dateStr && item.fcstTime === time && item.category === "SKY"
-            );
-
-            pastDataList.push({
-              hour: String(hour).padStart(2, "0"),
-              temp: t1h.obsrValue,
-              pty: ptyItem?.obsrValue ?? null,
-              sky: skyItem?.fcstValue ?? null,
+            if (t1h) {
+              const ptyItem = ncstItems.find((item) => item.category === "PTY");
+              const skyItem = allFcstItems.find(
+                (item) =>
+                  item.fcstDate === dateStr && item.fcstTime === time && item.category === "SKY"
+              );
+              return {
+                hour: String(hour).padStart(2, "0"),
+                temp: t1h.obsrValue,
+                pty: ptyItem?.obsrValue ?? null,
+                sky: skyItem?.fcstValue ?? null,
+              };
+            }
+            return null;
+          })
+          .catch((err) => {
+            console.warn(`과거 실황 데이터 조회 실패 (${i}시간 전):`, {
+              error: err instanceof Error ? err.message : "Unknown error",
+              timestamp: new Date(),
             });
-          }
-        } catch (err) {
-          console.warn(`과거 실황 데이터 조회 실패 (${i}시간 전):`, {
-            error: err instanceof Error ? err.message : "Unknown error",
-            timestamp: new Date(),
+            return null;
           });
-          continue;
-        }
-      }
+      });
+
+      const results = await Promise.all(pastDataPromises);
+      pastDataList.push(...results.filter((item): item is NonNullable<typeof item> => !!item));
 
       return pastDataList;
     } catch (err) {

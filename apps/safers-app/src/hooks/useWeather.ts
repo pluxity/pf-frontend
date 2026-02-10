@@ -107,9 +107,25 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
 
         useWeatherStore.getState().cleanupOldData();
 
+        // 미래 시간 데이터를 미리 그룹화 (성능 최적화)
+        const fcstByTime = fcst.reduce(
+          (acc, item) => {
+            const time = item.fcstTime;
+            if (!acc[time]) {
+              acc[time] = {};
+            }
+            // 각 카테고리별로 가장 최신 baseTime의 데이터만 저장
+            const existing = acc[time][item.category];
+            if (!existing || parseInt(item.baseTime, 10) > parseInt(existing.baseTime, 10)) {
+              acc[time][item.category] = item;
+            }
+            return acc;
+          },
+          {} as Record<string, Record<string, (typeof fcst)[0]>>
+        );
+
         const hourlyData: HourlyTemp[] = [];
         const storeGetHourlyCache = useWeatherStore.getState().getHourlyCacheTemp;
-
         const storeGetHourlyWeather = useWeatherStore.getState().getHourlyCacheWeather;
 
         // 현재 시간 기준: 전 3시간 ~ 후 5시간 (총 9시간)
@@ -139,34 +155,13 @@ export function useWeather({ nx, ny }: UseWeatherOptions): UseWeatherReturn {
               sky = cachedWeather.sky;
             }
           } else {
-            // 미래 시간: fcst (예보)에서 가져오기
-            const fcstCandidates = fcst.filter(
-              (item) => item.category === "T1H" && item.fcstTime === `${hourStr}00`
-            );
-            if (fcstCandidates.length > 0) {
-              // 동일한 base_time 중 가장 최신 데이터 선택
-              const fcstTemp = fcstCandidates.reduce((latest, current) =>
-                parseInt(current.baseTime, 10) > parseInt(latest.baseTime, 10) ? current : latest
-              );
-              temp = fcstTemp?.fcstValue ?? "--";
-            } else {
-              temp = "--";
+            // 미래 시간: 미리 그룹화된 fcstByTime에서 O(1)로 조회
+            const forecast = fcstByTime[`${hourStr}00`];
+            if (forecast) {
+              temp = forecast.T1H?.fcstValue ?? "--";
+              pty = forecast.PTY?.fcstValue ?? null;
+              sky = forecast.SKY?.fcstValue ?? null;
             }
-
-            // 미래 시간의 날씨 정보 추출
-            const ptyCandidates = fcst.filter(
-              (item) => item.category === "PTY" && item.fcstTime === `${hourStr}00`
-            );
-
-            if (ptyCandidates.length > 0) {
-              const fcstPty = ptyCandidates.reduce((latest, current) =>
-                parseInt(current.baseTime, 10) > parseInt(latest.baseTime, 10) ? current : latest
-              );
-              pty = fcstPty?.fcstValue ?? null;
-            }
-
-            // sky는 헬퍼 함수로 추출
-            sky = extractSkyFromFcst(fcst, hourStr);
           }
 
           const isCurrent = hour === currentHourNum;

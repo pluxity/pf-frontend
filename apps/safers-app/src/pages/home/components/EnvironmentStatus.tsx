@@ -1,6 +1,5 @@
 import { RadialBarChart, RadialBar } from "recharts";
 import type { Environment } from "../../../services/types/environments.types";
-import { mockEnvironments } from "../../../services/mocks/environments.mock";
 
 export function EnvironmentChart({ data }: { data: Environment }) {
   const endAngle = 90 + (data.percentage / 100) * 360;
@@ -55,7 +54,7 @@ export function EnvironmentChart({ data }: { data: Environment }) {
   );
 }
 
-export function EnvironmentStatus({ data = mockEnvironments }: { data?: Environment[] } = {}) {
+export function EnvironmentStatus({ data }: { data: Environment[] }) {
   return (
     <div>
       <div className="text-neutral-300 font-semibold text-sm mb-2">환경 모니터링</div>
