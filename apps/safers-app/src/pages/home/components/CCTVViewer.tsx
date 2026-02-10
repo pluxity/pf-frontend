@@ -5,7 +5,7 @@ function CCTVCard({ streamUrl, name }: { streamUrl: string; name: string }) {
   const { videoRef, status, connect } = useWHEPStream(streamUrl);
 
   return (
-    <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
+    <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full border-2 border-gray-300">
       <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />
 
       {/* 연결 중 상태 */}
