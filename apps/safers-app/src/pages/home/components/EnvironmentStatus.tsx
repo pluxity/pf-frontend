@@ -55,10 +55,10 @@ export function EnvironmentChart({ data }: { data: Environment }) {
   );
 }
 
-export function EnvironmentMonitor({ data = mockEnvironments }: { data?: Environment[] } = {}) {
+export function EnvironmentStatus({ data = mockEnvironments }: { data?: Environment[] } = {}) {
   return (
     <div>
-      <div className="text-[#B5BBD3] font-semibold text-sm mb-2">환경 모니터링</div>
+      <div className="text-neutral-300 font-semibold text-sm mb-2">환경 모니터링</div>
       <div className="flex items-center justify-between">
         {data.map((item) => (
           <EnvironmentChart key={item.name} data={item} />

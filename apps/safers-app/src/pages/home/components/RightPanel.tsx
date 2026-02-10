@@ -1,9 +1,10 @@
 import { useWeather } from "../../../hooks/useWeather";
 import { Spinner } from "@pf-dev/ui";
 import { Weather } from "./Weather";
-import { EnvironmentMonitor } from "./EnvironmentMonitor";
+import { EnvironmentStatus } from "./EnvironmentStatus";
 import { mockEnvironments } from "../../../services/mocks/environments.mock";
-import { SafetyMonitor } from "./SafetyMonitor";
+import { SafetyStatus } from "./SafetyStatus";
+import { CCTVViewer } from "./CCTVViewer";
 
 export function RightPanel() {
   const nx = Number(import.meta.env.VITE_SITE_NX);
@@ -22,14 +23,14 @@ export function RightPanel() {
   return (
     <aside className="z-10 flex h-full w-[50rem] flex-shrink-0 flex-col gap-4 p-4">
       {/* 현장 기본 정보 */}
-      <div className="flex items-center gap-2 rounded-3xl bg-[#FF7500] p-4 h-[3rem] text-white text-lg">
+      <div className="flex items-center gap-2 rounded-3xl bg-brand p-4 h-[3rem] text-white text-lg">
         <img
           src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/map-pin.svg`}
           alt="location"
           className="w-6 h-6"
         />
         <span className="font-semibold">{import.meta.env.VITE_SITE_NAME}</span>
-        <span className="h-4 bg-[#FFE5B5] w-0.5"></span>
+        <span className="h-4 bg-white w-0.5"></span>
         <span>진행 458 Days</span>
         {/* 링크 동작 나중에 확인! 링크 가능 시 태그 변경 */}
         <img
@@ -39,25 +40,23 @@ export function RightPanel() {
         />
       </div>
       {/* 현장 정보 + 날씨 */}
-      <div className="rounded-lg border border-white/80 p-4 h-[12rem] shadow-[0_4px_10px_0_rgba(0,0,0,0.08)]">
+      <div className="rounded-lg border border-white/80 p-4 h-[12rem] shadow-[0_0.25rem_0.625rem_0_rgba(0,0,0,0.08)]">
         <Weather currentTemp={currentTemp} hourlyTemps={hourlyTemps} data={data} />
       </div>
 
       {/* 환경 데이터 */}
-      <div className="rounded-lg bg-white h-[15rem] p-4 shadow-[0_0_1px_#0000000A,0_2px_6px_#0000000A]">
-        <EnvironmentMonitor data={mockEnvironments} />
+      <div className="rounded-lg bg-white h-[15rem] p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
+        <EnvironmentStatus data={mockEnvironments} />
       </div>
 
       {/* 안전 모니터링 */}
-      <div className="rounded-lg bg-white h-[19rem] p-4 shadow-[0_0_1px_#0000000A,0_2px_6px_#0000000A]">
-        <SafetyMonitor />
+      <div className="rounded-lg bg-white h-[19rem] p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
+        <SafetyStatus />
       </div>
 
       {/* CCTV */}
-      <div className="flex-1 grid grid-cols-3 gap-4">
-        <div className="rounded-lg bg-white border border-2 border-gray-200">{/* CCTV 1 */}</div>
-        <div className="rounded-lg bg-white border border-2 border-gray-200">{/* CCTV 2 */}</div>
-        <div className="rounded-lg bg-white border border-2 border-gray-200">{/* CCTV 3 */}</div>
+      <div className="grid grid-cols-3 gap-4 flex-1">
+        <CCTVViewer />
       </div>
     </aside>
   );

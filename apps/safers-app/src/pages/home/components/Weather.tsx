@@ -41,7 +41,7 @@ export function Weather({ currentTemp, hourlyTemps, data }: WeatherProps) {
             습도 {ncstData.humidity ?? "--"}%
             {ncstData.windSpeed ? (
               <>
-                <span className="w-1 h-1 bg-[#999999] rounded-full"></span>
+                <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                 {ncstData.windDirection} {ncstData.windSpeed}m/s
               </>
             ) : null}
@@ -51,8 +51,8 @@ export function Weather({ currentTemp, hourlyTemps, data }: WeatherProps) {
           {hourlyTemps.map((item) => (
             <li
               key={item.hour}
-              className={`flex flex-col items-center min-w-13 p-2 gap-1 rounded-4xl shadow-[0_4px_10px_0_rgba(0,0,0,0.08)] text-sm ${
-                item.isCurrent ? "bg-white/80 text-[#333333]" : "bg-white/50 text-[#9499B1]"
+              className={`flex flex-col items-center min-w-13 p-2 gap-1 rounded-4xl shadow-[0_0.25rem_0.625rem_0_rgba(0,0,0,0.08)] text-sm ${
+                item.isCurrent ? "bg-white/80 text-gray-800" : "bg-white/50 text-neutral-300"
               }`}
             >
               <span>{item.isCurrent ? "now" : `${item.hour}:00`}</span>
