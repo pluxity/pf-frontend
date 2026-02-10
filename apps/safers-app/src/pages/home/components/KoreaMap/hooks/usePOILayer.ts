@@ -335,6 +335,8 @@ function highlightSelectedPOI(layer: SVGGroupSelection, poiId: string, coords: P
       .attr("data-original-color", color);
   }
 
+  newPoi.raise();
+
   newPoi
     .transition()
     .duration(200)

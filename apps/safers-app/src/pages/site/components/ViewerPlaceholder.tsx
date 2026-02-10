@@ -1,19 +1,8 @@
-import {
-  Canvas,
-  GLTFModel,
-  MeshOutline,
-  useMeshHover,
-  useInteractionStore,
-  traverseMeshes,
-  updateMaterialProps,
-} from "@pf-dev/three";
+import { Canvas, GLTFModel, MeshOutline, useMeshHover, useInteractionStore } from "@pf-dev/three";
+import type { MaterialPresetsConfig } from "@pf-dev/three";
 
 const SCENE_BG = "#E8ECF1";
 const ACES_FILMIC_TONE_MAPPING = 4;
-
-// ─── Material 이름 매칭 패턴 ───
-const METAL_PATTERN = /^Material\s*#\d+$/i;
-const SAFETYNET_PATTERN = /safetynet/i;
 
 // ─── 씬 조명 상수 ───
 const LIGHTING = {
@@ -23,24 +12,26 @@ const LIGHTING = {
   directional: 2.0,
 } as const;
 
-// ─── Material PBR 프리셋 ───
-const MATERIAL_PRESET = {
-  metal: { roughness: 0.85, metalness: 0.86, envMapIntensity: 0.0 },
-  safetynet: {
-    roughness: 1.0,
-    metalness: 0.0,
-    envMapIntensity: 5.0,
-    transparent: true,
-    opacity: 1.0,
-  },
+// ─── Material PBR 프리셋 (v0.4.1 materialPresets API) ───
+const MATERIAL_PRESETS: MaterialPresetsConfig = {
+  rules: [
+    {
+      pattern: /^Material\s*#\d+$/i,
+      preset: { roughness: 0.85, metalness: 0.86, envMapIntensity: 0.0 },
+    },
+    {
+      pattern: /safetynet/i,
+      preset: {
+        roughness: 1.0,
+        metalness: 0.0,
+        envMapIntensity: 5.0,
+        transparent: true,
+        opacity: 1.0,
+      },
+    },
+  ],
   default: { roughness: 0.8, metalness: 0.0, envMapIntensity: 0.0 },
-} as const;
-
-function getMaterialPreset(name: string) {
-  if (METAL_PATTERN.test(name)) return MATERIAL_PRESET.metal;
-  if (SAFETYNET_PATTERN.test(name)) return MATERIAL_PRESET.safetynet;
-  return null; // default: GLB 원본 유지
-}
+};
 
 /** Canvas 내부에서 호버 인터랙션을 활성화하는 컴포넌트 */
 function SceneInteraction() {
@@ -108,23 +99,7 @@ export function ViewerPlaceholder() {
           url="/assets/models/safers.glb"
           castShadow
           receiveShadow
-          onLoaded={(gltf) => {
-            traverseMeshes(gltf.scene, (mesh) => {
-              const applyPreset = (mat: typeof mesh.material) => {
-                const preset = getMaterialPreset(mat.name);
-                if (!preset) return mat; // 원본 유지
-                const cloned = mat.clone();
-                updateMaterialProps(cloned, preset);
-                return cloned;
-              };
-
-              if (Array.isArray(mesh.material)) {
-                mesh.material = mesh.material.map(applyPreset);
-              } else {
-                mesh.material = applyPreset(mesh.material);
-              }
-            });
-          }}
+          materialPresets={MATERIAL_PRESETS}
         />
 
         <SceneInteraction />

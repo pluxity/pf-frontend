@@ -1,7 +1,26 @@
-import { useState } from "react";
-import { PieChart, Pie, Cell, Sector, ResponsiveContainer } from "recharts";
+import { useState, useRef, useEffect } from "react";
+import { PieChart, Pie, Cell, Sector } from "recharts";
 import type { PersonnelByOccupation } from "@/services";
 import { GlassPanel } from "./GlassPanel";
+
+function useContainerSize(ref: React.RefObject<HTMLDivElement | null>) {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      const { width, height } = entry.contentRect;
+      setSize({ width: Math.floor(width), height: Math.floor(height) });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+
+  return size;
+}
 
 // ─── Active Shape (hover 시 확대) ───
 function ActiveShape(props: Record<string, unknown>) {
@@ -36,6 +55,8 @@ interface WorkerInfoPanelProps {
 
 export function WorkerInfoPanel({ personnel, totalPersonnel }: WorkerInfoPanelProps) {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useContainerSize(chartRef);
 
   if (!personnel || !totalPersonnel) {
     return (
@@ -62,37 +83,35 @@ export function WorkerInfoPanel({ personnel, totalPersonnel }: WorkerInfoPanelPr
       </div>
 
       {/* 도넛 차트 + 중앙 범례 */}
-      <div className="relative flex-1">
-        <div className="absolute inset-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={personnel}
-                dataKey="count"
-                nameKey="occupation"
-                cx="50%"
-                cy="50%"
-                innerRadius="62%"
-                outerRadius="92%"
-                paddingAngle={2}
-                stroke="none"
-                activeIndex={activeIndex}
-                activeShape={ActiveShape}
-                onMouseEnter={(_, index) => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(undefined)}
-              >
-                {personnel.map((entry, index) => (
-                  <Cell
-                    key={index}
-                    fill={entry.color}
-                    style={{ cursor: "pointer", transition: "opacity 0.2s" }}
-                    opacity={activeIndex === undefined || activeIndex === index ? 1 : 0.5}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+      <div ref={chartRef} className="relative flex items-center justify-center flex-1">
+        {width > 0 && height > 0 && (
+          <PieChart width={Math.min(width, height)} height={Math.min(width, height)}>
+            <Pie
+              data={personnel}
+              dataKey="count"
+              nameKey="occupation"
+              cx="50%"
+              cy="50%"
+              innerRadius="52%"
+              outerRadius="88%"
+              paddingAngle={2}
+              stroke="none"
+              activeIndex={activeIndex}
+              activeShape={ActiveShape}
+              onMouseEnter={(_, index) => setActiveIndex(index)}
+              onMouseLeave={() => setActiveIndex(undefined)}
+            >
+              {personnel.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={entry.color}
+                  style={{ cursor: "pointer", transition: "opacity 0.2s" }}
+                  opacity={activeIndex === undefined || activeIndex === index ? 1 : 0.5}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        )}
 
         {/* 중앙 범례 (도넛 안쪽) */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">

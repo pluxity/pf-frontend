@@ -1,6 +1,25 @@
-import { RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer } from "recharts";
+import { useRef, useState, useEffect } from "react";
+import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import type { SafetyScoreData, SafetyStatus } from "@/services";
 import { GlassPanel } from "./GlassPanel";
+
+function useContainerWidth(ref: React.RefObject<HTMLDivElement | null>) {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      setWidth(Math.floor(entry.contentRect.width));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+
+  return width;
+}
 
 // ─── 상수 ───
 const STATUS_COLOR: Record<SafetyStatus, string> = {
@@ -10,25 +29,28 @@ const STATUS_COLOR: Record<SafetyStatus, string> = {
 };
 
 // ─── Gauge Chart (recharts RadialBarChart) ───
-function GaugeChart({ score }: { score: number }) {
+function GaugeChart({ score, width }: { score: number; width: number }) {
   const data = [{ name: "score", value: score, fill: "#11C208" }];
+  const chartHeight = Math.round(width * 0.75);
+
+  if (width <= 0) return null;
 
   return (
-    <div className="relative">
-      <ResponsiveContainer width="100%" height={160}>
-        <RadialBarChart
-          cx="50%"
-          cy="50%"
-          innerRadius="60%"
-          outerRadius="100%"
-          startAngle={225}
-          endAngle={-45}
-          data={data}
-        >
-          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-          <RadialBar dataKey="value" cornerRadius={10} background={{ fill: "#BBBFCF" }} />
-        </RadialBarChart>
-      </ResponsiveContainer>
+    <div className="relative flex justify-center">
+      <RadialBarChart
+        width={width}
+        height={chartHeight}
+        cx="50%"
+        cy="50%"
+        innerRadius="60%"
+        outerRadius="100%"
+        startAngle={225}
+        endAngle={-45}
+        data={data}
+      >
+        <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
+        <RadialBar dataKey="value" cornerRadius={10} background={{ fill: "#BBBFCF" }} />
+      </RadialBarChart>
 
       {/* 중앙 텍스트 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -87,6 +109,9 @@ interface SafetyScorePanelProps {
 }
 
 export function SafetyScorePanel({ data }: SafetyScorePanelProps) {
+  const gaugeRef = useRef<HTMLDivElement>(null);
+  const gaugeWidth = useContainerWidth(gaugeRef);
+
   if (!data) {
     return (
       <GlassPanel>
@@ -112,8 +137,8 @@ export function SafetyScorePanel({ data }: SafetyScorePanelProps) {
       </div>
 
       {/* 게이지 차트 */}
-      <div className="flex-shrink-0">
-        <GaugeChart score={data.score} />
+      <div ref={gaugeRef} className="flex-shrink-0">
+        <GaugeChart score={data.score} width={gaugeWidth} />
       </div>
 
       {/* 카테고리 목록 */}
