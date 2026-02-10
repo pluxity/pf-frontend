@@ -1,25 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import type { SafetyScoreData, SafetyStatus } from "@/services";
+import { useContainerSize } from "@/hooks";
 import { GlassPanel } from "./GlassPanel";
-
-function useContainerWidth(ref: React.RefObject<HTMLDivElement | null>) {
-  const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(([entry]) => {
-      if (!entry) return;
-      setWidth(Math.floor(entry.contentRect.width));
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
-
-  return width;
-}
 
 // ─── 상수 ───
 const STATUS_COLOR: Record<SafetyStatus, string> = {
@@ -28,10 +11,12 @@ const STATUS_COLOR: Record<SafetyStatus, string> = {
   danger: "#CA0014",
 };
 
+const GAUGE_ASPECT_RATIO = 0.75;
+
 // ─── Gauge Chart (recharts RadialBarChart) ───
 function GaugeChart({ score, width }: { score: number; width: number }) {
   const data = [{ name: "score", value: score, fill: "#11C208" }];
-  const chartHeight = Math.round(width * 0.75);
+  const chartHeight = Math.round(width * GAUGE_ASPECT_RATIO);
 
   if (width <= 0) return null;
 
@@ -110,7 +95,7 @@ interface SafetyScorePanelProps {
 
 export function SafetyScorePanel({ data }: SafetyScorePanelProps) {
   const gaugeRef = useRef<HTMLDivElement>(null);
-  const gaugeWidth = useContainerWidth(gaugeRef);
+  const { width: gaugeWidth } = useContainerSize(gaugeRef);
 
   if (!data) {
     return (

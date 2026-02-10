@@ -16,7 +16,7 @@ export function SitePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [site, setSite] = useState<Site | null>(null);
-  const [_detail, setDetail] = useState<SiteDetail | null>(null);
+  const [detail, setDetail] = useState<SiteDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export function SitePage() {
     fetchData();
   }, [id, navigate]);
 
-  if (isLoading || !site || !_detail) {
+  if (isLoading || !site || !detail) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-slate-100">
         <Spinner size="lg" />
@@ -56,9 +56,9 @@ export function SitePage() {
       header={<SiteHeader siteName={site.name} />}
       leftPanel={<EventPanel />}
       rightTopPanel={<WeatherPanel />}
-      rightMiddlePanel={<SafetyScorePanel data={_detail.safetyScore} />}
+      rightMiddlePanel={<SafetyScorePanel data={detail.safetyScore} />}
       rightBottomPanel={
-        <WorkerInfoPanel personnel={_detail.personnel} totalPersonnel={_detail.totalPersonnel} />
+        <WorkerInfoPanel personnel={detail.personnel} totalPersonnel={detail.totalPersonnel} />
       }
     >
       <ViewerPlaceholder />

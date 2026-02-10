@@ -1,45 +1,29 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { PieChart, Pie, Cell, Sector } from "recharts";
 import type { PersonnelByOccupation } from "@/services";
+import { useContainerSize } from "@/hooks";
 import { GlassPanel } from "./GlassPanel";
 
-function useContainerSize(ref: React.RefObject<HTMLDivElement | null>) {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const ro = new ResizeObserver(([entry]) => {
-      if (!entry) return;
-      const { width, height } = entry.contentRect;
-      setSize({ width: Math.floor(width), height: Math.floor(height) });
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
-
-  return size;
+// ─── Active Shape (hover 시 확대) ───
+interface ActiveShapeProps {
+  cx: number;
+  cy: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
 }
 
-// ─── Active Shape (hover 시 확대) ───
-function ActiveShape(props: Record<string, unknown>) {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props as {
-    cx: number;
-    cy: number;
-    innerRadius: number;
-    outerRadius: number;
-    startAngle: number;
-    endAngle: number;
-    fill: string;
-  };
+function ActiveShape(props: ActiveShapeProps) {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
 
   return (
     <Sector
       cx={cx}
       cy={cy}
       innerRadius={innerRadius - 2}
-      outerRadius={(outerRadius as number) + 6}
+      outerRadius={outerRadius + 6}
       startAngle={startAngle}
       endAngle={endAngle}
       fill={fill}
@@ -83,7 +67,7 @@ export function WorkerInfoPanel({ personnel, totalPersonnel }: WorkerInfoPanelPr
       </div>
 
       {/* 도넛 차트 + 중앙 범례 */}
-      <div ref={chartRef} className="relative flex items-center justify-center flex-1">
+      <div ref={chartRef} className="relative flex flex-1 items-center justify-center">
         {width > 0 && height > 0 && (
           <PieChart width={Math.min(width, height)} height={Math.min(width, height)}>
             <Pie
