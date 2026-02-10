@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
@@ -27,6 +28,7 @@ function siteToPOI(site: Site): POI | null {
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate();
   const [pois, setPois] = useState<POI[]>([]);
 
   useEffect(() => {
@@ -42,24 +44,13 @@ export function DashboardPage() {
     fetchSites();
   }, []);
 
-  const handlePOIClick = (poi: POI) => {
-    console.log("Site clicked:", poi.data);
-  };
-
-  const handlePOIHover = (poi: POI | null) => {
-    if (poi) {
-      console.log("Site hover:", poi.data?.name);
-    }
+  const handlePOIInfoClick = (poi: POI) => {
+    navigate(`/site/${poi.id}`);
   };
 
   return (
     <DashboardLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />}>
-      <KoreaMap
-        className="w-full h-full"
-        pois={pois}
-        onPOIClick={handlePOIClick}
-        onPOIHover={handlePOIHover}
-      />
+      <KoreaMap className="w-full h-full" pois={pois} onPOIInfoClick={handlePOIInfoClick} />
     </DashboardLayout>
   );
 }

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useGLTFLoader } from "../../loaders/useGLTFLoader";
+import { applyMaterialPresets } from "../../utils/materials";
+import type { MaterialPresetsConfig } from "../../types/material";
 import type { Group, Mesh } from "three";
 import type { GLTF } from "three-stdlib";
 
@@ -17,6 +19,8 @@ export interface GLTFModelProps {
   // Shadow
   castShadow?: boolean;
   receiveShadow?: boolean;
+
+  materialPresets?: MaterialPresetsConfig;
 
   // Callbacks
   onProgress?: (progress: number) => void;
@@ -36,6 +40,7 @@ export function GLTFModel({
   scale,
   castShadow = false,
   receiveShadow = false,
+  materialPresets,
   onProgress,
   onLoaded,
   onError,
@@ -61,6 +66,11 @@ export function GLTFModel({
       }
     });
   }, [scene, castShadow, receiveShadow]);
+
+  useEffect(() => {
+    if (!scene || !materialPresets) return;
+    applyMaterialPresets(scene, materialPresets);
+  }, [scene, materialPresets]);
 
   if (isLoading || !scene) return null;
   if (error) return null;

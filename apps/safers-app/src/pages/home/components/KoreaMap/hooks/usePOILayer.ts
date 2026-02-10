@@ -102,6 +102,7 @@ interface UseSelectedPOIOptions {
   jejuProjectionRef: React.MutableRefObject<GeoProjection | null>;
   pois: POI[];
   selectedSiteId: string | null;
+  onPOIInfoClick?: (poi: POI) => void;
 }
 
 /** 선택된 POI 시각 업데이트를 담당하는 훅 */
@@ -111,8 +112,14 @@ export function useSelectedPOI({
   jejuProjectionRef,
   pois,
   selectedSiteId,
+  onPOIInfoClick,
 }: UseSelectedPOIOptions): void {
   const prevSelectedSiteIdRef = useRef<string | null>(null);
+  const onPOIInfoClickRef = useRef(onPOIInfoClick);
+
+  useEffect(() => {
+    onPOIInfoClickRef.current = onPOIInfoClick;
+  }, [onPOIInfoClick]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -155,7 +162,9 @@ export function useSelectedPOI({
 
     clearPOIInfo(poiInfoLayer);
     const siteName = (poiData.data?.name as string) ?? poiData.id;
-    showPOIInfo(poiInfoLayer, poiCoords.x, poiCoords.y, siteName, rootFontSize);
+    showPOIInfo(poiInfoLayer, poiCoords.x, poiCoords.y, siteName, rootFontSize, () => {
+      onPOIInfoClickRef.current?.(poiData);
+    });
 
     prevSelectedSiteIdRef.current = selectedSiteId;
   }, [selectedSiteId, pois, svgRef, mainProjectionRef, jejuProjectionRef]);
@@ -325,6 +334,8 @@ function highlightSelectedPOI(layer: SVGGroupSelection, poiId: string, coords: P
       .attr("data-original-transform", `translate(${x - offsetX}, ${y - offsetY}) scale(${scale})`)
       .attr("data-original-color", color);
   }
+
+  newPoi.raise();
 
   newPoi
     .transition()

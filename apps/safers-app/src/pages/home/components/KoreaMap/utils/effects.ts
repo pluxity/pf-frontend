@@ -90,7 +90,8 @@ export function showPOIInfo(
   x: number,
   y: number,
   siteName: string,
-  rootFontSize: number
+  rootFontSize: number,
+  onClick?: () => void
 ): void {
   clearPOIInfo(layer);
 
@@ -101,8 +102,12 @@ export function showPOIInfo(
   const lineEndX = x + 2 * rootFontSize;
   const lineY = lineStartY;
 
+  const arrowSize = 0.4 * rootFontSize;
+  const arrowGap = 0.4 * rootFontSize;
   const textLength = siteName.length;
-  const boxWidth = Math.max(5, textLength * 0.55 + 1.5) * rootFontSize;
+  const textWidth = textLength * 0.55 * rootFontSize;
+  const boxPaddingX = 0.75 * rootFontSize;
+  const boxWidth = Math.max(5 * rootFontSize, textWidth + arrowSize + arrowGap + boxPaddingX * 2);
   const boxHeight = 1.5 * rootFontSize;
   const boxX = lineEndX;
   const boxY = lineY - boxHeight / 2;
@@ -119,7 +124,12 @@ export function showPOIInfo(
     .duration(200)
     .attr("x2", lineEndX);
 
-  const pillGroup = infoGroup.append("g").attr("class", "poi-info-pill").style("opacity", 0);
+  const pillGroup = infoGroup
+    .append("g")
+    .attr("class", "poi-info-pill")
+    .style("opacity", 0)
+    .style("cursor", onClick ? "pointer" : "default")
+    .style("pointer-events", onClick ? "all" : "none");
 
   pillGroup
     .append("rect")
@@ -130,16 +140,52 @@ export function showPOIInfo(
     .attr("rx", boxHeight / 2)
     .attr("fill", MAP_COLORS.brand);
 
+  const contentCenterX =
+    boxX + boxPaddingX + (boxWidth - boxPaddingX * 2 - arrowSize - arrowGap) / 2;
+
   pillGroup
     .append("text")
-    .attr("x", boxX + boxWidth / 2)
+    .attr("x", contentCenterX)
     .attr("y", boxY + boxHeight / 2)
     .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .attr("fill", "white")
     .attr("font-size", `${0.75 * rootFontSize}px`)
     .attr("font-weight", "500")
+    .attr("text-decoration", onClick ? "underline" : "none")
+    .style("pointer-events", "none")
     .text(siteName);
+
+  // 화살표 아이콘 (>)
+  const arrowX = boxX + boxWidth - boxPaddingX - arrowSize;
+  const arrowCenterY = boxY + boxHeight / 2;
+  pillGroup
+    .append("path")
+    .attr(
+      "d",
+      `M${arrowX},${arrowCenterY - arrowSize * 0.5} L${arrowX + arrowSize * 0.5},${arrowCenterY} L${arrowX},${arrowCenterY + arrowSize * 0.5}`
+    )
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 1.5)
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
+    .style("pointer-events", "none");
+
+  if (onClick) {
+    pillGroup.on("click", (event: MouseEvent) => {
+      event.stopPropagation();
+      onClick();
+    });
+
+    pillGroup
+      .on("mouseenter", function () {
+        pillGroup.select("rect").transition().duration(150).attr("fill", "#E06800");
+      })
+      .on("mouseleave", function () {
+        pillGroup.select("rect").transition().duration(150).attr("fill", MAP_COLORS.brand);
+      });
+  }
 
   pillGroup.transition().delay(150).duration(200).style("opacity", 1);
 }

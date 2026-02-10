@@ -26,6 +26,8 @@ export {
   setMaterialColor,
   setMaterialOpacity,
   getAllMaterials,
+  findMatchingPreset,
+  applyMaterialPresets,
 } from "./materials";
 
 // Types
