@@ -1,5 +1,7 @@
 import { type ReactNode, useEffect } from "react";
 import { useFBXLoader } from "../../loaders/useFBXLoader";
+import { applyMaterialPresets } from "../../utils/materials";
+import type { MaterialPresetsConfig } from "../../types/material";
 import type { Group, Mesh } from "three";
 
 export interface FBXModelProps {
@@ -15,6 +17,8 @@ export interface FBXModelProps {
   // Shadow
   castShadow?: boolean;
   receiveShadow?: boolean;
+
+  materialPresets?: MaterialPresetsConfig;
 
   // Callbacks
   onProgress?: (progress: number) => void;
@@ -34,6 +38,7 @@ export function FBXModel({
   scale,
   castShadow = false,
   receiveShadow = false,
+  materialPresets,
   onProgress,
   onLoaded,
   onError,
@@ -59,6 +64,11 @@ export function FBXModel({
       }
     });
   }, [object, castShadow, receiveShadow]);
+
+  useEffect(() => {
+    if (!object || !materialPresets) return;
+    applyMaterialPresets(object, materialPresets);
+  }, [object, materialPresets]);
 
   if (isLoading || !object) return null;
   if (error) return null;

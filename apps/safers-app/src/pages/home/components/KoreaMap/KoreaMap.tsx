@@ -7,7 +7,13 @@ import type { KoreaMapProps } from "./types";
 import { useMapRenderer, usePOILayer, useSelectedPOI } from "./hooks";
 
 /** 대한민국 지도와 POI를 D3.js로 렌더링하는 컴포넌트 */
-export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: KoreaMapProps) {
+export function KoreaMap({
+  className,
+  pois = [],
+  onPOIClick,
+  onPOIHover,
+  onPOIInfoClick,
+}: KoreaMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
@@ -35,6 +41,7 @@ export function KoreaMap({ className, pois = [], onPOIClick, onPOIHover }: Korea
     jejuProjectionRef,
     pois,
     selectedSiteId,
+    onPOIInfoClick,
   });
 
   return (
