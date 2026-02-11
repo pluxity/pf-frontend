@@ -1,16 +1,62 @@
+import { useEffect, useMemo, useState } from "react";
 import { useWeather } from "../../../hooks/useWeather";
+import { gpsToGrid } from "../../../utils/kma";
 import { Spinner } from "@pf-dev/ui";
 import { Weather } from "./Weather";
 import { EnvironmentStatus } from "./EnvironmentStatus";
 import { mockEnvironments } from "../../../services/mocks/environments.mock";
 import { SafetyStatus } from "./SafetyStatus";
 import { CCTVViewer } from "./CCTVViewer";
+import { sitesService, type Site } from "@/services";
+import { useSitesStore, selectSelectedSiteId } from "@/stores";
 
 export function RightPanel() {
-  const nx = Number(import.meta.env.VITE_SITE_NX);
-  const ny = Number(import.meta.env.VITE_SITE_NY);
+  const selectedSiteId = useSitesStore(selectSelectedSiteId);
+  const [selectedSiteData, setSelectedSiteData] = useState<Site[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { currentTemp, hourlyTemps, data, isLoading } = useWeather({ nx, ny });
+  const { nx, ny } = useMemo(() => {
+    if (selectedSiteData[0]?.latitude && selectedSiteData[0]?.longitude) {
+      return gpsToGrid(selectedSiteData[0].latitude, selectedSiteData[0].longitude);
+    }
+    return { nx: 0, ny: 0 };
+  }, [selectedSiteData]);
+
+  const { currentTemp, hourlyTemps, data } = useWeather({ nx, ny });
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (selectedSiteId) {
+          const [siteRes] = await Promise.all([sitesService.getSite(selectedSiteId)]);
+          setSelectedSiteData([siteRes.data]);
+        } else {
+          setSelectedSiteData([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch site data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const updateSiteData = async () => {
+      if (selectedSiteId) {
+        try {
+          const res = await sitesService.getSite(selectedSiteId);
+          setSelectedSiteData([res.data]);
+        } catch (error) {
+          console.error("Failed to update site:", error);
+        }
+      } else {
+        setSelectedSiteData([]);
+      }
+    };
+    updateSiteData();
+  }, [selectedSiteId]);
 
   if (isLoading) {
     return (
@@ -29,7 +75,7 @@ export function RightPanel() {
           alt="location"
           className="w-6 h-6"
         />
-        <span className="font-semibold">{import.meta.env.VITE_SITE_NAME}</span>
+        <span className="font-semibold">{selectedSiteData[0]?.name || "--"}</span>
         <span className="h-4 bg-white w-0.5"></span>
         <span>진행 458 Days</span>
         {/* 링크 동작 나중에 확인! 링크 가능 시 태그 변경 */}

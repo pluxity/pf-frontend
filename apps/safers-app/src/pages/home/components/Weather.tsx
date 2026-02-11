@@ -1,8 +1,4 @@
-import {
-  getWeatherIcon,
-  extractWeatherState,
-  extractEnvironmentData,
-} from "../../../utils/weather";
+import { getWeatherIcon, extractWeatherState, extractEnvironmentData } from "../../../utils/kma";
 import type { HourlyTemp } from "../../../hooks";
 import type { UltraSrtNcstResponse } from "../../../services/types";
 

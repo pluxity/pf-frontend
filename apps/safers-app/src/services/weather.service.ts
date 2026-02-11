@@ -4,7 +4,7 @@ import type {
   UltraSrtNcstItem,
   UltraSrtFcstItem,
 } from "./types";
-import { getBaseDateTime, findT1H, getDateAndHourForPastData } from "../utils/weather";
+import { getBaseDateTime, findT1H, getDateAndHourForPastData } from "../utils/kma";
 
 const WEATHER_API_KEY = import.meta.env.VITE_API_WEATHER;
 

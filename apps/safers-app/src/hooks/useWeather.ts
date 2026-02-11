@@ -8,7 +8,7 @@ import {
   extractHourFromBaseTime,
   extractWeatherState,
   extractSkyFromFcst,
-} from "../utils/weather";
+} from "../utils/kma";
 import type { UltraSrtNcstResponse, UltraSrtFcstResponse } from "../services/types";
 
 interface UseWeatherOptions {
