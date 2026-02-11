@@ -12,11 +12,9 @@ export const INITIAL_VIEW = {
 } as const;
 
 export const MAP_STYLES = {
-  light: "mapbox://styles/mapbox/light-v11",
-  dark: "mapbox://styles/mapbox/dark-v11",
-  night: "mapbox://styles/mapbox/navigation-night-v1",
-  streets: "mapbox://styles/mapbox/streets-v12",
-  outdoors: "mapbox://styles/mapbox/outdoors-v12",
-  satellite: "mapbox://styles/mapbox/satellite-streets-v12",
-  standard: "mapbox://styles/mapbox/standard",
+  day: "mapbox://styles/pluxity-nadk/cmlhclxv7000w01sk3ag994v4",
+  mono: "mapbox://styles/pluxity-nadk/cmlhcizfs000801sp7y4hd6eu",
+  night: "mapbox://styles/pluxity-nadk/cmlhbbwia000501sp8rbz247b",
 } as const;
+
+export type MapStyleKey = keyof typeof MAP_STYLES;

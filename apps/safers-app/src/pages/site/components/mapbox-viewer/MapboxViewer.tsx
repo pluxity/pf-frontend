@@ -2,13 +2,11 @@ import { useEffect, useRef, useImperativeHandle } from "react";
 import { Map as MapboxMap, type CustomLayerInterface } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { ModelTransform } from "./types";
-import { MAPBOX_TOKEN, MODEL_URL, INITIAL_VIEW, MAP_STYLES } from "./constants";
+import { MAPBOX_TOKEN, MODEL_URL, INITIAL_VIEW, MAP_STYLES, type MapStyleKey } from "./constants";
 import { createThreeLayer } from "./create-three-layer";
 
-type LightPreset = "dawn" | "day" | "dusk" | "night";
-
 export interface MapboxViewerHandle {
-  setLightPreset: (preset: LightPreset) => void;
+  setStyle: (style: MapStyleKey) => void;
 }
 
 interface MapboxViewerProps {
@@ -30,13 +28,9 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
   });
 
   useImperativeHandle(ref, () => ({
-    setLightPreset(preset: LightPreset) {
+    setStyle(style: MapStyleKey) {
       if (mapRef.current) {
-        (mapRef.current as unknown as Record<string, unknown>).setConfigProperty?.(
-          "basemap",
-          "lightPreset",
-          preset
-        );
+        mapRef.current.setStyle(MAP_STYLES[style]);
       }
     },
   }));
@@ -46,7 +40,7 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
 
     const map = new MapboxMap({
       container: containerRef.current,
-      style: MAP_STYLES.standard,
+      style: MAP_STYLES.day,
       accessToken: MAPBOX_TOKEN,
       center: INITIAL_VIEW.center,
       zoom: INITIAL_VIEW.zoom,
@@ -55,13 +49,21 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
       antialias: true,
     });
 
-    const addCustomLayers = () => {
+    const onStyleLoad = () => {
       if (!map.getLayer("3d-model")) {
         map.addLayer(createThreeLayer(MODEL_URL, transformRef) as unknown as CustomLayerInterface);
       }
+
+      // Mapbox Standard config — POI 라벨 숨기기
+      const setConfig = (map as unknown as Record<string, unknown>).setConfigProperty as
+        | ((namespace: string, key: string, value: unknown) => void)
+        | undefined;
+      if (setConfig) {
+        setConfig.call(map, "basemap", "showPointOfInterestLabels", false);
+      }
     };
 
-    map.on("style.load", addCustomLayers);
+    map.on("style.load", onStyleLoad);
     mapRef.current = map;
 
     return () => {

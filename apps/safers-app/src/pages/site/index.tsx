@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "@pf-dev/ui";
 import { SiteHeader, MapboxViewer } from "./components";
-import type { MapboxViewerHandle } from "./components";
+import type { MapboxViewerHandle, MapStyleKey } from "./components";
 import { sitesService, type Site } from "@/services";
 
 export function SitePage() {
@@ -10,15 +10,12 @@ export function SitePage() {
   const navigate = useNavigate();
   const [site, setSite] = useState<Site | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDarkMap, setIsDarkMap] = useState(false);
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>("day");
   const mapViewerRef = useRef<MapboxViewerHandle>(null);
 
-  const handleToggleMapStyle = useCallback(() => {
-    setIsDarkMap((prev) => {
-      const next = !prev;
-      mapViewerRef.current?.setLightPreset(next ? "night" : "day");
-      return next;
-    });
+  const handleMapStyleChange = useCallback((style: MapStyleKey) => {
+    setMapStyle(style);
+    mapViewerRef.current?.setStyle(style);
   }, []);
 
   useEffect(() => {
@@ -60,8 +57,8 @@ export function SitePage() {
       <header className="absolute inset-x-0 top-0 z-50 h-[3.75rem]">
         <SiteHeader
           siteName={site.name}
-          isDarkMap={isDarkMap}
-          onToggleMapStyle={handleToggleMapStyle}
+          mapStyle={mapStyle}
+          onMapStyleChange={handleMapStyleChange}
         />
       </header>
     </div>
