@@ -4,9 +4,11 @@ import { HeaderUserInfo } from "@/pages/home/components/HeaderUserInfo";
 
 interface SiteHeaderProps {
   siteName: string;
+  isDarkMap?: boolean;
+  onToggleMapStyle?: () => void;
 }
 
-export function SiteHeader({ siteName }: SiteHeaderProps) {
+export function SiteHeader({ siteName, isDarkMap = false, onToggleMapStyle }: SiteHeaderProps) {
   const navigate = useNavigate();
 
   return (
@@ -36,20 +38,35 @@ export function SiteHeader({ siteName }: SiteHeaderProps) {
         <span className="text-xl font-bold text-[#555555]">{siteName}</span>
       </div>
 
-      {/* 우측: 알림 + 사용자 */}
+      {/* 우측: 다크모드 토글 + 알림 + 사용자 */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-[0.9375rem] text-[#55596C] transition-colors hover:bg-neutral-100"
-          aria-label="알림"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6ZM8 15a2 2 0 1 0 4 0H8Z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+        {onToggleMapStyle && (
+          <button
+            type="button"
+            onClick={onToggleMapStyle}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F0F0F0] transition-colors hover:bg-[#E5E5E5]"
+            aria-label={isDarkMap ? "주간 모드로 전환" : "야간 모드로 전환"}
+          >
+            {isDarkMap ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="5" fill="#F59E0B" />
+                <path
+                  d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M21.07 15.07A8.5 8.5 0 0 1 8.93 2.93a8.5 8.5 0 1 0 12.14 12.14Z"
+                  fill="#1E293B"
+                />
+              </svg>
+            )}
+          </button>
+        )}
         <HeaderUserInfo />
       </div>
     </div>
