@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { configureApi } from "@pf-dev/api";
 import { AuthProvider } from "@pf-dev/services";
+import { useWHEPStore } from "@pf-dev/cctv";
 
 import "@pf-dev/fonts/pretendard";
 import { App } from "./App";
@@ -14,6 +15,9 @@ const apiBasePath = import.meta.env.VITE_API_BASE_PATH || contextPath;
 configureApi({
   baseURL: `${apiBasePath}/api`,
 });
+
+// Initialize WHEP streaming
+useWHEPStore.getState().initialize();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
