@@ -25,11 +25,11 @@ export function RightPanel() {
   const { currentTemp, hourlyTemps, data } = useWeather({ nx, ny });
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchSiteData = async () => {
       try {
         if (selectedSiteId) {
-          const [siteRes] = await Promise.all([sitesService.getSite(selectedSiteId)]);
-          setSelectedSiteData([siteRes.data]);
+          const res = await sitesService.getSite(selectedSiteId);
+          setSelectedSiteData([res.data]);
         } else {
           setSelectedSiteData([]);
         }
@@ -38,24 +38,8 @@ export function RightPanel() {
       } finally {
         setIsLoading(false);
       }
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const updateSiteData = async () => {
-      if (selectedSiteId) {
-        try {
-          const res = await sitesService.getSite(selectedSiteId);
-          setSelectedSiteData([res.data]);
-        } catch (error) {
-          console.error("Failed to update site:", error);
-        }
-      } else {
-        setSelectedSiteData([]);
-      }
     };
-    updateSiteData();
+    fetchSiteData();
   }, [selectedSiteId]);
 
   if (isLoading) {
