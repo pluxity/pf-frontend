@@ -6,9 +6,9 @@ export const MODEL_LNG_LAT: [number, number] = [126.8469, 37.499386];
 
 export const INITIAL_VIEW = {
   center: MODEL_LNG_LAT,
-  zoom: 17,
+  zoom: 18,
   pitch: 60,
-  bearing: -30,
+  bearing: 120,
 } as const;
 
 export const MAP_STYLES = {
