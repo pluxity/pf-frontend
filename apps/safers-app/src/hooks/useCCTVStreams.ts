@@ -15,8 +15,6 @@ export function useCCTVStreams() {
         setIsLoading(true);
         const response = await cctvService.getPaths();
 
-        // cancelled 플래그를 체크하여 컴포넌트가 언마운트되었거나
-        // effect가 재실행되었을 때 state 업데이트를 방지
         if (!cancelled) {
           setPaths(response.items);
           setItemCount(response.itemCount);
