@@ -1,43 +1,28 @@
-import { RadialBarChart, RadialBar } from "recharts";
+import { useRef } from "react";
+import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import type { Environment } from "../../../services/types/environments.types";
+import { useContainerSize } from "@/hooks";
 
-export function EnvironmentChart({ data }: { data: Environment }) {
-  const endAngle = 90 + (data.percentage / 100) * 360;
+function EnvironmentChart({ data, size }: { data: Environment; size: number }) {
+  if (size <= 0) return null;
+
+  const barSize = Math.max(4, Math.round(size * 0.1));
 
   return (
     <div className="flex flex-col items-center">
       <div className="relative">
-        {/* 회색 배경 - 전체 범위 */}
         <RadialBarChart
-          width={130}
-          height={130}
-          cx={65}
-          cy={65}
+          width={size}
+          height={size}
           innerRadius="60%"
           outerRadius="90%"
-          barSize={10}
-          data={[{ name: data.name, value: 100, fill: "#dae4f4" }]}
-          startAngle={90}
-          endAngle={-270}
-        >
-          <RadialBar dataKey="value" cornerRadius={10} />
-        </RadialBarChart>
-
-        {/* 색상 bar - percentage에 따라 */}
-        <RadialBarChart
-          width={128}
-          height={128}
-          cx={65}
-          cy={65}
-          innerRadius="60%"
-          outerRadius="90%"
-          barSize={11}
+          barSize={barSize}
           data={[{ name: data.name, value: data.percentage, fill: data.fill }]}
           startAngle={90}
-          endAngle={endAngle}
-          style={{ position: "absolute", top: 0, left: 0 }}
+          endAngle={450}
         >
-          <RadialBar dataKey="value" cornerRadius={10} />
+          <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
+          <RadialBar dataKey="value" cornerRadius={10} background={{ fill: "#dae4f4" }} />
         </RadialBarChart>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-sm text-gray-600">
           <div>{data.value}</div>
@@ -55,12 +40,17 @@ export function EnvironmentChart({ data }: { data: Environment }) {
 }
 
 export function EnvironmentStatus({ data }: { data: Environment[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { width } = useContainerSize(containerRef);
+
+  const chartSize = Math.floor(width / data.length);
+
   return (
     <div>
       <div className="text-neutral-300 font-semibold text-sm mb-2">환경 모니터링</div>
-      <div className="flex items-center justify-between">
+      <div ref={containerRef} className="flex items-center justify-between">
         {data.map((item) => (
-          <EnvironmentChart key={item.name} data={item} />
+          <EnvironmentChart key={item.name} data={item} size={chartSize} />
         ))}
       </div>
     </div>
