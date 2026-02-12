@@ -20,13 +20,13 @@ async function getEvents(params?: GetEventsParams): Promise<EventsResponse> {
     let filtered = [...mockEvents];
 
     if (params?.region) {
-      filtered = filtered.filter((e) => e.region === params.region);
+      filtered = filtered.filter((e) => e.site.region === params.region);
     }
     if (params?.level) {
       filtered = filtered.filter((e) => e.level === params.level);
     }
     if (params?.siteId) {
-      filtered = filtered.filter((e) => e.siteId === params.siteId);
+      filtered = filtered.filter((e) => e.site.id === params.siteId);
     }
     if (params?.limit) {
       filtered = filtered.slice(0, params.limit);
@@ -39,7 +39,7 @@ async function getEvents(params?: GetEventsParams): Promise<EventsResponse> {
   const queryParams = new URLSearchParams();
   if (params?.region) queryParams.set("region", params.region);
   if (params?.level) queryParams.set("level", params.level);
-  if (params?.siteId) queryParams.set("siteId", params.siteId);
+  if (params?.siteId) queryParams.set("siteId", String(params.siteId));
   if (params?.limit) queryParams.set("limit", String(params.limit));
 
   const response = await fetch(`${API_BASE_URL}/events?${queryParams}`);

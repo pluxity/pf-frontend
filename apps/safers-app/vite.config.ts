@@ -11,11 +11,6 @@ export default defineConfig(({ mode }) => {
   const projectPath = env.VITE_PROJECT_PATH || "";
   const proxyTarget = `${apiServerUrl}${projectPath}`;
   const cookiePath = `${projectPath}/api`;
-  const weatherForecastUrl =
-    env.VITE_API_WEATHER_FORECAST_URL ||
-    "https://apihub.kma.go.kr/api/typ02/openApi/VilageFcstInfoService_2.0";
-  const weatherAlertUrl =
-    env.VITE_API_WEATHER_ALERT_URL || "https://apihub.kma.go.kr/api/typ01/url";
 
   // Base path 설정 (staging 환경에서 contextPath 적용)
   const contextPath = env.VITE_CONTEXT_PATH || "";
@@ -50,18 +45,6 @@ export default defineConfig(({ mode }) => {
               }
             });
           },
-        },
-        "/weather-api/forecast": {
-          target: weatherForecastUrl,
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/weather-api\/forecast/, ""),
-        },
-        "/weather-api/alert": {
-          target: weatherAlertUrl,
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/weather-api\/alert/, ""),
         },
       },
     },

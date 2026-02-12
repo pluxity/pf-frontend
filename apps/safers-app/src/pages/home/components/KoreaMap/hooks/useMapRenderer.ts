@@ -198,7 +198,7 @@ function calculateJejuInsetPosition(
   const height = 5.5 * rootFontSize;
 
   const x = mainBounds
-    ? mainBounds.x + mainBounds.width - width + 3 * rootFontSize
+    ? mainBounds.x + mainBounds.width - width + 1 * rootFontSize
     : containerWidth - width - 0.25 * rootFontSize;
 
   const y = mainBounds

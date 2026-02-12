@@ -1,17 +1,16 @@
 import type { SiteDetailResponse } from "./types/site-detail.types";
 import { mockSiteDetail } from "./mocks/site-detail.mock";
 
-// Mock 모드 (true: mock 데이터, false: 실제 API)
+// 안전율, 기성률, 인원은 아직 API 미구현 → mock 유지
 const USE_MOCK = true;
 
-// 지연 시뮬레이션 유틸
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * 현장 상세 데이터 조회
+ * 현장 상세 데이터 조회 (안전율/기성률/인원)
  * GET /api/sites/:id/detail
  */
-async function getSiteDetail(_id: string): Promise<SiteDetailResponse> {
+async function getSiteDetail(_id: number): Promise<SiteDetailResponse> {
   if (USE_MOCK) {
     await delay(300);
     return { data: mockSiteDetail };

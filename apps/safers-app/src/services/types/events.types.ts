@@ -1,4 +1,19 @@
-import type { RegionName } from "./sites.types";
+import type { SiteRegion } from "./sites.types";
+
+// 이벤트 탭 표시용 지역명 매핑 (SiteRegion → 한글)
+export const EVENT_REGION_MAP: Record<SiteRegion, string> = {
+  SEOUL: "서울",
+  GYEONGGI_INCHEON: "경기",
+  GANGWON: "강원",
+  CHUNGCHEONG: "충청",
+  JEOLLA: "전라",
+  GYEONGSANG: "경상",
+  JEJU: "제주",
+};
+
+// 이벤트 탭 목록
+export const EVENT_REGIONS = Object.values(EVENT_REGION_MAP);
+export type EventRegionTab = (typeof EVENT_REGIONS)[number];
 
 // 이벤트 레벨
 export type EventLevel = "warning" | "alert" | "danger";
@@ -29,15 +44,20 @@ export const EVENT_LEVEL_STYLES: Record<EventLevel, EventLevelStyle> = {
   },
 };
 
+// 이벤트에 포함되는 현장 정보
+export interface EventSite {
+  id: number;
+  name: string;
+  region: SiteRegion;
+}
+
 // 이벤트
 export interface Event {
   id: string;
   level: EventLevel;
   code: string;
   message: string;
-  region: RegionName;
-  siteId: string;
-  siteName: string;
+  site: EventSite;
   createdAt: string;
 }
 
@@ -52,9 +72,9 @@ export interface EventResponse {
 
 // API 요청 파라미터
 export interface GetEventsParams {
-  region?: string;
+  region?: SiteRegion;
   level?: EventLevel;
-  siteId?: string;
+  siteId?: number;
   limit?: number;
 }
 

@@ -1,55 +1,61 @@
-// 현장 상태
-export type SiteStatus = "normal" | "warning" | "danger";
+import type { DataResponseBody, PageResponse } from "./common.types";
 
-// 지역 목록
-export const REGIONS = ["서울", "경기", "충청", "전라", "경상", "제주"] as const;
-export type RegionName = (typeof REGIONS)[number];
+/** 지역 enum (백엔드 API) */
+export type SiteRegion =
+  | "SEOUL"
+  | "GYEONGGI_INCHEON"
+  | "GANGWON"
+  | "CHUNGCHEONG"
+  | "JEOLLA"
+  | "GYEONGSANG"
+  | "JEJU";
 
-// 현장
+/** 지역 표시명 매핑 */
+export const REGION_DISPLAY_NAMES: Record<SiteRegion, string> = {
+  SEOUL: "서울",
+  GYEONGGI_INCHEON: "경기/인천",
+  GANGWON: "강원",
+  CHUNGCHEONG: "충청",
+  JEOLLA: "전라",
+  GYEONGSANG: "경상",
+  JEJU: "제주",
+};
+
+/** 현장 (백엔드 API 응답) */
 export interface Site {
-  id: string;
+  id: number;
   name: string;
-  status: SiteStatus;
-  regionId: string;
+  region: SiteRegion;
   address?: string;
   latitude?: number;
   longitude?: number;
+  constructionStartDate?: string;
+  constructionEndDate?: string;
+  description?: string;
+  thumbnailImage?: string;
 }
 
-// 지역
-export interface Region {
-  id: string;
-  name: string;
+/** 지역 응답 */
+export interface RegionResponse {
+  name: SiteRegion;
+  displayName: string;
+}
+
+/** 클라이언트에서 사이트를 지역별로 그룹핑한 결과 */
+export interface RegionGroup {
+  region: SiteRegion;
+  displayName: string;
   sites: Site[];
 }
 
-// 통계
-export interface SiteStatistics {
-  total: number;
-  normal: number;
-  warning: number;
-  danger: number;
-}
+/** API 응답 타입 */
+export type SitesResponse = DataResponseBody<PageResponse<Site>>;
+export type SiteResponse = DataResponseBody<Site>;
+export type RegionsResponse = DataResponseBody<RegionResponse[]>;
 
-// API 응답
-export interface SitesResponse {
-  data: Site[];
-}
-
-export interface SiteResponse {
-  data: Site;
-}
-
-export interface RegionsResponse {
-  data: Region[];
-}
-
-export interface SiteStatisticsResponse {
-  data: SiteStatistics;
-}
-
-// API 요청 파라미터
+/** API 요청 파라미터 */
 export interface GetSitesParams {
-  regionId?: string;
-  status?: SiteStatus;
+  region?: SiteRegion;
+  page?: number;
+  size?: number;
 }

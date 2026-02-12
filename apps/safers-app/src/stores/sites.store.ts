@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface SitesState {
-  selectedSiteId: string | null;
-  hoveredSiteId: string | null;
+  selectedSiteId: number | null;
+  hoveredSiteId: number | null;
 }
 
 interface SitesActions {
-  selectSite: (siteId: string | null) => void;
-  hoverSite: (siteId: string | null) => void;
+  selectSite: (siteId: number | null) => void;
+  hoverSite: (siteId: number | null) => void;
   clearSelection: () => void;
 }
 

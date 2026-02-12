@@ -1,7 +1,6 @@
 import type {
   ProgressDataPoint,
   PersonnelByOccupation,
-  SiteWeather,
   SiteDetail,
   ProgressPeriod,
   SafetyScoreData,
@@ -61,14 +60,6 @@ const mockPersonnel: PersonnelByOccupation[] = [
   { occupation: "기타", count: 17, color: "#BBBFCF" },
 ];
 
-/** 날씨 정보 */
-const mockWeather: SiteWeather = {
-  temperature: 24,
-  condition: "맑음",
-  humidity: 55,
-  windSpeed: 3.2,
-};
-
 /** 기성률 데이터 맵 */
 const progressMap: Record<ProgressPeriod, ProgressDataPoint[]> = {
   daily: dailyProgress,
@@ -82,5 +73,4 @@ export const mockSiteDetail: SiteDetail = {
   progress: progressMap,
   personnel: mockPersonnel,
   totalPersonnel: mockPersonnel.reduce((sum, p) => sum + p.count, 0),
-  weather: mockWeather,
 };

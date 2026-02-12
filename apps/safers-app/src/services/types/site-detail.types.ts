@@ -33,21 +33,12 @@ export interface PersonnelByOccupation {
   color: string; // 차트 색상
 }
 
-// 날씨 정보
-export interface SiteWeather {
-  temperature: number; // 현재 기온 (°C)
-  condition: string; // 날씨 상태 (맑음, 흐림 등)
-  humidity: number; // 습도 (%)
-  windSpeed: number; // 풍속 (m/s)
-}
-
-// 현장 상세 데이터
+// 현장 상세 데이터 (weather 제거 - 별도 Weather API 사용)
 export interface SiteDetail {
   safetyScore: SafetyScoreData;
   progress: Record<ProgressPeriod, ProgressDataPoint[]>;
   personnel: PersonnelByOccupation[];
   totalPersonnel: number;
-  weather: SiteWeather;
 }
 
 // API 응답

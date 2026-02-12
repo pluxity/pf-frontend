@@ -1,4 +1,3 @@
-import type { SiteStatistics as SiteStatisticsData } from "@/services";
 import BuildingIcon from "@/assets/icons/building.svg";
 
 interface StatItemProps {
@@ -46,16 +45,24 @@ function StatItem({ count, label, variant }: StatItemProps) {
 }
 
 interface SiteStatisticsProps {
-  data: SiteStatisticsData;
+  totalSites: number;
+  normalSites: number;
+  warningSites: number;
+  dangerSites: number;
 }
 
-export function SiteStatistics({ data }: SiteStatisticsProps) {
+export function SiteStatistics({
+  totalSites,
+  normalSites,
+  warningSites,
+  dangerSites,
+}: SiteStatisticsProps) {
   return (
     <div className="flex gap-2">
-      <StatItem count={data.total} label="전국" variant="total" />
-      <StatItem count={data.normal} label="정상" variant="normal" />
-      <StatItem count={data.warning} label="주의" variant="warning" />
-      <StatItem count={data.danger} label="위험" variant="danger" />
+      <StatItem count={totalSites} label="전국" variant="total" />
+      <StatItem count={normalSites} label="정상" variant="normal" />
+      <StatItem count={warningSites} label="주의" variant="warning" />
+      <StatItem count={dangerSites} label="위험" variant="danger" />
     </div>
   );
 }

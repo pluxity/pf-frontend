@@ -6,6 +6,5 @@ export { MapboxViewer } from "./mapbox-viewer";
 export type { MapboxViewerHandle, MapStyleKey } from "./mapbox-viewer";
 export { EventPanel } from "./EventPanel";
 export { WeatherPanel } from "./WeatherPanel";
-export { SafetyScorePanel } from "./SafetyScorePanel";
 export { WorkerListPanel } from "./WorkerListPanel";
 export type { WorkerEntry, WorkerStatus, Attendance } from "./WorkerListPanel";

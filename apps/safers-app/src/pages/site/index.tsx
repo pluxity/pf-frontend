@@ -1,16 +1,10 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "@pf-dev/ui";
-import {
-  SiteHeader,
-  MapboxViewer,
-  WorkerListPanel,
-  SafetyScorePanel,
-  EventPanel,
-  WeatherPanel,
-} from "./components";
+import { SiteHeader, MapboxViewer, WorkerListPanel, WeatherPanel, EventPanel } from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
-import { sitesService, type Site, type SiteEvent } from "@/services";
+import { sitesService, siteDetailService, type Site, type SiteEvent } from "@/services";
+import { useWeather } from "@/hooks";
 import { INITIAL_WORKERS, SCENARIO_EMERGENCIES, SCENARIO3, nextEventId } from "./mocks";
 import { COLOR_SUCCESS, COLOR_DANGER } from "./components/mapbox-viewer/constants";
 
@@ -91,9 +85,7 @@ export function SitePage() {
               level: "danger",
               code: "F-2",
               message: "작업자 위험구역 진입",
-              region: "서울",
-              siteId: id ?? "",
-              siteName: "개봉5구역",
+              site: { id: Number(id) || 0, name: "개봉5구역", region: "SEOUL" },
               createdAt: new Date().toISOString(),
               emergency: SCENARIO3.emergency,
             };
@@ -133,9 +125,7 @@ export function SitePage() {
         level: "danger",
         code: `E-${scenario}`,
         message: "작업자 이상징후 감지",
-        region: "서울",
-        siteId: id ?? "",
-        siteName: "개봉5구역",
+        site: { id: Number(id) || 0, name: "개봉5구역", region: "SEOUL" },
         createdAt: new Date().toISOString(),
         emergency,
       };
@@ -161,15 +151,23 @@ export function SitePage() {
     [id]
   );
 
+  const siteId = id ? Number(id) : null;
+  const { currentWeather } = useWeather({ siteId });
+
   useEffect(() => {
     if (!id) {
       navigate("/");
       return;
     }
 
+    const numericId = Number(id);
+
     async function fetchData() {
       try {
-        const siteRes = await sitesService.getSite(id!);
+        const [siteRes] = await Promise.all([
+          sitesService.getSite(numericId),
+          siteDetailService.getSiteDetail(numericId),
+        ]);
         setSite(siteRes.data);
       } catch (error) {
         console.error("Failed to fetch site detail:", error);
@@ -214,10 +212,12 @@ export function SitePage() {
       </header>
 
       <EventPanel events={events} className="absolute left-4 top-[4.75rem] z-40 w-[18.75rem]" />
-      <WeatherPanel className="absolute right-4 top-[4.75rem] z-40 w-[15rem]" />
-      <SafetyScorePanel className="absolute right-4 top-[16rem] z-40 w-[15rem]" />
+      <WeatherPanel
+        currentWeather={currentWeather}
+        className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
+      />
       <WorkerListPanel
-        className="absolute bottom-6 right-4 z-40"
+        className="absolute right-4 top-[19.5rem] z-40"
         attendance={attendance}
         workers={workers}
         selectedWorkerId={selectedWorkerId}

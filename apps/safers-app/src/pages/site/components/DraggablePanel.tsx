@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 
 type GlassPanelVariant = "default" | "light" | "blue";
 
-let topZIndex = 1;
+let topZIndex = 40;
 
 interface DraggablePanelProps {
   title: string;

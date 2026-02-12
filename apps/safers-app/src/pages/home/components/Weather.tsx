@@ -1,25 +1,19 @@
-import { getWeatherIcon, extractWeatherState, extractEnvironmentData } from "../../../utils/kma";
-import type { HourlyTemp } from "../../../hooks";
-import type { UltraSrtNcstResponse } from "../../../services/types";
+import { weatherService } from "../../../services/weather.service";
+import type { ParsedWeather, HourlyWeather } from "../../../services/types";
 
 interface WeatherProps {
-  currentTemp: string | null;
-  hourlyTemps: HourlyTemp[];
-  data: UltraSrtNcstResponse | null;
+  currentWeather: ParsedWeather | null;
+  hourlyWeather: HourlyWeather[];
 }
 
-export function Weather({ currentTemp, hourlyTemps, data }: WeatherProps) {
+export function Weather({ currentWeather, hourlyWeather }: WeatherProps) {
   const currentHour = new Date().getHours();
-  const currentHourStr = String(currentHour).padStart(2, "0");
 
-  const currentHourlyData = hourlyTemps.find((item) => item.hour === currentHourStr);
-  const pty = data ? extractWeatherState(data).pty : null;
-  const sky = currentHourlyData?.sky ?? null;
-
-  const weatherIcon = getWeatherIcon(pty, sky, currentHour);
-  const ncstData = data
-    ? extractEnvironmentData(data)
-    : { humidity: null, windDirection: "--", windSpeed: null };
+  const weatherIcon = weatherService.getWeatherIcon(
+    currentWeather?.pty,
+    currentWeather?.sky,
+    currentHour
+  );
 
   return (
     <div className="flex gap-6 h-full">
@@ -32,19 +26,19 @@ export function Weather({ currentTemp, hourlyTemps, data }: WeatherProps) {
       </div>
       <div className="flex flex-col flex-1 justify-between">
         <div className="flex gap-10 items-end">
-          <strong className="text-5xl">{currentTemp ?? "--"}°</strong>
+          <strong className="text-5xl">{currentWeather?.temperature ?? "--"}°</strong>
           <div className="flex items-center gap-2">
-            습도 {ncstData.humidity ?? "--"}%
-            {ncstData.windSpeed ? (
+            습도 {currentWeather?.humidity ?? "--"}%
+            {currentWeather?.windSpeed ? (
               <>
                 <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                {ncstData.windDirection} {ncstData.windSpeed}m/s
+                {currentWeather.windDirection ?? "--"} {currentWeather.windSpeed}m/s
               </>
             ) : null}
           </div>
         </div>
         <ul className="flex gap-3">
-          {hourlyTemps.map((item) => (
+          {hourlyWeather.map((item) => (
             <li
               key={item.hour}
               className={`flex flex-col items-center min-w-13 p-2 gap-1 rounded-4xl shadow-[0_0.25rem_0.625rem_0_rgba(0,0,0,0.08)] text-sm ${
@@ -53,7 +47,7 @@ export function Weather({ currentTemp, hourlyTemps, data }: WeatherProps) {
             >
               <span>{item.isCurrent ? "now" : `${item.hour}:00`}</span>
               <img
-                src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/${item.isCurrent ? weatherIcon : getWeatherIcon(item.pty, item.sky, parseInt(item.hour, 10))}`}
+                src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/${weatherService.getWeatherIcon(item.pty, item.sky, parseInt(item.hour, 10))}`}
                 alt="weather"
                 className="w-6 h-6"
               />

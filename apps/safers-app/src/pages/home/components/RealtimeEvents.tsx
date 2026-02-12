@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent, Badge } from "@pf-dev/ui";
-import { EVENT_LEVEL_STYLES, REGIONS, type Event, type RegionName } from "@/services";
+import { EVENT_LEVEL_STYLES, EVENT_REGION_MAP, EVENT_REGIONS, type Event } from "@/services";
 
 interface RealtimeEventsProps {
   events: Event[];
@@ -51,17 +51,19 @@ function EventList({
 }
 
 export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
-  const eventsByRegion = useMemo(
-    () =>
-      events.reduce<Record<RegionName, Event[]>>(
-        (acc, event) => {
-          acc[event.region].push(event);
-          return acc;
-        },
-        { 서울: [], 경기: [], 충청: [], 전라: [], 경상: [], 제주: [] }
-      ),
-    [events]
-  );
+  const eventsByTab = useMemo(() => {
+    const grouped: Record<string, Event[]> = {};
+    for (const tab of EVENT_REGIONS) {
+      grouped[tab] = [];
+    }
+    for (const event of events) {
+      const tab = EVENT_REGION_MAP[event.site.region];
+      if (tab) {
+        grouped[tab]?.push(event);
+      }
+    }
+    return grouped;
+  }, [events]);
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-[0_0_24px_rgba(30,74,184,0.5)]">
@@ -69,9 +71,9 @@ export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
         <h3 className="text-lg font-bold text-primary-600">전국 실시간 이벤트</h3>
       </div>
 
-      <Tabs defaultValue={REGIONS[0]} className="flex w-full flex-1 flex-col">
+      <Tabs defaultValue={EVENT_REGIONS[0]} className="flex w-full flex-1 flex-col">
         <TabsList variant="filled" className="w-full border-none py-2">
-          {REGIONS.map((region) => (
+          {EVENT_REGIONS.map((region) => (
             <TabsTrigger
               key={region}
               value={region}
@@ -83,9 +85,9 @@ export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
           ))}
         </TabsList>
 
-        {REGIONS.map((region) => (
+        {EVENT_REGIONS.map((region) => (
           <TabsContent key={region} value={region} className="mt-0 min-h-0 flex-1 overflow-hidden">
-            <EventList events={eventsByRegion[region]} onEventClick={onEventClick} />
+            <EventList events={eventsByTab[region] ?? []} onEventClick={onEventClick} />
           </TabsContent>
         ))}
       </Tabs>

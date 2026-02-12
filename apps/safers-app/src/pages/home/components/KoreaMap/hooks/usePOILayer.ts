@@ -36,11 +36,13 @@ export function usePOILayer({
   const pulseIntervalsRef = useRef<number[]>([]);
   const onPOIClickRef = useRef(onPOIClick);
   const onPOIHoverRef = useRef(onPOIHover);
+  const onSelectSiteRef = useRef(onSelectSite);
 
   useEffect(() => {
     onPOIClickRef.current = onPOIClick;
     onPOIHoverRef.current = onPOIHover;
-  }, [onPOIClick, onPOIHover]);
+    onSelectSiteRef.current = onSelectSite;
+  }, [onPOIClick, onPOIHover, onSelectSite]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -72,7 +74,8 @@ export function usePOILayer({
       bindPOIEvents(poiLayer, poi, poiCoords, rootFontSize, {
         onHover: onPOIHoverRef,
         onClick: onPOIClickRef,
-        onSelectSite,
+        onSelectSite: onSelectSiteRef,
+        rippleLayer,
       });
 
       const status = poi.data?.status as string | undefined;
@@ -93,7 +96,7 @@ export function usePOILayer({
       clearPulseIntervals(pulseIntervalsRef.current);
       pulseIntervalsRef.current = [];
     };
-  }, [pois, svgRef, mainProjectionRef, jejuProjectionRef, onSelectSite]);
+  }, [pois, svgRef, mainProjectionRef, jejuProjectionRef]);
 }
 
 interface UseSelectedPOIOptions {
@@ -210,7 +213,8 @@ function renderPOIMarker(layer: SVGGroupSelection, poi: POI, coords: POICoords):
 interface POIEventHandlers {
   onHover: React.MutableRefObject<((poi: POI | null) => void) | undefined>;
   onClick: React.MutableRefObject<((poi: POI) => void) | undefined>;
-  onSelectSite: (siteId: string | null) => void;
+  onSelectSite: React.MutableRefObject<(siteId: string | null) => void>;
+  rippleLayer: SVGGroupSelection;
 }
 
 /** POI 이벤트 바인딩 */
@@ -227,7 +231,7 @@ function bindPOIEvents(
   poiGroup
     .on("mouseenter", function () {
       const currentSelected = useSitesStore.getState().selectedSiteId;
-      if (currentSelected !== poi.id) {
+      if (String(currentSelected) !== poi.id) {
         select(this)
           .transition()
           .duration(150)
@@ -240,7 +244,7 @@ function bindPOIEvents(
     })
     .on("mouseleave", function () {
       const currentSelected = useSitesStore.getState().selectedSiteId;
-      if (currentSelected !== poi.id) {
+      if (String(currentSelected) !== poi.id) {
         select(this)
           .transition()
           .duration(150)
@@ -252,9 +256,9 @@ function bindPOIEvents(
       event.stopPropagation();
 
       const currentSelected = useSitesStore.getState().selectedSiteId;
-      handlers.onSelectSite(currentSelected === poi.id ? null : poi.id);
+      handlers.onSelectSite.current(String(currentSelected) === poi.id ? null : poi.id);
 
-      createClickRipple(layer, x, y, MAP_COLORS.brand, rootFontSize);
+      createClickRipple(handlers.rippleLayer, x, y, MAP_COLORS.brand, rootFontSize);
       handlers.onClick.current?.(poi);
     });
 }
@@ -308,14 +312,19 @@ function clearPulseIntervals(intervals: number[]): void {
 /** POI 시각 상태 초기화 */
 function resetPOIVisual(layer: SVGGroupSelection, poiId: string): void {
   const prevPoi = layer.select(`[data-poi-id="${poiId}"]`);
-  if (!prevPoi.empty()) {
-    prevPoi
-      .transition()
-      .duration(200)
-      .attr("transform", prevPoi.attr("data-original-transform") ?? "")
-      .select("path")
-      .attr("fill", prevPoi.attr("data-original-color") ?? MAP_COLORS.defaultPOI);
-  }
+  if (prevPoi.empty()) return;
+
+  const originalTransform = prevPoi.attr("data-original-transform");
+  const originalColor = prevPoi.attr("data-original-color");
+
+  if (!originalTransform) return;
+
+  prevPoi
+    .transition()
+    .duration(200)
+    .attr("transform", originalTransform)
+    .select("path")
+    .attr("fill", originalColor ?? MAP_COLORS.defaultPOI);
 }
 
 /** 선택된 POI 하이라이트 */

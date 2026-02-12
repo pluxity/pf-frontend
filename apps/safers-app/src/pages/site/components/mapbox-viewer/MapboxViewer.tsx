@@ -333,6 +333,8 @@ export function MapboxViewer({
       // @ts-expect-error — useWebGL2 exists in Mapbox GL JS v3 but missing from types
       useWebGL2: true,
       performanceMetricsCollection: false,
+      logoPosition: "bottom-left",
+      attributionControl: false,
     });
 
     // 방향키: ↑↓ 전진/후퇴, ←→ 회전

@@ -25,6 +25,12 @@ export function KoreaMap({
       onBackgroundClick: () => selectSiteAction(null),
     });
 
+  const handleSelectSite = (siteId: string | null) => {
+    selectSiteAction(siteId != null ? Number(siteId) : null);
+  };
+
+  const selectedSiteIdStr = selectedSiteId != null ? String(selectedSiteId) : null;
+
   usePOILayer({
     svgRef,
     mainProjectionRef,
@@ -32,7 +38,7 @@ export function KoreaMap({
     pois,
     onPOIClick,
     onPOIHover,
-    onSelectSite: selectSiteAction,
+    onSelectSite: handleSelectSite,
   });
 
   useSelectedPOI({
@@ -40,7 +46,7 @@ export function KoreaMap({
     mainProjectionRef,
     jejuProjectionRef,
     pois,
-    selectedSiteId,
+    selectedSiteId: selectedSiteIdStr,
     onPOIInfoClick,
   });
 
