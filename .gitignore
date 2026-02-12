@@ -41,6 +41,12 @@ coverage
 # Misc
 *.tsbuildinfo
 
+# 3D Models
+*.FBX
+*.fbx
+*.glb
+*.gltf
+
 # Claude
 nul
 tmpclaude-*-cwd

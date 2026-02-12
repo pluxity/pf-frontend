@@ -55,10 +55,10 @@
   "devDependencies": {
     "@pf-dev/eslint-config": "workspace:*",
     "@pf-dev/typescript-config": "workspace:*",
-    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-docs": "^10.2.4",
     "@storybook/addon-themes": "^10.2.4",
-    "@storybook/react": "catalog:",
-    "@storybook/react-vite": "catalog:",
+    "@storybook/react": "^10.2.4",
+    "@storybook/react-vite": "^10.2.4",
     "@tailwindcss/vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
@@ -68,7 +68,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "rimraf": "^6.0.1",
-    "storybook": "catalog:",
+    "storybook": "^10.2.4",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
