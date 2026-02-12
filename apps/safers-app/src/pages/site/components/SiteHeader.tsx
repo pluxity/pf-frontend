@@ -1,16 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { HeaderClock } from "@/pages/home/components/HeaderClock";
 import { HeaderUserInfo } from "@/pages/home/components/HeaderUserInfo";
+import { SegmentedSwitch } from "./SegmentedSwitch";
+import type { MapStyleKey } from "./mapbox-viewer";
+
+const MAP_STYLE_OPTIONS: { value: MapStyleKey; label: string; ariaLabel: string }[] = [
+  { value: "day", label: "Day", ariaLabel: "주간 모드" },
+  { value: "mono", label: "Mono", ariaLabel: "모노 모드" },
+  { value: "night", label: "Night", ariaLabel: "야간 모드" },
+];
 
 interface SiteHeaderProps {
   siteName: string;
+  mapStyle: MapStyleKey;
+  onMapStyleChange: (style: MapStyleKey) => void;
 }
 
-export function SiteHeader({ siteName }: SiteHeaderProps) {
+export function SiteHeader({ siteName, mapStyle, onMapStyleChange }: SiteHeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-full items-center justify-between bg-white/80 px-4 shadow-[0_3px_3px_rgba(164,164,164,0.15)] backdrop-blur-[5px]">
+    <div className="flex h-full items-center justify-between bg-white/80 px-4 shadow-[0_0.1875rem_0.1875rem_rgba(164,164,164,0.15)] backdrop-blur-[0.3125rem]">
       {/* 좌측: 햄버거 메뉴 + 시계 */}
       <div className="flex items-center gap-3">
         <button
@@ -36,20 +46,13 @@ export function SiteHeader({ siteName }: SiteHeaderProps) {
         <span className="text-xl font-bold text-[#555555]">{siteName}</span>
       </div>
 
-      {/* 우측: 알림 + 사용자 */}
+      {/* 우측: 맵 스타일 토글 + 사용자 */}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-[0.9375rem] text-[#55596C] transition-colors hover:bg-neutral-100"
-          aria-label="알림"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 14h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6ZM8 15a2 2 0 1 0 4 0H8Z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+        <SegmentedSwitch
+          options={MAP_STYLE_OPTIONS}
+          value={mapStyle}
+          onValueChange={onMapStyleChange}
+        />
         <HeaderUserInfo />
       </div>
     </div>

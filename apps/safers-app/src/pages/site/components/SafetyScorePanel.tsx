@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
 import type { SafetyScoreData, SafetyStatus } from "@/services";
 import { useContainerSize } from "@/hooks";
-import { GlassPanel } from "./GlassPanel";
+import { DraggablePanel } from "./DraggablePanel";
 
 // ─── 상수 ───
 const STATUS_COLOR: Record<SafetyStatus, string> = {
@@ -91,38 +91,25 @@ function CategoryRow({
 // ─── SafetyScorePanel ───
 interface SafetyScorePanelProps {
   data?: SafetyScoreData;
+  className?: string;
 }
 
-export function SafetyScorePanel({ data }: SafetyScorePanelProps) {
+export function SafetyScorePanel({ data, className }: SafetyScorePanelProps) {
   const gaugeRef = useRef<HTMLDivElement>(null);
   const { width: gaugeWidth } = useContainerSize(gaugeRef);
 
   if (!data) {
     return (
-      <GlassPanel>
-        <p className="text-sm font-bold text-neutral-800">안전율 데이터</p>
-      </GlassPanel>
+      <DraggablePanel title="안전율 데이터" className={className}>
+        <p className="mt-2 text-xs text-[#999]">안전율 데이터 없음</p>
+      </DraggablePanel>
     );
   }
 
   return (
-    <GlassPanel className="flex flex-col gap-4">
-      {/* 헤더 */}
-      <div className="flex items-center gap-2">
-        <p className="text-sm font-bold text-[#333]">안전율 데이터</p>
-        <svg width="0.375rem" height="0.625rem" viewBox="0 0 6 10" fill="none">
-          <path
-            d="M1 1L5 5L1 9"
-            stroke="#333"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
+    <DraggablePanel title="안전율 데이터" className={className}>
       {/* 게이지 차트 */}
-      <div ref={gaugeRef} className="flex-shrink-0">
+      <div ref={gaugeRef} className="mt-2 flex-shrink-0">
         <GaugeChart score={data.score} width={gaugeWidth} />
       </div>
 
@@ -138,6 +125,6 @@ export function SafetyScorePanel({ data }: SafetyScorePanelProps) {
           />
         ))}
       </div>
-    </GlassPanel>
+    </DraggablePanel>
   );
 }

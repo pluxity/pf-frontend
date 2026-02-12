@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./cctv.service";
 export * from "./events.service";
 export * from "./site-detail.service";
 export * from "./sites.service";

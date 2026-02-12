@@ -12,7 +12,7 @@ interface RegionSiteTreeProps {
 export function RegionSiteTree({ regions, onSiteSelect, selectedSiteId }: RegionSiteTreeProps) {
   const firstRegionId = regions[0]?.id ?? "";
   const [openRegionId, setOpenRegionId] = useState<string>(firstRegionId);
-  const [prevSelectedSiteId, setPrevSelectedSiteId] = useState<string | undefined>(selectedSiteId);
+  const [prevSelectedSiteId, setPrevSelectedSiteId] = useState(selectedSiteId);
 
   if (selectedSiteId !== prevSelectedSiteId) {
     setPrevSelectedSiteId(selectedSiteId);

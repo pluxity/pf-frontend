@@ -57,3 +57,15 @@ export interface GetEventsParams {
   siteId?: string;
   limit?: number;
 }
+
+// 현장 비상 이벤트 (danger 레벨일 때 워커 데이터 포함)
+export interface SiteEmergencyPayload {
+  workerId: string;
+  position: { lng: number; lat: number; altitude: number };
+  vitals: { temperature: number; heartRate: number };
+}
+
+// WS로 수신되는 현장 이벤트
+export interface SiteEvent extends Event {
+  emergency?: SiteEmergencyPayload; // danger일 때만 포함
+}

@@ -20,7 +20,9 @@ export function LoginPage() {
 
       // returnUrl 파라미터가 있으면 해당 경로로, 없으면 홈으로 이동
       const returnUrl = searchParams.get("returnUrl");
-      navigate(returnUrl || "/", { replace: true });
+      const safeReturnUrl =
+        returnUrl && returnUrl.startsWith("/") && !returnUrl.startsWith("//") ? returnUrl : "/";
+      navigate(safeReturnUrl, { replace: true });
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
