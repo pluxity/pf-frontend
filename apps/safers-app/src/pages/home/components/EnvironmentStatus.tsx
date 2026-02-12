@@ -43,7 +43,7 @@ export function EnvironmentStatus({ data }: { data: Environment[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useContainerSize(containerRef);
 
-  const chartSize = Math.floor(width / data.length);
+  const chartSize = data.length > 0 ? Math.floor(width / data.length) : 0;
 
   return (
     <div>
