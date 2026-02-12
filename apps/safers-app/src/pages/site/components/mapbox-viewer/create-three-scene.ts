@@ -1,4 +1,5 @@
 import { MercatorCoordinate } from "mapbox-gl";
+import { easeCubicInOut } from "d3-ease";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
@@ -535,8 +536,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         const tw = activeTweens[i]!;
         const elapsed = now - tw.startTime;
         const progress = Math.min(elapsed / tw.durationMs, 1);
-        // ease-in-out
-        const t = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        const t = easeCubicInOut(progress);
 
         const lerpPos: FeaturePosition = {
           lng: tw.from.lng + (tw.to.lng - tw.from.lng) * t,
