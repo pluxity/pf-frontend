@@ -20,7 +20,7 @@ export function SiteHeader({ siteName, mapStyle, onMapStyleChange }: SiteHeaderP
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-full items-center justify-between bg-white/80 px-4 shadow-[0_3px_3px_rgba(164,164,164,0.15)] backdrop-blur-[5px]">
+    <div className="flex h-full items-center justify-between bg-white/80 px-4 shadow-[0_0.1875rem_0.1875rem_rgba(164,164,164,0.15)] backdrop-blur-[0.3125rem]">
       {/* 좌측: 햄버거 메뉴 + 시계 */}
       <div className="flex items-center gap-3">
         <button

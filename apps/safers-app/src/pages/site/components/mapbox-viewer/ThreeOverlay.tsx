@@ -1,56 +1,22 @@
 import { useEffect, useRef, useImperativeHandle } from "react";
 import type { ModelTransform, ThreeOverlayHandle, WorkerVitals } from "./types";
 import { createThreeScene, type ThreeSceneApi } from "./create-three-scene";
-import { MODEL_URL } from "./constants";
-
-/** 서버 페칭 시뮬레이션 — 실제로는 웨어러블 밴드 → 서버 → API 호출로 대체 */
-async function fetchWorkerPositions() {
-  await new Promise((r) => setTimeout(r, 500));
-
-  return [
-    {
-      id: "worker-1",
-      position: { lng: 126.846723, lat: 37.500259, altitude: 3.5 },
-      vitals: { temperature: 36.5, heartRate: 78 },
-    },
-    {
-      id: "worker-2",
-      position: { lng: 126.84648, lat: 37.499865, altitude: 11.9 },
-      vitals: { temperature: 36.8, heartRate: 92 },
-    },
-    {
-      id: "worker-3",
-      position: { lng: 126.846643, lat: 37.499556, altitude: 11.9 },
-      vitals: { temperature: 36.7, heartRate: 82 },
-    },
-    {
-      id: "worker-4",
-      position: { lng: 126.847061, lat: 37.499351, altitude: 11.9 },
-      vitals: { temperature: 36.4, heartRate: 85 },
-    },
-    {
-      id: "worker-5",
-      position: { lng: 126.847065, lat: 37.499254, altitude: 9.7 },
-      vitals: { temperature: 36.6, heartRate: 72 },
-    },
-    {
-      id: "worker-6",
-      position: { lng: 126.846965, lat: 37.49946, altitude: 37.7 },
-      vitals: { temperature: 36.5, heartRate: 76 },
-    },
-  ];
-}
+import { MODEL_URL, ASSET_URLS } from "./constants";
+import { cctvService } from "@/services";
+import { fetchWorkerPositions } from "../../mocks";
 
 interface ThreeOverlayProps {
   ref?: React.Ref<ThreeOverlayHandle>;
-  transformRef: React.RefObject<ModelTransform>;
+  getTransform: () => ModelTransform;
   requestRepaint: () => void;
 }
 
-export function ThreeOverlay({ ref, transformRef, requestRepaint }: ThreeOverlayProps) {
+export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<ThreeSceneApi | null>(null);
   const vitalsRef = useRef<Map<string, WorkerVitals>>(new Map());
+  /** CCTV featureId → WHEP stream URL */
+  const cctvStreamUrlsRef = useRef<Map<string, string>>(new Map());
 
   useImperativeHandle(ref, () => ({
     render(matrix: number[]) {
@@ -68,6 +34,9 @@ export function ThreeOverlay({ ref, transformRef, requestRepaint }: ThreeOverlay
     projectFeatureToScreen(id: string, width: number, height: number) {
       return sceneRef.current?.projectFeatureToScreen(id, width, height) ?? null;
     },
+    getFeaturePosition(id: string) {
+      return sceneRef.current?.getFeaturePosition(id) ?? null;
+    },
     getWorkerVitals(id: string) {
       return vitalsRef.current.get(id) ?? null;
     },
@@ -83,23 +52,58 @@ export function ThreeOverlay({ ref, transformRef, requestRepaint }: ThreeOverlay
     checkOcclusion(featureId: string) {
       return sceneRef.current?.checkOcclusion(featureId) ?? false;
     },
+    moveFeatureTo(id: string, target, durationMs: number, onComplete?: () => void) {
+      sceneRef.current?.moveFeatureTo(id, target, durationMs, onComplete);
+    },
+    getInitialPosition(id: string) {
+      return sceneRef.current?.getInitialPosition(id) ?? null;
+    },
+    setFeatureHeading(id: string, radians: number) {
+      sceneRef.current?.setFeatureHeading(id, radians);
+    },
+    setFeatureFOV(id: string, fovDeg: number, range: number, pitchDeg?: number) {
+      sceneRef.current?.setFeatureFOV(id, fovDeg, range, pitchDeg);
+    },
+    setFeatureFOVVisible(id: string, visible: boolean) {
+      sceneRef.current?.setFeatureFOVVisible(id, visible);
+    },
+    setFOVColor(id: string, color: number) {
+      sceneRef.current?.setFOVColor(id, color);
+    },
+    getCCTVStreamUrl(id: string) {
+      return cctvStreamUrlsRef.current.get(id) ?? null;
+    },
   }));
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const sceneApi = createThreeScene(canvas, MODEL_URL, transformRef, requestRepaint);
+    const sceneApi = createThreeScene({
+      canvas,
+      modelUrl: MODEL_URL,
+      getTransform,
+      requestRepaint,
+    });
     sceneRef.current = sceneApi;
 
-    // 에셋 등록 + 워커 배치
-    sceneApi.registerAsset("worker", "/assets/models/worker_walk.glb");
-    sceneApi.registerAsset("worker-stunned", "/assets/models/worker_stunned.glb");
+    sceneApi.registerAsset("worker", ASSET_URLS.worker);
+    sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
+    sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
 
     fetchWorkerPositions().then((workers) => {
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
         vitalsRef.current.set(w.id, w.vitals);
+      }
+    });
+
+    cctvService.getCCTVList().then(({ data }) => {
+      for (const cctv of data) {
+        sceneApi.addFeature(cctv.id, "cctv", cctv.position);
+        sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
+        sceneApi.setFeatureFOV(cctv.id, cctv.fovDeg, cctv.fovRange, cctv.pitch);
+        cctvStreamUrlsRef.current.set(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });
 
@@ -128,7 +132,7 @@ export function ThreeOverlay({ ref, transformRef, requestRepaint }: ThreeOverlay
       sceneApi.dispose();
       sceneRef.current = null;
     };
-  }, [transformRef, requestRepaint]);
+  }, [getTransform, requestRepaint]);
 
   return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-[1]" />;
 }

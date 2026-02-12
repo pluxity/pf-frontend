@@ -19,6 +19,11 @@ export interface MaterialPreset {
   side?: THREE.Side;
 }
 
+export interface MaterialRule {
+  pattern: RegExp;
+  preset: MaterialPreset;
+}
+
 export interface ScreenPosition {
   x: number;
   y: number;
@@ -53,9 +58,22 @@ export interface ThreeOverlayHandle {
   highlightFeature: (id: string, color?: number) => void;
   clearHighlight: () => void;
   projectFeatureToScreen: (id: string, width: number, height: number) => ScreenPosition | null;
+  getFeaturePosition: (id: string) => FeaturePosition | null;
   getWorkerVitals: (id: string) => WorkerVitals | null;
   swapFeatureAsset: (id: string, newAssetId: string) => void;
   updateWorkerVitals: (id: string, vitals: WorkerVitals) => void;
   setBuildingOpacity: (opacity: number) => void;
   checkOcclusion: (featureId: string) => boolean;
+  moveFeatureTo: (
+    id: string,
+    target: FeaturePosition,
+    durationMs: number,
+    onComplete?: () => void
+  ) => void;
+  getInitialPosition: (id: string) => FeaturePosition | null;
+  setFeatureHeading: (id: string, radians: number) => void;
+  setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
+  setFeatureFOVVisible: (id: string, visible: boolean) => void;
+  setFOVColor: (id: string, color: number) => void;
+  getCCTVStreamUrl: (id: string) => string | null;
 }

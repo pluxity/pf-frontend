@@ -1,9 +1,13 @@
-import { GlassPanel } from "./GlassPanel";
+import { DraggablePanel } from "./DraggablePanel";
 
-export function WeatherPanel() {
+interface WeatherPanelProps {
+  className?: string;
+}
+
+export function WeatherPanel({ className }: WeatherPanelProps) {
   return (
-    <GlassPanel variant="blue">
-      <p className="text-sm font-bold text-neutral-800">날씨/환경</p>
-    </GlassPanel>
+    <DraggablePanel title="날씨/환경" variant="blue" className={className}>
+      <p className="mt-2 text-xs text-[#999]">날씨 데이터 없음</p>
+    </DraggablePanel>
   );
 }

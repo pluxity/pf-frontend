@@ -1,49 +1,79 @@
 import { useCallback, useEffect, useRef, useState, useImperativeHandle } from "react";
 import { Map as MapboxMap, type CustomLayerInterface } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { ModelTransform, ThreeOverlayHandle, WorkerVitals } from "./types";
-import { MAPBOX_TOKEN, INITIAL_VIEW, MAP_STYLES, type MapStyleKey } from "./constants";
+import type { ModelTransform, ThreeOverlayHandle, WorkerVitals, FeaturePosition } from "./types";
+import {
+  MAPBOX_TOKEN,
+  INITIAL_VIEW,
+  MAP_STYLES,
+  COLOR_DANGER,
+  EMERGENCY_CAMERA,
+  BUILDING_OPACITY,
+  DEFAULT_FLY_DURATION,
+  DEFAULT_BANNER_MESSAGE,
+  type MapStyleKey,
+} from "./constants";
+import { DEFAULT_WORKER_VITALS } from "../../mocks";
 import { ThreeOverlay } from "./ThreeOverlay";
+import { CCTVPopup } from "./CCTVPopup";
 import { FeaturePopup } from "./FeaturePopup";
-
-export type ScenarioId = 1 | 2;
-
-/** 서버 비상 이벤트 API 페칭 시뮬레이션 — 실제로는 서버 푸시/폴링으로 대체 */
-async function fetchEmergencyEvent(scenario: ScenarioId) {
-  await new Promise((r) => setTimeout(r, 800));
-
-  if (scenario === 2) {
-    return {
-      eventId: "EVT-20260211-002",
-      type: "abnormal_vitals" as const,
-      workerId: "worker-6",
-      position: { lng: 126.846965, lat: 37.49946, altitude: 37.7 },
-      vitals: { temperature: 39.1, heartRate: 160 },
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  return {
-    eventId: "EVT-20260211-001",
-    type: "abnormal_vitals" as const,
-    workerId: "worker-3",
-    position: { lng: 126.846643, lat: 37.499556, altitude: 11.9 },
-    vitals: { temperature: 38.5, heartRate: 145 },
-    timestamp: new Date().toISOString(),
-  };
-}
+import type { SiteEmergencyPayload } from "@/services";
 
 export interface MapboxViewerHandle {
   setStyle: (style: MapStyleKey) => void;
-  triggerEmergency: (scenario: ScenarioId) => Promise<void>;
+  triggerEmergency: (
+    payload: SiteEmergencyPayload,
+    options?: {
+      skipModelSwap?: boolean;
+      skipSelect?: boolean;
+      skipFlyTo?: boolean;
+      message?: string;
+      bannerLabel?: string;
+    }
+  ) => void;
   resetEmergency: () => void;
+  selectWorker: (workerId: string | null) => void;
+  moveFeatureTo: (
+    id: string,
+    target: FeaturePosition,
+    durationMs: number,
+    onComplete?: () => void
+  ) => void;
+  showCCTVFOV: (cctvId: string, visible: boolean) => void;
+  setFOVColor: (cctvId: string, color: number) => void;
+  selectFeature: (featureId: string | null, highlightColor?: number) => void;
+  flyTo: (opts: {
+    center: [number, number];
+    zoom: number;
+    pitch: number;
+    bearing: number;
+    duration?: number;
+  }) => void;
 }
 
 interface MapboxViewerProps {
   ref?: React.Ref<MapboxViewerHandle>;
+  workerNames?: Record<string, string>;
+  onWorkerSelect?: (workerId: string | null) => void;
+  onScenarioEnd?: () => void;
 }
 
-export function MapboxViewer({ ref }: MapboxViewerProps) {
+const MODEL_TRANSFORM: ModelTransform = {
+  lng: 126.84714,
+  lat: 37.498996,
+  altitude: -13,
+  rotationX: 90,
+  rotationY: 112,
+  rotationZ: 0,
+  scale: 1,
+};
+
+export function MapboxViewer({
+  ref,
+  workerNames,
+  onWorkerSelect,
+  onScenarioEnd,
+}: MapboxViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapboxMap | null>(null);
   const coordRef = useRef<HTMLDivElement>(null);
@@ -53,6 +83,7 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
   const [emergency, setEmergency] = useState(false);
   const [bannerVisible, setBannerVisible] = useState(false);
   const [bannerWorkerId, setBannerWorkerId] = useState("");
+  const [bannerMessage, setBannerMessage] = useState(DEFAULT_BANNER_MESSAGE);
 
   const [selectedFeature, setSelectedFeature] = useState<{
     id: string;
@@ -60,25 +91,101 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
     lat: number;
     altitude: number;
     vitals: WorkerVitals | null;
+    streamUrl: string | null;
   } | null>(null);
   // stale closure 방지용 mirror ref
   const selectedIdRef = useRef<string | null>(null);
   useEffect(() => {
-    selectedIdRef.current = selectedFeature?.id ?? null;
+    const prevId = selectedIdRef.current;
+    const newId = selectedFeature?.id ?? null;
+    selectedIdRef.current = newId;
+
+    // CCTV FOV 표시/숨김 — getCCTVStreamUrl이 값을 반환하면 CCTV
+    if (prevId && overlayRef.current?.getCCTVStreamUrl(prevId)) {
+      overlayRef.current.setFeatureFOVVisible(prevId, false);
+    }
+    if (newId && overlayRef.current?.getCCTVStreamUrl(newId)) {
+      overlayRef.current.setFeatureFOVVisible(newId, true);
+    }
   }, [selectedFeature]);
+
+  // onWorkerSelect 콜백 mirror ref
+  const onWorkerSelectRef = useRef(onWorkerSelect);
+  useEffect(() => {
+    onWorkerSelectRef.current = onWorkerSelect;
+  }, [onWorkerSelect]);
 
   // 활성 워커 추적 (resetEmergency에서 사용)
   const activeWorkerRef = useRef<string | null>(null);
 
-  const transformRef = useRef<ModelTransform>({
-    lng: 126.84714,
-    lat: 37.498996,
-    altitude: -13,
-    rotationX: 90,
-    rotationY: 112,
-    rotationZ: 0,
-    scale: 1,
-  });
+  // getter 패턴 — React ref 의존 없이 순수 함수로 전달 가능
+  const getTransform = useCallback(() => MODEL_TRANSFORM, []);
+
+  // 워커 선택 공통 로직
+  const doSelectWorker = useCallback((workerId: string | null) => {
+    if (!workerId) {
+      setSelectedFeature(null);
+      overlayRef.current?.clearHighlight();
+      onWorkerSelectRef.current?.(null);
+      return;
+    }
+
+    const pos = overlayRef.current?.getFeaturePosition(workerId);
+    const vitals = overlayRef.current?.getWorkerVitals(workerId) ?? null;
+    const streamUrl = overlayRef.current?.getCCTVStreamUrl(workerId) ?? null;
+    if (pos) {
+      setSelectedFeature({
+        id: workerId,
+        lng: pos.lng,
+        lat: pos.lat,
+        altitude: pos.altitude,
+        vitals,
+        streamUrl,
+      });
+      overlayRef.current?.highlightFeature(workerId);
+    }
+    onWorkerSelectRef.current?.(workerId);
+  }, []);
+
+  const doResetEmergency = useCallback(() => {
+    const workerId = activeWorkerRef.current;
+
+    setEmergency(false);
+    setBannerVisible(false);
+    setBannerWorkerId("");
+    setBannerMessage(DEFAULT_BANNER_MESSAGE);
+
+    if (workerId) {
+      overlayRef.current?.swapFeatureAsset(workerId, "worker");
+      overlayRef.current?.updateWorkerVitals(
+        workerId,
+        DEFAULT_WORKER_VITALS[workerId] ?? { temperature: 36.5, heartRate: 75 }
+      );
+
+      const initialPos = overlayRef.current?.getInitialPosition(workerId);
+      if (initialPos) {
+        overlayRef.current?.moveFeatureTo(workerId, initialPos, DEFAULT_FLY_DURATION);
+      }
+    }
+
+    overlayRef.current?.setBuildingOpacity(BUILDING_OPACITY.FULL);
+
+    activeWorkerRef.current = null;
+    setSelectedFeature(null);
+    overlayRef.current?.clearHighlight();
+
+    mapRef.current?.flyTo({
+      center: INITIAL_VIEW.center,
+      zoom: INITIAL_VIEW.zoom,
+      pitch: INITIAL_VIEW.pitch,
+      bearing: INITIAL_VIEW.bearing,
+      duration: DEFAULT_FLY_DURATION,
+      essential: true,
+    });
+
+    onWorkerSelectRef.current?.(null);
+    onScenarioEnd?.();
+  }, [onScenarioEnd]);
 
   useImperativeHandle(ref, () => ({
     setStyle(style: MapStyleKey) {
@@ -86,98 +193,122 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
         mapRef.current.setStyle(MAP_STYLES[style]);
       }
     },
-    async triggerEmergency(scenario: ScenarioId) {
-      // 서버 이벤트 API 페칭 시뮬레이션
-      const event = await fetchEmergencyEvent(scenario);
-
-      activeWorkerRef.current = event.workerId;
+    triggerEmergency(
+      payload: SiteEmergencyPayload,
+      opts?: {
+        skipModelSwap?: boolean;
+        skipSelect?: boolean;
+        skipFlyTo?: boolean;
+        message?: string;
+        bannerLabel?: string;
+      }
+    ) {
+      activeWorkerRef.current = payload.workerId;
 
       setEmergency(true);
       setBannerVisible(true);
-      setBannerWorkerId(event.workerId);
+      setBannerWorkerId(opts?.bannerLabel ?? payload.workerId);
+      if (opts?.message) setBannerMessage(opts.message);
 
-      overlayRef.current?.swapFeatureAsset(event.workerId, "worker-stunned");
-      overlayRef.current?.updateWorkerVitals(event.workerId, event.vitals);
+      if (!opts?.skipModelSwap) {
+        overlayRef.current?.swapFeatureAsset(payload.workerId, "worker-stunned");
+      }
+      overlayRef.current?.updateWorkerVitals(payload.workerId, payload.vitals);
 
-      setSelectedFeature({
-        id: event.workerId,
-        lng: event.position.lng,
-        lat: event.position.lat,
-        altitude: event.position.altitude,
-        vitals: event.vitals,
-      });
-      overlayRef.current?.highlightFeature(event.workerId, 0xde4545);
+      if (!opts?.skipSelect) {
+        setSelectedFeature({
+          id: payload.workerId,
+          lng: payload.position.lng,
+          lat: payload.position.lat,
+          altitude: payload.position.altitude,
+          vitals: payload.vitals,
+          streamUrl: null,
+        });
+        overlayRef.current?.highlightFeature(payload.workerId, COLOR_DANGER);
+        onWorkerSelectRef.current?.(payload.workerId);
+      }
 
-      // 오클루전 자동 감지 — 건물이 워커 위를 덮으면 투명화
-      const occluded = overlayRef.current?.checkOcclusion(event.workerId) ?? false;
+      const occluded = overlayRef.current?.checkOcclusion(payload.workerId) ?? false;
       if (occluded) {
-        overlayRef.current?.setBuildingOpacity(0.15);
+        overlayRef.current?.setBuildingOpacity(BUILDING_OPACITY.OCCLUDED);
       }
 
-      // 카메라 파라미터 — 고도 기반 자동 계산 (pitch 45.5° 통일)
-      const BASE_ZOOM = 21.3;
-      const BASE_ALT = 11.9;
-      const bearing = 120;
-      const pitch = 45.5;
+      if (!opts?.skipFlyTo) {
+        const { BASE_ZOOM, BASE_ALT, BEARING, PITCH } = EMERGENCY_CAMERA;
 
-      const zoom =
-        event.position.altitude <= BASE_ALT
-          ? BASE_ZOOM
-          : BASE_ZOOM - Math.log2(event.position.altitude / BASE_ALT);
+        const zoom =
+          payload.position.altitude <= BASE_ALT
+            ? BASE_ZOOM
+            : BASE_ZOOM - Math.log2(payload.position.altitude / BASE_ALT);
 
-      // 고도 기반 오프셋 — pitch/bearing/altitude로 화면 중앙 보정
-      const pitchRad = (pitch * Math.PI) / 180;
-      const bearingRad = (bearing * Math.PI) / 180;
-      const offsetMeters = event.position.altitude * Math.tan(pitchRad);
-      const mPerLng = 111320 * Math.cos((event.position.lat * Math.PI) / 180);
-      const mPerLat = 111320;
+        const pitchRad = (PITCH * Math.PI) / 180;
+        const bearingRad = (BEARING * Math.PI) / 180;
+        const offsetMeters = payload.position.altitude * Math.tan(pitchRad);
+        const mPerLng = 111320 * Math.cos((payload.position.lat * Math.PI) / 180);
+        const mPerLat = 111320;
 
-      mapRef.current?.flyTo({
-        center: [
-          event.position.lng + (offsetMeters * Math.sin(bearingRad)) / mPerLng,
-          event.position.lat + (offsetMeters * Math.cos(bearingRad)) / mPerLat,
-        ],
-        zoom,
-        pitch,
-        bearing,
-        duration: 2000,
-        essential: true,
-      });
+        mapRef.current?.flyTo({
+          center: [
+            payload.position.lng + (offsetMeters * Math.sin(bearingRad)) / mPerLng,
+            payload.position.lat + (offsetMeters * Math.cos(bearingRad)) / mPerLat,
+          ],
+          zoom,
+          pitch: PITCH,
+          bearing: BEARING,
+          duration: DEFAULT_FLY_DURATION,
+          essential: true,
+        });
+      }
     },
-    resetEmergency() {
-      const workerId = activeWorkerRef.current;
-
-      setEmergency(false);
-      setBannerVisible(false);
-      setBannerWorkerId("");
-
-      // 활성 워커 원래 모델 + 정상 바이탈 복원
-      if (workerId) {
-        const defaultVitals: Record<string, WorkerVitals> = {
-          "worker-3": { temperature: 36.7, heartRate: 82 },
-          "worker-6": { temperature: 36.5, heartRate: 76 },
-        };
-        overlayRef.current?.swapFeatureAsset(workerId, "worker");
-        overlayRef.current?.updateWorkerVitals(
-          workerId,
-          defaultVitals[workerId] ?? { temperature: 36.5, heartRate: 75 }
-        );
+    resetEmergency: doResetEmergency,
+    selectWorker: doSelectWorker,
+    moveFeatureTo(
+      id: string,
+      target: FeaturePosition,
+      durationMs: number,
+      onComplete?: () => void
+    ) {
+      overlayRef.current?.moveFeatureTo(id, target, durationMs, onComplete);
+    },
+    showCCTVFOV(cctvId: string, visible: boolean) {
+      overlayRef.current?.setFeatureFOVVisible(cctvId, visible);
+    },
+    setFOVColor(cctvId: string, color: number) {
+      overlayRef.current?.setFOVColor(cctvId, color);
+    },
+    selectFeature(featureId: string | null, highlightColor?: number) {
+      if (!featureId) {
+        setSelectedFeature(null);
+        overlayRef.current?.clearHighlight();
+        return;
       }
-
-      // 항상 건물 불투명 복원 (안전)
-      overlayRef.current?.setBuildingOpacity(1.0);
-
-      activeWorkerRef.current = null;
-      setSelectedFeature(null);
-      overlayRef.current?.clearHighlight();
-
-      // 초기 뷰로 복귀
+      const pos = overlayRef.current?.getFeaturePosition(featureId);
+      if (!pos) return;
+      const streamUrl = overlayRef.current?.getCCTVStreamUrl(featureId) ?? null;
+      const vitals = streamUrl ? null : (overlayRef.current?.getWorkerVitals(featureId) ?? null);
+      setSelectedFeature({
+        id: featureId,
+        lng: pos.lng,
+        lat: pos.lat,
+        altitude: pos.altitude,
+        vitals,
+        streamUrl,
+      });
+      overlayRef.current?.highlightFeature(featureId, highlightColor);
+    },
+    flyTo(opts: {
+      center: [number, number];
+      zoom: number;
+      pitch: number;
+      bearing: number;
+      duration?: number;
+    }) {
       mapRef.current?.flyTo({
-        center: INITIAL_VIEW.center,
-        zoom: INITIAL_VIEW.zoom,
-        pitch: INITIAL_VIEW.pitch,
-        bearing: INITIAL_VIEW.bearing,
-        duration: 2000,
+        center: opts.center,
+        zoom: opts.zoom,
+        pitch: opts.pitch,
+        bearing: opts.bearing,
+        duration: opts.duration ?? DEFAULT_FLY_DURATION,
         essential: true,
       });
     },
@@ -301,38 +432,43 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
       );
 
       if (hit?.featureId) {
-        const vitals = overlayRef.current?.getWorkerVitals(hit.featureId) ?? null;
+        const streamUrl = overlayRef.current?.getCCTVStreamUrl(hit.featureId) ?? null;
+        const vitals = streamUrl
+          ? null
+          : (overlayRef.current?.getWorkerVitals(hit.featureId) ?? null);
         setSelectedFeature({
           id: hit.featureId,
           lng: hit.lng,
           lat: hit.lat,
           altitude: hit.altitude,
           vitals,
+          streamUrl,
         });
         overlayRef.current?.highlightFeature(hit.featureId);
+        if (!streamUrl) onWorkerSelectRef.current?.(hit.featureId);
       } else {
         setSelectedFeature(null);
         overlayRef.current?.clearHighlight();
+        onWorkerSelectRef.current?.(null);
       }
     });
 
-    // 매 프레임 팝업 위치 업데이트 (DOM 직접 조작)
+    // 매 프레임 팝업 + 이름 라벨 위치 업데이트 (DOM 직접 조작)
     map.on("render", () => {
-      const id = selectedIdRef.current;
-      if (!id || !popupRef.current) return;
-
       const canvas = map.getCanvas();
-      const pos = overlayRef.current?.projectFeatureToScreen(
-        id,
-        canvas.clientWidth,
-        canvas.clientHeight
-      );
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
 
-      if (pos) {
-        popupRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-        popupRef.current.style.display = "";
-      } else {
-        popupRef.current.style.display = "none";
+      // 팝업 위치
+      const selId = selectedIdRef.current;
+      if (selId && popupRef.current) {
+        const pos = overlayRef.current?.projectFeatureToScreen(selId, w, h);
+        if (pos) {
+          popupRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+          popupRef.current.style.display = "";
+        } else {
+          popupRef.current.style.display = "none";
+        }
       }
     });
 
@@ -349,8 +485,7 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full" />
-      <ThreeOverlay ref={overlayRef} transformRef={transformRef} requestRepaint={requestRepaint} />
-      {/* 비상 오버레이 */}
+      <ThreeOverlay ref={overlayRef} getTransform={getTransform} requestRepaint={requestRepaint} />
       {emergency && (
         <div className="pointer-events-none absolute inset-0 z-[3]">
           {/* 빨간 비네트 */}
@@ -358,23 +493,30 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
             className="absolute inset-0 animate-pulse"
             style={{
               boxShadow:
-                "inset 0 0 80px 20px rgba(222,69,69,0.35), inset 0 0 200px 60px rgba(222,69,69,0.2)",
+                "inset 0 0 5rem 1.25rem rgba(222,69,69,0.35), inset 0 0 12.5rem 3.75rem rgba(222,69,69,0.2)",
               animationDuration: "2s",
             }}
           />
           {/* 빨간 테두리 */}
           <div
-            className="absolute inset-0 animate-pulse border-[3px] border-[#DE4545]/80"
+            className="absolute inset-0 animate-pulse border-[0.125rem] border-[#DE4545]/80"
             style={{ animationDuration: "2s" }}
           />
           {/* 상단 경고 배너 */}
           {bannerVisible && (
-            <div className="pointer-events-auto absolute inset-x-0 top-16 flex items-center justify-center">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="pointer-events-auto absolute inset-x-0 top-[10%] flex items-center justify-center"
+            >
               <div className="flex items-center gap-3 rounded-lg bg-[#DE4545]/90 px-5 py-2.5 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
                 <span className="animate-pulse text-lg">&#9888;</span>
-                <span>비상 상황 발생 — {bannerWorkerId} 이상징후 감지</span>
+                <span>
+                  비상 상황 발생 — {workerNames?.[bannerWorkerId] ?? bannerWorkerId} {bannerMessage}
+                </span>
                 <button
-                  onClick={() => setBannerVisible(false)}
+                  onClick={doResetEmergency}
+                  aria-label="시나리오 종료"
                   className="ml-2 rounded-full p-0.5 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
                 >
                   &times;
@@ -391,12 +533,29 @@ export function MapboxViewer({ ref }: MapboxViewerProps) {
           style={{ willChange: "transform" }}
         >
           <div className="-translate-x-1/2 -translate-y-full">
-            <FeaturePopup
-              featureId={selectedFeature.id}
-              position={selectedFeature}
-              vitals={selectedFeature.vitals}
-              onClose={() => setSelectedFeature(null)}
-            />
+            {selectedFeature.streamUrl ? (
+              <CCTVPopup
+                featureId={selectedFeature.id}
+                streamUrl={selectedFeature.streamUrl}
+                onClose={() => {
+                  setSelectedFeature(null);
+                  overlayRef.current?.clearHighlight();
+                }}
+              />
+            ) : (
+              <FeaturePopup
+                featureId={selectedFeature.id}
+                workerName={workerNames?.[selectedFeature.id]}
+                position={selectedFeature}
+                vitals={selectedFeature.vitals}
+                abnormal={emergency}
+                onClose={() => {
+                  setSelectedFeature(null);
+                  overlayRef.current?.clearHighlight();
+                  onWorkerSelectRef.current?.(null);
+                }}
+              />
+            )}
           </div>
         </div>
       )}

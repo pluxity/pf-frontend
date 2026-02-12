@@ -1,9 +1,20 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "@pf-dev/ui";
-import { SiteHeader, MapboxViewer } from "./components";
-import type { MapboxViewerHandle, MapStyleKey, ScenarioId } from "./components";
-import { sitesService, type Site } from "@/services";
+import {
+  SiteHeader,
+  MapboxViewer,
+  WorkerListPanel,
+  SafetyScorePanel,
+  EventPanel,
+  WeatherPanel,
+} from "./components";
+import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
+import { sitesService, type Site, type SiteEvent } from "@/services";
+import { INITIAL_WORKERS, SCENARIO_EMERGENCIES, SCENARIO3, nextEventId } from "./mocks";
+import { COLOR_SUCCESS, COLOR_DANGER } from "./components/mapbox-viewer/constants";
+
+type ScenarioId = 1 | 2 | 3;
 
 function ScenarioButton({
   label,
@@ -12,21 +23,14 @@ function ScenarioButton({
 }: {
   label: string;
   scenario: ScenarioId;
-  onTrigger: (scenario: ScenarioId) => Promise<void>;
+  onTrigger: (scenario: ScenarioId) => void;
 }) {
-  const [loading, setLoading] = useState(false);
-
   return (
     <button
-      disabled={loading}
-      onClick={async () => {
-        setLoading(true);
-        await onTrigger(scenario);
-        setLoading(false);
-      }}
+      onClick={() => onTrigger(scenario)}
       className="rounded-lg bg-[#DE4545] px-4 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:bg-[#c53030] disabled:opacity-60"
     >
-      {loading ? "로딩..." : label}
+      {label}
     </button>
   );
 }
@@ -38,12 +42,124 @@ export function SitePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>("day");
   const [scenarioActive, setScenarioActive] = useState(false);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<string | null>(null);
+  const [workers, setWorkers] = useState(INITIAL_WORKERS);
+  const [events, setEvents] = useState<SiteEvent[]>([]);
   const mapViewerRef = useRef<MapboxViewerHandle>(null);
+
+  const workerNames = useMemo(
+    () => Object.fromEntries(workers.map((w) => [w.id, w.name])),
+    [workers]
+  );
+
+  const attendance: Attendance = useMemo(
+    () => ({
+      working: workers.length,
+      standby: 0,
+      offDuty: 0,
+      absent: 0,
+    }),
+    [workers.length]
+  );
 
   const handleMapStyleChange = useCallback((style: MapStyleKey) => {
     setMapStyle(style);
     mapViewerRef.current?.setStyle(style);
   }, []);
+
+  const handlePanelWorkerClick = useCallback((workerId: string) => {
+    setSelectedWorkerId(workerId);
+    mapViewerRef.current?.selectWorker(workerId);
+  }, []);
+
+  const handleMapWorkerSelect = useCallback((workerId: string | null) => {
+    setSelectedWorkerId(workerId);
+  }, []);
+
+  const handleScenarioTrigger = useCallback(
+    (scenario: ScenarioId) => {
+      if (scenario === 3) {
+        setScenarioActive(true);
+
+        mapViewerRef.current?.moveFeatureTo(
+          SCENARIO3.workerId,
+          SCENARIO3.to,
+          SCENARIO3.moveDurationMs,
+          () => {
+            const dangerEvent: SiteEvent = {
+              id: nextEventId(),
+              level: "danger",
+              code: "F-2",
+              message: "작업자 위험구역 진입",
+              region: "서울",
+              siteId: id ?? "",
+              siteName: "개봉5구역",
+              createdAt: new Date().toISOString(),
+              emergency: SCENARIO3.emergency,
+            };
+            setEvents((prev) => [...prev, dangerEvent]);
+
+            const { workerId } = SCENARIO3.emergency;
+            setWorkers((prev) =>
+              prev.map((w) =>
+                w.id === workerId ? { ...w, status: "abnormal" as const, info: "위험구역 진입" } : w
+              )
+            );
+            setSelectedWorkerId(workerId);
+
+            mapViewerRef.current?.showCCTVFOV(SCENARIO3.cctvId, true);
+            mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_DANGER);
+
+            mapViewerRef.current?.flyTo(SCENARIO3.camera);
+
+            mapViewerRef.current?.triggerEmergency(SCENARIO3.emergency, {
+              skipModelSwap: true,
+              skipSelect: true,
+              skipFlyTo: true,
+              message: "위험구역 침입 탐지",
+              bannerLabel: SCENARIO3.cctvId,
+            });
+
+            mapViewerRef.current?.selectFeature(SCENARIO3.cctvId, COLOR_DANGER);
+          }
+        );
+        return;
+      }
+
+      const emergency = SCENARIO_EMERGENCIES[scenario];
+
+      const dangerEvent: SiteEvent = {
+        id: nextEventId(),
+        level: "danger",
+        code: `E-${scenario}`,
+        message: "작업자 이상징후 감지",
+        region: "서울",
+        siteId: id ?? "",
+        siteName: "개봉5구역",
+        createdAt: new Date().toISOString(),
+        emergency,
+      };
+      setEvents((prev) => [...prev, dangerEvent]);
+
+      const { workerId, vitals } = emergency;
+      setWorkers((prev) =>
+        prev.map((w) =>
+          w.id === workerId
+            ? {
+                ...w,
+                status: "abnormal" as const,
+                info: `${vitals.temperature}°C / ${vitals.heartRate}bpm`,
+              }
+            : w
+        )
+      );
+      setSelectedWorkerId(workerId);
+      setScenarioActive(true);
+
+      mapViewerRef.current?.triggerEmergency(emergency);
+    },
+    [id]
+  );
 
   useEffect(() => {
     if (!id) {
@@ -75,12 +191,20 @@ export function SitePage() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      {/* 배경: 전체화면 지도 */}
       <div className="absolute inset-0">
-        <MapboxViewer ref={mapViewerRef} />
+        <MapboxViewer
+          ref={mapViewerRef}
+          workerNames={workerNames}
+          onWorkerSelect={handleMapWorkerSelect}
+          onScenarioEnd={() => {
+            setScenarioActive(false);
+            setWorkers(INITIAL_WORKERS);
+            setSelectedWorkerId(null);
+            mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_SUCCESS);
+          }}
+        />
       </div>
 
-      {/* 헤더 */}
       <header className="absolute inset-x-0 top-0 z-50 h-[3.75rem]">
         <SiteHeader
           siteName={site.name}
@@ -89,35 +213,22 @@ export function SitePage() {
         />
       </header>
 
-      {/* 시나리오 버튼 */}
-      {scenarioActive ? (
-        <button
-          onClick={() => {
-            mapViewerRef.current?.resetEmergency();
-            setScenarioActive(false);
-          }}
-          className="absolute bottom-6 right-6 z-50 rounded-lg bg-[#1E293B] px-4 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:bg-[#334155]"
-        >
-          시나리오 종료
-        </button>
-      ) : (
-        <div className="absolute bottom-6 right-6 z-50 flex gap-3">
-          <ScenarioButton
-            label="시나리오 1"
-            scenario={1}
-            onTrigger={async (s) => {
-              await mapViewerRef.current?.triggerEmergency(s);
-              setScenarioActive(true);
-            }}
-          />
-          <ScenarioButton
-            label="시나리오 2"
-            scenario={2}
-            onTrigger={async (s) => {
-              await mapViewerRef.current?.triggerEmergency(s);
-              setScenarioActive(true);
-            }}
-          />
+      <EventPanel events={events} className="absolute left-4 top-[4.75rem] z-40 w-[18.75rem]" />
+      <WeatherPanel className="absolute right-4 top-[4.75rem] z-40 w-[15rem]" />
+      <SafetyScorePanel className="absolute right-4 top-[16rem] z-40 w-[15rem]" />
+      <WorkerListPanel
+        className="absolute bottom-6 right-4 z-40"
+        attendance={attendance}
+        workers={workers}
+        selectedWorkerId={selectedWorkerId}
+        onWorkerClick={handlePanelWorkerClick}
+      />
+
+      {!scenarioActive && (
+        <div className="absolute inset-x-0 bottom-6 z-50 flex justify-center gap-3">
+          <ScenarioButton label="시나리오 1" scenario={1} onTrigger={handleScenarioTrigger} />
+          <ScenarioButton label="시나리오 2" scenario={2} onTrigger={handleScenarioTrigger} />
+          <ScenarioButton label="시나리오 3" scenario={3} onTrigger={handleScenarioTrigger} />
         </div>
       )}
     </div>

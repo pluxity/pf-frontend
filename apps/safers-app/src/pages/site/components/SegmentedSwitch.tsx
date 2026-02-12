@@ -38,16 +38,16 @@ export function SegmentedSwitch<T extends string = string>({
     <div
       ref={groupRef}
       role="radiogroup"
-      className={`relative flex h-8 items-center rounded-full bg-[#E8E8E8] p-[3px] ${className}`}
+      className={`relative flex h-8 items-center rounded-full bg-[#E8E8E8] p-[0.1875rem] ${className}`}
       onKeyDown={handleKeyDown}
     >
       {/* sliding indicator */}
       <div
-        className="absolute top-[3px] bottom-[3px] rounded-full bg-white shadow-sm transition-transform duration-200 ease-out"
+        className="absolute top-[0.1875rem] bottom-[0.1875rem] rounded-full bg-white shadow-sm transition-transform duration-200 ease-out"
         style={{
-          width: `calc(${100 / options.length}% - 3px)`,
-          left: "1.5px",
-          transform: `translateX(calc(${activeIndex} * (100% + ${3 / (options.length - 0.5)}px)))`,
+          width: `calc(${100 / options.length}% - 0.1875rem)`,
+          left: "0.09375rem",
+          transform: `translateX(calc(${activeIndex} * (100% + ${0.1875 / (options.length - 0.5)}rem)))`,
         }}
       />
 

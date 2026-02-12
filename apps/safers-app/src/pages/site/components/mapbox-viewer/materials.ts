@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import type { MaterialPreset } from "./types";
+import type { MaterialPreset, MaterialRule } from "./types";
 
-export const MATERIAL_RULES: { pattern: RegExp; preset: MaterialPreset }[] = [
+export const MATERIAL_RULES: MaterialRule[] = [
   {
     pattern: /^Material\s*#\d+$/i,
     preset: { roughness: 0.85, metalness: 0.86, envMapIntensity: 0 },
@@ -26,12 +26,17 @@ export const DEFAULT_PRESET: MaterialPreset = { roughness: 0.8, metalness: 0, en
 
 export const GROUND_CLIP_PLANE = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
-export function applyPreset(material: THREE.Material, clippingPlane: THREE.Plane): THREE.Material {
+export function applyPreset(
+  material: THREE.Material,
+  clippingPlane: THREE.Plane,
+  rules?: MaterialRule[]
+): THREE.Material {
   const mat = material.clone() as THREE.MeshStandardMaterial;
   if (!("roughness" in mat)) return mat;
 
   const name = mat.name || "";
-  const rule = MATERIAL_RULES.find((r) => r.pattern.test(name));
+  const activeRules = rules ?? MATERIAL_RULES;
+  const rule = activeRules.find((r) => r.pattern.test(name));
   const preset = rule?.preset ?? DEFAULT_PRESET;
 
   if (preset.roughness !== undefined) mat.roughness = preset.roughness;
