@@ -1,4 +1,4 @@
-import { Badge, cn } from "@pf-dev/ui";
+import { cn } from "@pf-dev/ui";
 import { useAnnouncement } from "@/hooks";
 import { Marquee } from "../Marquee";
 
@@ -14,12 +14,14 @@ export function Announcement({ className }: AnnouncementProps) {
 
   return (
     <div className={cn("flex w-full items-center gap-4", className)}>
-      <Badge variant="primary" className="shrink-0 px-5 py-1">
-        안내사항
-      </Badge>
+      <img
+        src={`${import.meta.env.BASE_URL}assets/icons/announcement.svg`}
+        alt="안내사항"
+        className="w-5 h-5"
+      />
       <div className="flex-1 min-w-0">
         {content && (
-          <Marquee animate={shouldAnimate} className="text-lg font-semibold">
+          <Marquee animate={shouldAnimate} className="text-sm font-semibold">
             {content}
           </Marquee>
         )}
