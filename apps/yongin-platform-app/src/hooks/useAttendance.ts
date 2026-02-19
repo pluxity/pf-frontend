@@ -15,16 +15,8 @@ export function useAttendance() {
     revalidateOnFocus: false,
   });
 
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const today = `${year}-${month}-${day}`;
-
-  const todayData = attendanceData?.filter((item) => item.attendanceDate === today) ?? [];
-
   return {
-    data: todayData,
+    data: attendanceData ?? [],
     isLoading: isLoadingData,
     isError: !!dataError,
     error: dataError,
