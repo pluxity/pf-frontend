@@ -86,11 +86,11 @@ export function Attendance({ id, className }: AttendanceProps) {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  data.map((data) => (
-                    <TableRow key={data.id}>
-                      <TableCell>{data.deviceName}</TableCell>
-                      <TableCell>{data.attendanceCount}</TableCell>
-                      <TableCell>{data.workContent}</TableCell>
+                  data.map((attendance) => (
+                    <TableRow key={attendance.id}>
+                      <TableCell>{attendance.deviceName}</TableCell>
+                      <TableCell>{attendance.attendanceCount}</TableCell>
+                      <TableCell>{attendance.workContent}</TableCell>
                     </TableRow>
                   ))
                 )}
