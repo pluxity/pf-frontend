@@ -67,12 +67,15 @@ export function Goal({ id, className }: GoalProps) {
         <div className="font-bold">목표관리</div>
 
         <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto">
+          <div className="h-full overflow-y-auto [&>div]:!border-0 [&_table]:!border-0 [&_tr]:!border-0 [&_td]:!border-0 [&_th]:!border-r-0">
             <Table>
-              <TableHeader>
+              <TableHeader className="!border-y !border-neutral-300">
                 <TableRow>
                   {goalHeader.map((header) => (
-                    <TableHead key={header.key} className="bg-[#DAE4F4] text-[#55596C]">
+                    <TableHead
+                      key={header.key}
+                      className="bg-[#DAE4F4] text-[#55596C] whitespace-nowrap tracking-tighter px-2"
+                    >
                       {header.label}
                     </TableHead>
                   ))}
@@ -81,19 +84,22 @@ export function Goal({ id, className }: GoalProps) {
               <TableBody>
                 {goals.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={goalHeader.length} className="text-center text-neutral-500">
+                    <TableCell
+                      colSpan={goalHeader.length}
+                      className="text-center text-neutral-500 px-2"
+                    >
                       데이터가 없습니다.
                     </TableCell>
                   </TableRow>
                 ) : (
                   goals.map((goal) => (
                     <TableRow key={goal.id}>
-                      <TableCell>{goal.constructionSectionName}</TableCell>
-                      <TableCell>{goal.progressRate}%</TableCell>
-                      <TableCell>{goal.targetQuantity.toLocaleString()}</TableCell>
-                      <TableCell>{goal.workQuantity.toLocaleString()}</TableCell>
-                      <TableCell>{goal.completionDate}</TableCell>
-                      <TableCell>{goal.delayDays}일</TableCell>
+                      <TableCell className="px-2">{goal.constructionSectionName}</TableCell>
+                      <TableCell className="px-2">{goal.progressRate}%</TableCell>
+                      <TableCell className="px-2">{goal.targetQuantity.toLocaleString()}</TableCell>
+                      <TableCell className="px-2">{goal.workQuantity.toLocaleString()}</TableCell>
+                      <TableCell className="px-2">{goal.completionDate}</TableCell>
+                      <TableCell className="px-2 text-error-600">{goal.delayDays}</TableCell>
                     </TableRow>
                   ))
                 )}
