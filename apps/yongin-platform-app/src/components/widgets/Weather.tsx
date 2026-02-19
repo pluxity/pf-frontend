@@ -1,46 +1,17 @@
 import { Widget, cn, Spinner } from "@pf-dev/ui";
 import { WeatherProps } from "./types";
 import { useWeather } from "@/hooks";
-import { DateTime } from "@/components/DateTime";
-
-const PM_STATUS = {
-  좋음: { icon: "pm-good.svg", color: "bg-[#0057FF]" },
-  보통: { icon: "pm-moderate.svg", color: "bg-[#2DC000]" },
-  나쁨: { icon: "pm-bad.svg", color: "bg-[#FF8901]" },
-} as const;
-
-function getPMStatus(status: string) {
-  return PM_STATUS[status as keyof typeof PM_STATUS] ?? PM_STATUS["좋음"];
-}
-
-function getHumidityStatus(humidity: number): string {
-  if (humidity < 40) return "건조";
-  if (humidity <= 60) return "쾌적";
-  return "습함";
-}
-
-function getWindSpeedStatus(windSpeed: number): string {
-  if (windSpeed < 4) return "미풍";
-  if (windSpeed < 9) return "약풍";
-  if (windSpeed < 13) return "중풍";
-  return "강풍";
-}
-
-function getRainFall(rainfall: number): string {
-  if (rainfall === 0) return "없음";
-  if (rainfall < 3) return "약한 비";
-  if (rainfall < 15) return "보통 비";
-  if (rainfall < 30) return "강한 비";
-  return "폭우";
-}
-
-function getWeatherIcon(): string {
-  const hour = new Date().getHours();
-  return hour >= 6 && hour < 18 ? "sunny.svg" : "cloudy.svg";
-}
+import {
+  getPMStatus,
+  getHumidityStatus,
+  getWindSpeedStatus,
+  getRainFall,
+  getNoiseStatus,
+  getWeatherIconName,
+} from "@/utils/weather";
 
 export function Weather({ id, className }: WeatherProps) {
-  const { weather, isLoading, isError, error } = useWeather();
+  const { weather, openWeather, isLoading, isError, error } = useWeather();
 
   if (isLoading) {
     return (
@@ -128,36 +99,46 @@ export function Weather({ id, className }: WeatherProps) {
     {
       label: "소음",
       value: `${Math.round(weather.noise)}dB`,
-      status: weather.noise ? "측정됨" : "-",
+      status: getNoiseStatus(weather.noise),
     },
   ];
 
   return (
-    <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
-      <div className="flex items-center gap-2 text-lg mb-2 text-[#55596C]">
-        <DateTime format="YYYY년 MM월 DD일(ddd)" className="font-bold text-lg" />
-        <DateTime format="HH:mm:ss" className="text-lg" />
-      </div>
+    <Widget id={id} className={cn(className, " bg-white")} contentClassName="h-full">
       <div className="flex flex-col justify-start gap-3 h-full overflow-hidden">
         <div className="grid grid-cols-3 gap-2">
-          <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
-            <img
-              src={`${import.meta.env.BASE_URL}assets/icons/${getWeatherIcon()}`}
-              alt="날씨"
-              className="w-10 h-10"
-            />
-            <span className="text-2xl">{Math.round(weather.temperature)}°C</span>
+          <div className="flex flex-col items-center justify-between min-h-28">
+            {openWeather ? (
+              <>
+                <img
+                  src={`${import.meta.env.BASE_URL}assets/icons/${getWeatherIconName(openWeather.id)}.svg`}
+                  alt={openWeather.description}
+                  className="w-16 h-16 flex-1"
+                />
+                <div className="flex flex-col items-center">
+                  <span className="text-xs tracking-tight whitespace-nowrap">
+                    {openWeather.description}
+                  </span>
+                  <span className="text-sm font-bold">{Math.round(openWeather.temp)}°C</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
+                <span className="text-sm font-bold">{Math.round(weather.temperature)}°C</span>
+              </>
+            )}
           </div>
-          <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
-            <div className="flex items-end">
+          <div className="flex flex-col items-center justify-evenly min-h-28">
+            <div className="flex flex-auto relative">
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm10Status.icon}`}
                 alt={weather.pm10Status}
-                className="w-10 h-10"
+                className="w-14 h-14"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
+                  "absolute bottom-[0.3rem] left-1/2 -translate-x-1/2 text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
                   pm10Status.color
                 )}
               >
@@ -169,16 +150,16 @@ export function Weather({ id, className }: WeatherProps) {
               <span className="text-sm font-bold">{Math.round(weather.pm10)} ㎍/㎥</span>
             </div>
           </div>
-          <div className="bg-white rounded-md p-2 h-full flex flex-col justify-between items-center">
-            <div className="flex items-end">
+          <div className="flex flex-col items-center justify-evenly min-h-28">
+            <div className="flex flex-auto relative">
               <img
                 src={`${import.meta.env.BASE_URL}assets/icons/${pm25Status.icon}`}
                 alt={weather.pm25Status}
-                className="w-10 h-10"
+                className="w-14 h-14"
               />
               <span
                 className={cn(
-                  "text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
+                  "absolute bottom-[0.3rem] left-1/2 -translate-x-1/2 text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
                   pm25Status.color
                 )}
               >
@@ -193,11 +174,9 @@ export function Weather({ id, className }: WeatherProps) {
         </div>
         <div className="flex flex-col gap-1.5">
           {weatherData.map((data) => (
-            <div key={data.label} className="flex text-sm text-center">
-              <span className="bg-[#9499B1] text-white font-bold rounded-sm block flex-1 p-1">
-                {data.label}
-              </span>
-              <div className="flex flex-2 items-center">
+            <div key={data.label} className="flex text-xs text-center">
+              <span className="bg-[#DAE4F4] rounded-xs block flex-1 p-1">{data.label}</span>
+              <div className="flex flex-4 items-center">
                 <span className="flex-1">{data.value}</span>
                 <span className="w-0.5 bg-[#BBBFCF] h-4"></span>
                 <span className="flex-1">{data.status}</span>

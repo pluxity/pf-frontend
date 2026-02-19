@@ -63,7 +63,7 @@ export function Goal({ id, className }: GoalProps) {
 
   return (
     <Widget id={id} className={cn(className, "")} contentClassName="h-full">
-      <div className="flex gap-4 h-full">
+      <div className="flex flex-col gap-2 h-full">
         <div className="font-bold">목표관리</div>
 
         <div className="flex-1 overflow-hidden">
