@@ -27,6 +27,12 @@ export default defineConfig(({ mode }) => {
       host: "0.0.0.0",
       port: 3000,
       proxy: {
+        "/api/stomp": {
+          target: proxyTarget,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+        },
         "/api": {
           target: proxyTarget,
           changeOrigin: true,

@@ -16,6 +16,7 @@
   "dependencies": {
     "@hookform/resolvers": "catalog:",
     "@pf-dev/api": "workspace:*",
+    "@stomp/stompjs": "catalog:",
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/fonts": "workspace:*",
     "@pf-dev/map": "workspace:*",

@@ -36,6 +36,7 @@ export function SitePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>("day");
   const [scenarioActive, setScenarioActive] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | null>(null);
   const [workers, setWorkers] = useState(INITIAL_WORKERS);
   const [events, setEvents] = useState<SiteEvent[]>([]);
@@ -68,6 +69,17 @@ export function SitePage() {
 
   const handleMapWorkerSelect = useCallback((workerId: string | null) => {
     setSelectedWorkerId(workerId);
+  }, []);
+
+  const handleAreaSelect = useCallback((featureIds: string[]) => {
+    setSelectionMode(false);
+    if (featureIds.length > 0) {
+      // Highlight handled by MapboxViewer internally
+    }
+  }, []);
+
+  const handleSelectionCancel = useCallback(() => {
+    setSelectionMode(false);
   }, []);
 
   const handleScenarioTrigger = useCallback(
@@ -194,6 +206,9 @@ export function SitePage() {
           ref={mapViewerRef}
           workerNames={workerNames}
           onWorkerSelect={handleMapWorkerSelect}
+          selectionMode={selectionMode}
+          onAreaSelect={handleAreaSelect}
+          onSelectionCancel={handleSelectionCancel}
           onScenarioEnd={() => {
             setScenarioActive(false);
             setWorkers(INITIAL_WORKERS);
@@ -226,9 +241,23 @@ export function SitePage() {
 
       {!scenarioActive && (
         <div className="absolute inset-x-0 bottom-6 z-50 flex justify-center gap-3">
-          <ScenarioButton label="시나리오 1" scenario={1} onTrigger={handleScenarioTrigger} />
-          <ScenarioButton label="시나리오 2" scenario={2} onTrigger={handleScenarioTrigger} />
-          <ScenarioButton label="시나리오 3" scenario={3} onTrigger={handleScenarioTrigger} />
+          <button
+            onClick={() => setSelectionMode((prev) => !prev)}
+            className={`rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg transition-colors ${
+              selectionMode
+                ? "bg-[#4D7EFF] text-white hover:bg-[#3a6ae0]"
+                : "bg-white/90 text-slate-700 hover:bg-white"
+            }`}
+          >
+            {selectionMode ? "영역 검색 취소" : "영역 검색"}
+          </button>
+          <ScenarioButton
+            label="근로자 이상징후 감지"
+            scenario={1}
+            onTrigger={handleScenarioTrigger}
+          />
+          <ScenarioButton label="SOS 긴급 호출" scenario={2} onTrigger={handleScenarioTrigger} />
+          <ScenarioButton label="위험구역 접근" scenario={3} onTrigger={handleScenarioTrigger} />
         </div>
       )}
     </div>

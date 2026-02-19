@@ -76,4 +76,6 @@ export interface ThreeOverlayHandle {
   setFeatureFOVVisible: (id: string, visible: boolean) => void;
   setFOVColor: (id: string, color: number) => void;
   getCCTVStreamUrl: (id: string) => string | null;
+  getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
+  highlightFeatures: (ids: string[], color?: number) => void;
 }

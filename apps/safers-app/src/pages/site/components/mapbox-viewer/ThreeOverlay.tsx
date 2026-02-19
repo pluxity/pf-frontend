@@ -73,6 +73,12 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     getCCTVStreamUrl(id: string) {
       return cctvStreamUrlsRef.current.get(id) ?? null;
     },
+    getAllFeatureScreenPositions(width: number, height: number) {
+      return sceneRef.current?.getAllFeatureScreenPositions(width, height) ?? new Map();
+    },
+    highlightFeatures(ids: string[], color?: number) {
+      sceneRef.current?.highlightFeatures(ids, color);
+    },
   }));
 
   useEffect(() => {

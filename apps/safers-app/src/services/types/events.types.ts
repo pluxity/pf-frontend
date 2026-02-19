@@ -1,3 +1,4 @@
+import type { FileResponse } from "./common.types";
 import type { SiteRegion } from "./sites.types";
 
 // 이벤트 탭 표시용 지역명 매핑 (SiteRegion → 한글)
@@ -88,4 +89,29 @@ export interface SiteEmergencyPayload {
 // WS로 수신되는 현장 이벤트
 export interface SiteEvent extends Event {
   emergency?: SiteEmergencyPayload; // danger일 때만 포함
+}
+
+// --- STOMP WebSocket 이벤트 타입 ---
+
+export type StompEventType =
+  | "NO_HELMET"
+  | "HELMET"
+  | "FALLEN_PERSON"
+  | "INTRUSION"
+  | "EXIT"
+  | "LINE_CROSSING";
+
+export type StompEventCategory = "DETECTION" | "ROI";
+
+export interface StompEventResponse {
+  eventId: string;
+  id: number;
+  name: string;
+  type: StompEventType;
+  category: StompEventCategory;
+  confidence: number;
+  timestamp: string;
+  trackId: number;
+  snapshot?: FileResponse;
+  video?: FileResponse;
 }

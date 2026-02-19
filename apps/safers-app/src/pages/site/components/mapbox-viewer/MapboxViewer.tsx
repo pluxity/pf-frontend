@@ -15,8 +15,10 @@ import {
 } from "./constants";
 import { DEFAULT_WORKER_VITALS } from "../../mocks";
 import { ThreeOverlay } from "./ThreeOverlay";
-import { CCTVPopup } from "./CCTVPopup";
 import { FeaturePopup } from "./FeaturePopup";
+import { AreaSelectionOverlay, type SelectionRect } from "./AreaSelectionOverlay";
+import { CCTVPopupGrid } from "./CCTVPopupGrid";
+import { useCCTVPopupStore, selectCCTVPopups } from "@/stores";
 import type { SiteEmergencyPayload } from "@/services";
 
 export interface MapboxViewerHandle {
@@ -49,6 +51,7 @@ export interface MapboxViewerHandle {
     bearing: number;
     duration?: number;
   }) => void;
+  areaSelect: (rect: SelectionRect) => string[];
 }
 
 interface MapboxViewerProps {
@@ -56,6 +59,9 @@ interface MapboxViewerProps {
   workerNames?: Record<string, string>;
   onWorkerSelect?: (workerId: string | null) => void;
   onScenarioEnd?: () => void;
+  selectionMode?: boolean;
+  onAreaSelect?: (featureIds: string[]) => void;
+  onSelectionCancel?: () => void;
 }
 
 const MODEL_TRANSFORM: ModelTransform = {
@@ -73,6 +79,9 @@ export function MapboxViewer({
   workerNames,
   onWorkerSelect,
   onScenarioEnd,
+  selectionMode,
+  onAreaSelect,
+  onSelectionCancel,
 }: MapboxViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapboxMap | null>(null);
@@ -108,6 +117,30 @@ export function MapboxViewer({
       overlayRef.current.setFeatureFOVVisible(newId, true);
     }
   }, [selectedFeature]);
+
+  const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
+
+  // CCTV 팝업 열림/닫힘 시 FOV 표시/숨김
+  const prevCCTVIdsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const currentIds = new Set(cctvPopups.map((p) => p.featureId));
+    // Show FOV for newly opened
+    for (const id of currentIds) {
+      if (!prevCCTVIdsRef.current.has(id)) {
+        overlayRef.current?.setFeatureFOVVisible(id, true);
+      }
+    }
+    // Hide FOV for closed
+    for (const id of prevCCTVIdsRef.current) {
+      if (!currentIds.has(id)) {
+        overlayRef.current?.setFeatureFOVVisible(id, false);
+      }
+    }
+    prevCCTVIdsRef.current = currentIds;
+  }, [cctvPopups]);
+
+  // Render callback refs for leader lines (registered per popup)
+  const renderCallbacksRef = useRef<Set<() => void>>(new Set());
 
   // onWorkerSelect 콜백 mirror ref
   const onWorkerSelectRef = useRef(onWorkerSelect);
@@ -312,6 +345,27 @@ export function MapboxViewer({
         essential: true,
       });
     },
+    areaSelect(rect: SelectionRect): string[] {
+      const canvas = mapRef.current?.getCanvas();
+      if (!canvas || !overlayRef.current) return [];
+
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const positions = overlayRef.current.getAllFeatureScreenPositions(w, h);
+      const hits: string[] = [];
+
+      for (const [id, pos] of positions) {
+        if (
+          pos.x >= rect.x &&
+          pos.x <= rect.x + rect.width &&
+          pos.y >= rect.y &&
+          pos.y <= rect.y + rect.height
+        ) {
+          hits.push(id);
+        }
+      }
+      return hits;
+    },
   }));
 
   const requestRepaint = useCallback(() => {
@@ -435,19 +489,25 @@ export function MapboxViewer({
 
       if (hit?.featureId) {
         const streamUrl = overlayRef.current?.getCCTVStreamUrl(hit.featureId) ?? null;
-        const vitals = streamUrl
-          ? null
-          : (overlayRef.current?.getWorkerVitals(hit.featureId) ?? null);
-        setSelectedFeature({
-          id: hit.featureId,
-          lng: hit.lng,
-          lat: hit.lat,
-          altitude: hit.altitude,
-          vitals,
-          streamUrl,
-        });
-        overlayRef.current?.highlightFeature(hit.featureId);
-        if (!streamUrl) onWorkerSelectRef.current?.(hit.featureId);
+
+        if (streamUrl) {
+          // CCTV 클릭 → 멀티 팝업 스토어에 추가
+          useCCTVPopupStore.getState().openPopup(hit.featureId, streamUrl);
+          overlayRef.current?.highlightFeature(hit.featureId);
+        } else {
+          // Worker 클릭 → 기존 로직 유지
+          const vitals = overlayRef.current?.getWorkerVitals(hit.featureId) ?? null;
+          setSelectedFeature({
+            id: hit.featureId,
+            lng: hit.lng,
+            lat: hit.lat,
+            altitude: hit.altitude,
+            vitals,
+            streamUrl: null,
+          });
+          overlayRef.current?.highlightFeature(hit.featureId);
+          onWorkerSelectRef.current?.(hit.featureId);
+        }
       } else {
         setSelectedFeature(null);
         overlayRef.current?.clearHighlight();
@@ -472,6 +532,11 @@ export function MapboxViewer({
           popupRef.current.style.display = "none";
         }
       }
+
+      // Leader line 업데이트 콜백
+      for (const cb of renderCallbacksRef.current) {
+        cb();
+      }
     });
 
     map.on("style.load", onStyleLoad);
@@ -484,10 +549,50 @@ export function MapboxViewer({
     };
   }, []);
 
+  const handleAreaSelectionComplete = useCallback(
+    (rect: SelectionRect) => {
+      const canvas = mapRef.current?.getCanvas();
+      if (!canvas || !overlayRef.current) return;
+
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const positions = overlayRef.current.getAllFeatureScreenPositions(w, h);
+      const hits: string[] = [];
+
+      for (const [id, pos] of positions) {
+        if (
+          pos.x >= rect.x &&
+          pos.x <= rect.x + rect.width &&
+          pos.y >= rect.y &&
+          pos.y <= rect.y + rect.height
+        ) {
+          hits.push(id);
+        }
+      }
+
+      if (hits.length > 0) {
+        overlayRef.current.highlightFeatures(hits);
+      }
+      onAreaSelect?.(hits);
+    },
+    [onAreaSelect]
+  );
+
+  const handleSelectionCancel = useCallback(() => {
+    onSelectionCancel?.();
+  }, [onSelectionCancel]);
+
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full" />
       <ThreeOverlay ref={overlayRef} getTransform={getTransform} requestRepaint={requestRepaint} />
+
+      <AreaSelectionOverlay
+        active={!!selectionMode}
+        onSelectionComplete={handleAreaSelectionComplete}
+        onCancel={handleSelectionCancel}
+      />
+
       {emergency && (
         <div className="pointer-events-none absolute inset-0 z-[3]">
           {/* 빨간 비네트 */}
@@ -528,39 +633,41 @@ export function MapboxViewer({
           )}
         </div>
       )}
-      {selectedFeature && (
+
+      {/* Worker 팝업 (CCTV는 CCTVPopupGrid에서 처리) */}
+      {selectedFeature && !selectedFeature.streamUrl && (
         <div
           ref={popupRef}
           className="pointer-events-none absolute left-0 top-0 z-[2]"
           style={{ willChange: "transform" }}
         >
           <div className="-translate-x-1/2 -translate-y-full">
-            {selectedFeature.streamUrl ? (
-              <CCTVPopup
-                featureId={selectedFeature.id}
-                streamUrl={selectedFeature.streamUrl}
-                onClose={() => {
-                  setSelectedFeature(null);
-                  overlayRef.current?.clearHighlight();
-                }}
-              />
-            ) : (
-              <FeaturePopup
-                featureId={selectedFeature.id}
-                workerName={workerNames?.[selectedFeature.id]}
-                position={selectedFeature}
-                vitals={selectedFeature.vitals}
-                abnormal={emergency}
-                onClose={() => {
-                  setSelectedFeature(null);
-                  overlayRef.current?.clearHighlight();
-                  onWorkerSelectRef.current?.(null);
-                }}
-              />
-            )}
+            <FeaturePopup
+              featureId={selectedFeature.id}
+              workerName={workerNames?.[selectedFeature.id]}
+              position={selectedFeature}
+              vitals={selectedFeature.vitals}
+              abnormal={emergency}
+              onClose={() => {
+                setSelectedFeature(null);
+                overlayRef.current?.clearHighlight();
+                onWorkerSelectRef.current?.(null);
+              }}
+            />
           </div>
         </div>
       )}
+
+      {/* 멀티 CCTV 팝업 그리드 */}
+      {cctvPopups.length > 0 && (
+        <CCTVPopupGrid
+          popups={cctvPopups}
+          overlayRef={overlayRef}
+          mapRef={mapRef}
+          renderCallbacksRef={renderCallbacksRef}
+        />
+      )}
+
       <div
         ref={coordRef}
         className="pointer-events-none absolute bottom-2 left-2 z-10 rounded bg-black/70 px-3 py-1.5 font-mono text-xs text-white"

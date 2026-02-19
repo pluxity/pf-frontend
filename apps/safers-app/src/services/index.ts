@@ -6,4 +6,4 @@ export * from "./sites.service";
 export * from "./environments.service";
 export * from "./weather.service";
 export * from "./safety.service";
-export * from "./cctv.service";
+export * from "./stomp.service";

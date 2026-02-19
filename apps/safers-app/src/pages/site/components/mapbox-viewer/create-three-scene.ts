@@ -126,6 +126,9 @@ export interface ThreeSceneApi {
   setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
   setFeatureFOVVisible: (id: string, visible: boolean) => void;
   setFOVColor: (id: string, color: number) => void;
+
+  getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
+  highlightFeatures: (ids: string[], color?: number) => void;
 }
 
 // ── 팩토리 옵션 ──
@@ -873,6 +876,43 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const mesh = fovMeshes.get(id);
       if (!mesh) return;
       (mesh.material as THREE.MeshBasicMaterial).color.set(color);
+      requestRepaint();
+    },
+
+    getAllFeatureScreenPositions(width: number, height: number): Map<string, ScreenPosition> {
+      const result = new Map<string, ScreenPosition>();
+      if (!lastCombinedMatrix) return result;
+
+      for (const [id, entry] of features) {
+        const pos = entry.group.position.clone();
+        pos.z += POPUP_HEAD_OFFSET;
+        const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(lastCombinedMatrix);
+        if (p.w <= 0) continue;
+        result.set(id, {
+          x: ((p.x / p.w) * 0.5 + 0.5) * width,
+          y: (-(p.y / p.w) * 0.5 + 0.5) * height,
+        });
+      }
+      return result;
+    },
+
+    highlightFeatures(ids: string[], color?: number) {
+      const objects: THREE.Object3D[] = [];
+      for (const id of ids) {
+        const entry = features.get(id);
+        if (!entry) continue;
+        const targets = entry.group.children.filter((c) => !c.userData.isFOV);
+        if (targets.length > 0) {
+          objects.push(...targets);
+        } else {
+          objects.push(entry.group);
+        }
+      }
+      outlinePass.selectedObjects = objects;
+      const c = color ?? COLOR_SUCCESS;
+      outlinePass.visibleEdgeColor.set(c);
+      outlinePass.hiddenEdgeColor.set(c);
+      highlightedFeatureId = ids[0] ?? null;
       requestRepaint();
     },
   };

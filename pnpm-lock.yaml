@@ -12,6 +12,9 @@ catalogs:
     '@hookform/resolvers':
       specifier: ^5.2.2
       version: 5.2.2
+    '@stomp/stompjs':
+      specifier: ^7.1.1
+      version: 7.3.0
     '@tailwindcss/vite':
       specifier: ^4.1.18
       version: 4.1.18
@@ -273,6 +276,9 @@ importers:
       '@pf-dev/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@stomp/stompjs':
+        specifier: 'catalog:'
+        version: 7.3.0
       '@types/d3-ease':
         specifier: ^3.0.2
         version: 3.0.2
@@ -2325,6 +2331,9 @@ packages:
 
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
+  '@stomp/stompjs@7.3.0':
+    resolution: {integrity: sha512-nKMLoFfJhrQAqkvvKd1vLq/cVBGCMwPRCD0LqW7UT1fecRx9C3GoKEIR2CYwVuErGeZu8w0kFkl2rlhPlqHVgQ==}
 
   '@storybook/addon-docs@10.2.6':
     resolution: {integrity: sha512-7a37fu2hdOJRCITS+EimhVN9xVVvSeodmX6QdfxOim+2ECYnvMC9YVYpJ0et3XC8xnl9/3AbQ4y670Uw1hXcmg==}
@@ -6970,6 +6979,8 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@standard-schema/utils@0.3.0': {}
+
+  '@stomp/stompjs@7.3.0': {}
 
   '@storybook/addon-docs@10.2.6(@types/react@19.2.7)(esbuild@0.27.2)(rollup@4.53.3)(storybook@10.2.6(@testing-library/dom@10.4.0)(prettier@3.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
     dependencies:
