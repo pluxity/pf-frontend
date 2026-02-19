@@ -82,6 +82,9 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     highlightFeatures(ids: string[], color?: number) {
       sceneRef.current?.highlightFeatures(ids, color);
     },
+    pushLivePosition(id: string, position, lerpMs?: number) {
+      sceneRef.current?.pushLivePosition(id, position, lerpMs);
+    },
     addFeatureMarker(id: string, color?: number, radius?: number) {
       sceneRef.current?.addFeatureMarker(id, color, radius);
     },

@@ -61,6 +61,8 @@ export interface MapboxViewerHandle {
     duration?: number;
   }) => void;
   swapFeatureAsset: (featureId: string, assetId: string) => void;
+  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
+  pushLivePosition: (featureId: string, position: FeaturePosition, lerpMs?: number) => void;
   areaSelect: (rect: SelectionRect) => string[];
   zoomIn: () => void;
   zoomOut: () => void;
@@ -355,6 +357,9 @@ export function MapboxViewer({
     },
     swapFeatureAsset(featureId: string, assetId: string) {
       overlayRef.current?.swapFeatureAsset(featureId, assetId);
+    },
+    pushLivePosition(featureId: string, position: FeaturePosition, lerpMs?: number) {
+      overlayRef.current?.pushLivePosition(featureId, position, lerpMs);
     },
     areaSelect(rect: SelectionRect): string[] {
       const canvas = mapRef.current?.getCanvas();

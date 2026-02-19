@@ -84,6 +84,8 @@ export interface ThreeOverlayHandle {
   getCCTVStreamUrl: (id: string) => string | null;
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
   highlightFeatures: (ids: string[], color?: number) => void;
+  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
+  pushLivePosition: (id: string, position: FeaturePosition, lerpMs?: number) => void;
   addFeatureMarker: (id: string, color?: number, radius?: number) => void;
   removeFeatureMarker: (id: string) => void;
   clearAllMarkers: () => void;

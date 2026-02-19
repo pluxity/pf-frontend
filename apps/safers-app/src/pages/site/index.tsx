@@ -239,7 +239,7 @@ export function SitePage() {
       {/* 좌측 패널 */}
       <EventPanel events={events} className="absolute left-4 top-[4.75rem] z-40 w-[18.75rem]" />
       <WorkerListPanel
-        className="absolute left-4 top-[40vh] z-40"
+        className="absolute left-4 bottom-10 z-40"
         attendance={attendance}
         workers={workers}
         selectedWorkerId={selectedWorkerId}

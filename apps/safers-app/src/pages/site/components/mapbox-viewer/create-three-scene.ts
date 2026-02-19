@@ -137,6 +137,9 @@ export interface ThreeSceneApi {
     onComplete?: () => void
   ) => void;
 
+  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
+  pushLivePosition: (id: string, position: FeaturePosition, lerpMs?: number) => void;
+
   addFeatureMarker: (id: string, color?: number, radius?: number) => void;
   removeFeatureMarker: (id: string) => void;
   clearAllMarkers: () => void;
@@ -457,6 +460,14 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
   const activeTweens: PositionTween[] = [];
   const activePathTweens: PathTween[] = [];
+
+  // ── Live position 추적 (WS 좌표 수신용) ──
+  /** 정지 판정 대기 타이머 (featureId → setTimeout handle) */
+  const liveIdleTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** 현재 걷기 모델로 전환된 feature 집합 */
+  const liveWalkingIds = new Set<string>();
+  /** 정지 판정까지 대기 시간 (ms) — WS 업데이트가 이 시간 내에 안 오면 작업 모델로 복귀 */
+  const LIVE_IDLE_TIMEOUT = 3000;
 
   // ── 유틸리티 함수 ──
 
@@ -808,9 +819,12 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const entry = features.get(id);
       if (!entry) return;
 
-      // 기존 같은 feature의 tween 제거
+      // 기존 같은 feature의 tween / path tween 제거
       for (let i = activeTweens.length - 1; i >= 0; i--) {
         if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
+      }
+      for (let i = activePathTweens.length - 1; i >= 0; i--) {
+        if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
       }
 
       activeTweens.push({
@@ -819,6 +833,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         to: target,
         startTime: performance.now(),
         durationMs,
+        autoHeading: true,
         onComplete,
       });
 
@@ -1091,6 +1106,91 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       outlinePass.visibleEdgeColor.set(c);
       outlinePass.hiddenEdgeColor.set(c);
       highlightedFeatureId = ids[0] ?? null;
+      requestRepaint();
+    },
+
+    pushLivePosition(id: string, position: FeaturePosition, lerpMs = 1000) {
+      const entry = features.get(id);
+      if (!entry) return;
+
+      // 같은 위치면 무시 (변화 없음)
+      const prev = entry.position;
+      const dLng = position.lng - prev.lng;
+      const dLat = position.lat - prev.lat;
+      const dAlt = position.altitude - prev.altitude;
+      if (dLng * dLng + dLat * dLat + dAlt * dAlt < 1e-16) return;
+
+      // 걷기 모델로 전환 (아직 안 된 경우만)
+      if (!liveWalkingIds.has(id) && entry.assetId !== "worker-walk") {
+        liveWalkingIds.add(id);
+        // swapFeatureAsset inline
+        if (entry.mixer) {
+          entry.mixer.stopAllAction();
+          entry.mixer = null;
+        }
+        const toRemove = entry.group.children.filter(
+          (c) => !c.userData.isFOV && !c.userData.isMarker
+        );
+        for (const child of toRemove) entry.group.remove(child);
+        entry.assetId = "worker-walk";
+        applyAssetToFeature(id);
+        if (highlightedFeatureId === id) {
+          const targets = entry.group.children.filter(
+            (c) => !c.userData.isFOV && !c.userData.isMarker
+          );
+          outlinePass.selectedObjects = targets.length > 0 ? targets : [entry.group];
+        }
+      }
+
+      // 기존 tween 취소 + 새 이동 시작
+      for (let i = activeTweens.length - 1; i >= 0; i--) {
+        if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
+      }
+      for (let i = activePathTweens.length - 1; i >= 0; i--) {
+        if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
+      }
+
+      activeTweens.push({
+        featureId: id,
+        from: { ...entry.position },
+        to: position,
+        startTime: performance.now(),
+        durationMs: lerpMs,
+        autoHeading: true,
+      });
+
+      // 정지 판정 타이머 리셋
+      const existingTimer = liveIdleTimers.get(id);
+      if (existingTimer) clearTimeout(existingTimer);
+
+      liveIdleTimers.set(
+        id,
+        setTimeout(() => {
+          liveIdleTimers.delete(id);
+          if (!liveWalkingIds.has(id)) return;
+          liveWalkingIds.delete(id);
+
+          // 작업 모델로 복귀
+          const e = features.get(id);
+          if (!e) return;
+          if (e.mixer) {
+            e.mixer.stopAllAction();
+            e.mixer = null;
+          }
+          const rem = e.group.children.filter((c) => !c.userData.isFOV && !c.userData.isMarker);
+          for (const child of rem) e.group.remove(child);
+          e.assetId = "worker";
+          applyAssetToFeature(id);
+          if (highlightedFeatureId === id) {
+            const targets = e.group.children.filter(
+              (c) => !c.userData.isFOV && !c.userData.isMarker
+            );
+            outlinePass.selectedObjects = targets.length > 0 ? targets : [e.group];
+          }
+          requestRepaint();
+        }, LIVE_IDLE_TIMEOUT)
+      );
+
       requestRepaint();
     },
 
