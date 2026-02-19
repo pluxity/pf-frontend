@@ -70,6 +70,12 @@ export interface ThreeOverlayHandle {
     durationMs: number,
     onComplete?: () => void
   ) => void;
+  moveFeatureAlongPath: (
+    id: string,
+    path: FeaturePosition[],
+    durationMs: number,
+    onComplete?: () => void
+  ) => void;
   getInitialPosition: (id: string) => FeaturePosition | null;
   setFeatureHeading: (id: string, radians: number) => void;
   setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;

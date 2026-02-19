@@ -55,6 +55,9 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     moveFeatureTo(id: string, target, durationMs: number, onComplete?: () => void) {
       sceneRef.current?.moveFeatureTo(id, target, durationMs, onComplete);
     },
+    moveFeatureAlongPath(id: string, path, durationMs: number, onComplete?: () => void) {
+      sceneRef.current?.moveFeatureAlongPath(id, path, durationMs, onComplete);
+    },
     getInitialPosition(id: string) {
       return sceneRef.current?.getInitialPosition(id) ?? null;
     },
@@ -103,6 +106,7 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     sceneRef.current = sceneApi;
 
     sceneApi.registerAsset("worker", ASSET_URLS.worker);
+    sceneApi.registerAsset("worker-walk", ASSET_URLS.workerWalk);
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
 

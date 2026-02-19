@@ -94,9 +94,12 @@ export function SitePage() {
       if (scenario === 3) {
         setScenarioActive(true);
 
-        mapViewerRef.current?.moveFeatureTo(
+        // 작업 중 → 걷기 모델로 전환 후 경로 이동
+        mapViewerRef.current?.swapFeatureAsset(SCENARIO3.workerId, "worker-walk");
+        mapViewerRef.current?.selectFeature(SCENARIO3.workerId);
+        mapViewerRef.current?.moveFeatureAlongPath(
           SCENARIO3.workerId,
-          SCENARIO3.to,
+          SCENARIO3.path,
           SCENARIO3.moveDurationMs,
           () => {
             const dangerEvent: SiteEvent = {

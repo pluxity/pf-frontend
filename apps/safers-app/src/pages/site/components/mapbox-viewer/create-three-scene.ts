@@ -130,6 +130,13 @@ export interface ThreeSceneApi {
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
   highlightFeatures: (ids: string[], color?: number) => void;
 
+  moveFeatureAlongPath: (
+    id: string,
+    path: FeaturePosition[],
+    durationMs: number,
+    onComplete?: () => void
+  ) => void;
+
   addFeatureMarker: (id: string, color?: number, radius?: number) => void;
   removeFeatureMarker: (id: string) => void;
   clearAllMarkers: () => void;
@@ -433,9 +440,23 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     to: FeaturePosition;
     startTime: number;
     durationMs: number;
+    autoHeading?: boolean;
     onComplete?: () => void;
   }
+
+  // 다중 경로 이동 (웨이포인트)
+  interface PathTween {
+    featureId: string;
+    path: FeaturePosition[];
+    /** 각 세그먼트 끝의 누적 비율 (0~1) — path.length-1 개 */
+    cumulativeRatios: number[];
+    startTime: number;
+    durationMs: number;
+    onComplete?: () => void;
+  }
+
   const activeTweens: PositionTween[] = [];
+  const activePathTweens: PathTween[] = [];
 
   // ── 유틸리티 함수 ──
 
@@ -566,6 +587,18 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         const entry = features.get(tw.featureId);
         if (entry) {
           const pos = gpsToScenePosition(lerpPos, getTransform());
+
+          // 이동 방향으로 회전
+          if (tw.autoHeading) {
+            const fromScene = gpsToScenePosition(tw.from, getTransform());
+            const toScene = gpsToScenePosition(tw.to, getTransform());
+            const dx = toScene.x - fromScene.x;
+            const dy = toScene.y - fromScene.y;
+            if (dx * dx + dy * dy > 1e-10) {
+              entry.group.rotation.y = Math.atan2(dx, dy);
+            }
+          }
+
           entry.group.position.copy(pos);
           entry.position = lerpPos;
         }
@@ -573,6 +606,58 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         if (progress >= 1) {
           activeTweens.splice(i, 1);
           tw.onComplete?.();
+        }
+      }
+
+      // Path tween 업데이트 (다중 웨이포인트)
+      for (let i = activePathTweens.length - 1; i >= 0; i--) {
+        const pt = activePathTweens[i]!;
+        const elapsed = now - pt.startTime;
+        const progress = Math.min(elapsed / pt.durationMs, 1);
+        const t = easeCubicInOut(progress);
+
+        // 현재 t가 어떤 세그먼트에 속하는지 찾기
+        let segIdx = 0;
+        for (let s = 0; s < pt.cumulativeRatios.length; s++) {
+          if (t <= pt.cumulativeRatios[s]!) break;
+          segIdx = s + 1;
+        }
+        segIdx = Math.min(segIdx, pt.path.length - 2);
+
+        const segStart = segIdx === 0 ? 0 : pt.cumulativeRatios[segIdx - 1]!;
+        const segEnd = pt.cumulativeRatios[segIdx]!;
+        const segLen = segEnd - segStart;
+        const localT = segLen > 0 ? (t - segStart) / segLen : 1;
+
+        const from = pt.path[segIdx]!;
+        const to = pt.path[segIdx + 1]!;
+
+        const lerpPos: FeaturePosition = {
+          lng: from.lng + (to.lng - from.lng) * localT,
+          lat: from.lat + (to.lat - from.lat) * localT,
+          altitude: from.altitude + (to.altitude - from.altitude) * localT,
+        };
+
+        const entry = features.get(pt.featureId);
+        if (entry) {
+          const pos = gpsToScenePosition(lerpPos, getTransform());
+
+          // 이동 방향으로 회전
+          const fromScene = gpsToScenePosition(from, getTransform());
+          const toScene = gpsToScenePosition(to, getTransform());
+          const dx = toScene.x - fromScene.x;
+          const dy = toScene.y - fromScene.y;
+          if (dx * dx + dy * dy > 1e-10) {
+            entry.group.rotation.y = Math.atan2(dx, dy);
+          }
+
+          entry.group.position.copy(pos);
+          entry.position = lerpPos;
+        }
+
+        if (progress >= 1) {
+          activePathTweens.splice(i, 1);
+          pt.onComplete?.();
         }
       }
 
@@ -596,7 +681,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       composer.render(delta);
 
       // 애니메이션 여부 반환
-      let hasAnimation = activeTweens.length > 0 || markerEntries.size > 0;
+      let hasAnimation =
+        activeTweens.length > 0 || activePathTweens.length > 0 || markerEntries.size > 0;
       if (!hasAnimation) {
         for (const feature of features.values()) {
           if (feature.mixer) {
@@ -731,6 +817,59 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         featureId: id,
         from: { ...entry.position },
         to: target,
+        startTime: performance.now(),
+        durationMs,
+        onComplete,
+      });
+
+      requestRepaint();
+    },
+
+    moveFeatureAlongPath(
+      id: string,
+      path: FeaturePosition[],
+      durationMs: number,
+      onComplete?: () => void
+    ) {
+      if (path.length < 2) return;
+      const entry = features.get(id);
+      if (!entry) return;
+
+      // 기존 tween 제거
+      for (let i = activeTweens.length - 1; i >= 0; i--) {
+        if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
+      }
+      for (let i = activePathTweens.length - 1; i >= 0; i--) {
+        if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
+      }
+
+      // 세그먼트별 거리 계산 (GPS 좌표 → 근사 미터)
+      const distances: number[] = [];
+      let totalDist = 0;
+
+      for (let s = 0; s < path.length - 1; s++) {
+        const a = path[s]!;
+        const b = path[s + 1]!;
+        const dlng = (b.lng - a.lng) * 111320 * Math.cos(((a.lat + b.lat) / 2) * (Math.PI / 180));
+        const dlat = (b.lat - a.lat) * 111320;
+        const dalt = b.altitude - a.altitude;
+        const dist = Math.sqrt(dlng * dlng + dlat * dlat + dalt * dalt);
+        distances.push(dist);
+        totalDist += dist;
+      }
+
+      // 누적 비율
+      const cumulativeRatios: number[] = [];
+      let cumDist = 0;
+      for (const d of distances) {
+        cumDist += d;
+        cumulativeRatios.push(totalDist > 0 ? cumDist / totalDist : 1);
+      }
+
+      activePathTweens.push({
+        featureId: id,
+        path,
+        cumulativeRatios,
         startTime: performance.now(),
         durationMs,
         onComplete,

@@ -27,7 +27,8 @@ export const COLOR_DANGER = 0xde4545;
 // ── 에셋 경로 ──
 
 export const ASSET_URLS = {
-  worker: "/assets/models/worker_walk.glb",
+  worker: "/assets/models/worker_working.glb",
+  workerWalk: "/assets/models/worker_walk.glb",
   workerStunned: "/assets/models/worker_stunned.glb",
   cctv: "/assets/models/cctv.glb",
 } as const;

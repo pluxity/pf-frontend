@@ -44,6 +44,12 @@ export interface MapboxViewerHandle {
     durationMs: number,
     onComplete?: () => void
   ) => void;
+  moveFeatureAlongPath: (
+    id: string,
+    path: FeaturePosition[],
+    durationMs: number,
+    onComplete?: () => void
+  ) => void;
   showCCTVFOV: (cctvId: string, visible: boolean) => void;
   setFOVColor: (cctvId: string, color: number) => void;
   selectFeature: (featureId: string | null, highlightColor?: number) => void;
@@ -54,6 +60,7 @@ export interface MapboxViewerHandle {
     bearing: number;
     duration?: number;
   }) => void;
+  swapFeatureAsset: (featureId: string, assetId: string) => void;
   areaSelect: (rect: SelectionRect) => string[];
   zoomIn: () => void;
   zoomOut: () => void;
@@ -296,6 +303,14 @@ export function MapboxViewer({
     ) {
       overlayRef.current?.moveFeatureTo(id, target, durationMs, onComplete);
     },
+    moveFeatureAlongPath(
+      id: string,
+      path: FeaturePosition[],
+      durationMs: number,
+      onComplete?: () => void
+    ) {
+      overlayRef.current?.moveFeatureAlongPath(id, path, durationMs, onComplete);
+    },
     showCCTVFOV(cctvId: string, visible: boolean) {
       overlayRef.current?.setFeatureFOVVisible(cctvId, visible);
     },
@@ -337,6 +352,9 @@ export function MapboxViewer({
         duration: opts.duration ?? DEFAULT_FLY_DURATION,
         essential: true,
       });
+    },
+    swapFeatureAsset(featureId: string, assetId: string) {
+      overlayRef.current?.swapFeatureAsset(featureId, assetId);
     },
     areaSelect(rect: SelectionRect): string[] {
       const canvas = mapRef.current?.getCanvas();

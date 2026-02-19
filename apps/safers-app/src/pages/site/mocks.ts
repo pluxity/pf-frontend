@@ -80,9 +80,14 @@ export const SCENARIO_EMERGENCIES: Record<1 | 2, SiteEmergencyPayload> = {
 export const SCENARIO3 = {
   workerId: "worker-1",
   cctvId: "CCTV-JEJU2-44",
-  from: { lng: 126.846865, lat: 37.500245, altitude: 3.5 },
-  to: { lng: 126.846679, lat: 37.500262, altitude: 5.9 },
-  moveDurationMs: 4000,
+  /** 웨이포인트 경로 — 직선 대신 통로를 따라 이동 (나중에 실제 경로로 교체) */
+  path: [
+    { lng: 126.846865, lat: 37.500245, altitude: 3.5 }, // 출발 (현재 위치)
+    { lng: 126.8468, lat: 37.50026, altitude: 4.2 }, // 중간 경유점
+    { lng: 126.84674, lat: 37.50027, altitude: 5.0 }, // 중간 경유점
+    { lng: 126.846679, lat: 37.500262, altitude: 5.9 }, // 도착 (위험구역)
+  ] satisfies FeaturePosition[],
+  moveDurationMs: 5000,
   camera: {
     center: [126.84685, 37.5] as [number, number],
     zoom: 19.2,
