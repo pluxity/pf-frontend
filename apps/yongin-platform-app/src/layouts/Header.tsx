@@ -16,8 +16,7 @@ export function Header() {
 
   return (
     <header className="relative h-[var(--header-height)] px-[0.75rem] bg-surface-body/70">
-      <div className="flex flex-col gap-1 items-center justify-center">
-        <div className="w-[41.25rem] h-[0.9375rem] rounded-b-[1.25rem] bg-linear-to-b from-white from-[23.33%] to-[rgba(78,176,255,0.2)] shadow-[0_0_0.3125rem_0_#BAC3E8]" />
+      <div className="flex flex-col gap-1 items-center justify-center h-full">
         <div className="flex w-full gap-2">
           <h1 className="flex-1 min-w-0 flex justify-start items-center">
             <img src={ciLogo} alt="경기주택도시공사" className="h-[2.5em]" />

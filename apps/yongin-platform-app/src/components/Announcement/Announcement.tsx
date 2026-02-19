@@ -21,7 +21,7 @@ export function Announcement({ className }: AnnouncementProps) {
       />
       <div className="flex-1 min-w-0">
         {content && (
-          <Marquee animate={shouldAnimate} className="text-sm font-semibold">
+          <Marquee animate={shouldAnimate} className="text-sm">
             {content}
           </Marquee>
         )}
