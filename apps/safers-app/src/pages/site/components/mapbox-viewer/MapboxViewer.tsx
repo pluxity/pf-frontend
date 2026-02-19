@@ -18,7 +18,10 @@ import { ThreeOverlay } from "./ThreeOverlay";
 import { FeaturePopup } from "./FeaturePopup";
 import { AreaSelectionOverlay, type SelectionRect } from "./AreaSelectionOverlay";
 import { CCTVPopupGrid } from "./CCTVPopupGrid";
+import { FeatureLabelOverlay } from "./FeatureLabelOverlay";
 import { useCCTVPopupStore, selectCCTVPopups } from "@/stores";
+import { FilterChip, FilterChipGroup } from "@pf-dev/ui/molecules";
+import { CCTV as CCTVIcon, User as UserIcon, X as XIcon } from "@pf-dev/ui/atoms";
 import type { SiteEmergencyPayload } from "@/services";
 
 export interface MapboxViewerHandle {
@@ -52,6 +55,9 @@ export interface MapboxViewerHandle {
     duration?: number;
   }) => void;
   areaSelect: (rect: SelectionRect) => string[];
+  zoomIn: () => void;
+  zoomOut: () => void;
+  resetBearing: () => void;
 }
 
 interface MapboxViewerProps {
@@ -94,6 +100,10 @@ export function MapboxViewer({
   const [bannerWorkerId, setBannerWorkerId] = useState("");
   const [bannerMessage, setBannerMessage] = useState(DEFAULT_BANNER_MESSAGE);
 
+  const [showCCTVLabels, setShowCCTVLabels] = useState(false);
+  const [showWorkerLabels, setShowWorkerLabels] = useState(false);
+  const [searchHitIds, setSearchHitIds] = useState<Set<string>>(new Set());
+
   const [selectedFeature, setSelectedFeature] = useState<{
     id: string;
     lng: number;
@@ -109,34 +119,17 @@ export function MapboxViewer({
     const newId = selectedFeature?.id ?? null;
     selectedIdRef.current = newId;
 
-    // CCTV FOV 표시/숨김 — getCCTVStreamUrl이 값을 반환하면 CCTV
-    if (prevId && overlayRef.current?.getCCTVStreamUrl(prevId)) {
-      overlayRef.current.setFeatureFOVVisible(prevId, false);
-    }
-    if (newId && overlayRef.current?.getCCTVStreamUrl(newId)) {
-      overlayRef.current.setFeatureFOVVisible(newId, true);
-    }
+    // CCTV FOV — 현재 비활성화
+    void prevId;
+    void newId;
   }, [selectedFeature]);
 
   const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
 
-  // CCTV 팝업 열림/닫힘 시 FOV 표시/숨김
+  // CCTV 팝업 열림/닫힘 시 FOV 표시/숨김 — 현재 비활성화
   const prevCCTVIdsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
-    const currentIds = new Set(cctvPopups.map((p) => p.featureId));
-    // Show FOV for newly opened
-    for (const id of currentIds) {
-      if (!prevCCTVIdsRef.current.has(id)) {
-        overlayRef.current?.setFeatureFOVVisible(id, true);
-      }
-    }
-    // Hide FOV for closed
-    for (const id of prevCCTVIdsRef.current) {
-      if (!currentIds.has(id)) {
-        overlayRef.current?.setFeatureFOVVisible(id, false);
-      }
-    }
-    prevCCTVIdsRef.current = currentIds;
+    prevCCTVIdsRef.current = new Set(cctvPopups.map((p) => p.featureId));
   }, [cctvPopups]);
 
   // Render callback refs for leader lines (registered per popup)
@@ -366,6 +359,21 @@ export function MapboxViewer({
       }
       return hits;
     },
+    zoomIn() {
+      if (mapRef.current) {
+        mapRef.current.zoomIn({ duration: 300 });
+      }
+    },
+    zoomOut() {
+      if (mapRef.current) {
+        mapRef.current.zoomOut({ duration: 300 });
+      }
+    },
+    resetBearing() {
+      if (mapRef.current) {
+        mapRef.current.rotateTo(0, { duration: 500 });
+      }
+    },
   }));
 
   const requestRepaint = useCallback(() => {
@@ -570,15 +578,48 @@ export function MapboxViewer({
         }
       }
 
+      // 이전 마커 초기화 후 선택된 피처에 펄스 마커 + 라벨 표시
+      overlayRef.current.clearAllMarkers();
       if (hits.length > 0) {
         overlayRef.current.highlightFeatures(hits);
+        for (const id of hits) {
+          overlayRef.current.addFeatureMarker(id);
+        }
       }
+      setSearchHitIds(new Set(hits));
       onAreaSelect?.(hits);
     },
     [onAreaSelect]
   );
 
+  // 라벨 클릭 → 3D 객체 클릭과 동일 동작
+  const handleFeatureClick = useCallback((featureId: string) => {
+    const streamUrl = overlayRef.current?.getCCTVStreamUrl(featureId) ?? null;
+
+    if (streamUrl) {
+      useCCTVPopupStore.getState().openPopup(featureId, streamUrl);
+      overlayRef.current?.highlightFeature(featureId);
+    } else {
+      const pos = overlayRef.current?.getFeaturePosition(featureId);
+      if (!pos) return;
+      const vitals = overlayRef.current?.getWorkerVitals(featureId) ?? null;
+      setSelectedFeature({
+        id: featureId,
+        lng: pos.lng,
+        lat: pos.lat,
+        altitude: pos.altitude,
+        vitals,
+        streamUrl: null,
+      });
+      overlayRef.current?.highlightFeature(featureId);
+      onWorkerSelectRef.current?.(featureId);
+    }
+  }, []);
+
   const handleSelectionCancel = useCallback(() => {
+    overlayRef.current?.clearAllMarkers();
+    overlayRef.current?.clearHighlight();
+    setSearchHitIds(new Set());
     onSelectionCancel?.();
   }, [onSelectionCancel]);
 
@@ -614,7 +655,7 @@ export function MapboxViewer({
             <div
               role="alert"
               aria-live="assertive"
-              className="pointer-events-auto absolute inset-x-0 top-[10%] flex items-center justify-center"
+              className="pointer-events-auto absolute inset-x-0 top-[15vh] flex items-center justify-center"
             >
               <div className="flex items-center gap-3 rounded-lg bg-[#DE4545]/90 px-5 py-2.5 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
                 <span className="animate-pulse text-lg">&#9888;</span>
@@ -633,6 +674,45 @@ export function MapboxViewer({
           )}
         </div>
       )}
+
+      {/* Feature 라벨 토글 칩 */}
+      <div className="pointer-events-auto absolute left-1/2 top-[4.25rem] z-[5] -translate-x-1/2">
+        <FilterChipGroup>
+          <FilterChip selected={showCCTVLabels} onChange={setShowCCTVLabels}>
+            <span className="flex items-center gap-1.5">
+              <CCTVIcon size="sm" />
+              CCTV
+            </span>
+          </FilterChip>
+          <FilterChip selected={showWorkerLabels} onChange={setShowWorkerLabels}>
+            <span className="flex items-center gap-1.5">
+              <UserIcon size="sm" />
+              작업자
+            </span>
+          </FilterChip>
+          {searchHitIds.size > 0 && (
+            <button
+              onClick={handleSelectionCancel}
+              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-transparent bg-[#00C48C] px-4 text-sm font-bold text-white transition-all hover:bg-[#00B07D]"
+            >
+              검색 {searchHitIds.size}건
+              <XIcon size="xs" />
+            </button>
+          )}
+        </FilterChipGroup>
+      </div>
+
+      {/* Feature 라벨 오버레이 */}
+      <FeatureLabelOverlay
+        showCCTV={showCCTVLabels}
+        showWorker={showWorkerLabels}
+        forcedIds={searchHitIds}
+        workerNames={workerNames}
+        overlayRef={overlayRef}
+        mapRef={mapRef}
+        renderCallbacksRef={renderCallbacksRef}
+        onFeatureClick={handleFeatureClick}
+      />
 
       {/* Worker 팝업 (CCTV는 CCTVPopupGrid에서 처리) */}
       {selectedFeature && !selectedFeature.streamUrl && (

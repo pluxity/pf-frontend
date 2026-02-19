@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "@pf-dev/ui";
-import { SiteHeader, MapboxViewer, WorkerListPanel, WeatherPanel, EventPanel } from "./components";
+import {
+  SiteHeader,
+  MapboxViewer,
+  WorkerListPanel,
+  WeatherPanel,
+  EventPanel,
+  MapToolbar,
+} from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site, type SiteEvent } from "@/services";
 import { useWeather } from "@/hooks";
@@ -226,31 +233,31 @@ export function SitePage() {
         />
       </header>
 
+      {/* 좌측 패널 */}
       <EventPanel events={events} className="absolute left-4 top-[4.75rem] z-40 w-[18.75rem]" />
-      <WeatherPanel
-        currentWeather={currentWeather}
-        className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
-      />
       <WorkerListPanel
-        className="absolute right-4 top-[19.5rem] z-40"
+        className="absolute left-4 top-[40vh] z-40"
         attendance={attendance}
         workers={workers}
         selectedWorkerId={selectedWorkerId}
         onWorkerClick={handlePanelWorkerClick}
       />
 
+      {/* 우측 패널 */}
+      <WeatherPanel
+        currentWeather={currentWeather}
+        className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
+      />
+      <MapToolbar
+        selectionMode={selectionMode}
+        onToggleSelection={() => setSelectionMode((prev) => !prev)}
+        onZoomIn={() => mapViewerRef.current?.zoomIn()}
+        onZoomOut={() => mapViewerRef.current?.zoomOut()}
+        className="absolute right-4 top-[50vh] translate-y-[-50%] z-40"
+      />
+
       {!scenarioActive && (
         <div className="absolute inset-x-0 bottom-6 z-50 flex justify-center gap-3">
-          <button
-            onClick={() => setSelectionMode((prev) => !prev)}
-            className={`rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg transition-colors ${
-              selectionMode
-                ? "bg-[#4D7EFF] text-white hover:bg-[#3a6ae0]"
-                : "bg-white/90 text-slate-700 hover:bg-white"
-            }`}
-          >
-            {selectionMode ? "영역 검색 취소" : "영역 검색"}
-          </button>
           <ScenarioButton
             label="근로자 이상징후 감지"
             scenario={1}

@@ -48,7 +48,7 @@ function FilterChip({
       className={cn(
         "inline-flex h-9 items-center gap-2 rounded-full px-4 text-sm transition-all",
         selected
-          ? "bg-brand font-bold text-white"
+          ? "border border-transparent bg-brand font-bold text-white"
           : disabled
             ? "cursor-not-allowed bg-neutral-50 text-neutral-300"
             : "border border-border-default bg-white text-secondary hover:border-neutral-300 hover:bg-neutral-50",

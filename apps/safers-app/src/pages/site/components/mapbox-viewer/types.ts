@@ -78,4 +78,7 @@ export interface ThreeOverlayHandle {
   getCCTVStreamUrl: (id: string) => string | null;
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
   highlightFeatures: (ids: string[], color?: number) => void;
+  addFeatureMarker: (id: string, color?: number, radius?: number) => void;
+  removeFeatureMarker: (id: string) => void;
+  clearAllMarkers: () => void;
 }

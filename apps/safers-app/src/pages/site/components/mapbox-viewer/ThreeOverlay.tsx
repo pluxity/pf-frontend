@@ -79,6 +79,15 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     highlightFeatures(ids: string[], color?: number) {
       sceneRef.current?.highlightFeatures(ids, color);
     },
+    addFeatureMarker(id: string, color?: number, radius?: number) {
+      sceneRef.current?.addFeatureMarker(id, color, radius);
+    },
+    removeFeatureMarker(id: string) {
+      sceneRef.current?.removeFeatureMarker(id);
+    },
+    clearAllMarkers() {
+      sceneRef.current?.clearAllMarkers();
+    },
   }));
 
   useEffect(() => {
@@ -108,7 +117,6 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
       for (const cctv of data) {
         sceneApi.addFeature(cctv.id, "cctv", cctv.position);
         sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
-        sceneApi.setFeatureFOV(cctv.id, cctv.fovDeg, cctv.fovRange, cctv.pitch);
         cctvStreamUrlsRef.current.set(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });

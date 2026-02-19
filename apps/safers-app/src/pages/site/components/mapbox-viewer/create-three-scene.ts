@@ -129,6 +129,10 @@ export interface ThreeSceneApi {
 
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
   highlightFeatures: (ids: string[], color?: number) => void;
+
+  addFeatureMarker: (id: string, color?: number, radius?: number) => void;
+  removeFeatureMarker: (id: string) => void;
+  clearAllMarkers: () => void;
 }
 
 // ── 팩토리 옵션 ──
@@ -232,6 +236,18 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   const features = new Map<string, FeatureEntry>();
   const initialPositions = new Map<string, FeaturePosition>();
   const fovMeshes = new Map<string, THREE.Mesh>();
+
+  // ── 마커 (구형 펄스) ──
+  interface MarkerEntry {
+    featureId: string;
+    core: THREE.Mesh;
+    pulses: THREE.Mesh[];
+    maxRadius: number;
+    offsets: number[];
+  }
+  const markerEntries = new Map<string, MarkerEntry>();
+  const PULSE_CYCLE = 2.0;
+  const PULSE_COUNT = 2;
 
   // ── FOV 레이캐스트 그리드 ──
 
@@ -441,7 +457,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     const asset = assets.get(entry.assetId);
     if (!asset) return;
 
-    const hasModel = entry.group.children.some((c) => !c.userData.isFOV);
+    const hasModel = entry.group.children.some((c) => !c.userData.isFOV && !c.userData.isMarker);
     if (hasModel) return;
 
     entry.group.scale.setScalar(asset.scale);
@@ -560,12 +576,27 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         }
       }
 
+      // 마커 구형 펄스 애니메이션
+      const elapsed = clock.elapsedTime;
+      for (const marker of markerEntries.values()) {
+        for (let i = 0; i < marker.pulses.length; i++) {
+          const pulse = marker.pulses[i]!;
+          const offset = marker.offsets[i]!;
+          // 0→1 진행 (오프셋 적용, 반복)
+          const t = (elapsed / PULSE_CYCLE + offset) % 1;
+          const scale = t * marker.maxRadius;
+          pulse.scale.setScalar(Math.max(scale, 0.01));
+          // 퍼지면서 사라짐: 시작 0.5 → 끝 0
+          (pulse.material as THREE.MeshBasicMaterial).opacity = 0.2 * (1 - t);
+        }
+      }
+
       // EffectComposer 렌더
       renderer.clear(true, true, true);
       composer.render(delta);
 
       // 애니메이션 여부 반환
-      let hasAnimation = activeTweens.length > 0;
+      let hasAnimation = activeTweens.length > 0 || markerEntries.size > 0;
       if (!hasAnimation) {
         for (const feature of features.values()) {
           if (feature.mixer) {
@@ -719,7 +750,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         entry.mixer.stopAllAction();
         entry.mixer = null;
       }
-      const toRemove = entry.group.children.filter((c) => !c.userData.isFOV);
+      const toRemove = entry.group.children.filter(
+        (c) => !c.userData.isFOV && !c.userData.isMarker
+      );
       for (const child of toRemove) {
         entry.group.remove(child);
       }
@@ -730,7 +763,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
       // 하이라이트 유지 (FOV 메시 제외)
       if (highlightedFeatureId === id) {
-        const targets = entry.group.children.filter((c) => !c.userData.isFOV);
+        const targets = entry.group.children.filter(
+          (c) => !c.userData.isFOV && !c.userData.isMarker
+        );
         outlinePass.selectedObjects = targets.length > 0 ? targets : [entry.group];
       }
 
@@ -745,7 +780,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const entry = features.get(id);
       if (entry) {
         // FOV 메시 제외 — OutlinePass는 clippingPlane을 무시하므로
-        const targets = entry.group.children.filter((c) => !c.userData.isFOV);
+        const targets = entry.group.children.filter(
+          (c) => !c.userData.isFOV && !c.userData.isMarker
+        );
         outlinePass.selectedObjects = targets.length > 0 ? targets : [entry.group];
       }
 
@@ -901,7 +938,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       for (const id of ids) {
         const entry = features.get(id);
         if (!entry) continue;
-        const targets = entry.group.children.filter((c) => !c.userData.isFOV);
+        const targets = entry.group.children.filter(
+          (c) => !c.userData.isFOV && !c.userData.isMarker
+        );
         if (targets.length > 0) {
           objects.push(...targets);
         } else {
@@ -913,6 +952,84 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       outlinePass.visibleEdgeColor.set(c);
       outlinePass.hiddenEdgeColor.set(c);
       highlightedFeatureId = ids[0] ?? null;
+      requestRepaint();
+    },
+
+    addFeatureMarker(id: string, color = 0x00c48c, radius = 6) {
+      const entry = features.get(id);
+      if (!entry || markerEntries.has(id)) return;
+
+      // 중심 코어
+      const coreGeo = new THREE.SphereGeometry(0.8, 16, 16);
+      const coreMat = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false,
+      });
+      const core = new THREE.Mesh(coreGeo, coreMat);
+      core.userData.isMarker = true;
+      entry.group.add(core);
+
+      // 펄스 파동 구 (시간차를 두고 여러 개)
+      const pulses: THREE.Mesh[] = [];
+      const offsets: number[] = [];
+
+      for (let i = 0; i < PULSE_COUNT; i++) {
+        const sphereGeo = new THREE.SphereGeometry(1, 24, 24);
+        const sphereMat = new THREE.MeshBasicMaterial({
+          color,
+          transparent: true,
+          opacity: 0,
+          depthWrite: false,
+          wireframe: true,
+        });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sphere.userData.isMarker = true;
+        sphere.scale.setScalar(0.01);
+        entry.group.add(sphere);
+        pulses.push(sphere);
+        offsets.push(i / PULSE_COUNT);
+      }
+
+      markerEntries.set(id, { featureId: id, core, pulses, maxRadius: radius, offsets });
+      requestRepaint();
+    },
+
+    removeFeatureMarker(id: string) {
+      const marker = markerEntries.get(id);
+      if (!marker) return;
+
+      const entry = features.get(id);
+      if (entry) {
+        entry.group.remove(marker.core);
+        marker.core.geometry.dispose();
+        (marker.core.material as THREE.Material).dispose();
+        for (const p of marker.pulses) {
+          entry.group.remove(p);
+          p.geometry.dispose();
+          (p.material as THREE.Material).dispose();
+        }
+      }
+      markerEntries.delete(id);
+      requestRepaint();
+    },
+
+    clearAllMarkers() {
+      for (const [id, marker] of markerEntries) {
+        const entry = features.get(id);
+        if (entry) {
+          entry.group.remove(marker.core);
+          marker.core.geometry.dispose();
+          (marker.core.material as THREE.Material).dispose();
+          for (const p of marker.pulses) {
+            entry.group.remove(p);
+            p.geometry.dispose();
+            (p.material as THREE.Material).dispose();
+          }
+        }
+      }
+      markerEntries.clear();
       requestRepaint();
     },
   };
