@@ -2,10 +2,10 @@
  * 주요 관리 사항 뷰 컴포넌트
  * @see https://github.com/pluxity/pf-frontend/issues/190
  */
-import { useState, useEffect } from "react";
 import { Carousel } from "@pf-dev/ui";
-import { keyManagementService } from "@/services";
-import type { KeyManagementItem, KeyManagementType } from "@/services";
+import { useKeyManagement } from "@/hooks/useKeyManagement";
+import { useKeyManagementStore } from "@/stores/keyManagement.store";
+import type { KeyManagementItem } from "@/services";
 
 type SectionKey = keyof Pick<
   KeyManagementItem,
@@ -25,47 +25,10 @@ const SECTIONS: Section[] = [
 ];
 
 export function KeyManagementView() {
-  const [items, setItems] = useState<KeyManagementItem[]>([]);
-  const [types, setTypes] = useState<KeyManagementType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchData() {
-      try {
-        const [selectedItems, typeList] = await Promise.all([
-          keyManagementService.getSelected(),
-          keyManagementService.getTypes(),
-        ]);
-        if (!cancelled) {
-          setItems(selectedItems);
-          setTypes(typeList);
-        }
-      } catch (e) {
-        console.error("Failed to fetch key management data:", e);
-        if (!cancelled) {
-          setError("데이터를 불러올 수 없습니다");
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    fetchData();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { items, isLoading, error, getTypeDescription } = useKeyManagement();
+  const { activeIndex, setActiveIndex } = useKeyManagementStore();
 
   const currentItem = items[activeIndex] ?? null;
-
-  const getTypeDescription = (code: string) =>
-    types.find((t) => t.code === code)?.description ?? code;
 
   if (isLoading) {
     return (

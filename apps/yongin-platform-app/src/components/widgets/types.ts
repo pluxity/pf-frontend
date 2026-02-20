@@ -15,4 +15,4 @@ export type GoalProps = BaseWidgetProps;
 
 export type AnnouncementProps = BaseWidgetProps;
 
-export type ManagementProps = BaseWidgetProps;
+export type KeyManagementProps = BaseWidgetProps;
