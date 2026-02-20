@@ -31,7 +31,7 @@ CarouselCard.Header = function CarouselCardHeader({
     <div className={cn("flex items-center mb-3", className)}>
       <h2 className={cn("font-bold", titleClassName)}>{title}</h2>
       {showArrows && onPrev && onNext && (
-        <div className="flex ml-auto border-1 rounded-xl border-gray-300">
+        <div className="flex ml-auto border rounded-xl border-gray-300">
           <Button
             variant="ghost"
             onClick={onPrev}

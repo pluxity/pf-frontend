@@ -9,19 +9,10 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
   const { activeIndex, setActiveIndex } = useKeyManagementStore();
 
   const handlePrev = () => {
-    if (activeIndex === 0) {
-      setActiveIndex(items.length - 1);
-    } else {
-      setActiveIndex(activeIndex - 1);
-    }
+    setActiveIndex((activeIndex - 1 + items.length) % items.length);
   };
-
   const handleNext = () => {
-    if (activeIndex === items.length - 1) {
-      setActiveIndex(0);
-    } else {
-      setActiveIndex(activeIndex + 1);
-    }
+    setActiveIndex((activeIndex + 1) % items.length);
   };
 
   if (isLoading) {
