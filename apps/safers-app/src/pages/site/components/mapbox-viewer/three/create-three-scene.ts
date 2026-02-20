@@ -108,6 +108,7 @@ export interface ThreeSceneApi {
   getInitialPosition: (id: string) => FeaturePosition | null;
 
   setBuildingOpacity: (opacity: number) => void;
+  setBuildingClipAltitude: (altitude: number | null, workerPosition?: FeaturePosition) => void;
   checkOcclusion: (featureId: string) => boolean;
 
   setFeatureHeading: (id: string, radians: number) => void;
@@ -219,6 +220,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   composer.addPass(new OutputPass());
 
   let modelGroup: THREE.Group | null = null;
+  let ceilingClipPlane: THREE.Plane | null = null;
 
   let lastModelTransformMat: THREE.Matrix4 | null = null;
   let lastCombinedMatrix: THREE.Matrix4 | null = null;
@@ -708,6 +710,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       fovConfigs.clear();
       assets.clear();
       assetLoadPromises.clear();
+      ceilingClipPlane = null;
       for (const state of patrolStates.values()) state.active = false;
       patrolStates.clear();
       for (const group of dangerZoneGroups.values()) {
@@ -974,6 +977,66 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
           }
         }
       });
+      requestRepaint();
+    },
+
+    setBuildingClipAltitude(altitude: number | null, workerPosition?: FeaturePosition) {
+      if (!modelGroup) return;
+
+      if (altitude === null) {
+        ceilingClipPlane = null;
+        modelGroup.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.receiveShadow = true;
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            for (const mat of mats) {
+              mat.clippingPlanes = [GROUND_CLIP_PLANE];
+              mat.needsUpdate = true;
+            }
+          }
+        });
+      } else {
+        const t = getTransform();
+
+        // 모델 회전 적용 후 matrixWorld 갱신
+        const deg = Math.PI / 180;
+        modelGroup.rotation.set(t.rotationX * deg, t.rotationY * deg, t.rotationZ * deg);
+        modelGroup.scale.setScalar(t.scale);
+        scene.updateMatrixWorld(true);
+
+        // altitude → scene Z (model Y → world Z는 1:1 매핑)
+        const clipZ = gpsToScenePosition({ lng: t.lng, lat: t.lat, altitude }, t).z;
+        ceilingClipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), clipZ);
+
+        const workerScene = workerPosition ? gpsToScenePosition(workerPosition, t) : null;
+        const box = new THREE.Box3();
+        const XY_MARGIN = 2;
+
+        modelGroup.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+
+            let shouldClip = !workerScene;
+            if (workerScene) {
+              box.setFromObject(child);
+              shouldClip =
+                workerScene.x >= box.min.x - XY_MARGIN &&
+                workerScene.x <= box.max.x + XY_MARGIN &&
+                workerScene.y >= box.min.y - XY_MARGIN &&
+                workerScene.y <= box.max.y + XY_MARGIN;
+            }
+
+            if (shouldClip) child.receiveShadow = false;
+
+            for (const mat of mats) {
+              mat.clippingPlanes = shouldClip
+                ? [GROUND_CLIP_PLANE, ceilingClipPlane!]
+                : [GROUND_CLIP_PLANE];
+              mat.needsUpdate = true;
+            }
+          }
+        });
+      }
       requestRepaint();
     },
 

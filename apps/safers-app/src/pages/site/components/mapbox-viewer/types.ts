@@ -87,6 +87,7 @@ export interface ThreeOverlayHandle {
   swapFeatureAsset: (id: string, newAssetId: string) => void;
   updateWorkerVitals: (id: string, vitals: WorkerVitals) => void;
   setBuildingOpacity: (opacity: number) => void;
+  setBuildingClipAltitude: (altitude: number | null, workerPosition?: FeaturePosition) => void;
   checkOcclusion: (featureId: string) => boolean;
   moveFeatureTo: (
     id: string,

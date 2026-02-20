@@ -76,6 +76,9 @@ export function ThreeOverlay({
     setBuildingOpacity(opacity: number) {
       sceneRef.current?.setBuildingOpacity(opacity);
     },
+    setBuildingClipAltitude(altitude: number | null, workerPosition?: FeaturePosition) {
+      sceneRef.current?.setBuildingClipAltitude(altitude, workerPosition);
+    },
     checkOcclusion(featureId: string) {
       return sceneRef.current?.checkOcclusion(featureId) ?? false;
     },

@@ -68,6 +68,29 @@ export const SCENARIO_EMERGENCIES: Record<1 | 2, SiteEmergencyPayload> = {
   },
 };
 
+export const SCENARIO_CAMERAS: Record<
+  1 | 2,
+  {
+    center: [number, number];
+    zoom: number;
+    pitch: number;
+    bearing: number;
+  }
+> = {
+  1: {
+    center: [126.846816, 37.499495],
+    zoom: 20.79,
+    pitch: 52.74,
+    bearing: 105.74,
+  },
+  2: {
+    center: [126.847302, 37.499369],
+    zoom: 19.9,
+    pitch: 41,
+    bearing: 108.09,
+  },
+};
+
 export const WORKER1_PATROL_PATH: FeaturePosition[] = [
   { lng: 126.846879, lat: 37.50037, altitude: 0.1 },
   { lng: 126.846843, lat: 37.50036, altitude: 0.1 },
@@ -104,12 +127,12 @@ export const SCENARIO3 = {
   workerId: "worker-1",
   cctvId: "CCTV-JEJU2-46",
   dangerZoneEntry: { lng: 126.846852, lat: 37.500211, altitude: 0.15 } satisfies FeaturePosition,
-  moveDurationMs: 3000,
+  moveDurationMs: 6000,
   camera: {
-    center: [126.84685, 37.50025] as [number, number],
-    zoom: 20,
-    pitch: 50,
-    bearing: 120,
+    center: [126.846899, 37.50024] as [number, number],
+    zoom: 20.77,
+    pitch: 38.49,
+    bearing: 133.42,
   },
   emergency: {
     workerId: "worker-1",

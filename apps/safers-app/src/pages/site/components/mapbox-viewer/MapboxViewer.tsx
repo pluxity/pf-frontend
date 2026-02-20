@@ -11,9 +11,9 @@ import type {
 import {
   MAP_STYLES,
   COLOR_DANGER,
-  BUILDING_OPACITY,
   DEFAULT_FLY_DURATION,
   DEFAULT_BANNER_MESSAGE,
+  CLIP_FLOOR_MARGIN,
   type MapStyleKey,
 } from "./constants";
 import { MODEL_TRANSFORM, INITIAL_VIEW, EMERGENCY_CAMERA } from "./config/site.config";
@@ -25,6 +25,7 @@ import { CCTVPopupGrid } from "./overlays/CCTVPopupGrid";
 import { FeatureLabelOverlay } from "./overlays/FeatureLabelOverlay";
 import { useMapboxSetup } from "./hooks/useMapboxSetup";
 import { useMapInteractions } from "./hooks/useMapInteractions";
+import { CameraDebugPanel } from "./overlays/CameraDebugPanel";
 import { useCCTVPopupStore, selectCCTVPopups } from "@/stores";
 import { FilterChip, FilterChipGroup } from "@pf-dev/ui/molecules";
 import { CCTV as CCTVIcon, User as UserIcon, X as XIcon } from "@pf-dev/ui/atoms";
@@ -40,6 +41,12 @@ export interface MapboxViewerHandle {
       skipFlyTo?: boolean;
       message?: string;
       bannerLabel?: string;
+      camera?: {
+        center: [number, number];
+        zoom: number;
+        pitch: number;
+        bearing: number;
+      };
     }
   ) => void;
   resetEmergency: () => void;
@@ -222,7 +229,7 @@ export function MapboxViewer({
       }
     }
 
-    overlayRef.current?.setBuildingOpacity(BUILDING_OPACITY.FULL);
+    overlayRef.current?.setBuildingClipAltitude(null);
 
     activeWorkerRef.current = null;
     setSelectedFeature(null);
@@ -257,6 +264,12 @@ export function MapboxViewer({
         skipFlyTo?: boolean;
         message?: string;
         bannerLabel?: string;
+        camera?: {
+          center: [number, number];
+          zoom: number;
+          pitch: number;
+          bearing: number;
+        };
       }
     ) {
       activeWorkerRef.current = payload.workerId;
@@ -287,31 +300,24 @@ export function MapboxViewer({
 
       const occluded = overlayRef.current?.checkOcclusion(payload.workerId) ?? false;
       if (occluded) {
-        overlayRef.current?.setBuildingOpacity(BUILDING_OPACITY.OCCLUDED);
+        overlayRef.current?.setBuildingClipAltitude(
+          payload.position.altitude + CLIP_FLOOR_MARGIN,
+          payload.position
+        );
       }
 
       if (!opts?.skipFlyTo) {
-        const { BASE_ZOOM, BASE_ALT, BEARING, PITCH } = EMERGENCY_CAMERA;
-
-        const zoom =
-          payload.position.altitude <= BASE_ALT
-            ? BASE_ZOOM
-            : BASE_ZOOM - Math.log2(payload.position.altitude / BASE_ALT);
-
-        const pitchRad = (PITCH * Math.PI) / 180;
-        const bearingRad = (BEARING * Math.PI) / 180;
-        const offsetMeters = payload.position.altitude * Math.tan(pitchRad);
-        const mPerLng = 111320 * Math.cos((payload.position.lat * Math.PI) / 180);
-        const mPerLat = 111320;
-
+        const cam = opts?.camera ?? {
+          center: [payload.position.lng, payload.position.lat] as [number, number],
+          zoom: EMERGENCY_CAMERA.ZOOM,
+          pitch: EMERGENCY_CAMERA.PITCH,
+          bearing: EMERGENCY_CAMERA.BEARING,
+        };
         mapRef.current?.flyTo({
-          center: [
-            payload.position.lng + (offsetMeters * Math.sin(bearingRad)) / mPerLng,
-            payload.position.lat + (offsetMeters * Math.cos(bearingRad)) / mPerLat,
-          ],
-          zoom,
-          pitch: PITCH,
-          bearing: BEARING,
+          center: cam.center,
+          zoom: cam.zoom,
+          pitch: cam.pitch,
+          bearing: cam.bearing,
           duration: DEFAULT_FLY_DURATION,
           essential: true,
         });
@@ -479,7 +485,7 @@ export function MapboxViewer({
   }, [onSelectionCancel]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" onContextMenu={(e) => e.preventDefault()}>
       <div ref={containerRef} className="h-full w-full" />
       <ThreeOverlay
         ref={overlayRef}
@@ -610,10 +616,13 @@ export function MapboxViewer({
       )}
 
       {import.meta.env.DEV && (
-        <div
-          ref={coordRef}
-          className="pointer-events-none absolute bottom-2 left-2 z-[5] rounded bg-black/60 px-2 py-1 font-mono text-xs text-white"
-        />
+        <>
+          <div
+            ref={coordRef}
+            className="pointer-events-none absolute bottom-2 left-2 z-[5] rounded bg-black/60 px-2 py-1 font-mono text-xs text-white"
+          />
+          <CameraDebugPanel mapRef={mapRef} />
+        </>
       )}
     </div>
   );

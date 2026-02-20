@@ -36,6 +36,8 @@ export const POPUP_HEAD_OFFSET = 0.5;
 
 export const DEFAULT_BANNER_MESSAGE = "이상징후 감지";
 
+export const CLIP_FLOOR_MARGIN = -1;
+
 export const CLIP_OUTLINE_COLOR: Record<MapStyleKey, string> = {
   day: "rgba(255, 0, 0, 0.9)",
   mono: "rgba(255, 0, 0, 0.9)",

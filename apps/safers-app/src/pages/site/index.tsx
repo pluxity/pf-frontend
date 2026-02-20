@@ -11,16 +11,21 @@ import {
 } from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site, type SiteEvent } from "@/services";
-import { useWeather, useWorkerLivePositions } from "@/hooks";
+import { useWeather } from "@/hooks";
 import {
   INITIAL_WORKERS,
   SCENARIO_EMERGENCIES,
+  SCENARIO_CAMERAS,
   SCENARIO3,
   WORKER1_PATROL_PATH,
   WORKER1_PATROL_DURATION,
   nextEventId,
 } from "./mocks";
-import { COLOR_SUCCESS, COLOR_DANGER } from "./components/mapbox-viewer/constants";
+import {
+  COLOR_SUCCESS,
+  COLOR_DANGER,
+  DEFAULT_FLY_DURATION,
+} from "./components/mapbox-viewer/constants";
 import { MOCK_DANGER_ZONES } from "@/services/mocks/danger-zones.mock";
 
 type ScenarioId = 1 | 2 | 3;
@@ -99,49 +104,56 @@ export function SitePage() {
       if (scenario === 3) {
         setScenarioActive(true);
 
-        // 순찰 중지 → 위험구역으로 자연스럽게 이동 (이미 walk 모델 상태)
+        // 1) 순찰 중지
         mapViewerRef.current?.stopPatrol(SCENARIO3.workerId);
         mapViewerRef.current?.selectFeature(SCENARIO3.workerId);
-        mapViewerRef.current?.moveFeatureTo(
-          SCENARIO3.workerId,
-          SCENARIO3.dangerZoneEntry,
-          SCENARIO3.moveDurationMs,
-          () => {
-            const dangerEvent: SiteEvent = {
-              id: nextEventId(),
-              level: "danger",
-              code: "F-2",
-              message: "작업자 위험구역 진입",
-              site: { id: Number(id) || 0, name: "개봉5구역", region: "SEOUL" },
-              createdAt: new Date().toISOString(),
-              emergency: SCENARIO3.emergency,
-            };
-            setEvents((prev) => [...prev, dangerEvent]);
 
-            const { workerId } = SCENARIO3.emergency;
-            setWorkers((prev) =>
-              prev.map((w) =>
-                w.id === workerId ? { ...w, status: "abnormal" as const, info: "위험구역 진입" } : w
-              )
-            );
-            setSelectedWorkerId(workerId);
+        // 2) 카메라 먼저 이동
+        mapViewerRef.current?.flyTo(SCENARIO3.camera);
 
-            mapViewerRef.current?.showCCTVFOV(SCENARIO3.cctvId, true);
-            mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_DANGER);
+        // 3) 카메라 도착 후 worker 천천히 이동
+        setTimeout(() => {
+          mapViewerRef.current?.moveFeatureTo(
+            SCENARIO3.workerId,
+            SCENARIO3.dangerZoneEntry,
+            SCENARIO3.moveDurationMs,
+            () => {
+              const dangerEvent: SiteEvent = {
+                id: nextEventId(),
+                level: "danger",
+                code: "F-2",
+                message: "작업자 위험구역 진입",
+                site: { id: Number(id) || 0, name: "개봉5구역", region: "SEOUL" },
+                createdAt: new Date().toISOString(),
+                emergency: SCENARIO3.emergency,
+              };
+              setEvents((prev) => [...prev, dangerEvent]);
 
-            mapViewerRef.current?.flyTo(SCENARIO3.camera);
+              const { workerId } = SCENARIO3.emergency;
+              setWorkers((prev) =>
+                prev.map((w) =>
+                  w.id === workerId
+                    ? { ...w, status: "abnormal" as const, info: "위험구역 진입" }
+                    : w
+                )
+              );
+              setSelectedWorkerId(workerId);
 
-            mapViewerRef.current?.triggerEmergency(SCENARIO3.emergency, {
-              skipModelSwap: true,
-              skipSelect: true,
-              skipFlyTo: true,
-              message: "위험구역 침입 탐지",
-              bannerLabel: SCENARIO3.cctvId,
-            });
+              mapViewerRef.current?.showCCTVFOV(SCENARIO3.cctvId, true);
+              mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_DANGER);
 
-            mapViewerRef.current?.selectFeature(SCENARIO3.cctvId, COLOR_DANGER);
-          }
-        );
+              mapViewerRef.current?.triggerEmergency(SCENARIO3.emergency, {
+                skipModelSwap: true,
+                skipSelect: true,
+                skipFlyTo: true,
+                message: "위험구역 침입 탐지",
+                bannerLabel: SCENARIO3.cctvId,
+              });
+
+              mapViewerRef.current?.selectFeature(SCENARIO3.cctvId, COLOR_DANGER);
+            }
+          );
+        }, DEFAULT_FLY_DURATION);
         return;
       }
 
@@ -173,14 +185,15 @@ export function SitePage() {
       setSelectedWorkerId(workerId);
       setScenarioActive(true);
 
-      mapViewerRef.current?.triggerEmergency(emergency);
+      mapViewerRef.current?.triggerEmergency(emergency, {
+        camera: SCENARIO_CAMERAS[scenario],
+      });
     },
     [id]
   );
 
   const siteId = id ? Number(id) : null;
   const { currentWeather } = useWeather({ siteId });
-  useWorkerLivePositions(mapViewerRef);
 
   useEffect(() => {
     if (!id) {

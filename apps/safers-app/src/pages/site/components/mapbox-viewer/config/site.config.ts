@@ -21,8 +21,7 @@ export const INITIAL_VIEW = {
 } as const;
 
 export const EMERGENCY_CAMERA = {
-  BASE_ZOOM: 20.5,
-  BASE_ALT: 11.9,
+  ZOOM: 21.5,
   BEARING: 120,
-  PITCH: 45.5,
+  PITCH: 35,
 } as const;
