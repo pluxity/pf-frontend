@@ -117,4 +117,5 @@ export interface ThreeOverlayHandle {
   setDangerZones: (zones: DangerZone[]) => void;
   startPatrol: (id: string, path: FeaturePosition[], durationMs: number) => void;
   stopPatrol: (id: string) => void;
+  probeAltitude: (lng: number, lat: number) => number | null;
 }

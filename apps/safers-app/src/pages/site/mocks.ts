@@ -18,7 +18,7 @@ export const INITIAL_WORKERS: WorkerEntry[] = [
     name: "이영희",
     status: "normal",
     info: "36.8°C / 92bpm",
-    locationType: "indoor",
+    locationType: "outdoor",
     floor: "3F",
   },
   {
@@ -26,7 +26,7 @@ export const INITIAL_WORKERS: WorkerEntry[] = [
     name: "박민수",
     status: "normal",
     info: "36.7°C / 82bpm",
-    locationType: "indoor",
+    locationType: "outdoor",
     floor: "3F",
   },
   {
@@ -34,7 +34,7 @@ export const INITIAL_WORKERS: WorkerEntry[] = [
     name: "정수진",
     status: "normal",
     info: "36.4°C / 85bpm",
-    locationType: "indoor",
+    locationType: "outdoor",
     floor: "3F",
   },
   {
@@ -42,8 +42,8 @@ export const INITIAL_WORKERS: WorkerEntry[] = [
     name: "최동훈",
     status: "normal",
     info: "36.6°C / 72bpm",
-    locationType: "indoor",
-    floor: "2F",
+    locationType: "outdoor",
+    floor: "3F",
   },
   {
     id: "worker-6",
@@ -81,7 +81,24 @@ export const WORKER1_PATROL_PATH: FeaturePosition[] = [
   { lng: 126.846879, lat: 37.50037, altitude: 0.1 },
 ];
 
+export const WORKER4_PATROL_PATH = [
+  { lng: 126.847074, lat: 37.499254, altitude: 6.3 },
+  { lng: 126.847049, lat: 37.499198, altitude: 4.1 },
+  { lng: 126.847081, lat: 37.499155, altitude: 4.1 },
+  { lng: 126.847152, lat: 37.499175, altitude: 1.9 },
+  { lng: 126.847218, lat: 37.499195, altitude: -0.3 },
+  { lng: 126.847288, lat: 37.499211, altitude: -0.3 },
+  { lng: 126.847296, lat: 37.499176, altitude: -0.3 },
+  { lng: 126.84718, lat: 37.499138, altitude: -0.28 },
+  { lng: 126.846874, lat: 37.499069, altitude: 3 },
+  { lng: 126.846853, lat: 37.499162, altitude: 3.4 },
+  { lng: 126.846907, lat: 37.499138, altitude: 3.62 },
+  { lng: 126.847049, lat: 37.499198, altitude: 4.1 },
+  { lng: 126.847074, lat: 37.499254, altitude: 6.3 },
+];
+
 export const WORKER1_PATROL_DURATION = 60_000;
+export const WORKER4_PATROL_DURATION = 60_000;
 
 export const SCENARIO3 = {
   workerId: "worker-1",

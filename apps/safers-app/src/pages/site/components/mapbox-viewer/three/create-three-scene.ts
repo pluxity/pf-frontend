@@ -135,6 +135,12 @@ export interface ThreeSceneApi {
 
   startPatrol: (id: string, path: FeaturePosition[], durationMs: number) => void;
   stopPatrol: (id: string) => void;
+
+  /** 지정 lng/lat 위치에서 건물 표면까지의 고도(m)를 반환. 건물이 없으면 null */
+  probeAltitude: (lng: number, lat: number) => number | null;
+
+  /** 건물 모델 로드 완료 시 resolve 되는 Promise */
+  modelReady: Promise<void>;
 }
 
 export interface CreateThreeSceneOptions {
@@ -471,7 +477,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   }
 
   const loader = new GLTFLoader();
-  loader.load(modelUrl, (gltf) => {
+  const modelReady = loader.loadAsync(modelUrl).then((gltf) => {
     gltf.scene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         if (Array.isArray(child.material)) {
@@ -1295,5 +1301,32 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
       requestRepaint();
     },
+
+    probeAltitude(lng: number, lat: number): number | null {
+      if (!modelGroup) return null;
+      const transform = getTransform();
+
+      // altitude 0과 1 두 지점으로 scene Z ↔ meter 스케일 산출
+      const ref0 = gpsToScenePosition({ lng, lat, altitude: 0 }, transform);
+      const ref1 = gpsToScenePosition({ lng, lat, altitude: 1 }, transform);
+      const metersPerUnit = 1 / (ref1.z - ref0.z);
+
+      // 충분히 높은 곳에서 아래로 레이캐스트
+      const origin = gpsToScenePosition({ lng, lat, altitude: 300 }, transform);
+      const dir = new THREE.Vector3(0, 0, -1);
+
+      const prevFar = raycaster.far;
+      raycaster.set(origin, dir);
+      raycaster.far = 600 / metersPerUnit;
+      const hits = raycaster.intersectObject(modelGroup, true);
+      raycaster.far = prevFar;
+
+      if (hits.length === 0) return null;
+
+      const hitZ = hits[0]!.point.z;
+      return Math.round((hitZ - ref0.z) * metersPerUnit * 100) / 100;
+    },
+
+    modelReady,
   };
 }

@@ -12,7 +12,12 @@ import { ASSET_URLS } from "../constants";
 import { MODEL_URL } from "../config/site.config";
 import { cctvService } from "@/services";
 import { fetchWorkerPositions } from "@/services/mocks/workers.mock";
-import { WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION } from "../../../mocks";
+import {
+  WORKER1_PATROL_PATH,
+  WORKER1_PATROL_DURATION,
+  WORKER4_PATROL_PATH,
+  WORKER4_PATROL_DURATION,
+} from "../../../mocks";
 
 interface ThreeOverlayProps {
   ref?: React.Ref<ThreeOverlayHandle>;
@@ -135,6 +140,9 @@ export function ThreeOverlay({
     stopPatrol(id: string) {
       sceneRef.current?.stopPatrol(id);
     },
+    probeAltitude(lng: number, lat: number) {
+      return sceneRef.current?.probeAltitude(lng, lat) ?? null;
+    },
   }));
 
   useEffect(() => {
@@ -158,6 +166,7 @@ export function ThreeOverlay({
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
 
+    // 서버에서 작업자 데이터 페칭(~3s) 시뮬레이션
     fetchWorkerPositions().then(async (workers) => {
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
@@ -165,10 +174,16 @@ export function ThreeOverlay({
         locationsRef.current.set(w.id, w.location);
       }
 
-      // Worker-1: walk 에셋 로드 후 순찰 시작
+      // Worker-5(최동훈): 방향 반전 (180도)
+      sceneApi.setFeatureHeading("worker-5", Math.PI);
+
+      // walk 에셋 로드 후 순찰 시작
       await walkReady;
       sceneApi.swapFeatureAsset("worker-1", "worker-walk");
       sceneApi.startPatrol("worker-1", WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION);
+
+      sceneApi.swapFeatureAsset("worker-4", "worker-walk");
+      sceneApi.startPatrol("worker-4", WORKER4_PATROL_PATH, WORKER4_PATROL_DURATION);
     });
 
     cctvService.getCCTVList().then(({ data }) => {

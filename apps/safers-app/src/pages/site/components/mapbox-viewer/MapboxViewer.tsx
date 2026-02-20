@@ -131,6 +131,7 @@ export function MapboxViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<ThreeOverlayHandle>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+  const coordRef = useRef<HTMLDivElement>(null);
 
   const currentStyleRef = useRef<MapStyleKey>("day");
 
@@ -424,6 +425,7 @@ export function MapboxViewer({
     mapRef,
     overlayRef,
     selectedIdRef,
+    coordRef,
     onFeatureSelect: setSelectedFeature,
     onWorkerSelect: (workerId) => onWorkerSelectRef.current?.(workerId),
   });
@@ -604,6 +606,13 @@ export function MapboxViewer({
           overlayRef={overlayRef}
           mapRef={mapRef}
           renderCallbacksRef={renderCallbacksRef}
+        />
+      )}
+
+      {import.meta.env.DEV && (
+        <div
+          ref={coordRef}
+          className="pointer-events-none absolute bottom-2 left-2 z-[5] rounded bg-black/60 px-2 py-1 font-mono text-xs text-white"
         />
       )}
     </div>

@@ -27,28 +27,43 @@ function getSlotPositions(vw: number, vh: number): { x: number; y: number; cardW
   ];
 }
 
-/** POI 화면 좌표에서 가장 가까운 빈 슬롯 인덱스 반환 */
+/**
+ * POI 화면 좌표에서 겹치지 않는 가장 적절한 빈 슬롯 인덱스 반환.
+ * 중앙 패널(1:3:1 비율) 기준으로 사분면을 판단한다.
+ * 수평 같은 쪽 + 수직 반대쪽을 우선 배치.
+ * 슬롯 순서: 0=TL, 1=TR, 2=BL, 3=BR
+ */
 function findClosestSlot(
   poiX: number,
   poiY: number,
-  slots: { x: number; y: number; cardW: number }[],
-  usedSlots: Set<number>
+  _slots: { x: number; y: number; cardW: number }[],
+  usedSlots: Set<number>,
+  vw: number,
+  vh: number
 ): number {
-  let best = -1;
-  let bestDist = Infinity;
-  for (let i = 0; i < slots.length; i++) {
-    if (usedSlots.has(i)) continue;
-    const s = slots[i]!;
-    const cardH = Math.round(s.cardW / CARD_ASPECT) + 60;
-    const cx = s.x + s.cardW / 2;
-    const cy = s.y + cardH / 2;
-    const dist = (poiX - cx) ** 2 + (poiY - cy) ** 2;
-    if (dist < bestDist) {
-      bestDist = dist;
-      best = i;
-    }
+  // 중앙 패널 (1:3:1) 기준 중심점
+  const panelLeft = vw / 5;
+  const panelRight = (vw * 4) / 5;
+  const panelTop = vh * SLOT_TOP_RATIO;
+  const panelBottom = vh * (1 - SLOT_BOTTOM_RATIO);
+  const cx = (panelLeft + panelRight) / 2;
+  const cy = (panelTop + panelBottom) / 2;
+
+  const isLeft = poiX < cx;
+  const isTop = poiY < cy;
+
+  const preferred: number[] = isLeft
+    ? isTop
+      ? [2, 3, 0, 1]
+      : [0, 1, 2, 3]
+    : isTop
+      ? [3, 2, 1, 0]
+      : [1, 0, 3, 2];
+
+  for (const idx of preferred) {
+    if (!usedSlots.has(idx)) return idx;
   }
-  return best >= 0 ? best : 0;
+  return 0;
 }
 
 interface CCTVPopupGridProps {
@@ -73,21 +88,17 @@ export function CCTVPopupGrid({
   const [positions, setPositions] = useState<Map<string, { x: number; y: number; cardW: number }>>(
     new Map()
   );
-  /** featureId → slot index (0~3) */
-  const slotAssignRef = useRef<Map<string, number>>(new Map());
 
+  // 새 팝업: 위치 먼저 측정 → 확정 후 생성 / 닫힌 팝업: 나머지 위치 그대로 유지
   useEffect(() => {
     const canvas = mapRef.current?.getCanvas();
     const activeIds = new Set(popups.map((p) => p.featureId));
 
-    // 닫힌 팝업 슬롯 해제
-    for (const [id] of slotAssignRef.current) {
-      if (!activeIds.has(id)) slotAssignRef.current.delete(id);
-    }
-
     setPositions((prev) => {
-      let changed = false;
       const next = new Map(prev);
+      let changed = false;
+
+      // 닫힌 팝업만 제거 (나머지 위치는 건드리지 않음)
       for (const id of next.keys()) {
         if (!activeIds.has(id)) {
           next.delete(id);
@@ -95,22 +106,38 @@ export function CCTVPopupGrid({
         }
       }
 
+      // 새 팝업만 위치 계산
       const newPopups = popups.filter((p) => !next.has(p.featureId));
       if (newPopups.length === 0) return changed ? next : prev;
 
       const vw = canvas?.clientWidth ?? window.innerWidth;
       const vh = canvas?.clientHeight ?? window.innerHeight;
       const slots = getSlotPositions(vw, vh);
-      const usedSlots = new Set(slotAssignRef.current.values());
+
+      // 이미 사용 중인 슬롯 수집 (기존 팝업들의 위치에서 가장 가까운 슬롯)
+      const usedSlots = new Set<number>();
+      for (const [, pos] of next) {
+        let minDist = Infinity;
+        let closestIdx = 0;
+        for (let i = 0; i < slots.length; i++) {
+          const dx = pos.x - slots[i]!.x;
+          const dy = pos.y - slots[i]!.y;
+          const dist = dx * dx + dy * dy;
+          if (dist < minDist) {
+            minDist = dist;
+            closestIdx = i;
+          }
+        }
+        usedSlots.add(closestIdx);
+      }
 
       for (const p of newPopups) {
         const poi = overlayRef.current?.projectFeatureToScreen(p.featureId, vw, vh);
         const poiX = poi?.x ?? vw / 2;
         const poiY = poi?.y ?? vh / 2;
 
-        const slotIdx = findClosestSlot(poiX, poiY, slots, usedSlots);
+        const slotIdx = findClosestSlot(poiX, poiY, slots, usedSlots, vw, vh);
         usedSlots.add(slotIdx);
-        slotAssignRef.current.set(p.featureId, slotIdx);
         next.set(p.featureId, slots[slotIdx]!);
       }
 
@@ -159,7 +186,7 @@ export function CCTVPopupGrid({
     }
   }, [popups]);
 
-  // Register render callback for leader line position updates
+  // Register render callback — 리더라인만 업데이트 (팝업 위치는 건드리지 않음)
   useEffect(() => {
     const updateLeaderLines = () => {
       const canvas = mapRef.current?.getCanvas();
@@ -184,7 +211,6 @@ export function CCTVPopupGrid({
           continue;
         }
 
-        // Card center-bottom position (relative to MapboxViewer container)
         const cardRect = card.getBoundingClientRect();
         const containerRect = grid.closest(".relative")?.getBoundingClientRect();
         if (!containerRect) continue;
@@ -214,7 +240,6 @@ export function CCTVPopupGrid({
   // ── 드래그 핸들러 ──
 
   const handleDragStart = (featureId: string, e: React.PointerEvent) => {
-    // 닫기 버튼 클릭은 드래그로 처리하지 않음
     if ((e.target as HTMLElement).closest("button")) return;
 
     const el = e.currentTarget.closest("[data-cctv-id]") as HTMLElement | null;
@@ -225,7 +250,6 @@ export function CCTVPopupGrid({
 
     const startX = e.clientX;
     const startY = e.clientY;
-    // DOM에서 현재 위치 읽기 (드래그 중 직접 조작한 값 반영)
     const origLeft = parseFloat(el.style.left) || 0;
     const origTop = parseFloat(el.style.top) || 0;
 
@@ -239,7 +263,6 @@ export function CCTVPopupGrid({
     const onUp = (ev: PointerEvent) => {
       const dx = ev.clientX - startX;
       const dy = ev.clientY - startY;
-      // 드래그 끝 → state에 반영
       setPositions((prev) => {
         const next = new Map(prev);
         const existing = prev.get(featureId);

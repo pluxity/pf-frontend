@@ -6,6 +6,12 @@ const CCTV_ICON_SVG = `<svg width="12" height="12" viewBox="0 0 14 14" fill="non
 
 const USER_ICON_SVG = `<svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:3px;flex-shrink:0"><path d="M9.188 3.5C9.188 2.2127 8.287 1.3125 7 1.3125C5.713 1.3125 4.812 2.2127 4.812 3.5C4.812 4.7873 5.713 5.6875 7 5.6875C8.287 5.6875 9.188 4.7873 9.188 3.5ZM3.5 3.5C3.5 1.5717 4.869 0 7 0C9.131 0 10.5 1.5717 10.5 3.5C10.5 5.4283 9.131 7 7 7C4.869 7 3.5 5.4283 3.5 3.5ZM2.223 12.6875H11.777C11.534 10.9566 10.046 9.625 8.25 9.625H5.75C3.954 9.625 2.466 10.9566 2.223 12.6875ZM0.875 13.1879C0.875 10.4945 3.057 8.3125 5.75 8.3125H8.25C10.943 8.3125 13.125 10.4945 13.125 13.1879C13.125 13.6363 12.761 14 12.313 14H1.687C1.239 14 0.875 13.6363 0.875 13.1879Z" fill="currentColor"/></svg>`;
 
+const FLOOR_HEIGHT = 3; // meters per floor
+function altitudeToFloor(altitude: number): string {
+  const n = Math.max(1, Math.floor(altitude / FLOOR_HEIGHT) + 1);
+  return `${n}F`;
+}
+
 interface FeatureLabelOverlayProps {
   showCCTV: boolean;
   showWorker: boolean;
@@ -122,15 +128,28 @@ export function FeatureLabelOverlay({
           }
 
           const icon = isCCTV ? CCTV_ICON_SVG : USER_ICON_SVG;
-          const workerName = isCCTV ? id : (workerNamesRef.current?.[id] ?? id);
-          const floorInfo = !isCCTV ? workerLocationsRef.current?.[id]?.floor : undefined;
-          const floorSuffix = floorInfo ? ` ${floorInfo}` : "";
-          label.innerHTML = `${icon}<span>${workerName}${floorSuffix}</span>`;
+          label.innerHTML = `${icon}<span></span>`;
           container.appendChild(label);
           labelsRef.current.set(id, label);
         }
 
-        label.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -100%)`;
+        // 텍스트 갱신 (작업자: 현재 고도 기반 층수)
+        const span = label.querySelector("span");
+        if (span) {
+          if (isCCTV) {
+            if (span.textContent !== id) span.textContent = id;
+          } else {
+            const workerName = workerNamesRef.current?.[id] ?? id;
+            const featurePos = overlayRef.current!.getFeaturePosition(id);
+            const floor = featurePos
+              ? altitudeToFloor(featurePos.altitude)
+              : (workerLocationsRef.current?.[id]?.floor ?? "");
+            const text = floor ? `${workerName} ${floor}` : workerName;
+            if (span.textContent !== text) span.textContent = text;
+          }
+        }
+
+        label.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, calc(-100% - 2rem))`;
         label.style.display = "";
       }
 

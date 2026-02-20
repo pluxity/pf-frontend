@@ -22,25 +22,25 @@ export const MOCK_WORKER_POSITIONS: MockWorkerPosition[] = [
     id: "worker-2",
     position: { lng: 126.84648, lat: 37.499865, altitude: 8.5 },
     vitals: { temperature: 36.8, heartRate: 92 },
-    location: { locationType: "indoor", floor: "3F", floorNumber: 3 },
+    location: { locationType: "outdoor", floor: "3F", floorNumber: 3 },
   },
   {
     id: "worker-3",
-    position: { lng: 126.846643, lat: 37.499556, altitude: 8.5 },
+    position: { lng: 126.847115, lat: 37.499307, altitude: 8.5 },
     vitals: { temperature: 36.7, heartRate: 82 },
-    location: { locationType: "indoor", floor: "3F", floorNumber: 3 },
+    location: { locationType: "outdoor", floor: "3F", floorNumber: 3 },
   },
   {
     id: "worker-4",
     position: { lng: 126.847061, lat: 37.499351, altitude: 8.5 },
     vitals: { temperature: 36.4, heartRate: 85 },
-    location: { locationType: "indoor", floor: "3F", floorNumber: 3 },
+    location: { locationType: "outdoor", floor: "3F", floorNumber: 3 },
   },
   {
     id: "worker-5",
-    position: { lng: 126.847065, lat: 37.499254, altitude: 6.5 },
+    position: { lng: 126.847086, lat: 37.49951, altitude: 8.5 },
     vitals: { temperature: 36.6, heartRate: 72 },
-    location: { locationType: "indoor", floor: "2F", floorNumber: 2 },
+    location: { locationType: "outdoor", floor: "3F", floorNumber: 3 },
   },
   {
     id: "worker-6",
@@ -51,7 +51,7 @@ export const MOCK_WORKER_POSITIONS: MockWorkerPosition[] = [
 ];
 
 export async function fetchWorkerPositions(): Promise<MockWorkerPosition[]> {
-  await new Promise((r) => setTimeout(r, 500));
+  await new Promise((r) => setTimeout(r, 3000));
   return MOCK_WORKER_POSITIONS;
 }
 
@@ -66,9 +66,9 @@ export const DEFAULT_WORKER_VITALS: Record<string, WorkerVitals> = {
 
 export const DEFAULT_WORKER_LOCATIONS: Record<string, WorkerLocation> = {
   "worker-1": { locationType: "outdoor", floor: "1F", floorNumber: 1 },
-  "worker-2": { locationType: "indoor", floor: "3F", floorNumber: 3 },
-  "worker-3": { locationType: "indoor", floor: "3F", floorNumber: 3 },
-  "worker-4": { locationType: "indoor", floor: "3F", floorNumber: 3 },
-  "worker-5": { locationType: "indoor", floor: "2F", floorNumber: 2 },
+  "worker-2": { locationType: "outdoor", floor: "3F", floorNumber: 3 },
+  "worker-3": { locationType: "outdoor", floor: "3F", floorNumber: 3 },
+  "worker-4": { locationType: "outdoor", floor: "3F", floorNumber: 3 },
+  "worker-5": { locationType: "outdoor", floor: "2F", floorNumber: 2 },
   "worker-6": { locationType: "indoor", floor: "12F", floorNumber: 12 },
 };
