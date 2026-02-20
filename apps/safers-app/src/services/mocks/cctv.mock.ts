@@ -4,8 +4,8 @@ export const mockCCTVs: CCTVData[] = [
   {
     id: "CCTV-JEJU2-46",
     name: "CCTV-JEJU2-46",
-    position: { lng: 126.846698, lat: 37.500133, altitude: 11.0 },
-    heading: 200,
+    position: { lng: 126.846928, lat: 37.50034, altitude: 4.2 },
+    heading: 150,
     fovDeg: 35,
     fovRange: 20,
     pitch: -30,

@@ -1,20 +1,36 @@
 import { useEffect, useRef, useImperativeHandle } from "react";
-import type { ModelTransform, ThreeOverlayHandle, WorkerVitals } from "./types";
+import type {
+  ModelTransform,
+  ThreeOverlayHandle,
+  WorkerVitals,
+  WorkerLocation,
+  FeaturePosition,
+  DangerZone,
+} from "../types";
 import { createThreeScene, type ThreeSceneApi } from "./create-three-scene";
-import { MODEL_URL, ASSET_URLS } from "./constants";
+import { ASSET_URLS } from "../constants";
+import { MODEL_URL } from "../config/site.config";
 import { cctvService } from "@/services";
-import { fetchWorkerPositions } from "../../mocks";
+import { fetchWorkerPositions } from "@/services/mocks/workers.mock";
+import { WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION } from "../../../mocks";
 
 interface ThreeOverlayProps {
   ref?: React.Ref<ThreeOverlayHandle>;
   getTransform: () => ModelTransform;
   requestRepaint: () => void;
+  dangerZones?: DangerZone[];
 }
 
-export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlayProps) {
+export function ThreeOverlay({
+  ref,
+  getTransform,
+  requestRepaint,
+  dangerZones,
+}: ThreeOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<ThreeSceneApi | null>(null);
   const vitalsRef = useRef<Map<string, WorkerVitals>>(new Map());
+  const locationsRef = useRef<Map<string, WorkerLocation>>(new Map());
   /** CCTV featureId → WHEP stream URL */
   const cctvStreamUrlsRef = useRef<Map<string, string>>(new Map());
 
@@ -46,16 +62,32 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     updateWorkerVitals(id: string, vitals: WorkerVitals) {
       vitalsRef.current.set(id, vitals);
     },
+    getWorkerLocation(id: string) {
+      return locationsRef.current.get(id) ?? null;
+    },
+    updateWorkerLocation(id: string, location: WorkerLocation) {
+      locationsRef.current.set(id, location);
+    },
     setBuildingOpacity(opacity: number) {
       sceneRef.current?.setBuildingOpacity(opacity);
     },
     checkOcclusion(featureId: string) {
       return sceneRef.current?.checkOcclusion(featureId) ?? false;
     },
-    moveFeatureTo(id: string, target, durationMs: number, onComplete?: () => void) {
+    moveFeatureTo(
+      id: string,
+      target: FeaturePosition,
+      durationMs: number,
+      onComplete?: () => void
+    ) {
       sceneRef.current?.moveFeatureTo(id, target, durationMs, onComplete);
     },
-    moveFeatureAlongPath(id: string, path, durationMs: number, onComplete?: () => void) {
+    moveFeatureAlongPath(
+      id: string,
+      path: FeaturePosition[],
+      durationMs: number,
+      onComplete?: () => void
+    ) {
       sceneRef.current?.moveFeatureAlongPath(id, path, durationMs, onComplete);
     },
     getInitialPosition(id: string) {
@@ -82,7 +114,7 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     highlightFeatures(ids: string[], color?: number) {
       sceneRef.current?.highlightFeatures(ids, color);
     },
-    pushLivePosition(id: string, position, lerpMs?: number) {
+    pushLivePosition(id: string, position: FeaturePosition, lerpMs?: number) {
       sceneRef.current?.pushLivePosition(id, position, lerpMs);
     },
     addFeatureMarker(id: string, color?: number, radius?: number) {
@@ -93,6 +125,15 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     },
     clearAllMarkers() {
       sceneRef.current?.clearAllMarkers();
+    },
+    setDangerZones(zones: DangerZone[]) {
+      sceneRef.current?.setDangerZones(zones);
+    },
+    startPatrol(id: string, path: FeaturePosition[], durationMs: number) {
+      sceneRef.current?.startPatrol(id, path, durationMs);
+    },
+    stopPatrol(id: string) {
+      sceneRef.current?.stopPatrol(id);
     },
   }));
 
@@ -108,22 +149,33 @@ export function ThreeOverlay({ ref, getTransform, requestRepaint }: ThreeOverlay
     });
     sceneRef.current = sceneApi;
 
+    if (dangerZones && dangerZones.length > 0) {
+      sceneApi.setDangerZones(dangerZones);
+    }
+
     sceneApi.registerAsset("worker", ASSET_URLS.worker);
-    sceneApi.registerAsset("worker-walk", ASSET_URLS.workerWalk);
+    const walkReady = sceneApi.registerAsset("worker-walk", ASSET_URLS.workerWalk);
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
 
-    fetchWorkerPositions().then((workers) => {
+    fetchWorkerPositions().then(async (workers) => {
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
         vitalsRef.current.set(w.id, w.vitals);
+        locationsRef.current.set(w.id, w.location);
       }
+
+      // Worker-1: walk 에셋 로드 후 순찰 시작
+      await walkReady;
+      sceneApi.swapFeatureAsset("worker-1", "worker-walk");
+      sceneApi.startPatrol("worker-1", WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION);
     });
 
     cctvService.getCCTVList().then(({ data }) => {
       for (const cctv of data) {
         sceneApi.addFeature(cctv.id, "cctv", cctv.position);
         sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
+        sceneApi.setFeatureFOV(cctv.id, cctv.fovDeg, cctv.fovRange, cctv.pitch);
         cctvStreamUrlsRef.current.set(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });

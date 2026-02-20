@@ -52,6 +52,30 @@ export interface WorkerVitals {
   heartRate: number;
 }
 
+export type LocationType = "indoor" | "outdoor";
+
+export interface WorkerLocation {
+  locationType: LocationType;
+  floor: string;
+  floorNumber: number;
+}
+
+export interface DangerZone {
+  id: string;
+  name: string;
+  coordinates: [number, number][];
+}
+
+export interface SelectedFeatureData {
+  id: string;
+  lng: number;
+  lat: number;
+  altitude: number;
+  vitals: WorkerVitals | null;
+  streamUrl: string | null;
+  location: WorkerLocation | null;
+}
+
 export interface ThreeOverlayHandle {
   render: (matrix: number[]) => boolean;
   raycast: (screenX: number, screenY: number, width: number, height: number) => RaycastHit | null;
@@ -81,12 +105,16 @@ export interface ThreeOverlayHandle {
   setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
   setFeatureFOVVisible: (id: string, visible: boolean) => void;
   setFOVColor: (id: string, color: number) => void;
+  getWorkerLocation: (id: string) => WorkerLocation | null;
+  updateWorkerLocation: (id: string, location: WorkerLocation) => void;
   getCCTVStreamUrl: (id: string) => string | null;
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;
   highlightFeatures: (ids: string[], color?: number) => void;
-  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
   pushLivePosition: (id: string, position: FeaturePosition, lerpMs?: number) => void;
   addFeatureMarker: (id: string, color?: number, radius?: number) => void;
   removeFeatureMarker: (id: string) => void;
   clearAllMarkers: () => void;
+  setDangerZones: (zones: DangerZone[]) => void;
+  startPatrol: (id: string, path: FeaturePosition[], durationMs: number) => void;
+  stopPatrol: (id: string) => void;
 }

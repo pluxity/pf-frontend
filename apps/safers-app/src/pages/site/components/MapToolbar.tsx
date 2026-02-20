@@ -56,7 +56,6 @@ export function MapToolbar({
           active={selectionMode}
           onClick={onToggleSelection}
         />
-        {/* <ToolButton icon={<Refresh size="sm" />} label="방향 초기화" onClick={onResetBearing} /> */}
       </GlassPanel>
     </div>
   );

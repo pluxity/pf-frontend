@@ -1,24 +1,30 @@
 import { useCallback, useEffect, useRef, useState, useImperativeHandle } from "react";
-import { Map as MapboxMap, type CustomLayerInterface } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { ModelTransform, ThreeOverlayHandle, WorkerVitals, FeaturePosition } from "./types";
+import type { Map as MapboxMap } from "mapbox-gl";
+import type {
+  ThreeOverlayHandle,
+  FeaturePosition,
+  WorkerLocation,
+  DangerZone,
+  SelectedFeatureData,
+} from "./types";
 import {
-  MAPBOX_TOKEN,
-  INITIAL_VIEW,
   MAP_STYLES,
   COLOR_DANGER,
-  EMERGENCY_CAMERA,
   BUILDING_OPACITY,
   DEFAULT_FLY_DURATION,
   DEFAULT_BANNER_MESSAGE,
   type MapStyleKey,
 } from "./constants";
+import { MODEL_TRANSFORM, INITIAL_VIEW, EMERGENCY_CAMERA } from "./config/site.config";
 import { DEFAULT_WORKER_VITALS } from "../../mocks";
-import { ThreeOverlay } from "./ThreeOverlay";
-import { FeaturePopup } from "./FeaturePopup";
-import { AreaSelectionOverlay, type SelectionRect } from "./AreaSelectionOverlay";
-import { CCTVPopupGrid } from "./CCTVPopupGrid";
-import { FeatureLabelOverlay } from "./FeatureLabelOverlay";
+import { ThreeOverlay } from "./three/ThreeOverlay";
+import { FeaturePopup } from "./overlays/FeaturePopup";
+import { AreaSelectionOverlay, type SelectionRect } from "./overlays/AreaSelectionOverlay";
+import { CCTVPopupGrid } from "./overlays/CCTVPopupGrid";
+import { FeatureLabelOverlay } from "./overlays/FeatureLabelOverlay";
+import { useMapboxSetup } from "./hooks/useMapboxSetup";
+import { useMapInteractions } from "./hooks/useMapInteractions";
 import { useCCTVPopupStore, selectCCTVPopups } from "@/stores";
 import { FilterChip, FilterChipGroup } from "@pf-dev/ui/molecules";
 import { CCTV as CCTVIcon, User as UserIcon, X as XIcon } from "@pf-dev/ui/atoms";
@@ -61,17 +67,22 @@ export interface MapboxViewerHandle {
     duration?: number;
   }) => void;
   swapFeatureAsset: (featureId: string, assetId: string) => void;
-  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
   pushLivePosition: (featureId: string, position: FeaturePosition, lerpMs?: number) => void;
   areaSelect: (rect: SelectionRect) => string[];
   zoomIn: () => void;
   zoomOut: () => void;
   resetBearing: () => void;
+  updateWorkerLocation: (featureId: string, location: WorkerLocation) => void;
+  startPatrol: (id: string, path: FeaturePosition[], durationMs: number) => void;
+  stopPatrol: (id: string) => void;
 }
 
 interface MapboxViewerProps {
   ref?: React.Ref<MapboxViewerHandle>;
+  sitePolygonWKT?: string;
   workerNames?: Record<string, string>;
+  workerLocations?: Record<string, { floor: string }>;
+  dangerZones?: DangerZone[];
   onWorkerSelect?: (workerId: string | null) => void;
   onScenarioEnd?: () => void;
   selectionMode?: boolean;
@@ -79,19 +90,38 @@ interface MapboxViewerProps {
   onSelectionCancel?: () => void;
 }
 
-const MODEL_TRANSFORM: ModelTransform = {
-  lng: 126.84714,
-  lat: 37.498996,
-  altitude: -13,
-  rotationX: 90,
-  rotationY: 112,
-  rotationZ: 0,
-  scale: 1,
-};
+function hitTestRect(
+  rect: SelectionRect,
+  mapRef: React.RefObject<MapboxMap | null>,
+  overlayRef: React.RefObject<ThreeOverlayHandle | null>
+): string[] {
+  const canvas = mapRef.current?.getCanvas();
+  if (!canvas || !overlayRef.current) return [];
+
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const positions = overlayRef.current.getAllFeatureScreenPositions(w, h);
+  const hits: string[] = [];
+
+  for (const [id, pos] of positions) {
+    if (
+      pos.x >= rect.x &&
+      pos.x <= rect.x + rect.width &&
+      pos.y >= rect.y &&
+      pos.y <= rect.y + rect.height
+    ) {
+      hits.push(id);
+    }
+  }
+  return hits;
+}
 
 export function MapboxViewer({
   ref,
+  sitePolygonWKT,
   workerNames,
+  workerLocations,
+  dangerZones,
   onWorkerSelect,
   onScenarioEnd,
   selectionMode,
@@ -99,10 +129,10 @@ export function MapboxViewer({
   onSelectionCancel,
 }: MapboxViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<MapboxMap | null>(null);
-  const coordRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<ThreeOverlayHandle>(null);
   const popupRef = useRef<HTMLDivElement>(null);
+
+  const currentStyleRef = useRef<MapStyleKey>("day");
 
   const [emergency, setEmergency] = useState(false);
   const [bannerVisible, setBannerVisible] = useState(false);
@@ -113,50 +143,36 @@ export function MapboxViewer({
   const [showWorkerLabels, setShowWorkerLabels] = useState(false);
   const [searchHitIds, setSearchHitIds] = useState<Set<string>>(new Set());
 
-  const [selectedFeature, setSelectedFeature] = useState<{
-    id: string;
-    lng: number;
-    lat: number;
-    altitude: number;
-    vitals: WorkerVitals | null;
-    streamUrl: string | null;
-  } | null>(null);
-  // stale closure 방지용 mirror ref
+  const [selectedFeature, setSelectedFeature] = useState<SelectedFeatureData | null>(null);
+
   const selectedIdRef = useRef<string | null>(null);
   useEffect(() => {
-    const prevId = selectedIdRef.current;
-    const newId = selectedFeature?.id ?? null;
-    selectedIdRef.current = newId;
-
-    // CCTV FOV — 현재 비활성화
-    void prevId;
-    void newId;
+    selectedIdRef.current = selectedFeature?.id ?? null;
   }, [selectedFeature]);
+
+  const renderCallbacksRef = useRef<Set<() => void>>(new Set());
+
+  const { mapRef } = useMapboxSetup({
+    containerRef,
+    overlayRef,
+    popupRef,
+    selectedIdRef,
+    renderCallbacksRef,
+    sitePolygonWKT,
+    currentStyleRef,
+  });
 
   const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
 
-  // CCTV 팝업 열림/닫힘 시 FOV 표시/숨김 — 현재 비활성화
-  const prevCCTVIdsRef = useRef<Set<string>>(new Set());
-  useEffect(() => {
-    prevCCTVIdsRef.current = new Set(cctvPopups.map((p) => p.featureId));
-  }, [cctvPopups]);
-
-  // Render callback refs for leader lines (registered per popup)
-  const renderCallbacksRef = useRef<Set<() => void>>(new Set());
-
-  // onWorkerSelect 콜백 mirror ref
   const onWorkerSelectRef = useRef(onWorkerSelect);
   useEffect(() => {
     onWorkerSelectRef.current = onWorkerSelect;
   }, [onWorkerSelect]);
 
-  // 활성 워커 추적 (resetEmergency에서 사용)
   const activeWorkerRef = useRef<string | null>(null);
 
-  // getter 패턴 — React ref 의존 없이 순수 함수로 전달 가능
   const getTransform = useCallback(() => MODEL_TRANSFORM, []);
 
-  // 워커 선택 공통 로직
   const doSelectWorker = useCallback((workerId: string | null) => {
     if (!workerId) {
       setSelectedFeature(null);
@@ -168,6 +184,7 @@ export function MapboxViewer({
     const pos = overlayRef.current?.getFeaturePosition(workerId);
     const vitals = overlayRef.current?.getWorkerVitals(workerId) ?? null;
     const streamUrl = overlayRef.current?.getCCTVStreamUrl(workerId) ?? null;
+    const location = overlayRef.current?.getWorkerLocation(workerId) ?? null;
     if (pos) {
       setSelectedFeature({
         id: workerId,
@@ -176,6 +193,7 @@ export function MapboxViewer({
         altitude: pos.altitude,
         vitals,
         streamUrl,
+        location,
       });
       overlayRef.current?.highlightFeature(workerId);
     }
@@ -218,13 +236,15 @@ export function MapboxViewer({
       essential: true,
     });
 
+    useCCTVPopupStore.getState().closeAll();
     onWorkerSelectRef.current?.(null);
     onScenarioEnd?.();
-  }, [onScenarioEnd]);
+  }, [mapRef, onScenarioEnd]);
 
   useImperativeHandle(ref, () => ({
     setStyle(style: MapStyleKey) {
       if (mapRef.current) {
+        currentStyleRef.current = style;
         mapRef.current.setStyle(MAP_STYLES[style]);
       }
     },
@@ -258,6 +278,7 @@ export function MapboxViewer({
           altitude: payload.position.altitude,
           vitals: payload.vitals,
           streamUrl: null,
+          location: overlayRef.current?.getWorkerLocation(payload.workerId) ?? null,
         });
         overlayRef.current?.highlightFeature(payload.workerId, COLOR_DANGER);
         onWorkerSelectRef.current?.(payload.workerId);
@@ -328,15 +349,20 @@ export function MapboxViewer({
       const pos = overlayRef.current?.getFeaturePosition(featureId);
       if (!pos) return;
       const streamUrl = overlayRef.current?.getCCTVStreamUrl(featureId) ?? null;
-      const vitals = streamUrl ? null : (overlayRef.current?.getWorkerVitals(featureId) ?? null);
-      setSelectedFeature({
-        id: featureId,
-        lng: pos.lng,
-        lat: pos.lat,
-        altitude: pos.altitude,
-        vitals,
-        streamUrl,
-      });
+      if (streamUrl) {
+        useCCTVPopupStore.getState().openPopup(featureId, streamUrl);
+      } else {
+        const vitals = overlayRef.current?.getWorkerVitals(featureId) ?? null;
+        setSelectedFeature({
+          id: featureId,
+          lng: pos.lng,
+          lat: pos.lat,
+          altitude: pos.altitude,
+          vitals,
+          streamUrl: null,
+          location: overlayRef.current?.getWorkerLocation(featureId) ?? null,
+        });
+      }
       overlayRef.current?.highlightFeature(featureId, highlightColor);
     },
     flyTo(opts: {
@@ -362,25 +388,7 @@ export function MapboxViewer({
       overlayRef.current?.pushLivePosition(featureId, position, lerpMs);
     },
     areaSelect(rect: SelectionRect): string[] {
-      const canvas = mapRef.current?.getCanvas();
-      if (!canvas || !overlayRef.current) return [];
-
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const positions = overlayRef.current.getAllFeatureScreenPositions(w, h);
-      const hits: string[] = [];
-
-      for (const [id, pos] of positions) {
-        if (
-          pos.x >= rect.x &&
-          pos.x <= rect.x + rect.width &&
-          pos.y >= rect.y &&
-          pos.y <= rect.y + rect.height
-        ) {
-          hits.push(id);
-        }
-      }
-      return hits;
+      return hitTestRect(rect, mapRef, overlayRef);
     },
     zoomIn() {
       if (mapRef.current) {
@@ -397,225 +405,46 @@ export function MapboxViewer({
         mapRef.current.rotateTo(0, { duration: 500 });
       }
     },
+    updateWorkerLocation(featureId: string, location: WorkerLocation) {
+      overlayRef.current?.updateWorkerLocation(featureId, location);
+    },
+    startPatrol(id: string, path: FeaturePosition[], durationMs: number) {
+      overlayRef.current?.startPatrol(id, path, durationMs);
+    },
+    stopPatrol(id: string) {
+      overlayRef.current?.stopPatrol(id);
+    },
   }));
 
   const requestRepaint = useCallback(() => {
     mapRef.current?.triggerRepaint();
-  }, []);
+  }, [mapRef]);
 
-  useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
-
-    const map = new MapboxMap({
-      container: containerRef.current,
-      style: MAP_STYLES.day,
-      accessToken: MAPBOX_TOKEN,
-      center: INITIAL_VIEW.center,
-      zoom: INITIAL_VIEW.zoom,
-      pitch: INITIAL_VIEW.pitch,
-      bearing: INITIAL_VIEW.bearing,
-      antialias: true,
-      // @ts-expect-error — useWebGL2 exists in Mapbox GL JS v3 but missing from types
-      useWebGL2: true,
-      performanceMetricsCollection: false,
-      logoPosition: "bottom-left",
-      attributionControl: false,
-    });
-
-    // 방향키: ↑↓ 전진/후퇴, ←→ 회전
-    map.keyboard.disable();
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
-      if (!keys.includes(e.key)) return;
-      e.preventDefault();
-
-      if (e.key === "ArrowLeft") {
-        map.rotateTo(map.getBearing() + 3, { duration: 100 });
-      } else if (e.key === "ArrowRight") {
-        map.rotateTo(map.getBearing() - 3, { duration: 100 });
-      } else {
-        // 전진/후퇴: bearing 방향 기준 이동
-        const step = e.key === "ArrowUp" ? -10 : 10;
-        map.panBy([0, step], { duration: 100 });
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    const onStyleLoad = () => {
-      // Matrix Bridge — Mapbox 커스텀 레이어로 행렬만 캡처
-      if (!map.getLayer("matrix-bridge")) {
-        map.addLayer({
-          id: "matrix-bridge",
-          type: "custom",
-          renderingMode: "3d",
-          onAdd() {},
-          render(_gl: WebGL2RenderingContext, matrix: number[]) {
-            const needsRepaint = overlayRef.current?.render(matrix);
-            if (needsRepaint) map.triggerRepaint();
-          },
-        } as unknown as CustomLayerInterface);
-      }
-
-      // Mapbox Standard config — POI 라벨 숨기기
-      const setConfig = (map as unknown as Record<string, unknown>).setConfigProperty as
-        | ((namespace: string, key: string, value: unknown) => void)
-        | undefined;
-      if (setConfig) {
-        setConfig.call(map, "basemap", "showPointOfInterestLabels", false);
-      }
-    };
-
-    // 좌표 표시 + Feature 호버 하이라이트 (DOM 직접 조작 — React re-render 방지)
-    map.on("mousemove", (e) => {
-      const canvas = map.getCanvas();
-      const hit = overlayRef.current?.raycast(
-        e.point.x,
-        e.point.y,
-        canvas.clientWidth,
-        canvas.clientHeight
-      );
-
-      // Feature 하이라이트 (선택 중에는 호버 하이라이트 무시)
-      if (!selectedIdRef.current) {
-        if (hit?.featureId) {
-          overlayRef.current?.highlightFeature(hit.featureId);
-          canvas.style.cursor = "pointer";
-        } else {
-          overlayRef.current?.clearHighlight();
-          canvas.style.cursor = "";
-        }
-      } else {
-        canvas.style.cursor = hit?.featureId ? "pointer" : "";
-      }
-
-      // 좌표 오버레이
-      if (coordRef.current) {
-        if (hit) {
-          coordRef.current.textContent = `[Model: ${hit.meshName}]  Lng: ${hit.lng.toFixed(6)}  Lat: ${hit.lat.toFixed(6)}  Alt: ${hit.altitude.toFixed(1)}m`;
-        } else {
-          const { lng, lat } = e.lngLat;
-          coordRef.current.textContent = `[Map]  Lng: ${lng.toFixed(6)}  Lat: ${lat.toFixed(6)}  Alt: 0m`;
-        }
-      }
-    });
-
-    map.on("mouseout", () => {
-      if (!selectedIdRef.current) {
-        overlayRef.current?.clearHighlight();
-      }
-      if (coordRef.current) {
-        coordRef.current.textContent = "";
-      }
-    });
-
-    // 클릭 → Feature 선택/해제
-    map.on("click", (e) => {
-      const canvas = map.getCanvas();
-      const hit = overlayRef.current?.raycast(
-        e.point.x,
-        e.point.y,
-        canvas.clientWidth,
-        canvas.clientHeight
-      );
-
-      if (hit?.featureId) {
-        const streamUrl = overlayRef.current?.getCCTVStreamUrl(hit.featureId) ?? null;
-
-        if (streamUrl) {
-          // CCTV 클릭 → 멀티 팝업 스토어에 추가
-          useCCTVPopupStore.getState().openPopup(hit.featureId, streamUrl);
-          overlayRef.current?.highlightFeature(hit.featureId);
-        } else {
-          // Worker 클릭 → 기존 로직 유지
-          const vitals = overlayRef.current?.getWorkerVitals(hit.featureId) ?? null;
-          setSelectedFeature({
-            id: hit.featureId,
-            lng: hit.lng,
-            lat: hit.lat,
-            altitude: hit.altitude,
-            vitals,
-            streamUrl: null,
-          });
-          overlayRef.current?.highlightFeature(hit.featureId);
-          onWorkerSelectRef.current?.(hit.featureId);
-        }
-      } else {
-        setSelectedFeature(null);
-        overlayRef.current?.clearHighlight();
-        onWorkerSelectRef.current?.(null);
-      }
-    });
-
-    // 매 프레임 팝업 + 이름 라벨 위치 업데이트 (DOM 직접 조작)
-    map.on("render", () => {
-      const canvas = map.getCanvas();
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-
-      // 팝업 위치
-      const selId = selectedIdRef.current;
-      if (selId && popupRef.current) {
-        const pos = overlayRef.current?.projectFeatureToScreen(selId, w, h);
-        if (pos) {
-          popupRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
-          popupRef.current.style.display = "";
-        } else {
-          popupRef.current.style.display = "none";
-        }
-      }
-
-      // Leader line 업데이트 콜백
-      for (const cb of renderCallbacksRef.current) {
-        cb();
-      }
-    });
-
-    map.on("style.load", onStyleLoad);
-    mapRef.current = map;
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      map.remove();
-      mapRef.current = null;
-    };
-  }, []);
+  useMapInteractions({
+    mapRef,
+    overlayRef,
+    selectedIdRef,
+    onFeatureSelect: setSelectedFeature,
+    onWorkerSelect: (workerId) => onWorkerSelectRef.current?.(workerId),
+  });
 
   const handleAreaSelectionComplete = useCallback(
     (rect: SelectionRect) => {
-      const canvas = mapRef.current?.getCanvas();
-      if (!canvas || !overlayRef.current) return;
+      const hits = hitTestRect(rect, mapRef, overlayRef);
 
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const positions = overlayRef.current.getAllFeatureScreenPositions(w, h);
-      const hits: string[] = [];
-
-      for (const [id, pos] of positions) {
-        if (
-          pos.x >= rect.x &&
-          pos.x <= rect.x + rect.width &&
-          pos.y >= rect.y &&
-          pos.y <= rect.y + rect.height
-        ) {
-          hits.push(id);
-        }
-      }
-
-      // 이전 마커 초기화 후 선택된 피처에 펄스 마커 + 라벨 표시
-      overlayRef.current.clearAllMarkers();
+      overlayRef.current?.clearAllMarkers();
       if (hits.length > 0) {
-        overlayRef.current.highlightFeatures(hits);
+        overlayRef.current?.highlightFeatures(hits);
         for (const id of hits) {
-          overlayRef.current.addFeatureMarker(id);
+          overlayRef.current?.addFeatureMarker(id);
         }
       }
       setSearchHitIds(new Set(hits));
       onAreaSelect?.(hits);
     },
-    [onAreaSelect]
+    [mapRef, onAreaSelect]
   );
 
-  // 라벨 클릭 → 3D 객체 클릭과 동일 동작
   const handleFeatureClick = useCallback((featureId: string) => {
     const streamUrl = overlayRef.current?.getCCTVStreamUrl(featureId) ?? null;
 
@@ -633,6 +462,7 @@ export function MapboxViewer({
         altitude: pos.altitude,
         vitals,
         streamUrl: null,
+        location: overlayRef.current?.getWorkerLocation(featureId) ?? null,
       });
       overlayRef.current?.highlightFeature(featureId);
       onWorkerSelectRef.current?.(featureId);
@@ -649,7 +479,12 @@ export function MapboxViewer({
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full" />
-      <ThreeOverlay ref={overlayRef} getTransform={getTransform} requestRepaint={requestRepaint} />
+      <ThreeOverlay
+        ref={overlayRef}
+        getTransform={getTransform}
+        requestRepaint={requestRepaint}
+        dangerZones={dangerZones}
+      />
 
       <AreaSelectionOverlay
         active={!!selectionMode}
@@ -659,7 +494,6 @@ export function MapboxViewer({
 
       {emergency && (
         <div className="pointer-events-none absolute inset-0 z-[3]">
-          {/* 빨간 비네트 */}
           <div
             className="absolute inset-0 animate-pulse"
             style={{
@@ -668,12 +502,10 @@ export function MapboxViewer({
               animationDuration: "2s",
             }}
           />
-          {/* 빨간 테두리 */}
           <div
             className="absolute inset-0 animate-pulse border-[0.125rem] border-[#DE4545]/80"
             style={{ animationDuration: "2s" }}
           />
-          {/* 상단 경고 배너 */}
           {bannerVisible && (
             <div
               role="alert"
@@ -698,7 +530,6 @@ export function MapboxViewer({
         </div>
       )}
 
-      {/* Feature 라벨 토글 칩 */}
       <div className="pointer-events-auto absolute left-1/2 top-[4.25rem] z-[5] -translate-x-1/2">
         <FilterChipGroup>
           <FilterChip selected={showCCTVLabels} onChange={setShowCCTVLabels}>
@@ -725,19 +556,24 @@ export function MapboxViewer({
         </FilterChipGroup>
       </div>
 
-      {/* Feature 라벨 오버레이 */}
       <FeatureLabelOverlay
         showCCTV={showCCTVLabels}
         showWorker={showWorkerLabels}
         forcedIds={searchHitIds}
+        hiddenIds={
+          new Set([
+            ...(selectedFeature ? [selectedFeature.id] : []),
+            ...cctvPopups.map((p) => p.featureId),
+          ])
+        }
         workerNames={workerNames}
+        workerLocations={workerLocations}
         overlayRef={overlayRef}
         mapRef={mapRef}
         renderCallbacksRef={renderCallbacksRef}
         onFeatureClick={handleFeatureClick}
       />
 
-      {/* Worker 팝업 (CCTV는 CCTVPopupGrid에서 처리) */}
       {selectedFeature && !selectedFeature.streamUrl && (
         <div
           ref={popupRef}
@@ -750,6 +586,7 @@ export function MapboxViewer({
               workerName={workerNames?.[selectedFeature.id]}
               position={selectedFeature}
               vitals={selectedFeature.vitals}
+              location={selectedFeature.location}
               abnormal={emergency}
               onClose={() => {
                 setSelectedFeature(null);
@@ -761,7 +598,6 @@ export function MapboxViewer({
         </div>
       )}
 
-      {/* 멀티 CCTV 팝업 그리드 */}
       {cctvPopups.length > 0 && (
         <CCTVPopupGrid
           popups={cctvPopups}
@@ -770,11 +606,6 @@ export function MapboxViewer({
           renderCallbacksRef={renderCallbacksRef}
         />
       )}
-
-      <div
-        ref={coordRef}
-        className="pointer-events-none absolute bottom-2 left-2 z-10 rounded bg-black/70 px-3 py-1.5 font-mono text-xs text-white"
-      />
     </div>
   );
 }

@@ -14,11 +14,9 @@ import type {
   AssetOptions,
   ScreenPosition,
   MaterialRule,
-} from "./types";
+} from "../types";
 import { applyPreset, GROUND_CLIP_PLANE } from "./materials";
-import { COLOR_SUCCESS, FOV_DEFAULTS, POPUP_HEAD_OFFSET } from "./constants";
-
-// ── Asset / Feature 내부 타입 ──
+import { COLOR_SUCCESS, FOV_DEFAULTS, POPUP_HEAD_OFFSET } from "../constants";
 
 interface AssetEntry {
   scene: THREE.Group;
@@ -32,8 +30,6 @@ interface FeatureEntry {
   mixer: THREE.AnimationMixer | null;
   position: FeaturePosition;
 }
-
-// ── GPS → 씬 좌표 변환 (순수 함수, 패키지 추출 시 재사용 가능) ──
 
 export function gpsToScenePosition(
   position: FeaturePosition,
@@ -56,20 +52,14 @@ export function gpsToScenePosition(
   );
 }
 
-// ── 5방향 레이캐스트 오클루전 감지 (순수 함수) ──
-
 const OCCLUSION_DIRECTIONS = [
-  new THREE.Vector3(0, 0, 1), // 위 (천장)
-  new THREE.Vector3(1, 0, 0), // +x
-  new THREE.Vector3(-1, 0, 0), // -x
-  new THREE.Vector3(0, 1, 0), // +y
-  new THREE.Vector3(0, -1, 0), // -y
+  new THREE.Vector3(0, 0, 1),
+  new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(-1, 0, 0),
+  new THREE.Vector3(0, 1, 0),
+  new THREE.Vector3(0, -1, 0),
 ];
 
-/**
- * 5방향 레이캐스트 오클루전 테스트.
- * 4개 이상 차단 시 실내(true) 판정.
- */
 export function checkOcclusionAt(
   position: THREE.Vector3,
   target: THREE.Object3D,
@@ -89,8 +79,6 @@ export function checkOcclusionAt(
   raycaster.far = prevFar;
   return blocked >= 4;
 }
-
-// ── ThreeSceneApi ──
 
 export interface ThreeSceneApi {
   render: (matrix: number[]) => boolean;
@@ -137,15 +125,17 @@ export interface ThreeSceneApi {
     onComplete?: () => void
   ) => void;
 
-  /** WS 좌표 수신 시 호출 — 걷기 모델 전환 + 부드러운 이동 + 정지 시 작업 모델 복귀 */
   pushLivePosition: (id: string, position: FeaturePosition, lerpMs?: number) => void;
 
   addFeatureMarker: (id: string, color?: number, radius?: number) => void;
   removeFeatureMarker: (id: string) => void;
   clearAllMarkers: () => void;
-}
 
-// ── 팩토리 옵션 ──
+  setDangerZones: (zones: { id: string; name: string; coordinates: [number, number][] }[]) => void;
+
+  startPatrol: (id: string, path: FeaturePosition[], durationMs: number) => void;
+  stopPatrol: (id: string) => void;
+}
 
 export interface CreateThreeSceneOptions {
   canvas: HTMLCanvasElement;
@@ -157,8 +147,6 @@ export interface CreateThreeSceneOptions {
 
 export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneApi {
   const { canvas, modelUrl, getTransform, requestRepaint, materialPresets } = options;
-
-  // ── Renderer (독립 WebGL 컨텍스트) ──
 
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -175,12 +163,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   const dpr = window.devicePixelRatio || 1;
   renderer.setPixelRatio(dpr);
 
-  // ── Scene & Camera ──
-
   const scene = new THREE.Scene();
   const camera = new THREE.Camera();
-
-  // ── 조명 ──
 
   scene.add(new THREE.AmbientLight(0xffffff, 3.0));
 
@@ -207,8 +191,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   pointLight.position.set(0, 0, 80);
   scene.add(pointLight);
 
-  // ── EffectComposer (포스트 프로세싱) ──
-
   const size = new THREE.Vector2(canvas.clientWidth || 1, canvas.clientHeight || 1);
 
   const composer = new EffectComposer(renderer);
@@ -230,24 +212,19 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
   composer.addPass(new OutputPass());
 
-  // ── 모델 상태 ──
-
   let modelGroup: THREE.Group | null = null;
 
-  // 레이캐스트용
   let lastModelTransformMat: THREE.Matrix4 | null = null;
   let lastCombinedMatrix: THREE.Matrix4 | null = null;
   const raycaster = new THREE.Raycaster();
   const clock = new THREE.Clock();
 
-  // Asset / Feature 관리
   const assets = new Map<string, AssetEntry>();
   const assetLoadPromises = new Map<string, Promise<void>>();
   const features = new Map<string, FeatureEntry>();
   const initialPositions = new Map<string, FeaturePosition>();
   const fovMeshes = new Map<string, THREE.Mesh>();
 
-  // ── 마커 (구형 펄스) ──
   interface MarkerEntry {
     featureId: string;
     core: THREE.Mesh;
@@ -259,7 +236,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   const PULSE_CYCLE = 2.0;
   const PULSE_COUNT = 2;
 
-  // ── FOV 레이캐스트 그리드 ──
+  const dangerZoneGroups = new Map<string, THREE.Group>();
+
+  const patrolStates = new Map<string, { active: boolean }>();
 
   interface FOVConfig {
     fovDeg: number;
@@ -269,17 +248,11 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
   const fovConfigs = new Map<string, FOVConfig>();
 
-  /**
-   * 레이캐스트 기반 FOV 메시 빌드.
-   * CCTV 원점에서 FOV 내 그리드 방향으로 레이를 쏴서
-   * 건물/객체에 막히는 지점까지만 메시를 생성한다.
-   */
   function buildFOVMesh(id: string) {
     const entry = features.get(id);
     const config = fovConfigs.get(id);
     if (!entry || !config) return;
 
-    // 기존 FOV 메시 제거 (visibility 상태 보존)
     const existing = fovMeshes.get(id);
     const wasVisible = existing?.visible ?? false;
     if (existing) {
@@ -295,7 +268,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     const vHalf = Math.atan(Math.tan(hHalf) / aspect);
     const pitchRad = -(pitchDeg * Math.PI) / 180;
 
-    // render() 전에 호출될 수 있으므로 모델 변환 먼저 적용
     if (modelGroup) {
       const t = getTransform();
       const deg = Math.PI / 180;
@@ -303,20 +275,17 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       modelGroup.scale.setScalar(t.scale);
     }
 
-    // 월드 좌표계 준비
     scene.updateMatrixWorld(true);
     const groupWorld = entry.group.matrixWorld;
     const groupWorldInverse = groupWorld.clone().invert();
     const origin = new THREE.Vector3().setFromMatrixPosition(groupWorld);
 
-    // 레이캐스트 타겟: 씬의 모든 3D 객체 (자기 자신 제외)
     const targets: THREE.Object3D[] = [];
     if (modelGroup) targets.push(modelGroup);
     for (const [fId, f] of features) {
       if (fId !== id) targets.push(f.group);
     }
 
-    // 그리드 레이캐스트 — 각 방향에서 건물/객체 히트 거리 수집
     const COLS = FOV_DEFAULTS.GRID_COLS;
     const ROWS = FOV_DEFAULTS.GRID_ROWS;
     const localVertices: THREE.Vector3[] = [];
@@ -330,10 +299,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         const hAngle = -hHalf + u * 2 * hHalf;
         const vAngle = -vHalf + v * 2 * vHalf;
 
-        // 로컬 방향 (+Z = forward)
         const localDir = new THREE.Vector3(Math.tan(hAngle), Math.tan(vAngle), 1).normalize();
 
-        // pitch 적용 (로컬 X축 회전)
         const cosP = Math.cos(pitchRad);
         const sinP = Math.sin(pitchRad);
         const y2 = localDir.y * cosP - localDir.z * sinP;
@@ -342,17 +309,14 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         localDir.z = z2;
         localDir.normalize();
 
-        // 월드 방향으로 변환
         const worldDir = localDir.clone().transformDirection(groupWorld);
 
-        // 레이캐스트
         raycaster.set(origin, worldDir);
         raycaster.far = range;
         const hits = raycaster.intersectObjects(targets, true);
         const validHit = hits.find((h) => !h.object.userData.isFOV);
         const dist = validHit ? validHit.distance : range;
 
-        // 히트 포인트 → 그룹 로컬 좌표
         const hitWorld = origin.clone().addScaledVector(worldDir, dist);
         localVertices.push(hitWorld.applyMatrix4(groupWorldInverse));
       }
@@ -360,11 +324,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
     raycaster.far = prevFar;
 
-    // ── 지오메트리 빌드 ──
-
     const positions: number[] = [];
 
-    // 1. Cap surface (투영면 — 그리드 셀마다 삼각형 2개)
     for (let row = 0; row < ROWS; row++) {
       for (let col = 0; col < COLS; col++) {
         const i00 = row * (COLS + 1) + col;
@@ -382,23 +343,18 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       }
     }
 
-    // 2. Side faces (원점 → 가장자리 꼭짓점)
     for (let col = 0; col < COLS; col++) {
-      // Top edge
       const t0 = localVertices[col]!;
       const t1 = localVertices[col + 1]!;
       positions.push(0, 0, 0, t0.x, t0.y, t0.z, t1.x, t1.y, t1.z);
-      // Bottom edge
       const b0 = localVertices[ROWS * (COLS + 1) + col]!;
       const b1 = localVertices[ROWS * (COLS + 1) + col + 1]!;
       positions.push(0, 0, 0, b1.x, b1.y, b1.z, b0.x, b0.y, b0.z);
     }
     for (let row = 0; row < ROWS; row++) {
-      // Left edge
       const l0 = localVertices[row * (COLS + 1)]!;
       const l1 = localVertices[(row + 1) * (COLS + 1)]!;
       positions.push(0, 0, 0, l1.x, l1.y, l1.z, l0.x, l0.y, l0.z);
-      // Right edge
       const r0 = localVertices[row * (COLS + 1) + COLS]!;
       const r1 = localVertices[(row + 1) * (COLS + 1) + COLS]!;
       positions.push(0, 0, 0, r0.x, r0.y, r0.z, r1.x, r1.y, r1.z);
@@ -433,10 +389,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     }
   }
 
-  // 하이라이트 상태
   let highlightedFeatureId: string | null = null;
 
-  // Feature 이동 애니메이션 상태
   interface PositionTween {
     featureId: string;
     from: FeaturePosition;
@@ -447,29 +401,22 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     onComplete?: () => void;
   }
 
-  // 다중 경로 이동 (웨이포인트)
   interface PathTween {
     featureId: string;
     path: FeaturePosition[];
-    /** 각 세그먼트 끝의 누적 비율 (0~1) — path.length-1 개 */
     cumulativeRatios: number[];
     startTime: number;
     durationMs: number;
+    linear?: boolean;
     onComplete?: () => void;
   }
 
   const activeTweens: PositionTween[] = [];
   const activePathTweens: PathTween[] = [];
 
-  // ── Live position 추적 (WS 좌표 수신용) ──
-  /** 정지 판정 대기 타이머 (featureId → setTimeout handle) */
   const liveIdleTimers = new Map<string, ReturnType<typeof setTimeout>>();
-  /** 현재 걷기 모델로 전환된 feature 집합 */
   const liveWalkingIds = new Set<string>();
-  /** 정지 판정까지 대기 시간 (ms) — WS 업데이트가 이 시간 내에 안 오면 작업 모델로 복귀 */
   const LIVE_IDLE_TIMEOUT = 3000;
-
-  // ── 유틸리티 함수 ──
 
   function findFeatureId(object: THREE.Object3D): string | null {
     let current: THREE.Object3D | null = object;
@@ -523,8 +470,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     requestRepaint();
   }
 
-  // ── 건물 모델 로드 ──
-
   const loader = new GLTFLoader();
   loader.load(modelUrl, (gltf) => {
     gltf.scene.traverse((child) => {
@@ -543,13 +488,61 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     modelGroup = gltf.scene;
     scene.add(modelGroup);
 
-    // 건물 모델 로드 완료 → FOV 메시 재빌드 (차폐 반영)
     rebuildAllFOVs();
 
     requestRepaint();
   });
 
-  // ── API ──
+  function doMoveAlongPath(
+    id: string,
+    path: FeaturePosition[],
+    durationMs: number,
+    onComplete?: () => void,
+    linear?: boolean
+  ) {
+    if (path.length < 2) return;
+    const entry = features.get(id);
+    if (!entry) return;
+
+    for (let i = activeTweens.length - 1; i >= 0; i--) {
+      if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
+    }
+    for (let i = activePathTweens.length - 1; i >= 0; i--) {
+      if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
+    }
+
+    const distances: number[] = [];
+    let totalDist = 0;
+    for (let s = 0; s < path.length - 1; s++) {
+      const a = path[s]!;
+      const b = path[s + 1]!;
+      const dlng = (b.lng - a.lng) * 111320 * Math.cos(((a.lat + b.lat) / 2) * (Math.PI / 180));
+      const dlat = (b.lat - a.lat) * 111320;
+      const dalt = b.altitude - a.altitude;
+      const dist = Math.sqrt(dlng * dlng + dlat * dlat + dalt * dalt);
+      distances.push(dist);
+      totalDist += dist;
+    }
+
+    const cumulativeRatios: number[] = [];
+    let cumDist = 0;
+    for (const d of distances) {
+      cumDist += d;
+      cumulativeRatios.push(totalDist > 0 ? cumDist / totalDist : 1);
+    }
+
+    activePathTweens.push({
+      featureId: id,
+      path,
+      cumulativeRatios,
+      startTime: performance.now(),
+      durationMs,
+      linear,
+      onComplete,
+    });
+
+    requestRepaint();
+  }
 
   return {
     render(matrix: number[]): boolean {
@@ -561,7 +554,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         modelGroup.scale.setScalar(t.scale);
       }
 
-      // 매 프레임 위치 재계산
       const origin = MercatorCoordinate.fromLngLat([t.lng, t.lat], t.altitude);
       const s = origin.meterInMercatorCoordinateUnits();
       const modelTransform = new THREE.Matrix4()
@@ -575,13 +567,11 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       camera.projectionMatrix.copy(combined);
       camera.projectionMatrixInverse.copy(combined).invert();
 
-      // Feature 애니메이션 업데이트
       const delta = clock.getDelta();
       for (const feature of features.values()) {
         if (feature.mixer) feature.mixer.update(delta);
       }
 
-      // Position tween 업데이트
       const now = performance.now();
       for (let i = activeTweens.length - 1; i >= 0; i--) {
         const tw = activeTweens[i]!;
@@ -599,14 +589,13 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         if (entry) {
           const pos = gpsToScenePosition(lerpPos, getTransform());
 
-          // 이동 방향으로 회전
           if (tw.autoHeading) {
             const fromScene = gpsToScenePosition(tw.from, getTransform());
             const toScene = gpsToScenePosition(tw.to, getTransform());
             const dx = toScene.x - fromScene.x;
             const dy = toScene.y - fromScene.y;
             if (dx * dx + dy * dy > 1e-10) {
-              entry.group.rotation.y = Math.atan2(dx, dy);
+              entry.group.rotation.y = Math.atan2(dx, -dy);
             }
           }
 
@@ -620,14 +609,12 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         }
       }
 
-      // Path tween 업데이트 (다중 웨이포인트)
       for (let i = activePathTweens.length - 1; i >= 0; i--) {
         const pt = activePathTweens[i]!;
         const elapsed = now - pt.startTime;
         const progress = Math.min(elapsed / pt.durationMs, 1);
-        const t = easeCubicInOut(progress);
+        const t = pt.linear ? progress : easeCubicInOut(progress);
 
-        // 현재 t가 어떤 세그먼트에 속하는지 찾기
         let segIdx = 0;
         for (let s = 0; s < pt.cumulativeRatios.length; s++) {
           if (t <= pt.cumulativeRatios[s]!) break;
@@ -653,13 +640,12 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         if (entry) {
           const pos = gpsToScenePosition(lerpPos, getTransform());
 
-          // 이동 방향으로 회전
           const fromScene = gpsToScenePosition(from, getTransform());
           const toScene = gpsToScenePosition(to, getTransform());
           const dx = toScene.x - fromScene.x;
           const dy = toScene.y - fromScene.y;
           if (dx * dx + dy * dy > 1e-10) {
-            entry.group.rotation.y = Math.atan2(dx, dy);
+            entry.group.rotation.y = Math.atan2(dx, -dy);
           }
 
           entry.group.position.copy(pos);
@@ -672,26 +658,21 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         }
       }
 
-      // 마커 구형 펄스 애니메이션
       const elapsed = clock.elapsedTime;
       for (const marker of markerEntries.values()) {
         for (let i = 0; i < marker.pulses.length; i++) {
           const pulse = marker.pulses[i]!;
           const offset = marker.offsets[i]!;
-          // 0→1 진행 (오프셋 적용, 반복)
           const t = (elapsed / PULSE_CYCLE + offset) % 1;
           const scale = t * marker.maxRadius;
           pulse.scale.setScalar(Math.max(scale, 0.01));
-          // 퍼지면서 사라짐: 시작 0.5 → 끝 0
           (pulse.material as THREE.MeshBasicMaterial).opacity = 0.2 * (1 - t);
         }
       }
 
-      // EffectComposer 렌더
       renderer.clear(true, true, true);
       composer.render(delta);
 
-      // 애니메이션 여부 반환
       let hasAnimation =
         activeTweens.length > 0 || activePathTweens.length > 0 || markerEntries.size > 0;
       if (!hasAnimation) {
@@ -721,11 +702,28 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       fovConfigs.clear();
       assets.clear();
       assetLoadPromises.clear();
+      for (const state of patrolStates.values()) state.active = false;
+      patrolStates.clear();
+      for (const group of dangerZoneGroups.values()) {
+        scene.remove(group);
+        group.traverse((child) => {
+          if (child instanceof THREE.Mesh || child instanceof THREE.Line) {
+            child.geometry.dispose();
+            const mat = child.material;
+            if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+            else (mat as THREE.Material).dispose();
+          }
+          if (child instanceof THREE.Sprite) {
+            const mat = child.material as THREE.SpriteMaterial;
+            mat.map?.dispose();
+            mat.dispose();
+          }
+        });
+      }
+      dangerZoneGroups.clear();
       composer.dispose();
       renderer.dispose();
     },
-
-    // ── Asset 관리 ──
 
     async registerAsset(assetId: string, url: string, opts?: AssetOptions) {
       if (assets.has(assetId)) return;
@@ -756,8 +754,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       assetLoadPromises.set(assetId, promise);
       return promise;
     },
-
-    // ── Feature 관리 ──
 
     addFeature(id: string, assetId: string, position: FeaturePosition) {
       if (features.has(id)) return;
@@ -819,7 +815,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const entry = features.get(id);
       if (!entry) return;
 
-      // 기존 같은 feature의 tween / path tween 제거
       for (let i = activeTweens.length - 1; i >= 0; i--) {
         if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
       }
@@ -846,60 +841,13 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       durationMs: number,
       onComplete?: () => void
     ) {
-      if (path.length < 2) return;
-      const entry = features.get(id);
-      if (!entry) return;
-
-      // 기존 tween 제거
-      for (let i = activeTweens.length - 1; i >= 0; i--) {
-        if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
-      }
-      for (let i = activePathTweens.length - 1; i >= 0; i--) {
-        if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
-      }
-
-      // 세그먼트별 거리 계산 (GPS 좌표 → 근사 미터)
-      const distances: number[] = [];
-      let totalDist = 0;
-
-      for (let s = 0; s < path.length - 1; s++) {
-        const a = path[s]!;
-        const b = path[s + 1]!;
-        const dlng = (b.lng - a.lng) * 111320 * Math.cos(((a.lat + b.lat) / 2) * (Math.PI / 180));
-        const dlat = (b.lat - a.lat) * 111320;
-        const dalt = b.altitude - a.altitude;
-        const dist = Math.sqrt(dlng * dlng + dlat * dlat + dalt * dalt);
-        distances.push(dist);
-        totalDist += dist;
-      }
-
-      // 누적 비율
-      const cumulativeRatios: number[] = [];
-      let cumDist = 0;
-      for (const d of distances) {
-        cumDist += d;
-        cumulativeRatios.push(totalDist > 0 ? cumDist / totalDist : 1);
-      }
-
-      activePathTweens.push({
-        featureId: id,
-        path,
-        cumulativeRatios,
-        startTime: performance.now(),
-        durationMs,
-        onComplete,
-      });
-
-      requestRepaint();
+      doMoveAlongPath(id, path, durationMs, onComplete);
     },
-
-    // ── 에셋 교체 ──
 
     swapFeatureAsset(id: string, newAssetId: string) {
       const entry = features.get(id);
       if (!entry) return;
 
-      // 기존 정리
       if (entry.mixer) {
         entry.mixer.stopAllAction();
         entry.mixer = null;
@@ -911,11 +859,9 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         entry.group.remove(child);
       }
 
-      // 새 에셋 적용
       entry.assetId = newAssetId;
       applyAssetToFeature(id);
 
-      // 하이라이트 유지 (FOV 메시 제외)
       if (highlightedFeatureId === id) {
         const targets = entry.group.children.filter(
           (c) => !c.userData.isFOV && !c.userData.isMarker
@@ -926,14 +872,11 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       requestRepaint();
     },
 
-    // ── 하이라이트 (OutlinePass) ──
-
     highlightFeature(id: string, color?: number) {
       highlightedFeatureId = id;
 
       const entry = features.get(id);
       if (entry) {
-        // FOV 메시 제외 — OutlinePass는 clippingPlane을 무시하므로
         const targets = entry.group.children.filter(
           (c) => !c.userData.isFOV && !c.userData.isMarker
         );
@@ -955,8 +898,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       outlinePass.hiddenEdgeColor.set(COLOR_SUCCESS);
       requestRepaint();
     },
-
-    // ── 레이캐스트 ──
 
     raycast(screenX: number, screenY: number, width: number, height: number): RaycastHit | null {
       if (!modelGroup || !lastCombinedMatrix || !lastModelTransformMat) return null;
@@ -994,8 +935,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       };
     },
 
-    // ── 3D → 2D 스크린 좌표 투영 ──
-
     projectFeatureToScreen(id: string, width: number, height: number): ScreenPosition | null {
       const entry = features.get(id);
       if (!entry || !lastCombinedMatrix) return null;
@@ -1004,7 +943,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       pos.z += POPUP_HEAD_OFFSET;
 
       const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(lastCombinedMatrix);
-      if (p.w <= 0) return null; // 카메라 뒤
+      if (p.w <= 0) return null;
 
       return {
         x: ((p.x / p.w) * 0.5 + 0.5) * width,
@@ -1113,17 +1052,14 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const entry = features.get(id);
       if (!entry) return;
 
-      // 같은 위치면 무시 (변화 없음)
       const prev = entry.position;
       const dLng = position.lng - prev.lng;
       const dLat = position.lat - prev.lat;
       const dAlt = position.altitude - prev.altitude;
       if (dLng * dLng + dLat * dLat + dAlt * dAlt < 1e-16) return;
 
-      // 걷기 모델로 전환 (아직 안 된 경우만)
       if (!liveWalkingIds.has(id) && entry.assetId !== "worker-walk") {
         liveWalkingIds.add(id);
-        // swapFeatureAsset inline
         if (entry.mixer) {
           entry.mixer.stopAllAction();
           entry.mixer = null;
@@ -1142,7 +1078,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         }
       }
 
-      // 기존 tween 취소 + 새 이동 시작
       for (let i = activeTweens.length - 1; i >= 0; i--) {
         if (activeTweens[i]!.featureId === id) activeTweens.splice(i, 1);
       }
@@ -1159,7 +1094,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         autoHeading: true,
       });
 
-      // 정지 판정 타이머 리셋
       const existingTimer = liveIdleTimers.get(id);
       if (existingTimer) clearTimeout(existingTimer);
 
@@ -1170,7 +1104,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
           if (!liveWalkingIds.has(id)) return;
           liveWalkingIds.delete(id);
 
-          // 작업 모델로 복귀
           const e = features.get(id);
           if (!e) return;
           if (e.mixer) {
@@ -1198,7 +1131,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       const entry = features.get(id);
       if (!entry || markerEntries.has(id)) return;
 
-      // 중심 코어
       const coreGeo = new THREE.SphereGeometry(0.8, 16, 16);
       const coreMat = new THREE.MeshBasicMaterial({
         color,
@@ -1210,7 +1142,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       core.userData.isMarker = true;
       entry.group.add(core);
 
-      // 펄스 파동 구 (시간차를 두고 여러 개)
       const pulses: THREE.Mesh[] = [];
       const offsets: number[] = [];
 
@@ -1269,6 +1200,99 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         }
       }
       markerEntries.clear();
+      requestRepaint();
+    },
+
+    startPatrol(id: string, path: FeaturePosition[], durationMs: number) {
+      const existing = patrolStates.get(id);
+      if (existing) existing.active = false;
+
+      const state = { active: true };
+      patrolStates.set(id, state);
+
+      const doLoop = () => {
+        if (!state.active) return;
+        doMoveAlongPath(id, path, durationMs, doLoop, true);
+      };
+      doLoop();
+    },
+
+    stopPatrol(id: string) {
+      const state = patrolStates.get(id);
+      if (state) state.active = false;
+      patrolStates.delete(id);
+
+      for (let i = activePathTweens.length - 1; i >= 0; i--) {
+        if (activePathTweens[i]!.featureId === id) activePathTweens.splice(i, 1);
+      }
+    },
+
+    setDangerZones(zones) {
+      for (const group of dangerZoneGroups.values()) {
+        scene.remove(group);
+        group.traverse((child) => {
+          if (child instanceof THREE.Mesh || child instanceof THREE.Line) {
+            child.geometry.dispose();
+            const mat = child.material;
+            if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+            else (mat as THREE.Material).dispose();
+          }
+          if (child instanceof THREE.Sprite) {
+            const mat = child.material as THREE.SpriteMaterial;
+            mat.map?.dispose();
+            mat.dispose();
+          }
+        });
+      }
+      dangerZoneGroups.clear();
+
+      const t = getTransform();
+
+      for (const zone of zones) {
+        const coords = zone.coordinates;
+        if (coords.length < 3) continue;
+
+        const scenePoints = coords.map((c) =>
+          gpsToScenePosition({ lng: c[0], lat: c[1], altitude: 0.15 }, t)
+        );
+
+        const group = new THREE.Group();
+        group.userData.isDangerZone = true;
+
+        const shape = new THREE.Shape();
+        shape.moveTo(scenePoints[0]!.x, scenePoints[0]!.y);
+        for (let i = 1; i < scenePoints.length; i++) {
+          shape.lineTo(scenePoints[i]!.x, scenePoints[i]!.y);
+        }
+        shape.closePath();
+
+        const fillGeo = new THREE.ShapeGeometry(shape);
+        const fillMat = new THREE.MeshBasicMaterial({
+          color: 0xde4545,
+          transparent: true,
+          opacity: 0.25,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        });
+        const fillMesh = new THREE.Mesh(fillGeo, fillMat);
+        fillMesh.position.z = scenePoints[0]!.z;
+        fillMesh.raycast = () => {};
+        group.add(fillMesh);
+
+        const linePoints = [...scenePoints, scenePoints[0]!];
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0xde4545,
+          linewidth: 2,
+        });
+        const line = new THREE.Line(lineGeo, lineMat);
+        line.raycast = () => {};
+        group.add(line);
+
+        scene.add(group);
+        dangerZoneGroups.set(zone.id, group);
+      }
+
       requestRepaint();
     },
   };

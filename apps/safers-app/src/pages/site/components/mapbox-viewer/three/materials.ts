@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { MaterialPreset, MaterialRule } from "./types";
+import type { MaterialPreset, MaterialRule } from "../types";
 
 export const MATERIAL_RULES: MaterialRule[] = [
   {
@@ -24,7 +24,7 @@ export const MATERIAL_RULES: MaterialRule[] = [
 
 export const DEFAULT_PRESET: MaterialPreset = { roughness: 0.8, metalness: 0, envMapIntensity: 0 };
 
-export const GROUND_CLIP_PLANE = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+export const GROUND_CLIP_PLANE = new THREE.Plane(new THREE.Vector3(0, 0, 1), 1);
 
 export function applyPreset(
   material: THREE.Material,

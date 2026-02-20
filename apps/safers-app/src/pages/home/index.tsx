@@ -10,7 +10,33 @@ const DEFAULT_POI_COLOR = "#4D7EFF";
 const WARNING_POI_COLOR = "#F59E0B";
 const DANGER_POI_COLOR = "#DE4545";
 
-/** 이벤트 목록에서 사이트별 최고 심각도를 계산 */
+function parseWKTPolygonCentroid(wkt: string): { lng: number; lat: number } | null {
+  const match = wkt.match(/POLYGON\s*\(\((.+)\)\)/i);
+  if (!match?.[1]) return null;
+
+  const coords = match[1].split(",").map((pair) => {
+    const [lng, lat] = pair.trim().split(/\s+/).map(Number);
+    return { lng: lng!, lat: lat! };
+  });
+
+  if (coords.length === 0) return null;
+
+  const ring =
+    coords.length > 1 &&
+    coords[0]!.lng === coords[coords.length - 1]!.lng &&
+    coords[0]!.lat === coords[coords.length - 1]!.lat
+      ? coords.slice(0, -1)
+      : coords;
+
+  if (ring.length === 0) return null;
+
+  const sum = ring.reduce((acc, c) => ({ lng: acc.lng + c.lng, lat: acc.lat + c.lat }), {
+    lng: 0,
+    lat: 0,
+  });
+  return { lng: sum.lng / ring.length, lat: sum.lat / ring.length };
+}
+
 function buildSiteStatusMap(events: Event[]): Map<number, "warning" | "danger"> {
   const statusMap = new Map<number, "warning" | "danger">();
   for (const evt of events) {
@@ -24,9 +50,17 @@ function buildSiteStatusMap(events: Event[]): Map<number, "warning" | "danger"> 
   return statusMap;
 }
 
-// Site를 POI로 변환 (이벤트 상태 반영)
 function siteToPOI(site: Site, siteStatusMap: Map<number, "warning" | "danger">): POI | null {
-  if (site.latitude == null || site.longitude == null) return null;
+  let lng = site.longitude;
+  let lat = site.latitude;
+
+  if (lng == null || lat == null) {
+    if (!site.location) return null;
+    const centroid = parseWKTPolygonCentroid(site.location);
+    if (!centroid) return null;
+    lng = centroid.lng;
+    lat = centroid.lat;
+  }
 
   const status = siteStatusMap.get(site.id);
   const color =
@@ -38,8 +72,8 @@ function siteToPOI(site: Site, siteStatusMap: Map<number, "warning" | "danger">)
 
   return {
     id: String(site.id),
-    longitude: site.longitude,
-    latitude: site.latitude,
+    longitude: lng,
+    latitude: lat,
     color,
     size: 1.5,
     data: { name: site.name, region: site.region, status },

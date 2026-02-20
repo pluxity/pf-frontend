@@ -1,15 +1,16 @@
-import type { WorkerVitals } from "./types";
+import { cn } from "@pf-dev/ui";
+import type { WorkerVitals, WorkerLocation } from "../types";
 
 interface FeaturePopupProps {
   featureId: string;
   workerName?: string;
   position: { lng: number; lat: number; altitude: number };
   vitals: WorkerVitals | null;
+  location?: WorkerLocation | null;
   abnormal?: boolean;
   onClose: () => void;
 }
 
-/** 체온 37.5 이상 또는 심박수 100 이상이면 이상징후 */
 function isAbnormalVitals(vitals: WorkerVitals) {
   return vitals.temperature >= 37.5 || vitals.heartRate >= 100;
 }
@@ -19,6 +20,7 @@ export function FeaturePopup({
   workerName,
   position,
   vitals,
+  location,
   abnormal,
   onClose,
 }: FeaturePopupProps) {
@@ -53,6 +55,26 @@ export function FeaturePopup({
               {position.lat.toFixed(4)}&deg;N, {position.lng.toFixed(4)}&deg;E
             </span>
           </div>
+
+          {/* 위치유형 */}
+          {location && (
+            <div className="flex justify-between gap-4">
+              <span className="text-white/50">위치유형</span>
+              <span className="flex items-center gap-1.5">
+                <span
+                  className={cn(
+                    "rounded px-1 py-0.5 text-[10px] font-medium",
+                    location.locationType === "indoor"
+                      ? "bg-[#5E81F4]/20 text-[#5E81F4]"
+                      : "bg-[#00C48C]/20 text-[#00C48C]"
+                  )}
+                >
+                  {location.locationType === "indoor" ? "실내" : "실외"}
+                </span>
+                <span>{location.floor}</span>
+              </span>
+            </div>
+          )}
 
           {vitals && (
             <>

@@ -5,11 +5,15 @@ import { DraggablePanel } from "./DraggablePanel";
 
 type WorkerStatus = "normal" | "abnormal";
 
+type LocationType = "indoor" | "outdoor";
+
 interface WorkerEntry {
   id: string;
   name: string;
   status: WorkerStatus;
   info: string;
+  locationType?: LocationType;
+  floor?: string;
 }
 
 interface Attendance {
@@ -82,7 +86,10 @@ export function WorkerListPanel({
           <div className="flex flex-1 items-center justify-center border-r border-[#BBC0CF] px-5 text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             현재 작업 인원
           </div>
-          <div className="flex w-[9.6875rem] items-center justify-center px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
+          <div className="flex w-[4.5rem] items-center justify-center border-r border-[#BBC0CF] px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
+            위치
+          </div>
+          <div className="flex w-[6rem] items-center justify-center px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             정보
           </div>
         </div>
@@ -115,8 +122,26 @@ export function WorkerListPanel({
                     {worker.name}
                   </span>
                 </div>
+                {/* 위치 열 */}
+                <div className="flex w-[4.5rem] items-center justify-center gap-1 border-r border-[#BBC0CF] px-[0.3125rem]">
+                  {worker.locationType && (
+                    <>
+                      <span
+                        className={cn(
+                          "rounded px-1 py-0.5 text-[9px] font-medium leading-none",
+                          worker.locationType === "indoor"
+                            ? "bg-[#5E81F4]/15 text-[#5E81F4]"
+                            : "bg-[#00C48C]/15 text-[#00C48C]"
+                        )}
+                      >
+                        {worker.locationType === "indoor" ? "실내" : "실외"}
+                      </span>
+                      <span className="text-[10px] text-[#555]">{worker.floor}</span>
+                    </>
+                  )}
+                </div>
                 {/* 정보 열 */}
-                <div className="w-[9.6875rem] truncate px-[0.3125rem] text-center text-xs tracking-[-0.015rem] text-[#555]">
+                <div className="w-[6rem] truncate px-[0.3125rem] text-center text-xs tracking-[-0.015rem] text-[#555]">
                   {worker.info}
                 </div>
               </button>

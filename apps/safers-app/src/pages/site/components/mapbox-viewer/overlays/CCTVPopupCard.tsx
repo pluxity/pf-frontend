@@ -5,9 +5,10 @@ import { useCCTVPopupStore } from "@/stores";
 interface CCTVPopupCardProps {
   featureId: string;
   streamUrl: string;
+  onHeaderPointerDown?: (e: React.PointerEvent) => void;
 }
 
-export function CCTVPopupCard({ featureId, streamUrl }: CCTVPopupCardProps) {
+export function CCTVPopupCard({ featureId, streamUrl, onHeaderPointerDown }: CCTVPopupCardProps) {
   const closePopup = useCCTVPopupStore((s) => s.closePopup);
   const { videoRef, status, error, connect, disconnect } = useWHEPStream(streamUrl);
 
@@ -19,9 +20,12 @@ export function CCTVPopupCard({ featureId, streamUrl }: CCTVPopupCardProps) {
 
   return (
     <div className="pointer-events-auto relative w-full overflow-hidden rounded-lg bg-black/80 text-sm text-white shadow-lg backdrop-blur-sm">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between px-3 py-2">
-        <span className="font-semibold">{featureId.toUpperCase()}</span>
+      {/* 헤더 (드래그 핸들) */}
+      <div
+        className="flex cursor-grab items-center justify-between px-3 py-2 active:cursor-grabbing"
+        onPointerDown={onHeaderPointerDown}
+      >
+        <span className="select-none font-semibold">{featureId.toUpperCase()}</span>
         <button onClick={() => closePopup(featureId)} className="text-white/60 hover:text-white">
           &times;
         </button>

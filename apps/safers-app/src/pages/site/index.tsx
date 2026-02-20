@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Spinner } from "@pf-dev/ui";
 import {
@@ -11,9 +11,17 @@ import {
 } from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site, type SiteEvent } from "@/services";
-import { useWeather } from "@/hooks";
-import { INITIAL_WORKERS, SCENARIO_EMERGENCIES, SCENARIO3, nextEventId } from "./mocks";
+import { useWeather, useWorkerLivePositions } from "@/hooks";
+import {
+  INITIAL_WORKERS,
+  SCENARIO_EMERGENCIES,
+  SCENARIO3,
+  WORKER1_PATROL_PATH,
+  WORKER1_PATROL_DURATION,
+  nextEventId,
+} from "./mocks";
 import { COLOR_SUCCESS, COLOR_DANGER } from "./components/mapbox-viewer/constants";
+import { MOCK_DANGER_ZONES } from "@/services/mocks/danger-zones.mock";
 
 type ScenarioId = 1 | 2 | 3;
 
@@ -49,20 +57,17 @@ export function SitePage() {
   const [events, setEvents] = useState<SiteEvent[]>([]);
   const mapViewerRef = useRef<MapboxViewerHandle>(null);
 
-  const workerNames = useMemo(
-    () => Object.fromEntries(workers.map((w) => [w.id, w.name])),
-    [workers]
+  const workerNames = Object.fromEntries(workers.map((w) => [w.id, w.name]));
+  const workerLocations = Object.fromEntries(
+    workers.filter((w) => w.floor).map((w) => [w.id, { floor: w.floor! }])
   );
 
-  const attendance: Attendance = useMemo(
-    () => ({
-      working: workers.length,
-      standby: 0,
-      offDuty: 0,
-      absent: 0,
-    }),
-    [workers.length]
-  );
+  const attendance: Attendance = {
+    working: workers.length,
+    standby: 0,
+    offDuty: 0,
+    absent: 0,
+  };
 
   const handleMapStyleChange = useCallback((style: MapStyleKey) => {
     setMapStyle(style);
@@ -81,7 +86,7 @@ export function SitePage() {
   const handleAreaSelect = useCallback((featureIds: string[]) => {
     setSelectionMode(false);
     if (featureIds.length > 0) {
-      // Highlight handled by MapboxViewer internally
+      // TODO: 영역 선택 결과 처리
     }
   }, []);
 
@@ -94,12 +99,12 @@ export function SitePage() {
       if (scenario === 3) {
         setScenarioActive(true);
 
-        // 작업 중 → 걷기 모델로 전환 후 경로 이동
-        mapViewerRef.current?.swapFeatureAsset(SCENARIO3.workerId, "worker-walk");
+        // 순찰 중지 → 위험구역으로 자연스럽게 이동 (이미 walk 모델 상태)
+        mapViewerRef.current?.stopPatrol(SCENARIO3.workerId);
         mapViewerRef.current?.selectFeature(SCENARIO3.workerId);
-        mapViewerRef.current?.moveFeatureAlongPath(
+        mapViewerRef.current?.moveFeatureTo(
           SCENARIO3.workerId,
-          SCENARIO3.path,
+          SCENARIO3.dangerZoneEntry,
           SCENARIO3.moveDurationMs,
           () => {
             const dangerEvent: SiteEvent = {
@@ -175,6 +180,7 @@ export function SitePage() {
 
   const siteId = id ? Number(id) : null;
   const { currentWeather } = useWeather({ siteId });
+  useWorkerLivePositions(mapViewerRef);
 
   useEffect(() => {
     if (!id) {
@@ -191,8 +197,7 @@ export function SitePage() {
           siteDetailService.getSiteDetail(numericId),
         ]);
         setSite(siteRes.data);
-      } catch (error) {
-        console.error("Failed to fetch site detail:", error);
+      } catch {
         navigate("/");
       } finally {
         setIsLoading(false);
@@ -214,7 +219,10 @@ export function SitePage() {
       <div className="absolute inset-0">
         <MapboxViewer
           ref={mapViewerRef}
+          sitePolygonWKT={site.location}
           workerNames={workerNames}
+          workerLocations={workerLocations}
+          dangerZones={MOCK_DANGER_ZONES}
           onWorkerSelect={handleMapWorkerSelect}
           selectionMode={selectionMode}
           onAreaSelect={handleAreaSelect}
@@ -224,6 +232,13 @@ export function SitePage() {
             setWorkers(INITIAL_WORKERS);
             setSelectedWorkerId(null);
             mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_SUCCESS);
+            // 순찰 재개
+            mapViewerRef.current?.swapFeatureAsset("worker-1", "worker-walk");
+            mapViewerRef.current?.startPatrol(
+              "worker-1",
+              WORKER1_PATROL_PATH,
+              WORKER1_PATROL_DURATION
+            );
           }}
         />
       </div>
