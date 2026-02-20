@@ -1,3 +1,5 @@
+export type { PageResponse } from "@/types";
+
 // API 응답 타입
 export interface ConstructionSection {
   id: number;
@@ -19,14 +21,6 @@ export interface GoalResponse {
   completionDate: string;
   plannedWorkDays: number;
   delayDays: number;
-}
-
-export interface PageResponse<T> {
-  content: T[];
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
 }
 
 // 앱에서 사용할 타입
