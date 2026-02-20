@@ -84,7 +84,7 @@ export function WorkerListPanel({
         {/* 테이블 헤더 */}
         <div className="flex h-[1.875rem] shrink-0 items-center border-b border-[#BBC0CF] bg-[#DFE4EB]/90 [border-top:0.125rem_solid_#BBC0CF]">
           <div className="flex flex-1 items-center justify-center border-r border-[#BBC0CF] px-5 text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
-            현재 작업 인원
+            작업자 이름
           </div>
           <div className="flex w-[4.5rem] items-center justify-center border-r border-[#BBC0CF] px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             위치

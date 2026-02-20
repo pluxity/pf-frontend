@@ -2,16 +2,14 @@ import type { CCTVPathsResponse, CCTVListResponse } from "./types/cctv.types";
 import { mockCCTVs } from "./mocks/cctv.mock";
 
 const API_BASE_URL = "/api";
-const WHEP_PORT = `:8889`;
-const API_PORT = `:9997`;
-const MEDIA_SERVER_URL = import.meta.env.VITE_MEDIA_SERVER_URL ?? "";
+const MEDIA_BASE = "/media";
 
 const USE_MOCK = true;
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function getPaths(): Promise<CCTVPathsResponse> {
-  const res = await fetch(`${MEDIA_SERVER_URL}${API_PORT}/v3/paths/list`);
+  const res = await fetch(`${MEDIA_BASE}/api/v3/paths/list`);
   if (!res.ok) throw new Error(`Failed to fetch paths: ${res.status}`);
   return res.json() as Promise<CCTVPathsResponse>;
 }
@@ -28,13 +26,13 @@ async function getCCTVList(): Promise<CCTVListResponse> {
 }
 
 function getStreamUrl(streamName: string): string {
-  return `${MEDIA_SERVER_URL}${WHEP_PORT}/${streamName}/whep`;
+  return `${MEDIA_BASE}/webrtc/${streamName}/whep`;
 }
 
 export const cctvService = {
   getPaths,
   getCCTVList,
   getStreamUrl,
-  getWHEPUrl: (streamName: string): string => `${MEDIA_SERVER_URL}${WHEP_PORT}/${streamName}/whep`,
-  getHLSUrl: (streamName: string): string => `${MEDIA_SERVER_URL}/${streamName}/index.m3u8`,
+  getWHEPUrl: (streamName: string): string => `${MEDIA_BASE}/webrtc/${streamName}/whep`,
+  getHLSUrl: (streamName: string): string => `${MEDIA_BASE}/${streamName}/index.m3u8`,
 };

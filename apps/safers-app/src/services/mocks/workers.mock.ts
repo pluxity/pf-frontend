@@ -26,7 +26,7 @@ export const MOCK_WORKER_POSITIONS: MockWorkerPosition[] = [
   },
   {
     id: "worker-3",
-    position: { lng: 126.847115, lat: 37.499307, altitude: 8.5 },
+    position: { lng: 126.84669, lat: 37.499509, altitude: 8.5 },
     vitals: { temperature: 36.7, heartRate: 82 },
     location: { locationType: "outdoor", floor: "3F", floorNumber: 3 },
   },

@@ -90,33 +90,37 @@ export function useCCTVAIEvents() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    stompService.connect((status) => {
-      setConnectionStatus(status);
+    // StrictMode 첫 마운트 → 즉시 언마운트 시 connect 방지
+    const timer = setTimeout(() => {
+      stompService.connect((status) => {
+        setConnectionStatus(status);
 
-      if (status === "connected") {
-        // 새 이벤트 (snapshot 포함)
-        unsubEventRef.current = stompService.subscribe(TOPIC_EVENTS, (message) => {
-          try {
-            const event: StompEventResponse = JSON.parse(message.body);
-            setEvents((prev) => upsertEvent(prev, event));
-          } catch (e) {
-            console.error("[CCTV-AI] Failed to parse event:", e);
-          }
-        });
+        if (status === "connected") {
+          // 새 이벤트 (snapshot 포함)
+          unsubEventRef.current = stompService.subscribe(TOPIC_EVENTS, (message) => {
+            try {
+              const event: StompEventResponse = JSON.parse(message.body);
+              setEvents((prev) => upsertEvent(prev, event));
+            } catch (e) {
+              console.error("[CCTV-AI] Failed to parse event:", e);
+            }
+          });
 
-        // 영상 제작 완료 알림 (video 포함)
-        unsubVideoRef.current = stompService.subscribe(TOPIC_EVENT_VIDEOS, (message) => {
-          try {
-            const event: StompEventResponse = JSON.parse(message.body);
-            setEvents((prev) => upsertEvent(prev, event));
-          } catch (e) {
-            console.error("[CCTV-AI] Failed to parse video event:", e);
-          }
-        });
-      }
-    });
+          // 영상 제작 완료 알림 (video 포함)
+          unsubVideoRef.current = stompService.subscribe(TOPIC_EVENT_VIDEOS, (message) => {
+            try {
+              const event: StompEventResponse = JSON.parse(message.body);
+              setEvents((prev) => upsertEvent(prev, event));
+            } catch (e) {
+              console.error("[CCTV-AI] Failed to parse video event:", e);
+            }
+          });
+        }
+      });
+    }, 0);
 
     return () => {
+      clearTimeout(timer);
       unsubEventRef.current?.();
       unsubVideoRef.current?.();
       stompService.disconnect();

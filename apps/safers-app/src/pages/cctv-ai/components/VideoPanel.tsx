@@ -263,21 +263,23 @@ function EmptySlot() {
 function LiveGrid({
   paths,
   gridMode,
+  page,
   getWHEPUrl,
 }: {
   paths: CCTVPath[];
   gridMode: Exclude<GridMode, "1x1">;
+  page: number;
   getWHEPUrl: (name: string) => string;
 }) {
   const template = GRID_TEMPLATES[gridMode];
-  const totalCells = template.cells.length;
-  const availablePaths = paths.slice(0, totalCells);
-  const emptyCount = Math.max(0, totalCells - availablePaths.length);
+  const perPage = template.cells.length;
+  const pagePaths = paths.slice(page * perPage, (page + 1) * perPage);
+  const emptyCount = Math.max(0, perPage - pagePaths.length);
   const compact = gridMode === "4x4";
 
   return (
     <GridLayout template={template} gap={6} editable className="h-full">
-      {availablePaths.map((path, i) => (
+      {pagePaths.map((path, i) => (
         <Widget
           key={path.name}
           id={`cam-${i}`}
@@ -320,6 +322,10 @@ export function VideoPanel({
 }: VideoPanelProps) {
   const { paths, isLoading, isError, error, getWHEPUrl } = useCCTVStreams();
   const [gridMode, setGridMode] = useState<GridMode>("1x1");
+  const [page, setPage] = useState(0);
+
+  const perPage = gridMode === "1x1" ? 1 : gridMode === "2x2" ? 4 : 16;
+  const totalPages = Math.max(1, Math.ceil(paths.length / perPage));
 
   // 이벤트 영상 모드
   if (selectedEvent) {
@@ -371,7 +377,7 @@ export function VideoPanel({
 
   return (
     <div className="flex h-full flex-col gap-3">
-      {/* 헤더: 모드 제목 + 그리드 선택 + (단일일 때) 채널 선택 */}
+      {/* 헤더: 모드 제목 + 페이지 네비게이션 + 그리드 선택 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-white/60">라이브 스트림</span>
@@ -379,7 +385,51 @@ export function VideoPanel({
             <CCTVSelect paths={paths} selected={activeStream} onChange={onStreamChange} />
           )}
         </div>
-        <GridModeSelector mode={gridMode} onChange={setGridMode} />
+        <div className="flex items-center gap-3">
+          {/* 페이지 네비게이션 */}
+          {!isSingle && totalPages > 1 && (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="rounded p-1 text-white/50 transition-colors hover:bg-[#252833] hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <span className="min-w-[3rem] text-center text-xs text-white/50">
+                {page + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="rounded p-1 text-white/50 transition-colors hover:bg-[#252833] hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+          <GridModeSelector
+            mode={gridMode}
+            onChange={(m) => {
+              setGridMode(m);
+              setPage(0);
+            }}
+          />
+        </div>
       </div>
 
       {/* 영상 영역 */}
@@ -387,7 +437,7 @@ export function VideoPanel({
         {isSingle ? (
           <LiveStreamPlayer streamUrl={getWHEPUrl(activeStream)} name={activeStream} />
         ) : (
-          <LiveGrid paths={paths} gridMode={gridMode} getWHEPUrl={getWHEPUrl} />
+          <LiveGrid paths={paths} gridMode={gridMode} page={page} getWHEPUrl={getWHEPUrl} />
         )}
       </div>
     </div>
