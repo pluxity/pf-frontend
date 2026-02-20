@@ -1,6 +1,8 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useEffect, startTransition } from "react";
 import { Tabs, TabsContent } from "@pf-dev/ui";
 import { cn } from "@pf-dev/ui/utils";
+import { useKeyManagementStore } from "@/stores/keyManagement.store";
+import { useDashboardStore } from "@/stores/dashboard.store";
 
 const BirdsEyeView = lazy(() =>
   import("./views/BirdsEyeView").then((m) => ({ default: m.BirdsEyeView }))
@@ -44,6 +46,18 @@ function LoadingFallback() {
 
 export function MainContainer({ className, defaultTab = "birds-eye" }: MainContainerProps) {
   const [activeTab, setActiveTab] = useState<TabValue>(defaultTab);
+  const { shouldShowView, resetShowView } = useKeyManagementStore();
+  const { pause } = useDashboardStore();
+
+  useEffect(() => {
+    if (shouldShowView) {
+      startTransition(() => {
+        setActiveTab("management");
+        resetShowView();
+        pause();
+      });
+    }
+  }, [shouldShowView, resetShowView, pause]);
 
   return (
     <Tabs
