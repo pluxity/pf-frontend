@@ -6,8 +6,9 @@ export type ConnectionStatus = "disconnected" | "connecting" | "connected" | "er
 let client: Client | null = null;
 
 function getWebSocketUrl(): string {
-  const apiUrl = import.meta.env.VITE_API_SERVER_URL || window.location.origin;
-  return apiUrl.replace(/^https?:/, "wss:") + "/api/stomp/platform";
+  // dev: Vite proxy 경유 (localhost → 실서버), prod/staging: 현재 origin 사용
+  const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  return `${wsProtocol}//${window.location.host}/api/stomp/platform`;
 }
 
 export const stompService = {

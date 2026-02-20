@@ -112,6 +112,7 @@ export interface StompEventResponse {
   confidence: number;
   timestamp: string;
   trackId: number;
+  path: string;
   snapshot?: FileResponse;
   video?: FileResponse;
 }

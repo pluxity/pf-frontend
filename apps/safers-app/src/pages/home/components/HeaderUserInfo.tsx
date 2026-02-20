@@ -1,14 +1,16 @@
+import { useAuthStore, selectUser } from "@pf-dev/services";
+
 export function HeaderUserInfo() {
-  // TODO: 실제 사용자 정보 연동
-  const user = {
-    name: "김호반",
-    role: "최고 관리자",
-  };
+  const user = useAuthStore(selectUser);
+
+  if (!user) return null;
+
+  const roleName = user.roles[0]?.name ?? "";
 
   return (
     <div className="flex items-center gap-2 text-sm text-neutral-600">
-      <span className="font-medium">{user.role}</span>
-      <span className="text-neutral-400">|</span>
+      {roleName && <span className="font-medium">{roleName}</span>}
+      {roleName && <span className="text-neutral-400">|</span>}
       <span>{user.name}</span>
     </div>
   );

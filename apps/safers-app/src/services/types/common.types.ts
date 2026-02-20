@@ -22,4 +22,5 @@ export interface FileResponse {
   url: string;
   originalFileName: string;
   contentType: string;
+  fileStatus?: string;
 }

@@ -35,7 +35,7 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <LoginCard
         title="로그인"
-        subtitle="safers-app에 로그인하세요"
+        subtitle="PLUG SAFERS"
         onLoginSubmit={handleLogin}
         loading={loading}
       />

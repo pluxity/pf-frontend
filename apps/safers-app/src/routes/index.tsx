@@ -1,7 +1,9 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
+import { ProtectedRouter } from "@pf-dev/services";
+import { Spinner } from "@pf-dev/ui/atoms";
 
-import { DashboardPage, LoginPage, SitePage } from "@/pages";
+import { CCTVAIPage, DashboardPage, LoginPage, SitePage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -10,17 +12,32 @@ function NotFoundPage() {
   );
 }
 
+function AuthLayout() {
+  return (
+    <ProtectedRouter
+      fallback={
+        <div className="flex h-screen w-screen items-center justify-center">
+          <Spinner size="lg" />
+        </div>
+      }
+    >
+      <Outlet />
+    </ProtectedRouter>
+  );
+}
+
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* 대시보드 */}
-      <Route index element={<DashboardPage />} />
-
-      {/* 현장 상세 */}
-      <Route path="site/:id" element={<SitePage />} />
+      {/* Protected — 인증 필요 */}
+      <Route element={<AuthLayout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="site/:id" element={<SitePage />} />
+        <Route path="cctv-ai" element={<CCTVAIPage />} />
+      </Route>
 
       {/* 404 */}
       <Route path="*" element={<NotFoundPage />} />
