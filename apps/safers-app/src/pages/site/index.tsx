@@ -185,7 +185,7 @@ export function SitePage() {
 
       mapViewerRef.current?.triggerEmergency(emergency, {
         camera: SCENARIO_CAMERAS[scenario],
-        occlusionMode: scenario === 2 ? "transparent" : "clip",
+        occlusionMode: "clip",
       });
     },
     [id]
