@@ -15,3 +15,5 @@ export { useEventsStore, selectStompEvents, selectConnectionStatus } from "./eve
 
 export { useCCTVPopupStore, selectCCTVPopups } from "./cctv-popup.store";
 export type { CCTVPopupEntry } from "./cctv-popup.store";
+
+export { useFeatureDataStore } from "./feature-data.store";

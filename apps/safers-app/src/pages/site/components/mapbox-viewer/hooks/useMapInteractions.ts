@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Map as MapboxMap } from "mapbox-gl";
 import type { ThreeOverlayHandle, SelectedFeatureData } from "../types";
-import { useCCTVPopupStore } from "@/stores";
+import { useCCTVPopupStore, useFeatureDataStore } from "@/stores";
 
 interface UseMapInteractionsOptions {
   mapRef: React.RefObject<MapboxMap | null>;
@@ -93,13 +93,14 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
       );
 
       if (hit?.featureId) {
-        const streamUrl = overlayRef.current?.getCCTVStreamUrl(hit.featureId) ?? null;
+        const featureData = useFeatureDataStore.getState();
+        const streamUrl = featureData.getCCTVStreamUrl(hit.featureId);
 
         if (streamUrl) {
           useCCTVPopupStore.getState().openPopup(hit.featureId, streamUrl);
           overlayRef.current?.highlightFeature(hit.featureId);
         } else {
-          const vitals = overlayRef.current?.getWorkerVitals(hit.featureId) ?? null;
+          const vitals = featureData.getWorkerVitals(hit.featureId);
           cbRef.current.onFeatureSelect({
             id: hit.featureId,
             lng: hit.lng,
@@ -107,7 +108,7 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
             altitude: hit.altitude,
             vitals,
             streamUrl: null,
-            location: overlayRef.current?.getWorkerLocation(hit.featureId) ?? null,
+            location: featureData.getWorkerLocation(hit.featureId),
           });
           overlayRef.current?.highlightFeature(hit.featureId);
           cbRef.current.onWorkerSelect(hit.featureId);

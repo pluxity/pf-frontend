@@ -1,12 +1,8 @@
-import type {
-  FeaturePosition,
-  WorkerVitals,
-  WorkerLocation,
-} from "@/pages/site/components/mapbox-viewer/types";
+import type { GeoPosition, WorkerVitals, WorkerLocation } from "../types/worker.types";
 
 export interface MockWorkerPosition {
   id: string;
-  position: FeaturePosition;
+  position: GeoPosition;
   vitals: WorkerVitals;
   location: WorkerLocation;
 }

@@ -1,23 +1,17 @@
 import { useEffect, useRef, useImperativeHandle } from "react";
-import type {
-  ModelTransform,
-  ThreeOverlayHandle,
-  WorkerVitals,
-  WorkerLocation,
-  FeaturePosition,
-  DangerZone,
-} from "../types";
+import type { ModelTransform, ThreeOverlayHandle, FeaturePosition, DangerZone } from "../types";
 import { createThreeScene, type ThreeSceneApi } from "./create-three-scene";
-import { ASSET_URLS } from "../constants";
 import { MODEL_URL } from "../config/site.config";
 import { cctvService } from "@/services";
-import { fetchWorkerPositions } from "@/services/mocks/workers.mock";
+import { useFeatureDataStore } from "@/stores";
 import {
+  ASSET_URLS,
+  fetchWorkerPositions,
   WORKER1_PATROL_PATH,
   WORKER1_PATROL_DURATION,
   WORKER4_PATROL_PATH,
   WORKER4_PATROL_DURATION,
-} from "../../../mocks";
+} from "../../../config";
 
 interface ThreeOverlayProps {
   ref?: React.Ref<ThreeOverlayHandle>;
@@ -34,10 +28,6 @@ export function ThreeOverlay({
 }: ThreeOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<ThreeSceneApi | null>(null);
-  const vitalsRef = useRef<Map<string, WorkerVitals>>(new Map());
-  const locationsRef = useRef<Map<string, WorkerLocation>>(new Map());
-  /** CCTV featureId → WHEP stream URL */
-  const cctvStreamUrlsRef = useRef<Map<string, string>>(new Map());
 
   useImperativeHandle(ref, () => ({
     render(matrix: number[]) {
@@ -58,26 +48,21 @@ export function ThreeOverlay({
     getFeaturePosition(id: string) {
       return sceneRef.current?.getFeaturePosition(id) ?? null;
     },
-    getWorkerVitals(id: string) {
-      return vitalsRef.current.get(id) ?? null;
-    },
     swapFeatureAsset(id: string, newAssetId: string) {
       sceneRef.current?.swapFeatureAsset(id, newAssetId);
-    },
-    updateWorkerVitals(id: string, vitals: WorkerVitals) {
-      vitalsRef.current.set(id, vitals);
-    },
-    getWorkerLocation(id: string) {
-      return locationsRef.current.get(id) ?? null;
-    },
-    updateWorkerLocation(id: string, location: WorkerLocation) {
-      locationsRef.current.set(id, location);
     },
     setBuildingOpacity(opacity: number) {
       sceneRef.current?.setBuildingOpacity(opacity);
     },
     setBuildingClipAltitude(altitude: number | null, workerPosition?: FeaturePosition) {
       sceneRef.current?.setBuildingClipAltitude(altitude, workerPosition);
+    },
+    setBuildingFloorTransparency(
+      altitude: number | null,
+      opacity?: number,
+      workerPosition?: FeaturePosition
+    ) {
+      sceneRef.current?.setBuildingFloorTransparency(altitude, opacity, workerPosition);
     },
     checkOcclusion(featureId: string) {
       return sceneRef.current?.checkOcclusion(featureId) ?? false;
@@ -112,9 +97,6 @@ export function ThreeOverlay({
     },
     setFOVColor(id: string, color: number) {
       sceneRef.current?.setFOVColor(id, color);
-    },
-    getCCTVStreamUrl(id: string) {
-      return cctvStreamUrlsRef.current.get(id) ?? null;
     },
     getAllFeatureScreenPositions(width: number, height: number) {
       return sceneRef.current?.getAllFeatureScreenPositions(width, height) ?? new Map();
@@ -152,6 +134,8 @@ export function ThreeOverlay({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const store = useFeatureDataStore.getState();
+
     const sceneApi = createThreeScene({
       canvas,
       modelUrl: MODEL_URL,
@@ -169,18 +153,15 @@ export function ThreeOverlay({
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
 
-    // 서버에서 작업자 데이터 페칭(~3s) 시뮬레이션
     fetchWorkerPositions().then(async (workers) => {
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
-        vitalsRef.current.set(w.id, w.vitals);
-        locationsRef.current.set(w.id, w.location);
+        store.updateWorkerVitals(w.id, w.vitals);
+        store.updateWorkerLocation(w.id, w.location);
       }
 
-      // Worker-5(최동훈): 방향 반전 (180도)
       sceneApi.setFeatureHeading("worker-5", Math.PI);
 
-      // walk 에셋 로드 후 순찰 시작
       await walkReady;
       sceneApi.swapFeatureAsset("worker-1", "worker-walk");
       sceneApi.startPatrol("worker-1", WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION);
@@ -194,11 +175,10 @@ export function ThreeOverlay({
         sceneApi.addFeature(cctv.id, "cctv", cctv.position);
         sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
         sceneApi.setFeatureFOV(cctv.id, cctv.fovDeg, cctv.fovRange, cctv.pitch);
-        cctvStreamUrlsRef.current.set(cctv.id, cctvService.getStreamUrl(cctv.streamName));
+        store.setCCTVStreamUrl(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });
 
-    // ResizeObserver로 Mapbox 캔버스와 크기 동기화
     const parent = canvas.parentElement;
     if (!parent) return;
 

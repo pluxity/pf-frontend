@@ -1,4 +1,4 @@
-import type { DangerZone } from "../types/danger-zone.types";
+import type { DangerZone } from "@/services/types/danger-zone.types";
 
 export const MOCK_DANGER_ZONES: DangerZone[] = [
   {

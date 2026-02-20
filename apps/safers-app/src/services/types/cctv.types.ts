@@ -1,4 +1,4 @@
-import type { FeaturePosition } from "@/pages/site/components/mapbox-viewer/types";
+import type { GeoPosition } from "./worker.types";
 
 export interface CCTVPath {
   name: string;
@@ -23,7 +23,7 @@ export interface CCTVPathsResponse {
 export interface CCTVData {
   id: string;
   name: string;
-  position: FeaturePosition;
+  position: GeoPosition;
   /** 카메라 방향 (도, degree) */
   heading: number;
   /** 수평 시야각 (도, degree) */

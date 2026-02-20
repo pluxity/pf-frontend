@@ -1,8 +1,16 @@
-import type { WorkerEntry } from "./components";
-import type { SiteEmergencyPayload } from "@/services";
-import type { FeaturePosition } from "./components/mapbox-viewer/types";
+import type { WorkerEntry } from "../components";
+import type { GeoPosition, WorkerVitals } from "@/services/types/worker.types";
 
-export { fetchWorkerPositions, DEFAULT_WORKER_VITALS } from "@/services/mocks/workers.mock";
+export { fetchWorkerPositions } from "@/services/mocks/workers.mock";
+
+export const DEFAULT_WORKER_VITALS: Record<string, WorkerVitals> = {
+  "worker-1": { temperature: 36.5, heartRate: 78 },
+  "worker-2": { temperature: 36.8, heartRate: 92 },
+  "worker-3": { temperature: 36.7, heartRate: 82 },
+  "worker-4": { temperature: 36.4, heartRate: 85 },
+  "worker-5": { temperature: 36.6, heartRate: 72 },
+  "worker-6": { temperature: 36.5, heartRate: 76 },
+};
 
 export const INITIAL_WORKERS: WorkerEntry[] = [
   {
@@ -55,43 +63,7 @@ export const INITIAL_WORKERS: WorkerEntry[] = [
   },
 ];
 
-export const SCENARIO_EMERGENCIES: Record<1 | 2, SiteEmergencyPayload> = {
-  1: {
-    workerId: "worker-3",
-    position: { lng: 126.846643, lat: 37.499556, altitude: 11.9 },
-    vitals: { temperature: 38.5, heartRate: 145 },
-  },
-  2: {
-    workerId: "worker-6",
-    position: { lng: 126.846965, lat: 37.49946, altitude: 37.7 },
-    vitals: { temperature: 39.1, heartRate: 160 },
-  },
-};
-
-export const SCENARIO_CAMERAS: Record<
-  1 | 2,
-  {
-    center: [number, number];
-    zoom: number;
-    pitch: number;
-    bearing: number;
-  }
-> = {
-  1: {
-    center: [126.846816, 37.499495],
-    zoom: 20.79,
-    pitch: 52.74,
-    bearing: 105.74,
-  },
-  2: {
-    center: [126.847302, 37.499369],
-    zoom: 19.9,
-    pitch: 41,
-    bearing: 108.09,
-  },
-};
-
-export const WORKER1_PATROL_PATH: FeaturePosition[] = [
+export const WORKER1_PATROL_PATH: GeoPosition[] = [
   { lng: 126.846879, lat: 37.50037, altitude: 0.1 },
   { lng: 126.846843, lat: 37.50036, altitude: 0.1 },
   { lng: 126.84686, lat: 37.500313, altitude: 0.1 },
@@ -104,7 +76,7 @@ export const WORKER1_PATROL_PATH: FeaturePosition[] = [
   { lng: 126.846879, lat: 37.50037, altitude: 0.1 },
 ];
 
-export const WORKER4_PATROL_PATH = [
+export const WORKER4_PATROL_PATH: GeoPosition[] = [
   { lng: 126.847074, lat: 37.499254, altitude: 6.3 },
   { lng: 126.847049, lat: 37.499198, altitude: 4.1 },
   { lng: 126.847081, lat: 37.499155, altitude: 4.1 },
@@ -122,26 +94,3 @@ export const WORKER4_PATROL_PATH = [
 
 export const WORKER1_PATROL_DURATION = 60_000;
 export const WORKER4_PATROL_DURATION = 60_000;
-
-export const SCENARIO3 = {
-  workerId: "worker-1",
-  cctvId: "CCTV-JEJU2-46",
-  dangerZoneEntry: { lng: 126.846852, lat: 37.500211, altitude: 0.15 } satisfies FeaturePosition,
-  moveDurationMs: 6000,
-  camera: {
-    center: [126.846899, 37.50024] as [number, number],
-    zoom: 20.77,
-    pitch: 38.49,
-    bearing: 133.42,
-  },
-  emergency: {
-    workerId: "worker-1",
-    position: { lng: 126.846852, lat: 37.500211, altitude: 0.15 },
-    vitals: { temperature: 36.5, heartRate: 78 },
-  } satisfies SiteEmergencyPayload,
-};
-
-let eventCounter = 0;
-export function nextEventId(): string {
-  return `evt-${++eventCounter}`;
-}

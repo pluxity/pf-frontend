@@ -19,14 +19,12 @@ import {
   SCENARIO3,
   WORKER1_PATROL_PATH,
   WORKER1_PATROL_DURATION,
-  nextEventId,
-} from "./mocks";
-import {
+  MOCK_DANGER_ZONES,
   COLOR_SUCCESS,
   COLOR_DANGER,
   DEFAULT_FLY_DURATION,
-} from "./components/mapbox-viewer/constants";
-import { MOCK_DANGER_ZONES } from "@/services/mocks/danger-zones.mock";
+  nextEventId,
+} from "./config";
 
 type ScenarioId = 1 | 2 | 3;
 
@@ -187,6 +185,7 @@ export function SitePage() {
 
       mapViewerRef.current?.triggerEmergency(emergency, {
         camera: SCENARIO_CAMERAS[scenario],
+        occlusionMode: scenario === 2 ? "transparent" : "clip",
       });
     },
     [id]
