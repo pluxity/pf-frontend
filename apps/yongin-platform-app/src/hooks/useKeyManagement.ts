@@ -12,6 +12,7 @@ interface UseKeyManagementReturn {
 
 /**
  * 대시보드용 선택된 주요 관리사항 데이터를 가져오는 커스텀 훅
+ * 10분마다 자동으로 데이터 갱신 (Admin 변경사항 자동 반영)
  * @returns items, types, isLoading, error, getTypeDescription
  */
 export function useKeyManagement(): UseKeyManagementReturn {
@@ -51,8 +52,13 @@ export function useKeyManagement(): UseKeyManagementReturn {
 
     fetchData();
 
+    const interval = setInterval(() => {
+      fetchData();
+    }, 600000);
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
