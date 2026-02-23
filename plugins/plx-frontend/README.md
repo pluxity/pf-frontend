@@ -72,6 +72,30 @@ PLUXITY 프론트엔드 전용 Claude Code 플러그인. React 19, Tailwind CSS,
 - Zustand 상태관리 규칙
 - API 서비스 레이어 패턴
 
+## Context7 MCP 연동
+
+다음 스킬들이 Context7 MCP를 통해 **최신 라이브러리 문서를 실시간 참조**합니다:
+
+| 스킬               | Context7으로 확인하는 문서                                  |
+| ------------------ | ----------------------------------------------------------- |
+| `react19-patterns` | React 19 신규 Hook API (use, useOptimistic, useActionState) |
+| `cesium-expert`    | CesiumJS 최신 API, Entity/Primitive 문서                    |
+| `three-expert`     | Three.js/R3F 최신 API, 드라이 패턴                          |
+| `streaming-expert` | HLS.js, WebRTC 최신 스펙                                    |
+
+### Context7 설치 (필수)
+
+```bash
+# Claude Code에 Context7 MCP 추가
+claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+```
+
+설치 확인:
+
+```bash
+claude mcp list
+```
+
 ## 설치
 
 ```bash

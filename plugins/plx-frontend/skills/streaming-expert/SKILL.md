@@ -1,7 +1,7 @@
 ---
 name: streaming-expert
 description: 영상 스트리밍 전문가. "CCTV", "HLS", "WHEP", "스트리밍", "영상" 관련 질문 시 사용.
-allowed-tools: Read, Write, Glob, Grep
+allowed-tools: Read, Write, Glob, Grep, mcp__plugin_context7_context7__resolve-library-id, mcp__plugin_context7_context7__query-docs
 ---
 
 # 영상 스트리밍 전문가
