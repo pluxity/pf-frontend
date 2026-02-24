@@ -10,11 +10,13 @@ import { KeyManagementModal, ConfirmDialog } from "./modals";
 
 interface MatrixRow {
   rowIndex: number;
+  displayOrder: number;
   [key: string]: KeyManagementItem | number | undefined;
 }
 
 export function KeyManagementPage() {
   const gridRef = useRef<AgGridReactType<MatrixRow>>(null);
+  const tempIdRef = useRef(-1);
   const { toast } = useToastContext();
   const [selectedItem, setSelectedItem] = useState<KeyManagementItem | null>(null);
   const [showDialog, setShowDialog] = useState(false);
@@ -22,6 +24,12 @@ export function KeyManagementPage() {
 
   const { data, types, isLoading, isError, create, update, select, deselect, remove, mutate } =
     useKeyManagement();
+
+  // 임시 ID 생성(신규 행)
+  const generateTempId = () => {
+    tempIdRef.current -= 1;
+    return tempIdRef.current;
+  };
 
   // 모든 고유한 displayOrder 수집
   const allDisplayOrders = useMemo<Set<number>>(() => {
@@ -38,7 +46,7 @@ export function KeyManagementPage() {
 
     // displayOrder 순서대로 행 생성
     return sortedDisplayOrders.map((order, index) => {
-      const row: MatrixRow = { rowIndex: index };
+      const row: MatrixRow = { rowIndex: index, displayOrder: order };
       data.forEach((group) => {
         const item = group.items.find((item) => item.displayOrder === order);
         if (item) {
@@ -48,28 +56,6 @@ export function KeyManagementPage() {
       return row;
     });
   }, [data, allDisplayOrders]);
-
-  const handleTitleClick = useCallback(
-    (item: KeyManagementItem | null, typeCode: string) => {
-      if (item && item.title?.trim()) {
-        setSelectedItem(item);
-      } else {
-        setSelectedItem({
-          id: item?.id ?? -1,
-          type: item?.type ?? typeCode,
-          title: "",
-          displayOrder: item?.displayOrder ?? 1,
-          selected: item?.selected ?? false,
-          fileId: item?.fileId,
-          methodFeature: item?.methodFeature,
-          methodContent: item?.methodContent,
-          methodDirection: item?.methodDirection,
-        });
-      }
-      setShowDialog(true);
-    },
-    [data]
-  );
 
   const handleCheckboxClick = useCallback(
     async (item: KeyManagementItem) => {
@@ -121,7 +107,7 @@ export function KeyManagementPage() {
           items: [
             ...group.items,
             {
-              id: -(Date.now() + Math.random()), // 임시 ID
+              id: generateTempId(),
               type: group.type,
               title: "",
               displayOrder: nextDisplayOrder,
@@ -174,9 +160,9 @@ export function KeyManagementPage() {
             { revalidate: false }
           );
 
-          toast.success("선택된 행이 삭제되었습니다.");
-
           await Promise.all(itemsToDelete.filter((id) => id > 0).map((id) => remove(id)));
+
+          toast.success("선택된 행이 삭제되었습니다.");
 
           mutate();
         } catch (err) {
@@ -191,6 +177,7 @@ export function KeyManagementPage() {
   const cellRenderer = useCallback(
     (params: ICellRendererParams<MatrixRow>) => {
       const item = params.value as KeyManagementItem | undefined;
+      const row = params.data as MatrixRow;
       const typeCode = params.colDef?.field || "";
       const isSelected = item?.selected ?? false;
 
@@ -199,7 +186,21 @@ export function KeyManagementPage() {
           <div className="h-full flex items-center gap-2 px-2">
             <span
               className="text-gray-400 text-xs flex-1 cursor-pointer hover:text-gray-600"
-              onClick={() => handleTitleClick(item || null, typeCode)}
+              onClick={() => {
+                const newItem = {
+                  id: item?.id ?? generateTempId(),
+                  type: item?.type ?? typeCode,
+                  title: "",
+                  displayOrder: row.displayOrder,
+                  selected: item?.selected ?? false,
+                  fileId: item?.fileId,
+                  methodFeature: item?.methodFeature,
+                  methodContent: item?.methodContent,
+                  methodDirection: item?.methodDirection,
+                };
+                setSelectedItem(newItem);
+                setShowDialog(true);
+              }}
             >
               클릭하여 입력
             </span>
@@ -217,7 +218,10 @@ export function KeyManagementPage() {
         <div className="h-full flex items-center gap-2 px-2">
           <span
             className="truncate flex-1 cursor-pointer hover:text-blue-600"
-            onClick={() => handleTitleClick(item, typeCode)}
+            onClick={() => {
+              setSelectedItem(item);
+              setShowDialog(true);
+            }}
           >
             {item.title}
           </span>
@@ -232,7 +236,7 @@ export function KeyManagementPage() {
         </div>
       );
     },
-    [handleTitleClick, handleCheckboxClick]
+    [handleCheckboxClick]
   );
 
   const columnDefs = useMemo<ColDef<MatrixRow>[]>(() => {
@@ -260,10 +264,10 @@ export function KeyManagementPage() {
   );
 
   // 모달 닫기
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setSelectedItem(null);
     setShowDialog(false);
-  };
+  }, []);
 
   // 모달 저장
   const handleSave = useCallback(

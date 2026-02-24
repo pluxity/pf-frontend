@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -16,9 +17,16 @@ export function ConfirmDialog({
   description,
   onConfirm,
 }: ConfirmDialogProps) {
-  const handleConfirm = () => {
-    onConfirm();
-    onOpenChange?.(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    try {
+      setIsLoading(true);
+      await onConfirm();
+      onOpenChange?.(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -29,10 +37,12 @@ export function ConfirmDialog({
           <ModalDescription>{description}</ModalDescription>
         </ModalHeader>
         <ModalFooter>
-          <Button variant="outline" onClick={() => onOpenChange?.(false)}>
+          <Button variant="outline" onClick={() => onOpenChange?.(false)} disabled={isLoading}>
             취소
           </Button>
-          <Button onClick={handleConfirm}>확인</Button>
+          <Button onClick={handleConfirm} disabled={isLoading}>
+            {isLoading ? "처리 중..." : "확인"}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
