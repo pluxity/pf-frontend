@@ -2,16 +2,31 @@ import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import type { ColDef, ICellRendererParams } from "ag-grid-community";
 import { useRef, useState, useMemo, useCallback } from "react";
-import { Checkbox, Button } from "@pf-dev/ui";
-import type { KeyManagementItem, KeyManagementFormData, ConfirmDialogProps } from "./types";
+import {
+  Checkbox,
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalTitle,
+  ModalDescription,
+} from "@pf-dev/ui";
+import type { KeyManagementItem, KeyManagementFormData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useKeyManagement } from "./hooks";
-import { KeyManagementModal, ConfirmDialog } from "./modals";
+import { KeyManagementModal } from "./components";
 
 interface MatrixRow {
   rowIndex: number;
   displayOrder: number;
   [key: string]: KeyManagementItem | number | undefined;
+}
+
+interface ConfirmModalState {
+  title: string;
+  description: string;
+  onConfirm: () => void | Promise<void>;
 }
 
 export function KeyManagementPage() {
@@ -20,7 +35,8 @@ export function KeyManagementPage() {
   const { toast } = useToastContext();
   const [selectedItem, setSelectedItem] = useState<KeyManagementItem | null>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogProps | null>(null);
+  const [confirmModal, setConfirmModal] = useState<ConfirmModalState | null>(null);
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
 
   const { data, types, isLoading, isError, create, update, select, deselect, remove, mutate } =
     useKeyManagement();
@@ -130,8 +146,7 @@ export function KeyManagementPage() {
       return;
     }
 
-    setConfirmDialog({
-      open: true,
+    setConfirmModal({
       title: "행 삭제",
       description: `${selectedRows.length}개의 행을 삭제하시겠습니까? 각 행의 모든 항목이 삭제됩니다.`,
       onConfirm: async () => {
@@ -283,8 +298,7 @@ export function KeyManagementPage() {
             handleCloseModal();
             return;
           } else {
-            setConfirmDialog({
-              open: true,
+            setConfirmModal({
               title: "항목 삭제",
               description: "모든 내용이 비어있습니다. 이 항목을 삭제하시겠습니까?",
               onConfirm: async () => {
@@ -399,14 +413,38 @@ export function KeyManagementPage() {
         onSave={handleSave}
       />
 
-      {confirmDialog && (
-        <ConfirmDialog
-          open={confirmDialog.open}
-          onOpenChange={(open) => !open && setConfirmDialog(null)}
-          title={confirmDialog.title}
-          description={confirmDialog.description}
-          onConfirm={confirmDialog.onConfirm}
-        />
+      {confirmModal && (
+        <Modal open={confirmModal !== null} onOpenChange={(open) => !open && setConfirmModal(null)}>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>{confirmModal.title}</ModalTitle>
+              <ModalDescription>{confirmModal.description}</ModalDescription>
+            </ModalHeader>
+            <ModalFooter>
+              <Button
+                variant="outline"
+                onClick={() => setConfirmModal(null)}
+                disabled={isConfirmLoading}
+              >
+                취소
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    setIsConfirmLoading(true);
+                    await confirmModal.onConfirm();
+                    setConfirmModal(null);
+                  } finally {
+                    setIsConfirmLoading(false);
+                  }
+                }}
+                disabled={isConfirmLoading}
+              >
+                {isConfirmLoading ? "처리 중..." : "확인"}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       )}
     </div>
   );

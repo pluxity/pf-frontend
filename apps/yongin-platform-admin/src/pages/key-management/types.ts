@@ -64,11 +64,3 @@ export interface KeyManagementModalProps {
   onClose: () => void;
   onSave: (formData: KeyManagementFormData, uploadedFileId: number | null) => void;
 }
-
-export interface ConfirmDialogProps {
-  open: boolean;
-  onOpenChange?: (open: boolean) => void;
-  title: string;
-  description: string;
-  onConfirm: () => void | Promise<void>;
-}
