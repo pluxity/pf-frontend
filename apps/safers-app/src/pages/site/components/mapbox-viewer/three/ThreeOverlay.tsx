@@ -92,9 +92,6 @@ export function ThreeOverlay({
     setFeatureHeading(id: string, radians: number) {
       sceneRef.current?.setFeatureHeading(id, radians);
     },
-    setFeatureFOV(id: string, fovDeg: number, range: number, pitchDeg?: number) {
-      sceneRef.current?.setFeatureFOV(id, fovDeg, range, pitchDeg);
-    },
     setFeatureFrustum(id: string, corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]) {
       sceneRef.current?.setFeatureFrustum(id, corners);
     },

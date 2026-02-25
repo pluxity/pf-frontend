@@ -20,6 +20,7 @@ export const DEFAULT_FLY_DURATION = 2000;
 
 export const FOV_DEFAULTS = {
   OPACITY: 0.15,
+  EDGE_OPACITY: 0.8,
 } as const;
 
 export const POPUP_HEAD_OFFSET = 0.5;
