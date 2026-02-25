@@ -1,135 +1,81 @@
 import * as THREE from "three";
 import type { SceneContext } from "../core/types";
+import type { FeaturePosition } from "../../types";
+import { gpsToScenePosition } from "../core/geo-utils";
 import { COLOR_SUCCESS, FOV_DEFAULTS } from "../../../../config/assets.config";
 import { GROUND_CLIP_PLANE } from "../materials";
 
-interface FOVConfig {
-  fovDeg: number;
-  range: number;
-  pitchDeg: number;
+interface FrustumConfig {
+  corners: [FeaturePosition, FeaturePosition, FeaturePosition, FeaturePosition];
 }
 
 export function createFOVBuilder(ctx: SceneContext) {
-  const fovConfigs = new Map<string, FOVConfig>();
-  const fovMeshes = new Map<string, THREE.Mesh>();
+  const frustumConfigs = new Map<string, FrustumConfig>();
+  const fovGroups = new Map<string, THREE.Group>();
 
-  function buildFOVMesh(id: string) {
+  /**
+   * 정적 프러스텀(사각뿔) 메시 생성.
+   * apex = feature group 원점 (0,0,0), base = 4개 GPS 코너를 로컬 좌표로 변환.
+   * 삼각형 6개: 측면 4 + 밑면 2.
+   */
+  function buildFrustumMesh(id: string) {
     const entry = ctx.features.get(id);
-    const config = fovConfigs.get(id);
+    const config = frustumConfigs.get(id);
     if (!entry || !config) return;
 
-    const existing = fovMeshes.get(id);
+    const existing = fovGroups.get(id);
     const wasVisible = existing?.visible ?? false;
     if (existing) {
-      existing.geometry.dispose();
-      (existing.material as THREE.Material).dispose();
+      existing.traverse((child) => {
+        if (child instanceof THREE.Mesh || child instanceof THREE.LineSegments) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      });
       entry.group.remove(existing);
-      fovMeshes.delete(id);
+      fovGroups.delete(id);
     }
 
-    const { fovDeg, range, pitchDeg } = config;
-    const aspect = 16 / 9;
-    const hHalf = (fovDeg / 2) * (Math.PI / 180);
-    const vHalf = Math.atan(Math.tan(hHalf) / aspect);
-    const pitchRad = -(pitchDeg * Math.PI) / 180;
+    const transform = ctx.getTransform();
 
-    if (ctx.modelGroup) {
-      const t = ctx.getTransform();
-      const deg = Math.PI / 180;
-      ctx.modelGroup.rotation.set(t.rotationX * deg, t.rotationY * deg, t.rotationZ * deg);
-      ctx.modelGroup.scale.setScalar(t.scale);
-    }
+    // group의 회전(rotation.x=π/2, rotation.y=heading)과 스케일을 반영하여
+    // 씬 좌표를 group 로컬 좌표로 정확히 변환
+    entry.group.updateMatrixWorld(true);
+    const localCorners = config.corners.map((corner) => {
+      const scenePos = gpsToScenePosition(corner, transform);
+      return entry.group.worldToLocal(scenePos);
+    });
 
-    ctx.scene.updateMatrixWorld(true);
-    const groupWorld = entry.group.matrixWorld;
-    const groupWorldInverse = groupWorld.clone().invert();
-    const origin = new THREE.Vector3().setFromMatrixPosition(groupWorld);
+    const [tl, tr, br, bl] = localCorners as [
+      THREE.Vector3,
+      THREE.Vector3,
+      THREE.Vector3,
+      THREE.Vector3,
+    ];
 
-    const targets: THREE.Object3D[] = [];
-    if (ctx.modelGroup) targets.push(ctx.modelGroup);
-    for (const [fId, f] of ctx.features) {
-      if (fId !== id) targets.push(f.group);
-    }
-
-    const COLS = FOV_DEFAULTS.GRID_COLS;
-    const ROWS = FOV_DEFAULTS.GRID_ROWS;
-    const localVertices: THREE.Vector3[] = [];
-    const prevFar = ctx.raycaster.far;
-
-    for (let row = 0; row <= ROWS; row++) {
-      for (let col = 0; col <= COLS; col++) {
-        const u = col / COLS;
-        const v = row / ROWS;
-
-        const hAngle = -hHalf + u * 2 * hHalf;
-        const vAngle = -vHalf + v * 2 * vHalf;
-
-        const localDir = new THREE.Vector3(Math.tan(hAngle), Math.tan(vAngle), 1).normalize();
-
-        const cosP = Math.cos(pitchRad);
-        const sinP = Math.sin(pitchRad);
-        const y2 = localDir.y * cosP - localDir.z * sinP;
-        const z2 = localDir.y * sinP + localDir.z * cosP;
-        localDir.y = y2;
-        localDir.z = z2;
-        localDir.normalize();
-
-        const worldDir = localDir.clone().transformDirection(groupWorld);
-
-        ctx.raycaster.set(origin, worldDir);
-        ctx.raycaster.far = range;
-        const hits = ctx.raycaster.intersectObjects(targets, true);
-        const validHit = hits.find((h) => !h.object.userData.isFOV);
-        const dist = validHit ? validHit.distance : range;
-
-        const hitWorld = origin.clone().addScaledVector(worldDir, dist);
-        localVertices.push(hitWorld.applyMatrix4(groupWorldInverse));
-      }
-    }
-
-    ctx.raycaster.far = prevFar;
-
+    // apex = (0,0,0) — feature group 원점 (CCTV 위치)
     const positions: number[] = [];
 
-    for (let row = 0; row < ROWS; row++) {
-      for (let col = 0; col < COLS; col++) {
-        const i00 = row * (COLS + 1) + col;
-        const i10 = i00 + 1;
-        const i01 = i00 + (COLS + 1);
-        const i11 = i01 + 1;
+    // 측면 4개 삼각형 (apex → 인접 코너 쌍)
+    // top: tl → tr
+    positions.push(0, 0, 0, tl.x, tl.y, tl.z, tr.x, tr.y, tr.z);
+    // right: tr → br
+    positions.push(0, 0, 0, tr.x, tr.y, tr.z, br.x, br.y, br.z);
+    // bottom: br → bl
+    positions.push(0, 0, 0, br.x, br.y, br.z, bl.x, bl.y, bl.z);
+    // left: bl → tl
+    positions.push(0, 0, 0, bl.x, bl.y, bl.z, tl.x, tl.y, tl.z);
 
-        const v00 = localVertices[i00]!;
-        const v10 = localVertices[i10]!;
-        const v11 = localVertices[i11]!;
-        const v01 = localVertices[i01]!;
+    // 밑면 2개 삼각형
+    positions.push(tl.x, tl.y, tl.z, br.x, br.y, br.z, tr.x, tr.y, tr.z);
+    positions.push(tl.x, tl.y, tl.z, bl.x, bl.y, bl.z, br.x, br.y, br.z);
 
-        positions.push(v00.x, v00.y, v00.z, v10.x, v10.y, v10.z, v11.x, v11.y, v11.z);
-        positions.push(v00.x, v00.y, v00.z, v11.x, v11.y, v11.z, v01.x, v01.y, v01.z);
-      }
-    }
+    // --- 면 (반투명 삼각형) ---
+    const faceGeometry = new THREE.BufferGeometry();
+    faceGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    faceGeometry.computeVertexNormals();
 
-    for (let col = 0; col < COLS; col++) {
-      const t0 = localVertices[col]!;
-      const t1 = localVertices[col + 1]!;
-      positions.push(0, 0, 0, t0.x, t0.y, t0.z, t1.x, t1.y, t1.z);
-      const b0 = localVertices[ROWS * (COLS + 1) + col]!;
-      const b1 = localVertices[ROWS * (COLS + 1) + col + 1]!;
-      positions.push(0, 0, 0, b1.x, b1.y, b1.z, b0.x, b0.y, b0.z);
-    }
-    for (let row = 0; row < ROWS; row++) {
-      const l0 = localVertices[row * (COLS + 1)]!;
-      const l1 = localVertices[(row + 1) * (COLS + 1)]!;
-      positions.push(0, 0, 0, l1.x, l1.y, l1.z, l0.x, l0.y, l0.z);
-      const r0 = localVertices[row * (COLS + 1) + COLS]!;
-      const r1 = localVertices[(row + 1) * (COLS + 1) + COLS]!;
-      positions.push(0, 0, 0, r0.x, r0.y, r0.z, r1.x, r1.y, r1.z);
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-    geometry.computeVertexNormals();
-
-    const material = new THREE.MeshBasicMaterial({
+    const faceMaterial = new THREE.MeshBasicMaterial({
       color: COLOR_SUCCESS,
       transparent: true,
       opacity: FOV_DEFAULTS.OPACITY,
@@ -139,56 +85,140 @@ export function createFOVBuilder(ctx: SceneContext) {
       clippingPlanes: [GROUND_CLIP_PLANE],
     });
 
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData.isFOV = true;
-    mesh.visible = wasVisible;
+    const faceMesh = new THREE.Mesh(faceGeometry, faceMaterial);
 
-    entry.group.add(mesh);
-    fovMeshes.set(id, mesh);
+    // --- 선 (엣지 라인) ---
+    const apex = new THREE.Vector3(0, 0, 0);
+    const linePositions = new Float32Array([
+      // apex → 4 corners
+      apex.x,
+      apex.y,
+      apex.z,
+      tl.x,
+      tl.y,
+      tl.z,
+      apex.x,
+      apex.y,
+      apex.z,
+      tr.x,
+      tr.y,
+      tr.z,
+      apex.x,
+      apex.y,
+      apex.z,
+      br.x,
+      br.y,
+      br.z,
+      apex.x,
+      apex.y,
+      apex.z,
+      bl.x,
+      bl.y,
+      bl.z,
+      // base edges
+      tl.x,
+      tl.y,
+      tl.z,
+      tr.x,
+      tr.y,
+      tr.z,
+      tr.x,
+      tr.y,
+      tr.z,
+      br.x,
+      br.y,
+      br.z,
+      br.x,
+      br.y,
+      br.z,
+      bl.x,
+      bl.y,
+      bl.z,
+      bl.x,
+      bl.y,
+      bl.z,
+      tl.x,
+      tl.y,
+      tl.z,
+    ]);
+
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
+
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: COLOR_SUCCESS,
+      transparent: true,
+      opacity: 0.8,
+      depthTest: true,
+      clippingPlanes: [GROUND_CLIP_PLANE],
+    });
+
+    const lineSegments = new THREE.LineSegments(lineGeometry, lineMaterial);
+
+    // --- Group으로 묶기 ---
+    const fovGroup = new THREE.Group();
+    fovGroup.userData.isFOV = true;
+    fovGroup.add(faceMesh);
+    fovGroup.add(lineSegments);
+    fovGroup.visible = wasVisible;
+
+    entry.group.add(fovGroup);
+    fovGroups.set(id, fovGroup);
     ctx.requestRepaint();
   }
 
-  function rebuildAllFOVs() {
-    for (const id of fovConfigs.keys()) {
-      if (ctx.features.has(id)) buildFOVMesh(id);
-    }
+  function setFeatureFrustum(
+    id: string,
+    corners: [FeaturePosition, FeaturePosition, FeaturePosition, FeaturePosition]
+  ) {
+    frustumConfigs.set(id, { corners });
+    buildFrustumMesh(id);
   }
 
-  function setFeatureFOV(id: string, fovDeg: number, range: number, pitchDeg = 0) {
-    fovConfigs.set(id, { fovDeg, range, pitchDeg });
-    buildFOVMesh(id);
+  /** @deprecated 레이캐스팅 FOV는 정적 프러스텀으로 대체됨. setFeatureFrustum을 사용하세요. */
+  function setFeatureFOV(_id: string, _fovDeg: number, _range: number, _pitchDeg = 0) {
+    // no-op — 레이캐스팅 방식 제거됨
   }
 
   function setFeatureFOVVisible(id: string, visible: boolean) {
-    const mesh = fovMeshes.get(id);
-    if (!mesh) return;
-    mesh.visible = visible;
+    const group = fovGroups.get(id);
+    if (!group) return;
+    group.visible = visible;
     ctx.requestRepaint();
   }
 
   function setFOVColor(id: string, color: number) {
-    const mesh = fovMeshes.get(id);
-    if (!mesh) return;
-    (mesh.material as THREE.MeshBasicMaterial).color.set(color);
+    const group = fovGroups.get(id);
+    if (!group) return;
+    group.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        (child.material as THREE.MeshBasicMaterial).color.set(color);
+      } else if (child instanceof THREE.LineSegments) {
+        (child.material as THREE.LineBasicMaterial).color.set(color);
+      }
+    });
     ctx.requestRepaint();
   }
 
   function dispose() {
-    for (const [id, mesh] of fovMeshes) {
-      mesh.geometry.dispose();
-      (mesh.material as THREE.Material).dispose();
+    for (const [id, group] of fovGroups) {
+      group.traverse((child) => {
+        if (child instanceof THREE.Mesh || child instanceof THREE.LineSegments) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      });
       const entry = ctx.features.get(id);
-      if (entry) entry.group.remove(mesh);
+      if (entry) entry.group.remove(group);
     }
-    fovMeshes.clear();
-    fovConfigs.clear();
+    fovGroups.clear();
+    frustumConfigs.clear();
   }
 
   return {
-    fovConfigs,
-    fovMeshes,
-    buildFOVMesh,
-    rebuildAllFOVs,
+    frustumConfigs,
+    fovGroups,
+    setFeatureFrustum,
     setFeatureFOV,
     setFeatureFOVVisible,
     setFOVColor,

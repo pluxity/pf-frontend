@@ -1,6 +1,7 @@
 import type { FeaturePosition, RaycastHit, ScreenPosition } from "./geo.types";
 import type { WorkerLocation, DangerZone } from "./feature.types";
 import type { SiteEmergencyPayload } from "@/services";
+import type { GeoPosition } from "@/services/types/worker.types";
 
 export interface ThreeOverlayHandle {
   render: (matrix: number[]) => boolean;
@@ -33,6 +34,10 @@ export interface ThreeOverlayHandle {
   getInitialPosition: (id: string) => FeaturePosition | null;
   setFeatureHeading: (id: string, radians: number) => void;
   setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
+  setFeatureFrustum: (
+    id: string,
+    corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]
+  ) => void;
   setFeatureFOVVisible: (id: string, visible: boolean) => void;
   setFOVColor: (id: string, color: number) => void;
   getAllFeatureScreenPositions: (width: number, height: number) => Map<string, ScreenPosition>;

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useImperativeHandle } from "react";
 import type { ModelTransform, ThreeOverlayHandle, FeaturePosition, DangerZone } from "../types";
+import type { GeoPosition } from "@/services/types/worker.types";
 import { createThreeScene, type ThreeSceneApi } from "./create-three-scene";
 import { MODEL_URL } from "../config/site.config";
 import { cctvService } from "@/services";
@@ -94,6 +95,9 @@ export function ThreeOverlay({
     setFeatureFOV(id: string, fovDeg: number, range: number, pitchDeg?: number) {
       sceneRef.current?.setFeatureFOV(id, fovDeg, range, pitchDeg);
     },
+    setFeatureFrustum(id: string, corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]) {
+      sceneRef.current?.setFeatureFrustum(id, corners);
+    },
     setFeatureFOVVisible(id: string, visible: boolean) {
       sceneRef.current?.setFeatureFOVVisible(id, visible);
     },
@@ -182,6 +186,9 @@ export function ThreeOverlay({
       for (const cctv of data) {
         sceneApi.addFeature(cctv.id, "cctv", cctv.position);
         sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
+        if (cctv.frustumCorners) {
+          sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
+        }
         store.setCCTVStreamUrl(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });

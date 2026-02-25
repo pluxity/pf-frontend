@@ -122,6 +122,28 @@ export function MapboxViewer({
 
   const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
 
+  // FOV visible only while CCTV popup is open
+  const prevPopupIdsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const currentIds = new Set(cctvPopups.map((p) => p.featureId));
+    const prevIds = prevPopupIdsRef.current;
+
+    // Newly opened → show FOV
+    for (const id of currentIds) {
+      if (!prevIds.has(id)) {
+        overlayRef.current?.setFeatureFOVVisible(id, true);
+      }
+    }
+    // Closed → hide FOV
+    for (const id of prevIds) {
+      if (!currentIds.has(id)) {
+        overlayRef.current?.setFeatureFOVVisible(id, false);
+      }
+    }
+
+    prevPopupIdsRef.current = currentIds;
+  }, [cctvPopups]);
+
   const getTransform = useCallback(() => MODEL_TRANSFORM, []);
   const requestRepaint = useCallback(() => {
     mapRef.current?.triggerRepaint();

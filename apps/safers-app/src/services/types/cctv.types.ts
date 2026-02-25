@@ -34,6 +34,8 @@ export interface CCTVData {
   pitch: number;
   /** WHEP 스트림 이름 (e.g. "CCTV-JEJU2-44") */
   streamName: string;
+  /** 정적 FOV 프러스텀 밑면 꼭짓점 [topLeft, topRight, bottomRight, bottomLeft] */
+  frustumCorners?: [GeoPosition, GeoPosition, GeoPosition, GeoPosition];
 }
 
 export interface CCTVListResponse {

@@ -20,8 +20,6 @@ export const DEFAULT_FLY_DURATION = 2000;
 
 export const FOV_DEFAULTS = {
   OPACITY: 0.15,
-  GRID_COLS: 24,
-  GRID_ROWS: 14,
 } as const;
 
 export const POPUP_HEAD_OFFSET = 0.5;

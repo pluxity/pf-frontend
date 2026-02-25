@@ -9,6 +9,7 @@ import type {
   ScreenPosition,
   MaterialRule,
 } from "../types";
+import type { GeoPosition } from "@/services/types/worker.types";
 import { applyPreset, GROUND_CLIP_PLANE } from "./materials";
 
 // Core
@@ -68,6 +69,10 @@ export interface ThreeSceneApi {
 
   setFeatureHeading: (id: string, radians: number) => void;
   setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
+  setFeatureFrustum: (
+    id: string,
+    corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]
+  ) => void;
   setFeatureFOVVisible: (id: string, visible: boolean) => void;
   setFOVColor: (id: string, color: number) => void;
 
@@ -180,7 +185,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       ctx.modelGroup = gltf.scene;
       scene.add(ctx.modelGroup);
 
-      fov.rebuildAllFOVs();
       requestRepaint();
     })
     .catch(() => {
@@ -286,8 +290,8 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
     removeFeature(id: string) {
       featureMgr.removeFeature(id, highlight.state);
-      fov.fovMeshes.delete(id);
-      fov.fovConfigs.delete(id);
+      fov.fovGroups.delete(id);
+      fov.frustumConfigs.delete(id);
     },
 
     updateFeaturePosition: featureMgr.updateFeaturePosition,
@@ -323,6 +327,7 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
     setFeatureHeading: featureMgr.setFeatureHeading,
     setFeatureFOV: fov.setFeatureFOV,
+    setFeatureFrustum: fov.setFeatureFrustum,
     setFeatureFOVVisible: fov.setFeatureFOVVisible,
     setFOVColor: fov.setFOVColor,
 
