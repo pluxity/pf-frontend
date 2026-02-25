@@ -68,7 +68,6 @@ export interface ThreeSceneApi {
   checkOcclusion: (featureId: string) => boolean;
 
   setFeatureHeading: (id: string, radians: number) => void;
-  setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
   setFeatureFrustum: (
     id: string,
     corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]
@@ -326,7 +325,6 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     checkOcclusion: building.checkOcclusion,
 
     setFeatureHeading: featureMgr.setFeatureHeading,
-    setFeatureFOV: fov.setFeatureFOV,
     setFeatureFrustum: fov.setFeatureFrustum,
     setFeatureFOVVisible: fov.setFeatureFOVVisible,
     setFOVColor: fov.setFOVColor,

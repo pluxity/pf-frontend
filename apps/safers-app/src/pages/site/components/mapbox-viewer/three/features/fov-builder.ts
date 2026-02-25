@@ -148,7 +148,7 @@ export function createFOVBuilder(ctx: SceneContext) {
     const lineMaterial = new THREE.LineBasicMaterial({
       color: COLOR_SUCCESS,
       transparent: true,
-      opacity: 0.8,
+      opacity: FOV_DEFAULTS.EDGE_OPACITY,
       depthTest: true,
       clippingPlanes: [GROUND_CLIP_PLANE],
     });
@@ -173,11 +173,6 @@ export function createFOVBuilder(ctx: SceneContext) {
   ) {
     frustumConfigs.set(id, { corners });
     buildFrustumMesh(id);
-  }
-
-  /** @deprecated 레이캐스팅 FOV는 정적 프러스텀으로 대체됨. setFeatureFrustum을 사용하세요. */
-  function setFeatureFOV(_id: string, _fovDeg: number, _range: number, _pitchDeg = 0) {
-    // no-op — 레이캐스팅 방식 제거됨
   }
 
   function setFeatureFOVVisible(id: string, visible: boolean) {
@@ -219,7 +214,6 @@ export function createFOVBuilder(ctx: SceneContext) {
     frustumConfigs,
     fovGroups,
     setFeatureFrustum,
-    setFeatureFOV,
     setFeatureFOVVisible,
     setFOVColor,
     dispose,

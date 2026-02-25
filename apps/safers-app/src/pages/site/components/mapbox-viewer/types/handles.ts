@@ -33,7 +33,6 @@ export interface ThreeOverlayHandle {
   ) => void;
   getInitialPosition: (id: string) => FeaturePosition | null;
   setFeatureHeading: (id: string, radians: number) => void;
-  setFeatureFOV: (id: string, fovDeg: number, range: number, pitchDeg?: number) => void;
   setFeatureFrustum: (
     id: string,
     corners: [GeoPosition, GeoPosition, GeoPosition, GeoPosition]

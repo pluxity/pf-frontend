@@ -3,7 +3,6 @@ export * from "./cctv.service";
 export * from "./events.service";
 export * from "./site-detail.service";
 export * from "./sites.service";
-export * from "./environments.service";
 export * from "./weather.service";
 export * from "./safety.service";
 export * from "./stomp.service";
