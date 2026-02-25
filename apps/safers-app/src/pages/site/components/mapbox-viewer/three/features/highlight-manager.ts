@@ -11,6 +11,7 @@ export function createHighlightManager(
   const state = { highlightedFeatureId: null as string | null };
 
   function highlightFeature(id: string, color?: number) {
+    if (id.startsWith("dump-")) return;
     state.highlightedFeatureId = id;
 
     const entry = features.get(id);
@@ -38,6 +39,7 @@ export function createHighlightManager(
   function highlightFeatures(ids: string[], color?: number) {
     const objects: THREE.Object3D[] = [];
     for (const id of ids) {
+      if (id.startsWith("dump-")) continue;
       const entry = features.get(id);
       if (!entry) continue;
       const targets = entry.group.children.filter((c) => !c.userData.isFOV && !c.userData.isMarker);

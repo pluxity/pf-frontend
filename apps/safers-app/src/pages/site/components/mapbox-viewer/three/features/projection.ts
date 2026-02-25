@@ -34,6 +34,7 @@ export function createProjection(ctx: SceneContext) {
     if (!ctx.lastCombinedMatrix) return result;
 
     for (const [id, entry] of ctx.features) {
+      if (id.startsWith("dump-")) continue;
       const pos = entry.group.position.clone();
       pos.z += POPUP_HEAD_OFFSET;
       const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
