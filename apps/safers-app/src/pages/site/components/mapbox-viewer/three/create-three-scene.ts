@@ -154,28 +154,38 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
   const liveWalkingIds = new Set<string>();
   const LIVE_IDLE_TIMEOUT = 3000;
 
+  // --- Render loop reusable objects (avoid per-frame allocation) ---
+  const _modelTransform = new THREE.Matrix4();
+  const _combined = new THREE.Matrix4();
+  const _scaleVec = new THREE.Vector3();
+
   // --- Load building model ---
   const loader = new GLTFLoader();
-  const modelReady = loader.loadAsync(modelUrl).then((gltf) => {
-    gltf.scene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        if (Array.isArray(child.material)) {
-          child.material = child.material.map((m) =>
-            applyPreset(m, GROUND_CLIP_PLANE, materialPresets)
-          );
-        } else {
-          child.material = applyPreset(child.material, GROUND_CLIP_PLANE, materialPresets);
+  const modelReady = loader
+    .loadAsync(modelUrl)
+    .then((gltf) => {
+      gltf.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (Array.isArray(child.material)) {
+            child.material = child.material.map((m) =>
+              applyPreset(m, GROUND_CLIP_PLANE, materialPresets)
+            );
+          } else {
+            child.material = applyPreset(child.material, GROUND_CLIP_PLANE, materialPresets);
+          }
+          child.castShadow = true;
+          child.receiveShadow = true;
         }
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    ctx.modelGroup = gltf.scene;
-    scene.add(ctx.modelGroup);
+      });
+      ctx.modelGroup = gltf.scene;
+      scene.add(ctx.modelGroup);
 
-    fov.rebuildAllFOVs();
-    requestRepaint();
-  });
+      fov.rebuildAllFOVs();
+      requestRepaint();
+    })
+    .catch(() => {
+      // 빌딩 모델 로드 실패 — UI에서 별도 처리
+    });
 
   return {
     render(matrix: number[]): boolean {
@@ -189,16 +199,16 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
 
       const origin = MercatorCoordinate.fromLngLat([t.lng, t.lat], t.altitude);
       const s = origin.meterInMercatorCoordinateUnits();
-      const modelTransform = new THREE.Matrix4()
+      _modelTransform
         .makeTranslation(origin.x, origin.y, origin.z ?? 0)
-        .scale(new THREE.Vector3(s, -s, s));
+        .scale(_scaleVec.set(s, -s, s));
 
-      ctx.lastModelTransformMat = modelTransform;
-      const combined = new THREE.Matrix4().fromArray(matrix).multiply(modelTransform);
-      ctx.lastCombinedMatrix = combined;
+      ctx.lastModelTransformMat = _modelTransform;
+      _combined.fromArray(matrix).multiply(_modelTransform);
+      ctx.lastCombinedMatrix = _combined;
 
-      camera.projectionMatrix.copy(combined);
-      camera.projectionMatrixInverse.copy(combined).invert();
+      camera.projectionMatrix.copy(_combined);
+      camera.projectionMatrixInverse.copy(_combined).invert();
 
       const delta = clock.getDelta();
       for (const feature of features.values()) {
@@ -231,9 +241,30 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
     },
 
     dispose() {
+      for (const timer of liveIdleTimers.values()) clearTimeout(timer);
+      liveIdleTimers.clear();
+      liveWalkingIds.clear();
+
       for (const feature of features.values()) {
         if (feature.mixer) feature.mixer.stopAllAction();
       }
+
+      scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry?.dispose();
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          for (const mat of mats) {
+            if (
+              mat instanceof THREE.MeshStandardMaterial ||
+              mat instanceof THREE.MeshBasicMaterial
+            ) {
+              mat.map?.dispose();
+            }
+            mat.dispose();
+          }
+        }
+      });
+
       features.clear();
       initialPositions.clear();
       assets.clear();

@@ -21,9 +21,8 @@ export function useStompEvents() {
           try {
             const event: StompEventResponse = JSON.parse(message.body);
             addStompEvent(event);
-            console.log("[STOMP Event]", event);
-          } catch (e) {
-            console.error("[STOMP] Failed to parse event:", e);
+          } catch {
+            // STOMP 메시지 파싱 실패 — 무시
           }
         });
       }

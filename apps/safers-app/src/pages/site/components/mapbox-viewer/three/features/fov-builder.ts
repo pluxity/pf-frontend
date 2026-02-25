@@ -174,6 +174,12 @@ export function createFOVBuilder(ctx: SceneContext) {
   }
 
   function dispose() {
+    for (const [id, mesh] of fovMeshes) {
+      mesh.geometry.dispose();
+      (mesh.material as THREE.Material).dispose();
+      const entry = ctx.features.get(id);
+      if (entry) entry.group.remove(mesh);
+    }
     fovMeshes.clear();
     fovConfigs.clear();
   }

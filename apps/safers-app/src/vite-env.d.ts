@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_API_BASE_PATH?: string;
   readonly VITE_API_SERVER_URL?: string;
   readonly VITE_PROJECT_PATH?: string;
+  readonly VITE_ION_CESIUM_ACCESS_TOKEN?: string;
 }
 
 interface ImportMeta {

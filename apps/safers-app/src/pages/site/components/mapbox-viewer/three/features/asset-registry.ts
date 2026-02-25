@@ -57,9 +57,9 @@ export function createAssetRegistry(
     const existing = assetLoadPromises.get(assetId);
     if (existing) return existing;
 
-    const promise = new Promise<void>((resolve) => {
-      const loader = new GLTFLoader();
-      loader.load(url, (gltf) => {
+    const promise = new GLTFLoader()
+      .loadAsync(url)
+      .then((gltf) => {
         assets.set(assetId, {
           scene: gltf.scene,
           animations: gltf.animations,
@@ -73,9 +73,10 @@ export function createAssetRegistry(
         }
 
         requestRepaint();
-        resolve();
+      })
+      .catch(() => {
+        assetLoadPromises.delete(assetId);
       });
-    });
 
     assetLoadPromises.set(assetId, promise);
     return promise;

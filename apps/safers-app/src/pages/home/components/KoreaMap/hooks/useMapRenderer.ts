@@ -113,8 +113,7 @@ export function useMapRenderer({
 
         setIsLoading(false);
       })
-      .catch((error: unknown) => {
-        console.error("Failed to load GeoJSON:", error);
+      .catch(() => {
         setIsLoading(false);
       });
 

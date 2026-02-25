@@ -77,8 +77,8 @@ export function LeftPanel() {
           counts[status]++;
         }
         setSiteStatusCounts(counts);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
+      } catch {
+        // 대시보드 데이터 로드 실패
       } finally {
         setIsLoading(false);
       }
@@ -94,8 +94,8 @@ export function LeftPanel() {
     }
   };
 
-  const handleEventClick = (eventId: string) => {
-    console.log("Clicked event:", eventId);
+  const handleEventClick = (_eventId: string) => {
+    // TODO: 이벤트 클릭 시 상세 페이지 이동 구현
   };
 
   if (isLoading) {

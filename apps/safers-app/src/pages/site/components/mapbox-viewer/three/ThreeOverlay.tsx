@@ -11,6 +11,8 @@ import {
   WORKER1_PATROL_DURATION,
   WORKER4_PATROL_PATH,
   WORKER4_PATROL_DURATION,
+  DUMP_PATROL_PATH,
+  DUMP_PATROL_DURATION,
 } from "../../../config";
 
 interface ThreeOverlayProps {
@@ -152,6 +154,7 @@ export function ThreeOverlay({
     const walkReady = sceneApi.registerAsset("worker-walk", ASSET_URLS.workerWalk);
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
+    const dumpReady = sceneApi.registerAsset("dump", ASSET_URLS.dump);
 
     fetchWorkerPositions().then(async (workers) => {
       for (const w of workers) {
@@ -170,11 +173,15 @@ export function ThreeOverlay({
       sceneApi.startPatrol("worker-4", WORKER4_PATROL_PATH, WORKER4_PATROL_DURATION);
     });
 
+    dumpReady.then(() => {
+      sceneApi.addFeature("dump-1", "dump", DUMP_PATROL_PATH[0]!);
+      sceneApi.startPatrol("dump-1", DUMP_PATROL_PATH, DUMP_PATROL_DURATION);
+    });
+
     cctvService.getCCTVList().then(({ data }) => {
       for (const cctv of data) {
         sceneApi.addFeature(cctv.id, "cctv", cctv.position);
         sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
-        sceneApi.setFeatureFOV(cctv.id, cctv.fovDeg, cctv.fovRange, cctv.pitch);
         store.setCCTVStreamUrl(cctv.id, cctvService.getStreamUrl(cctv.streamName));
       }
     });

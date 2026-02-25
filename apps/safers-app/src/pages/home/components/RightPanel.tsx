@@ -25,8 +25,8 @@ export function RightPanel() {
         } else {
           setSelectedSiteData(null);
         }
-      } catch (error) {
-        console.error("Failed to fetch site data:", error);
+      } catch {
+        // 사이트 데이터 로드 실패
       } finally {
         setIsLoading(false);
       }
@@ -54,7 +54,6 @@ export function RightPanel() {
         <span className="font-semibold">{selectedSiteData?.name || "--"}</span>
         <span className="h-4 bg-white w-0.5"></span>
         <span>진행 458 Days</span>
-        {/* 링크 동작 나중에 확인! 링크 가능 시 태그 변경 */}
         <img
           src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/external-link.svg`}
           alt="external link"

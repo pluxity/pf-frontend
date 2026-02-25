@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { Map as MapboxMap } from "mapbox-gl";
-import type { ThreeOverlayHandle, SelectedFeatureData } from "../types";
+import type { ThreeOverlayHandle, SelectedFeatureData, FeaturePosition } from "../types";
 import { useCCTVPopupStore, useFeatureDataStore } from "@/stores";
 
 interface UseMapInteractionsOptions {
@@ -8,12 +8,23 @@ interface UseMapInteractionsOptions {
   overlayRef: React.RefObject<ThreeOverlayHandle | null>;
   selectedIdRef: React.RefObject<string | null>;
   coordRef?: React.RefObject<HTMLDivElement | null>;
+  pathEditingRef?: React.RefObject<boolean>;
+  addPathPointRef?: React.RefObject<((p: FeaturePosition) => void) | null>;
   onFeatureSelect: (feature: SelectedFeatureData | null) => void;
   onWorkerSelect: (workerId: string | null) => void;
 }
 
 export function useMapInteractions(opts: UseMapInteractionsOptions): void {
-  const { mapRef, overlayRef, selectedIdRef, coordRef, onFeatureSelect, onWorkerSelect } = opts;
+  const {
+    mapRef,
+    overlayRef,
+    selectedIdRef,
+    coordRef,
+    pathEditingRef,
+    addPathPointRef,
+    onFeatureSelect,
+    onWorkerSelect,
+  } = opts;
 
   const cbRef = useRef({ onFeatureSelect, onWorkerSelect });
   useEffect(() => {
@@ -83,7 +94,33 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
       }
     };
 
-    const handleClick = (e: { point: { x: number; y: number } }) => {
+    const handleClick = (e: {
+      point: { x: number; y: number };
+      lngLat: { lng: number; lat: number };
+    }) => {
+      if (pathEditingRef?.current) {
+        const canvas = map.getCanvas();
+        const hit = overlayRef.current?.raycast(
+          e.point.x,
+          e.point.y,
+          canvas.clientWidth,
+          canvas.clientHeight
+        );
+        const point: FeaturePosition = hit
+          ? {
+              lng: Math.round(hit.lng * 1e6) / 1e6,
+              lat: Math.round(hit.lat * 1e6) / 1e6,
+              altitude: Math.round(hit.altitude * 100) / 100,
+            }
+          : {
+              lng: Math.round(e.lngLat.lng * 1e6) / 1e6,
+              lat: Math.round(e.lngLat.lat * 1e6) / 1e6,
+              altitude: 0,
+            };
+        addPathPointRef?.current?.(point);
+        return;
+      }
+
       const canvas = map.getCanvas();
       const hit = overlayRef.current?.raycast(
         e.point.x,

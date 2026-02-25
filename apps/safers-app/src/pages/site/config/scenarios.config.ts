@@ -4,7 +4,7 @@ import type { GeoPosition } from "@/services/types/worker.types";
 export const SCENARIO_EMERGENCIES: Record<1 | 2, SiteEmergencyPayload> = {
   1: {
     workerId: "worker-3",
-    position: { lng: 126.846643, lat: 37.499556, altitude: 11.9 },
+    position: { lng: 126.846774, lat: 37.49943, altitude: 11.9 },
     vitals: { temperature: 38.5, heartRate: 145 },
   },
   2: {
@@ -24,7 +24,7 @@ export const SCENARIO_CAMERAS: Record<
   }
 > = {
   1: {
-    center: [126.846816, 37.499495],
+    center: [126.846947, 37.499369],
     zoom: 20.79,
     pitch: 52.74,
     bearing: 105.74,

@@ -30,6 +30,13 @@ export function createFeatureManager(ctx: SceneContext) {
     if (!entry) return;
 
     if (entry.mixer) entry.mixer.stopAllAction();
+    entry.group.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry?.dispose();
+        const mats = Array.isArray(child.material) ? child.material : [child.material];
+        for (const mat of mats) mat.dispose();
+      }
+    });
     ctx.scene.remove(entry.group);
     ctx.features.delete(id);
     ctx.initialPositions.delete(id);

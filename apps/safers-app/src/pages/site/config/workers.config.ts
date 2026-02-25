@@ -94,3 +94,39 @@ export const WORKER4_PATROL_PATH: GeoPosition[] = [
 
 export const WORKER1_PATROL_DURATION = 60_000;
 export const WORKER4_PATROL_DURATION = 60_000;
+
+/** 덤프트럭 순찰 경로 — 건물 외곽 도로 순환 */
+export const DUMP_PATROL_PATH: GeoPosition[] = [
+  { lng: 126.84661, lat: 37.50133, altitude: 0 },
+  { lng: 126.846821, lat: 37.500907, altitude: 0 },
+  { lng: 126.847, lat: 37.500524, altitude: 0 },
+  { lng: 126.847004, lat: 37.5004, altitude: 0 },
+  { lng: 126.846802, lat: 37.500354, altitude: 0.28 },
+  { lng: 126.846729, lat: 37.500333, altitude: 1.72 },
+  { lng: 126.846617, lat: 37.500302, altitude: 3.66 },
+  { lng: 126.846544, lat: 37.50028, altitude: 4.95 },
+  { lng: 126.846444, lat: 37.500251, altitude: 6.63 },
+  { lng: 126.846339, lat: 37.500223, altitude: 7.29 },
+  { lng: 126.846279, lat: 37.500205, altitude: 7.29 },
+  { lng: 126.846249, lat: 37.500141, altitude: 7.29 },
+  { lng: 126.84628, lat: 37.500072, altitude: 7.29 },
+  { lng: 126.84632, lat: 37.499986, altitude: 7.29 },
+  { lng: 126.846376, lat: 37.499878, altitude: 7.29 },
+  { lng: 126.846505, lat: 37.499583, altitude: 7.29 },
+  { lng: 126.846552, lat: 37.499485, altitude: 6.99 },
+  { lng: 126.846594, lat: 37.4994, altitude: 5.7 },
+  { lng: 126.846651, lat: 37.499282, altitude: 3.9 },
+  { lng: 126.846693, lat: 37.499196, altitude: 2.6 },
+  { lng: 126.846735, lat: 37.499114, altitude: 2 },
+  { lng: 126.846784, lat: 37.499013, altitude: 2 },
+  { lng: 126.846837, lat: 37.498894, altitude: 2 },
+  { lng: 126.84686, lat: 37.49884, altitude: 2 },
+  { lng: 126.846903, lat: 37.498743, altitude: 1.61 },
+  { lng: 126.846957, lat: 37.498623, altitude: 0.51 },
+  { lng: 126.847014, lat: 37.49851, altitude: -0.3 },
+  { lng: 126.847208, lat: 37.498545, altitude: -0.3 },
+  { lng: 126.847327, lat: 37.498568, altitude: -0.3 },
+  { lng: 126.847344, lat: 37.498528, altitude: -0.3 },
+  { lng: 126.847334, lat: 37.49849, altitude: -0.3 },
+];
+export const DUMP_PATROL_DURATION = 90_000;

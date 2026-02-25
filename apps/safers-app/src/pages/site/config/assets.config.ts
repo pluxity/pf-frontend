@@ -3,6 +3,7 @@ export const ASSET_URLS = {
   workerWalk: "/assets/models/worker_walk.glb",
   workerStunned: "/assets/models/worker_stunned.glb",
   cctv: "/assets/models/cctv.glb",
+  dump: "/assets/models/Dump.glb",
 } as const;
 
 export const BUILDING_OPACITY = {

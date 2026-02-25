@@ -7,4 +7,4 @@ export type {
   DangerZone,
   SelectedFeatureData,
 } from "./feature.types";
-export type { ThreeOverlayHandle, MapboxViewerHandle } from "./handles";
+export type { OverlayHandle, ThreeOverlayHandle, MapboxViewerHandle } from "./handles";

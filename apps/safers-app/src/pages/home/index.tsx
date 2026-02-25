@@ -97,8 +97,8 @@ export function DashboardPage() {
           .map((site) => siteToPOI(site, siteStatusMap))
           .filter((poi): poi is POI => poi !== null);
         setPois(sitePOIs);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
+      } catch {
+        // 대시보드 데이터 로드 실패
       }
     }
     fetchData();

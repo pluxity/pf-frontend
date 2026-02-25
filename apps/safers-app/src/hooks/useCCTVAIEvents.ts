@@ -71,9 +71,9 @@ export function useCCTVAIEvents() {
           );
           setEvents(sorted);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
-          console.error("[CCTV-AI] Failed to fetch initial events:", err);
+          // 초기 이벤트 로드 실패
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -101,8 +101,8 @@ export function useCCTVAIEvents() {
             try {
               const event: StompEventResponse = JSON.parse(message.body);
               setEvents((prev) => upsertEvent(prev, event));
-            } catch (e) {
-              console.error("[CCTV-AI] Failed to parse event:", e);
+            } catch {
+              // STOMP 이벤트 파싱 실패 — 무시
             }
           });
 
@@ -111,8 +111,8 @@ export function useCCTVAIEvents() {
             try {
               const event: StompEventResponse = JSON.parse(message.body);
               setEvents((prev) => upsertEvent(prev, event));
-            } catch (e) {
-              console.error("[CCTV-AI] Failed to parse video event:", e);
+            } catch {
+              // STOMP 비디오 이벤트 파싱 실패 — 무시
             }
           });
         }

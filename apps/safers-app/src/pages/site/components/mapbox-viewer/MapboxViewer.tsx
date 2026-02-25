@@ -65,6 +65,25 @@ export function MapboxViewer({
   const { selectedFeature, setSelectedFeature, selectedIdRef, doSelectWorker, handleFeatureClick } =
     useFeatureSelection({ overlayRef, onWorkerSelectRef });
 
+  const handleCCTVChipChange = useCallback((selected: boolean) => {
+    setShowCCTVLabels(selected);
+    if (!selected) {
+      useCCTVPopupStore.getState().closeAll();
+    }
+  }, []);
+
+  const handleWorkerChipChange = useCallback(
+    (selected: boolean) => {
+      setShowWorkerLabels(selected);
+      if (!selected) {
+        setSelectedFeature(null);
+        overlayRef.current?.clearHighlight();
+        onWorkerSelectRef.current?.(null);
+      }
+    },
+    [setSelectedFeature]
+  );
+
   const { mapRef } = useMapboxSetup({
     containerRef,
     overlayRef,
@@ -186,13 +205,13 @@ export function MapboxViewer({
 
       <div className="pointer-events-auto absolute left-1/2 top-[4.25rem] z-[5] -translate-x-1/2">
         <FilterChipGroup>
-          <FilterChip selected={showCCTVLabels} onChange={setShowCCTVLabels}>
+          <FilterChip selected={showCCTVLabels} onChange={handleCCTVChipChange}>
             <span className="flex items-center gap-1.5">
               <CCTVIcon size="sm" />
               CCTV
             </span>
           </FilterChip>
-          <FilterChip selected={showWorkerLabels} onChange={setShowWorkerLabels}>
+          <FilterChip selected={showWorkerLabels} onChange={handleWorkerChipChange}>
             <span className="flex items-center gap-1.5">
               <UserIcon size="sm" />
               작업자

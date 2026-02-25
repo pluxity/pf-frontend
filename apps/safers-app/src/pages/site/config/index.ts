@@ -5,6 +5,8 @@ export {
   WORKER1_PATROL_DURATION,
   WORKER4_PATROL_PATH,
   WORKER4_PATROL_DURATION,
+  DUMP_PATROL_PATH,
+  DUMP_PATROL_DURATION,
   fetchWorkerPositions,
 } from "./workers.config";
 
