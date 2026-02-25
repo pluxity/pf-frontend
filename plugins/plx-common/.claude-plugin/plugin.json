@@ -1,6 +1,0 @@
-{
-  "name": "plx-common",
-  "version": "2.0.0",
-  "description": "PLUXITY 공통 Git 워크플로우 (커밋, PR). FE/BE 모두 사용.",
-  "skills": ["skills/commit-workflow", "skills/pr-workflow"]
-}

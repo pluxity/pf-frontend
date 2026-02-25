@@ -67,7 +67,8 @@ export function createProjection(ctx: SceneContext) {
 
     ctx.raycaster.set(near, direction);
     const targets: THREE.Object3D[] = [ctx.modelGroup];
-    for (const feature of ctx.features.values()) {
+    for (const [id, feature] of ctx.features) {
+      if (id.startsWith("dump-")) continue;
       targets.push(feature.group);
     }
     const intersects = ctx.raycaster.intersectObjects(targets, true);
