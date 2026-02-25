@@ -20,10 +20,3 @@ export function validateLogin(data: LoginFormData): ValidationError[] {
     data.password ? validators.min(data.password.length, 6, "비밀번호") : null
   );
 }
-
-/**
- * 로그인 폼 유효성 검사 여부
- */
-export function isValidLogin(data: LoginFormData): boolean {
-  return validateLogin(data).length === 0;
-}

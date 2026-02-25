@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button, Input, Checkbox } from "@pf-dev/ui/atoms";
+import { Button, Input } from "@pf-dev/ui/atoms";
 import {
   Select,
   SelectTrigger,
@@ -37,7 +37,7 @@ export function LoginPage() {
     };
 
     loadUsernames();
-  }, [toast]);
+  }, []);
 
   const getFieldError = (fieldName: string) => {
     return errors.find((e) => e.field === fieldName)?.message;
@@ -104,7 +104,7 @@ export function LoginPage() {
                   clearFieldError("아이디");
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger id="username">
                   <SelectValue placeholder="아이디를 선택하세요." />
                 </SelectTrigger>
                 <SelectContent>
@@ -137,13 +137,6 @@ export function LoginPage() {
                 <p className="text-sm text-error-brand">{getFieldError("비밀번호")}</p>
               )}
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Checkbox id="remember" name="remember" disabled={loading} defaultChecked={false} />
-            <label htmlFor="remember" className="text-sm text-muted">
-              로그인 상태 유지
-            </label>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
