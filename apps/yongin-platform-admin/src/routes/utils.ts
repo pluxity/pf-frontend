@@ -85,6 +85,7 @@ export function buildMenuSections(
       dividerBefore: section.dividerBefore,
       items: (sectionMap.get(section.id) || []).sort((a, b) => a.order - b.order),
     }))
+    .filter((section) => section.items.length > 0)
     .sort((a, b) => a.order - b.order);
 
   return menuSections;
