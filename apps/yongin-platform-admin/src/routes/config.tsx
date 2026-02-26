@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { Settings, Users, User, Lock, FileText } from "@pf-dev/ui";
+import { Settings, Users, User, Lock, FileText, Image } from "@pf-dev/ui";
 
 import type { RouteConfig, SectionConfig } from "./types";
 
@@ -26,24 +26,57 @@ const PasswordChangePage = lazy(() =>
 const SystemSettingsPage = lazy(() =>
   import("@/pages/system").then((m) => ({ default: m.SystemSettingsPage }))
 );
+const ThumbnailManagementPage = lazy(() =>
+  import("@/pages/system").then((m) => ({ default: m.ThumbnailManagementPage }))
+);
 const KeyManagementPage = lazy(() =>
   import("@/pages/key-management").then((m) => ({ default: m.KeyManagementPage }))
+);
+const NoticeListPage = lazy(() =>
+  import("@/pages/notice").then((m) => ({ default: m.NoticePage }))
+);
+const AnnouncementPage = lazy(() =>
+  import("@/pages/announcement").then((m) => ({ default: m.AnnouncementPage }))
+);
+const SafetyEquipmentPage = lazy(() =>
+  import("@/pages/safety-equipment").then((m) => ({ default: m.SafetyEquipmentPage }))
 );
 
 export const sectionConfigs: SectionConfig[] = [
   {
     id: "management",
-    label: "관리",
+    label: "주요 지표 관리",
     collapsible: true,
     defaultExpanded: true,
     order: 1,
+  },
+  {
+    id: "key-management",
+    label: "주요관리사항 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 2,
+  },
+  {
+    id: "notice",
+    label: "공지사항 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 3,
+  },
+  {
+    id: "safety-equipment",
+    label: "안전장비 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 4,
   },
   {
     id: "settings",
     label: "개인 설정",
     collapsible: true,
     defaultExpanded: true,
-    order: 2,
+    order: 5,
     dividerBefore: true,
   },
   {
@@ -51,13 +84,16 @@ export const sectionConfigs: SectionConfig[] = [
     label: "사용자 관리",
     collapsible: true,
     defaultExpanded: true,
-    order: 3,
+    order: 6,
     roles: ["ADMIN"],
     dividerBefore: "관리자 기능",
   },
   {
     id: "system",
-    order: 4,
+    label: "시스템 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 7,
     roles: ["ADMIN"],
   },
 ];
@@ -110,8 +146,41 @@ export const protectedRoutes: RouteConfig[] = [
     menu: {
       label: "주요관리사항 관리",
       icon: FileText,
-      sectionId: "management",
-      order: 4,
+      sectionId: "key-management",
+      order: 1,
+    },
+  },
+  {
+    path: "/notice/notices",
+    element: NoticeListPage,
+    permissions: [{ resourceType: "NOTICE", minLevel: "READ" }],
+    menu: {
+      label: "공지사항",
+      icon: FileText,
+      sectionId: "notice",
+      order: 1,
+    },
+  },
+  {
+    path: "/notice/announcement",
+    element: AnnouncementPage,
+    permissions: [{ resourceType: "NOTICE", minLevel: "READ" }],
+    menu: {
+      label: "안내사항",
+      icon: FileText,
+      sectionId: "notice",
+      order: 2,
+    },
+  },
+  {
+    path: "/safety-equipment",
+    element: SafetyEquipmentPage,
+    permissions: [{ resourceType: "SAFETY_EQUIPMENT", minLevel: "READ" }],
+    menu: {
+      label: "안전장비 관리",
+      icon: FileText,
+      sectionId: "safety-equipment",
+      order: 1,
     },
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능
@@ -167,6 +236,17 @@ export const protectedRoutes: RouteConfig[] = [
       icon: Settings,
       sectionId: "system",
       order: 1,
+    },
+  },
+  {
+    path: "/system/thumbnail",
+    element: ThumbnailManagementPage,
+    roles: ["ADMIN"],
+    menu: {
+      label: "썸네일 관리",
+      icon: Image,
+      sectionId: "system",
+      order: 2,
     },
   },
 ];

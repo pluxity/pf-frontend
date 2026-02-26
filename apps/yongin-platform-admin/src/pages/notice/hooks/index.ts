@@ -1,4 +1,3 @@
-export { useAnnouncement, useUpdateAnnouncement } from "./useAnnouncement";
 export {
   useNotices,
   useNotice,
