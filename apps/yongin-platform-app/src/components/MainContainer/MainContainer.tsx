@@ -3,6 +3,7 @@ import { Tabs, TabsContent } from "@pf-dev/ui";
 import { cn } from "@pf-dev/ui/utils";
 import { useKeyManagementStore } from "@/stores/keyManagement.store";
 import { useDashboardStore } from "@/stores/dashboard.store";
+import { useMainContainerStore } from "@/stores/mainContainer.store";
 
 const BirdsEyeView = lazy(() =>
   import("./views/BirdsEyeView").then((m) => ({ default: m.BirdsEyeView }))
@@ -44,28 +45,54 @@ function LoadingFallback() {
   );
 }
 
+// 탭 → 대시보드 사이드 위젯 페이지 매핑
+const TAB_PAGE_MAP: Partial<Record<TabValue, number>> = {
+  management: 0,
+  cctv: 1,
+};
+
 export function MainContainer({ className, defaultTab = "birds-eye" }: MainContainerProps) {
   const [activeTab, setActiveTab] = useState<TabValue>(defaultTab);
   const { shouldShowView, resetShowView } = useKeyManagementStore();
-  const { pause } = useDashboardStore();
+  const { pause, setPage } = useDashboardStore();
+  const requestedTab = useMainContainerStore((s) => s.requestedTab);
+  const clearRequest = useMainContainerStore((s) => s.clearRequest);
+
+  const switchTab = (tab: TabValue) => {
+    setActiveTab(tab);
+    const targetPage = TAB_PAGE_MAP[tab];
+    if (targetPage !== undefined) {
+      setPage(targetPage);
+      pause();
+    }
+  };
 
   useEffect(() => {
     if (shouldShowView) {
       startTransition(() => {
-        setActiveTab("management");
+        switchTab("management");
         resetShowView();
-        pause();
       });
     }
-  }, [shouldShowView, resetShowView, pause]);
+  }, [shouldShowView, resetShowView]);
+
+  useEffect(() => {
+    if (requestedTab) {
+      startTransition(() => {
+        switchTab(requestedTab as TabValue);
+        clearRequest();
+      });
+    }
+  }, [requestedTab, clearRequest]);
 
   return (
     <Tabs
       value={activeTab}
-      onValueChange={(v) => setActiveTab(v as TabValue)}
-      className={cn("relative h-full", className)}
+      onValueChange={(v) => switchTab(v as TabValue)}
+      className={cn("flex flex-col h-full", className)}
     >
-      <div className="h-full overflow-hidden rounded-lg">
+      {/* 콘텐츠 영역 */}
+      <div className="flex-1 min-h-0 overflow-hidden rounded-lg rounded-bl-none border border-[#9499B1]">
         <TabsContent value="birds-eye" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
             <BirdsEyeView />
@@ -97,18 +124,19 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
         </TabsContent>
       </div>
 
-      <div className="absolute bottom-0 right-4 flex" role="tablist">
+      {/* 탭 트리거 */}
+      <div className="flex items-start gap-px shrink-0 h-10" role="tablist">
         {TABS.map((tab) => (
           <button
             key={tab.value}
             role="tab"
             aria-selected={activeTab === tab.value}
-            onClick={() => setActiveTab(tab.value)}
+            onClick={() => switchTab(tab.value)}
             className={cn(
-              "px-5 py-2 text-sm font-medium transition-all rounded-t-lg shadow-[0.25rem_0_0.5rem_0_rgba(0,0,0,0.4)]",
+              "px-9 text-xs font-medium transition-all rounded-b-lg",
               activeTab === tab.value
-                ? "bg-brand text-white z-10 scale-110 origin-bottom"
-                : "bg-surface-dark text-gray-300 hover:text-white"
+                ? "bg-brand text-white z-10 py-2.5 text-sm"
+                : "bg-slate-400/50 text-gray-600 hover:text-white py-2"
             )}
           >
             {tab.label}

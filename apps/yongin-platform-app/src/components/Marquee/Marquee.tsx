@@ -18,15 +18,17 @@ export function Marquee({ children, animate = false, duration = 15, className }:
 
   return (
     <div className="relative h-6 overflow-hidden">
-      <span
-        className={cn(
-          "absolute top-0 left-0 whitespace-nowrap will-change-transform animate-marquee",
-          className
-        )}
+      <div
+        className="absolute top-0 left-full inline-flex whitespace-nowrap will-change-transform animate-marquee"
         style={{ animationDuration: `${duration}s` }}
       >
-        {children}
-      </span>
+        <span className={cn("shrink-0", className)} style={{ paddingRight: "100vw" }}>
+          {children}
+        </span>
+        <span className={cn("shrink-0", className)} style={{ paddingRight: "100vw" }} aria-hidden>
+          {children}
+        </span>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,12 @@
+import cloudyIcon from "@/assets/icons/weathers/cloudy.svg";
+import mistIcon from "@/assets/icons/weathers/mist.svg";
+import partlyCloudyIcon from "@/assets/icons/weathers/partly-cloudy.svg";
+import rainyIcon from "@/assets/icons/weathers/rainy.svg";
+import snowIcon from "@/assets/icons/weathers/snow.svg";
+import strongWindIcon from "@/assets/icons/weathers/strong-wind.svg";
+import sunnyIcon from "@/assets/icons/weathers/sunny.svg";
+import thunderstormRainIcon from "@/assets/icons/weathers/thunderstorm-rain.svg";
+
 const PM_STATUS = {
   좋음: { icon: "pm-good.svg", color: "bg-[#0057FF]" },
   보통: { icon: "pm-moderate.svg", color: "bg-[#2DC000]" },
@@ -38,17 +47,42 @@ export function getRainFall(rainfall: number): string {
   return "매우 강한 비";
 }
 
-export function getWeatherIconName(weatherId: number): string {
-  if (weatherId >= 200 && weatherId < 300) return "thunderstorm-rain";
-  if (weatherId >= 300 && weatherId < 400) return "rainy";
-  if (weatherId >= 500 && weatherId < 600) return "rainy";
-  if (weatherId >= 600 && weatherId < 700) return "snow";
-  if (weatherId >= 700 && weatherId < 800) return "mist";
-  if (weatherId === 800) return "sunny";
-  if (weatherId >= 801 && weatherId <= 804) {
-    return weatherId === 801 ? "partly-cloudy" : "cloudy";
-  }
-  return "sunny";
+/**
+ * OpenWeather API weather condition ID를 아이콘으로 매핑
+ *
+ * | ID 범위   | 날씨           | 아이콘              |
+ * |-----------|----------------|---------------------|
+ * | 200-232   | Thunderstorm   | thunderstorm-rain   |
+ * | 300-321   | Drizzle        | rainy               |
+ * | 500-531   | Rain           | rainy               |
+ * | 600-622   | Snow           | snow                |
+ * | 701-721   | Mist/Haze      | mist                |
+ * | 731-781   | Dust/Squall    | strong-wind         |
+ * | 800       | Clear          | sunny               |
+ * | 801       | Few clouds     | partly-cloudy       |
+ * | 802-804   | Clouds/Overcast| cloudy              |
+ */
+export function getWeatherIcon(weatherId: number): string {
+  // Thunderstorm (200-232)
+  if (weatherId >= 200 && weatherId < 300) return thunderstormRainIcon;
+  // Drizzle (300-321)
+  if (weatherId >= 300 && weatherId < 400) return rainyIcon;
+  // Rain (500-531)
+  if (weatherId >= 500 && weatherId < 600) return rainyIcon;
+  // Snow (600-622)
+  if (weatherId >= 600 && weatherId < 700) return snowIcon;
+  // Atmosphere: Mist, Smoke, Haze (701-721)
+  if (weatherId >= 700 && weatherId < 731) return mistIcon;
+  // Atmosphere: Dust, Sand, Ash, Squall, Tornado (731-781)
+  if (weatherId >= 731 && weatherId < 800) return strongWindIcon;
+  // Clear (800)
+  if (weatherId === 800) return sunnyIcon;
+  // Few clouds (801)
+  if (weatherId === 801) return partlyCloudyIcon;
+  // Scattered / Broken / Overcast clouds (802-804)
+  if (weatherId >= 802 && weatherId <= 804) return cloudyIcon;
+
+  return sunnyIcon;
 }
 
 export function getNoiseStatus(noise: number): string {

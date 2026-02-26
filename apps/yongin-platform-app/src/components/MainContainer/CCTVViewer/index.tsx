@@ -1,11 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { cn } from "@pf-dev/ui/utils";
 import { CCTVGrid } from "./CCTVGrid";
 import { GRID_TEMPLATES, type TemplateId } from "./types";
-import type { CCTVPath } from "@/services/types";
+import type { CCTVResponse } from "@/services/types";
+import { useCctvBookmarkStore } from "@/stores/cctvBookmark.store";
+import { useToastStore } from "@/stores/toast.store";
 
 interface CCTVViewerProps {
-  cctvs: CCTVPath[];
+  cctvs: CCTVResponse[];
   getStreamUrl: (name: string) => string;
   onCardClick?: (cctvIndex: number) => void;
 }
@@ -65,14 +67,29 @@ const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "1+5", "3x3", "4x4"];
 export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("4x4");
   const [currentPage, setCurrentPage] = useState(0);
+  const bookmarks = useCctvBookmarkStore((s) => s.bookmarks);
+  const ensureLoaded = useCctvBookmarkStore((s) => s.ensureLoaded);
+  const toastWarning = useToastStore((s) => s.warning);
+
+  useEffect(() => {
+    ensureLoaded();
+  }, [ensureLoaded]);
+
+  // 즐겨찾기 CCTV를 상단으로 정렬
+  const sortedCctvs = useMemo(() => {
+    const bookmarkedNames = new Set(bookmarks.map((b) => b.streamName));
+    const bookmarked = cctvs.filter((c) => bookmarkedNames.has(c.streamName));
+    const rest = cctvs.filter((c) => !bookmarkedNames.has(c.streamName));
+    return [...bookmarked, ...rest];
+  }, [cctvs, bookmarks]);
 
   const template = GRID_TEMPLATES[selectedTemplate];
-  const totalPages = Math.ceil(cctvs.length / template.itemsPerPage);
+  const totalPages = Math.ceil(sortedCctvs.length / template.itemsPerPage);
 
   const currentCCTVs = useMemo(() => {
     const start = currentPage * template.itemsPerPage;
-    return cctvs.slice(start, start + template.itemsPerPage);
-  }, [cctvs, currentPage, template.itemsPerPage]);
+    return sortedCctvs.slice(start, start + template.itemsPerPage);
+  }, [sortedCctvs, currentPage, template.itemsPerPage]);
 
   const handleTemplateChange = (templateId: TemplateId) => {
     setSelectedTemplate(templateId);
@@ -152,9 +169,13 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
           template={template}
           cctvs={currentCCTVs}
           getStreamUrl={getStreamUrl}
+          showBookmark
           onCardClick={(index) => {
             const globalIndex = currentPage * template.itemsPerPage + index;
             onCardClick?.(globalIndex);
+          }}
+          onMaxBookmarkReached={() => {
+            toastWarning("즐겨찾기는 최대 4개까지 등록할 수 있습니다");
           }}
         />
       </div>

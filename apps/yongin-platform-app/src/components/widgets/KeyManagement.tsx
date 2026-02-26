@@ -66,7 +66,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
             {currentItem.file?.url ? (
               <CarouselInfo.Image src={currentItem.file.url} alt={currentItem.title} />
             ) : (
-              <div className="w-full h-25 bg-white flex flex-col items-center justify-center text-gray-300">
+              <div className="w-full h-25 c bg-white flex flex-col items-center justify-center text-gray-300">
                 <svg
                   className="w-12 h-12 mb-1"
                   fill="none"
@@ -86,7 +86,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
             )}
             <div className="flex gap-2">
               <CarouselInfo.Tag>{getTypeDescription(currentItem.type)}</CarouselInfo.Tag>
-              <CarouselInfo.Title>{currentItem.title}</CarouselInfo.Title>
+              <CarouselInfo.Title className="text-brand">{currentItem.title}</CarouselInfo.Title>
             </div>
             <CarouselInfo.Description>
               {currentItem.methodDirection || "설명이 없습니다"}

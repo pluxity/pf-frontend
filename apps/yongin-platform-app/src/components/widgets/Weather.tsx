@@ -7,66 +7,38 @@ import {
   getWindSpeedStatus,
   getRainFall,
   getNoiseStatus,
-  getWeatherIconName,
+  getWeatherIcon,
 } from "@/utils/weather";
+import humIcon from "@/assets/icons/hum.svg";
+import windIcon from "@/assets/icons/wind.svg";
+import directionIcon from "@/assets/icons/direction.svg";
+import rainIcon from "@/assets/icons/rain.svg";
+import noiseIcon from "@/assets/icons/noise.svg";
 
 export function Weather({ id, className }: WeatherProps) {
   const { weather, openWeather, isLoading, isError, error } = useWeather();
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
+      <Widget id={id} className={cn(className, "bg-white/30")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Spinner size="lg" />
-            <p className="text-gray-500">데이터를 불러오는 중...</p>
-          </div>
+          <Spinner size="lg" />
         </div>
       </Widget>
     );
   }
 
-  if (isError) {
+  if (isError || !weather) {
     return (
-      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
+      <Widget id={id} className={cn(className, "bg-white/30")} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-red-500">
-              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-            </div>
-            <p className="text-gray-700">
-              {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
-            </p>
-          </div>
-        </div>
-      </Widget>
-    );
-  }
-
-  if (!weather) {
-    return (
-      <Widget id={id} className={cn(className, " bg-white/30")} contentClassName="h-full">
-        <div className="flex h-full items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-gray-400">
-              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-                />
-              </svg>
-            </div>
-            <p className="text-gray-500">표시할 날씨 데이터가 없습니다.</p>
-          </div>
+          <p className="text-sm text-gray-500">
+            {isError
+              ? error instanceof Error
+                ? error.message
+                : "데이터를 불러오는데 실패했습니다."
+              : "표시할 날씨 데이터가 없습니다."}
+          </p>
         </div>
       </Widget>
     );
@@ -77,26 +49,31 @@ export function Weather({ id, className }: WeatherProps) {
 
   const weatherData = [
     {
+      icon: humIcon,
       label: "습도",
       value: `${Math.round(weather.humidity)}%`,
       status: getHumidityStatus(weather.humidity),
     },
     {
+      icon: windIcon,
       label: "풍속",
       value: `${Math.round(weather.windSpeed)}m/s`,
       status: getWindSpeedStatus(weather.windSpeed),
     },
     {
+      icon: directionIcon,
       label: "풍향",
       value: weather.windDirection,
       status: "-",
     },
     {
+      icon: rainIcon,
       label: "강우",
       value: `${Math.round(weather.rainfall)}mm`,
       status: getRainFall(weather.rainfall),
     },
     {
+      icon: noiseIcon,
       label: "소음",
       value: `${Math.round(weather.noise)}dB`,
       status: getNoiseStatus(weather.noise),
@@ -104,82 +81,71 @@ export function Weather({ id, className }: WeatherProps) {
   ];
 
   return (
-    <Widget id={id} className={cn(className, " bg-white")} contentClassName="h-full">
-      <div className="flex flex-col justify-start gap-3 h-full overflow-hidden">
-        <div className="grid grid-cols-3 gap-2">
-          <div className="flex flex-col items-center justify-between min-h-28">
+    <Widget id={id} className={cn(className, "bg-white")} contentClassName="h-full p-3">
+      <div className="flex flex-col h-full">
+        {/* 상단: 날씨 아이콘 + 온도 | PM2.5 | PM10 */}
+        <div className="grid grid-cols-3 gap-1 mb-2">
+          {/* 날씨 아이콘 + 온도 */}
+          <div className="flex flex-col items-center justify-end">
             {openWeather ? (
-              <>
-                <img
-                  src={`${import.meta.env.BASE_URL}assets/icons/${getWeatherIconName(openWeather.id)}.svg`}
-                  alt={openWeather.description}
-                  className="w-16 h-16 flex-1"
-                />
-                <div className="flex flex-col items-center">
-                  <span className="text-xs tracking-tight whitespace-nowrap">
-                    {openWeather.description}
-                  </span>
-                  <span className="text-sm font-bold">{Math.round(openWeather.temp)}°C</span>
-                </div>
-              </>
+              <img
+                src={getWeatherIcon(openWeather.id)}
+                alt={openWeather.description}
+                className="w-14 h-14"
+              />
             ) : (
-              <>
-                <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
-                <span className="text-sm font-bold">{Math.round(weather.temperature)}°C</span>
-              </>
+              <div className="w-14 h-14 rounded-full bg-gray-200 animate-pulse" />
             )}
+            <span className="text-lg font-bold">
+              {openWeather
+                ? `${openWeather.temp.toFixed(1)}°C`
+                : `${Math.round(weather.temperature)}°C`}
+            </span>
           </div>
-          <div className="flex flex-col items-center justify-evenly min-h-28">
-            <div className="flex flex-auto relative">
-              <img
-                src={`${import.meta.env.BASE_URL}assets/icons/${pm10Status.icon}`}
-                alt={weather.pm10Status}
-                className="w-14 h-14"
-              />
-              <span
-                className={cn(
-                  "absolute bottom-[0.3rem] left-1/2 -translate-x-1/2 text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
-                  pm10Status.color
-                )}
-              >
-                {weather.pm10Status}
-              </span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-xs tracking-tight whitespace-nowrap">미세먼지(PM10)</span>
-              <span className="text-sm font-bold">{Math.round(weather.pm10)} ㎍/㎥</span>
-            </div>
+
+          {/* PM2.5 */}
+          <div className="flex flex-col items-center justify-end gap-0.5">
+            <span
+              className={cn(
+                "rounded-full w-14 h-14 text-white font-bold flex flex-col text-sm inline-flex items-center justify-center",
+                pm25Status.color
+              )}
+            >
+              {Math.round(weather.pm25)}
+              <span className="text-xs font-normal">µg/m³</span>
+            </span>
+            <span className="text-xs text-gray-600 leading-tight text-center">초미세먼지</span>
+            <span className="text-xs text-gray-500 leading-tight">(PM2.5)</span>
           </div>
-          <div className="flex flex-col items-center justify-evenly min-h-28">
-            <div className="flex flex-auto relative">
-              <img
-                src={`${import.meta.env.BASE_URL}assets/icons/${pm25Status.icon}`}
-                alt={weather.pm25Status}
-                className="w-14 h-14"
-              />
-              <span
-                className={cn(
-                  "absolute bottom-[0.3rem] left-1/2 -translate-x-1/2 text-xs rounded-sm py-1 px-1 whitespace-nowrap text-white font-bold",
-                  pm25Status.color
-                )}
-              >
-                {weather.pm25Status}
-              </span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-xs tracking-tight whitespace-nowrap">초미세먼지(PM2.5)</span>
-              <span className="text-sm font-bold">{Math.round(weather.pm25)} ㎍/㎥</span>
-            </div>
+
+          {/* PM10 */}
+          <div className="flex flex-col items-center justify-end gap-0.5">
+            <span
+              className={cn(
+                "rounded-full w-14 h-14 text-white font-bold flex flex-col text-sm inline-flex items-center justify-center",
+                pm10Status.color
+              )}
+            >
+              {Math.round(weather.pm10)}
+              <span className="text-xs font-normal">µg/m³</span>
+            </span>
+            <span className="text-xs text-gray-600 leading-tight text-center">미세먼지</span>
+            <span className="text-xs text-gray-500 leading-tight">(PM10)</span>
           </div>
         </div>
-        <div className="flex flex-col gap-1.5">
+
+        {/* 하단: 데이터 행 */}
+        <div className="flex flex-1 flex-col gap-1 min-h-0 py-2">
           {weatherData.map((data) => (
-            <div key={data.label} className="flex text-xs text-center">
-              <span className="bg-[#DAE4F4] rounded-xs block flex-1 p-1">{data.label}</span>
-              <div className="flex flex-4 items-center">
-                <span className="flex-1">{data.value}</span>
-                <span className="w-0.5 bg-[#BBBFCF] h-4"></span>
-                <span className="flex-1">{data.status}</span>
+            <div key={data.label} className="flex items-stretch text-xs px-2">
+              <span className="flex items-center justify-center gap-1 bg-[#DAE4F4] rounded-sm p-2 min-w-[4.5rem]">
+                <img src={data.icon} alt={data.label} className="w-3.5 h-3.5" />
+                {data.label}
+              </span>
+              <div className="flex flex-1 items-center min-w-0">
+                <span className="flex-1 text-center">{data.value}</span>
+                <span className="w-px bg-[#BBBFCF] h-3.5" />
+                <span className="flex-1 text-center">{data.status}</span>
               </div>
             </div>
           ))}

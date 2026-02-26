@@ -1,6 +1,10 @@
 import { Button, Settings } from "@pf-dev/ui";
 import ciLogo from "../assets/images/ci.svg";
 import hobanLogo from "../assets/images/hoban.svg";
+import arrowPrev from "@/assets/icons/arrow-prev.svg";
+import arrowNext from "@/assets/icons/arrow-next.svg";
+import playIcon from "@/assets/icons/play.svg";
+import pauseIcon from "@/assets/icons/pause.svg";
 import { DateTime } from "@/components/DateTime";
 import { useDashboardStore, selectIsPlaying } from "@/stores/dashboard.store";
 
@@ -15,7 +19,7 @@ export function Header() {
   const next = useDashboardStore((select) => select.next);
 
   return (
-    <header className="relative h-[var(--header-height)] px-[0.75rem] bg-surface-body/70">
+    <header className="relative h-[var(--header-height)] px-4 bg-surface-body/70">
       <div className="flex flex-col gap-1 items-center justify-center h-full">
         <div className="flex w-full gap-2">
           <h1 className="flex-1 min-w-0 flex justify-start items-center">
@@ -34,11 +38,7 @@ export function Header() {
             </div>
             <div className="border-1 border-gray-400 rounded-md">
               <Button variant="ghost" className="w-10 p-0" onClick={prev}>
-                <img
-                  src={`${import.meta.env.BASE_URL}assets/icons/arrow-prev.svg`}
-                  alt="이전"
-                  className="w-6 h-6"
-                />
+                <img src={arrowPrev} alt="이전" className="w-6 h-6" />
               </Button>
               <Button
                 variant="ghost"
@@ -46,17 +46,13 @@ export function Header() {
                 onClick={togglePlay}
               >
                 <img
-                  src={`${import.meta.env.BASE_URL}assets/icons/${isPlaying ? "pause" : "play"}.svg`}
+                  src={isPlaying ? pauseIcon : playIcon}
                   alt={isPlaying ? "일시정지" : "재생"}
                   className="w-6 h-6"
                 />
               </Button>
               <Button variant="ghost" className="w-10 p-0" onClick={next}>
-                <img
-                  src={`${import.meta.env.BASE_URL}assets/icons/arrow-next.svg`}
-                  alt="다음"
-                  className="w-6 h-6"
-                />
+                <img src={arrowNext} alt="다음" className="w-6 h-6" />
               </Button>
             </div>
             <nav>

@@ -4,3 +4,6 @@ export * from "./goal";
 export * from "./key-management";
 export * from "./weather";
 export * from "./attendance";
+export * from "./cctv-bookmark";
+export * from "./notice";
+export * from "./system-settings";

@@ -16,3 +16,15 @@ export type GoalProps = BaseWidgetProps;
 export type AnnouncementProps = BaseWidgetProps;
 
 export type KeyManagementProps = BaseWidgetProps;
+
+export type BookmarkCctvProps = BaseWidgetProps;
+
+export type SafetyManagementProps = BaseWidgetProps;
+
+export type SafetyEquipmentProps = BaseWidgetProps;
+
+export type IoT1Props = BaseWidgetProps;
+
+export type IoT2Props = BaseWidgetProps;
+
+export type IoT3Props = BaseWidgetProps;

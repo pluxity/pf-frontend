@@ -4,11 +4,11 @@ import { cctvService } from "@/services";
 const PATHS_KEY = "/media/paths";
 
 export function useCCTVStreams() {
-  const { data, error, isLoading } = useSWR(PATHS_KEY, () => cctvService.getPaths());
+  const { data, error, isLoading } = useSWR(PATHS_KEY, () => cctvService.getCctvs());
 
   return {
-    paths: data?.items ?? [],
-    itemCount: data?.itemCount ?? 0,
+    cctvs: data ?? [],
+    itemCount: data?.length ?? 0,
     isLoading,
     isError: !!error,
     error,

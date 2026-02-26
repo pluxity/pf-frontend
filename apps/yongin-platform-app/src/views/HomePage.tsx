@@ -7,25 +7,31 @@ import {
   KeyManagement,
   Goal,
   Announcement,
+  BookmarkCctv,
+  SafetyManagement,
+  SafetyEquipment,
+  IoT1,
+  IoT2,
+  IoT3,
 } from "@/components/widgets";
 import { useDashboardStore, selectPage, selectIsPlaying } from "@/stores/dashboard.store";
-
-const INTERVAL_MS = 5000;
+import { useSystemSettings } from "@/hooks";
 
 export function HomePage() {
   const page = useDashboardStore(selectPage);
   const isPlaying = useDashboardStore(selectIsPlaying);
   const next = useDashboardStore((select) => select.next);
 
+  const { systemSettings } = useSystemSettings();
+
   useEffect(() => {
     if (!isPlaying) return;
-
-    const timerId = setInterval(next, INTERVAL_MS);
+    const timerId = setInterval(next, (systemSettings?.rollingIntervalSeconds ?? 10) * 1000);
     return () => clearInterval(timerId);
-  }, [isPlaying, next]);
+  }, [isPlaying, next, systemSettings?.rollingIntervalSeconds]);
 
   return (
-    <div className="grid grid-cols-[5fr_14fr_5fr] gap-4 p-4 h-[calc(100vh-var(--header-height)-var(--footer-height))]">
+    <div className="grid grid-cols-[20rem_1fr_20rem] gap-4 px-4 py-2 h-full">
       <div className="relative min-h-0">
         <div
           className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
@@ -37,7 +43,9 @@ export function HomePage() {
         <div
           className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity  ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          {/* TODO: 왼쪽 페이지 2 위젯 3개 */}
+          <BookmarkCctv id="bookmarkCctv" />
+          <SafetyManagement id="safetyManagement" />
+          <SafetyEquipment id="safetyEquipment" />
         </div>
       </div>
 
@@ -54,7 +62,9 @@ export function HomePage() {
         <div
           className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          {/* TODO: 오른쪽 페이지 2 위젯 3개 */}
+          <IoT1 id="iot1" />
+          <IoT2 id="iot2" />
+          <IoT3 id="iot3" />
         </div>
       </div>
     </div>

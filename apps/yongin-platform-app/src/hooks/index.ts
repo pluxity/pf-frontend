@@ -3,3 +3,6 @@ export { useAttendance } from "./useAttendance";
 export { useCCTVStreams } from "./useCCTVStreams";
 export { useGoal } from "./useGoal";
 export { useWeather } from "./useWeather";
+export { useCCTVBookmarks } from "./useCCTVBookmarks";
+export { useNotices } from "./useNotices";
+export { useSystemSettings } from "./useSystemSetting";

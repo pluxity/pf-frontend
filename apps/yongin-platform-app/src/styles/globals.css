@@ -5,6 +5,7 @@
   --breakpoint-4k: 3840px;
   --header-height: 3.75rem;
   --footer-height: 2.1875rem;
+  --main-height: 56.25rem;
   --color-surface-dark: #55596c;
   --color-surface-body: #d6e1f4;
   --color-surface-footer: #0020ac;
@@ -49,13 +50,17 @@ html {
 
 @keyframes marquee {
   0% {
-    transform: translateX(100%);
+    transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
 @theme {
   --animate-marquee: marquee 15s linear infinite;
+  --color-brand-secondary: #54565a;
+  --color-brand: #f37021;
+  --color-brand-hover: #da6419;
+  --color-brand-active: #c25914;
 }
