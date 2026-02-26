@@ -36,9 +36,7 @@ const AnnouncementPage = lazy(() =>
   import("@/pages/announcement").then((m) => ({ default: m.AnnouncementPage }))
 );
 const SafetyEquipmentPage = lazy(() =>
-  import("@/pages/safety-equipment/SafetyEquipmentPage").then((m) => ({
-    default: m.SafetyEquipmentPage,
-  }))
+  import("@/pages/safety-equipment").then((m) => ({ default: m.SafetyEquipmentPage }))
 );
 
 export const sectionConfigs: SectionConfig[] = [
@@ -162,7 +160,7 @@ export const protectedRoutes: RouteConfig[] = [
     },
   },
   {
-    path: "/notice/safety-equipment",
+    path: "/safety-equipment",
     element: SafetyEquipmentPage,
     permissions: [{ resourceType: "SAFETY_EQUIPMENT", minLevel: "READ" }],
     menu: {
