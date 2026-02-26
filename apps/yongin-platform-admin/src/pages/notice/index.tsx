@@ -36,8 +36,8 @@ import {
   Spinner,
 } from "@pf-dev/ui/atoms";
 import { useToastContext } from "@/contexts";
-import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "../hooks";
-import type { Notice, NoticeFormData } from "../types";
+import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "./hooks";
+import type { Notice, NoticeFormData } from "./types";
 
 const noticeSchema = z.object({
   title: z
@@ -50,7 +50,7 @@ const noticeSchema = z.object({
     .max(1000, "내용은 1000자 이내로 입력해주세요"),
 });
 
-export function NoticeSection() {
+function NoticeSection() {
   const { toast } = useToastContext();
   const { notices, isLoading, mutate } = useNotices();
   const { createNotice, isCreating } = useCreateNotice();
@@ -291,5 +291,18 @@ export function NoticeSection() {
         </ModalContent>
       </Modal>
     </>
+  );
+}
+
+export function NoticePage() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">공지사항</h1>
+        <p className="mt-2 text-gray-600">공지사항을 작성하고 관리합니다</p>
+      </div>
+
+      <NoticeSection />
+    </div>
   );
 }

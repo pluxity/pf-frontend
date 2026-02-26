@@ -29,6 +29,17 @@ const SystemSettingsPage = lazy(() =>
 const KeyManagementPage = lazy(() =>
   import("@/pages/key-management").then((m) => ({ default: m.KeyManagementPage }))
 );
+const NoticeListPage = lazy(() =>
+  import("@/pages/notice").then((m) => ({ default: m.NoticePage }))
+);
+const AnnouncementPage = lazy(() =>
+  import("@/pages/announcement").then((m) => ({ default: m.AnnouncementPage }))
+);
+const SafetyEquipmentPage = lazy(() =>
+  import("@/pages/safety-equipment/SafetyEquipmentPage").then((m) => ({
+    default: m.SafetyEquipmentPage,
+  }))
+);
 
 export const sectionConfigs: SectionConfig[] = [
   {
@@ -39,11 +50,25 @@ export const sectionConfigs: SectionConfig[] = [
     order: 1,
   },
   {
+    id: "notice",
+    label: "공지사항 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 2,
+  },
+  {
+    id: "safety-equipment",
+    label: "안전장비 관리",
+    collapsible: true,
+    defaultExpanded: true,
+    order: 3,
+  },
+  {
     id: "settings",
     label: "개인 설정",
     collapsible: true,
     defaultExpanded: true,
-    order: 2,
+    order: 4,
     dividerBefore: true,
   },
   {
@@ -51,13 +76,13 @@ export const sectionConfigs: SectionConfig[] = [
     label: "사용자 관리",
     collapsible: true,
     defaultExpanded: true,
-    order: 3,
+    order: 5,
     roles: ["ADMIN"],
     dividerBefore: "관리자 기능",
   },
   {
     id: "system",
-    order: 4,
+    order: 6,
     roles: ["ADMIN"],
   },
 ];
@@ -112,6 +137,39 @@ export const protectedRoutes: RouteConfig[] = [
       icon: FileText,
       sectionId: "management",
       order: 4,
+    },
+  },
+  {
+    path: "/notice/notices",
+    element: NoticeListPage,
+    permissions: [{ resourceType: "NOTICE", minLevel: "READ" }],
+    menu: {
+      label: "공지사항",
+      icon: FileText,
+      sectionId: "notice",
+      order: 1,
+    },
+  },
+  {
+    path: "/notice/announcement",
+    element: AnnouncementPage,
+    permissions: [{ resourceType: "NOTICE", minLevel: "READ" }],
+    menu: {
+      label: "안내사항",
+      icon: FileText,
+      sectionId: "notice",
+      order: 2,
+    },
+  },
+  {
+    path: "/notice/safety-equipment",
+    element: SafetyEquipmentPage,
+    permissions: [{ resourceType: "SAFETY_EQUIPMENT", minLevel: "READ" }],
+    menu: {
+      label: "안전장비 관리",
+      icon: FileText,
+      sectionId: "safety-equipment",
+      order: 1,
     },
   },
   // 관리자 전용 페이지: ADMIN 역할만 접근 가능

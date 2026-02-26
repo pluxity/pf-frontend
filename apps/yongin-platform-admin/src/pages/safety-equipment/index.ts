@@ -1,0 +1,1 @@
+export { SafetyEquipmentPage } from "./SafetyEquipmentPage";

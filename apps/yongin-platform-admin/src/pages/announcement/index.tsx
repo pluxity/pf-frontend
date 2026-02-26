@@ -5,14 +5,14 @@ import { z } from "zod";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@pf-dev/ui/molecules";
 import { Button, Label, Textarea } from "@pf-dev/ui/atoms";
 import { useToastContext } from "@/contexts";
-import { useAnnouncement, useUpdateAnnouncement } from "../hooks";
-import type { AnnouncementFormData } from "../types";
+import { useAnnouncement, useUpdateAnnouncement } from "./hooks";
+import type { AnnouncementFormData } from "./types";
 
 const announcementSchema = z.object({
   content: z.string().min(1, "안내사항 내용을 입력해주세요"),
 });
 
-export function AnnouncementSection() {
+function AnnouncementSection() {
   const { toast } = useToastContext();
   const { announcement, isLoading, mutate } = useAnnouncement();
   const { updateAnnouncement, isUpdating } = useUpdateAnnouncement();
@@ -114,5 +114,18 @@ export function AnnouncementSection() {
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+export function AnnouncementPage() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">안내사항</h1>
+        <p className="mt-2 text-gray-600">안내사항을 작성하고 관리합니다</p>
+      </div>
+
+      <AnnouncementSection />
+    </div>
   );
 }

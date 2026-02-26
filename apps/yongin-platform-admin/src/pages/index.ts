@@ -7,3 +7,5 @@ export { ProcessStatusPage } from "./process-status";
 export { GoalsPage } from "./goals";
 export { PasswordChangePage } from "./settings";
 export { KeyManagementPage } from "./key-management";
+export { NoticePage } from "./notice";
+export { AnnouncementPage } from "./announcement";
