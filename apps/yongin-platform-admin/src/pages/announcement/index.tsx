@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@pf-dev/ui/molecules";
+import { Card, CardContent } from "@pf-dev/ui/molecules";
 import { Button, Label, Textarea } from "@pf-dev/ui/atoms";
 import { useToastContext } from "@/contexts";
 import { useAnnouncement, useUpdateAnnouncement } from "./hooks";
@@ -70,61 +70,66 @@ function AnnouncementSection() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>안내사항</CardTitle>
-        <CardDescription>플랫폼 사용자에게 표시되는 안내 메시지를 관리합니다.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="content">안내 내용</Label>
-            <Textarea
-              id="content"
-              rows={6}
-              disabled={!isEditing}
-              placeholder="안내사항을 입력하세요"
-              {...register("content")}
-            />
-            {errors.content && <p className="text-sm text-red-500">{errors.content.message}</p>}
-          </div>
-
-          {announcement?.updatedAt && (
-            <p className="text-sm text-gray-500">
-              마지막 수정: {new Date(announcement.updatedAt).toLocaleString("ko-KR")}
+    <>
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">안내사항</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              플랫폼 사용자에게 표시되는 안내 메시지를 관리합니다.
             </p>
+          </div>
+          {!isEditing && (
+            <Button type="button" onClick={() => setIsEditing(true)}>
+              수정
+            </Button>
           )}
+        </div>
+      </div>
 
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
+      <Card>
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="content" className="font-semibold block mb-3 text-md">
+                안내 내용
+              </Label>
+              <Textarea
+                id="content"
+                rows={6}
+                disabled={!isEditing}
+                placeholder="안내사항을 입력하세요"
+                {...register("content")}
+              />
+              {errors.content && <p className="text-sm text-red-500">{errors.content.message}</p>}
+            </div>
+
+            {announcement?.updatedAt && (
+              <p className="text-sm text-gray-500">
+                마지막 수정: {new Date(announcement.updatedAt).toLocaleString("ko-KR")}
+              </p>
+            )}
+
+            {isEditing && (
+              <div className="flex gap-2">
                 <Button type="submit" disabled={isUpdating || !isDirty}>
                   {isUpdating ? "저장 중..." : "저장"}
                 </Button>
                 <Button type="button" variant="outline" onClick={handleCancel}>
                   취소
                 </Button>
-              </>
-            ) : (
-              <Button type="button" onClick={() => setIsEditing(true)}>
-                수정
-              </Button>
+              </div>
             )}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 
 export function AnnouncementPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">안내사항</h1>
-        <p className="mt-2 text-gray-600">안내사항을 작성하고 관리합니다</p>
-      </div>
-
+    <div className="flex h-full flex-col space-y-6">
       <AnnouncementSection />
     </div>
   );

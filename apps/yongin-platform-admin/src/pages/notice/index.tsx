@@ -3,11 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -203,31 +198,30 @@ function NoticeSection() {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>공지사항</CardTitle>
-              <CardDescription>플랫폼에 표시되는 공지사항을 관리합니다.</CardDescription>
-            </div>
-            <Button onClick={handleCreate} size="sm">
-              <Plus size="sm" className="mr-1" />
-              등록
-            </Button>
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">공지사항 목록</h1>
+            <p className="mt-1 text-sm text-gray-500">총 {notices.length}개의 공지사항</p>
           </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex h-32 items-center justify-center">
-              <Spinner size="lg" />
-            </div>
-          ) : notices.length === 0 ? (
-            <EmptyState variant="no-data" />
-          ) : (
-            <DataTable data={notices} columns={columns} pagination pageSize={5} />
-          )}
-        </CardContent>
-      </Card>
+          <Button onClick={handleCreate}>
+            <Plus size="sm" className="mr-1" />
+            등록
+          </Button>
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-auto">
+        {isLoading ? (
+          <div className="flex h-32 items-center justify-center">
+            <Spinner size="lg" />
+          </div>
+        ) : notices.length === 0 ? (
+          <EmptyState variant="no-data" />
+        ) : (
+          <DataTable data={notices} columns={columns} pagination pageSize={5} />
+        )}
+      </div>
 
       <Modal open={formModalOpen} onOpenChange={setFormModalOpen}>
         <ModalContent>
@@ -296,12 +290,7 @@ function NoticeSection() {
 
 export function NoticePage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">공지사항</h1>
-        <p className="mt-2 text-gray-600">공지사항을 작성하고 관리합니다</p>
-      </div>
-
+    <div className="flex h-full flex-col space-y-6">
       <NoticeSection />
     </div>
   );
