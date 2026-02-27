@@ -91,7 +91,7 @@ function AnnouncementSection() {
         <CardContent className="p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="content" className="font-semibold block mb-3 text-md">
+              <Label htmlFor="content" className="font-semibold block mb-3 text-lg text-black">
                 안내 내용
               </Label>
               <Textarea
@@ -111,7 +111,7 @@ function AnnouncementSection() {
             )}
 
             {isEditing && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 border-t border-gray-200 pt-4">
                 <Button type="submit" disabled={isUpdating || !isDirty}>
                   {isUpdating ? "저장 중..." : "저장"}
                 </Button>

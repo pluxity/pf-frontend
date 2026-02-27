@@ -23,8 +23,8 @@ const GoalsPage = lazy(() => import("@/pages/goals").then((m) => ({ default: m.G
 const PasswordChangePage = lazy(() =>
   import("@/pages/settings").then((m) => ({ default: m.PasswordChangePage }))
 );
-const SystemSettingsPage = lazy(() =>
-  import("@/pages/system").then((m) => ({ default: m.SystemSettingsPage }))
+const SystemSettingPage = lazy(() =>
+  import("@/pages/system").then((m) => ({ default: m.SystemSettingPage }))
 );
 const ThumbnailManagementPage = lazy(() =>
   import("@/pages/system").then((m) => ({ default: m.ThumbnailManagementPage }))
@@ -229,7 +229,7 @@ export const protectedRoutes: RouteConfig[] = [
   },
   {
     path: "/system/settings",
-    element: SystemSettingsPage,
+    element: SystemSettingPage,
     roles: ["ADMIN"],
     menu: {
       label: "시스템 설정",
