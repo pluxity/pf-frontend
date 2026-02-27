@@ -17,7 +17,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={cn(className)} contentClassName="h-full">
         <CarouselCard>
           <CarouselCard.Header title="주요 관리사항" showArrows={false} />
           <div className="p-8 text-center text-neutral-500">로딩 중...</div>
@@ -28,7 +28,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
 
   if (error) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={cn(className)} contentClassName="h-full">
         <CarouselCard>
           <CarouselCard.Header title="주요 관리사항" showArrows={false} />
           <div className="p-8 text-center text-neutral-500">{error}</div>
@@ -40,7 +40,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
   // 데이터 없음
   if (items.length === 0) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={cn(className)} contentClassName="h-full">
         <CarouselCard>
           <CarouselCard.Header title="주요 관리사항" showArrows={false} />
           <div className="p-8 text-center text-neutral-500">주요 관리사항이 없습니다</div>
@@ -53,7 +53,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
   if (!currentItem) return null;
 
   return (
-    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+    <Widget id={id} className={cn(className)} contentClassName="h-full">
       <CarouselCard>
         <CarouselCard.Header
           title="주요 관리사항"
@@ -86,7 +86,7 @@ export function KeyManagement({ id, className }: KeyManagementProps) {
             )}
             <div className="flex gap-2">
               <CarouselInfo.Tag>{getTypeDescription(currentItem.type)}</CarouselInfo.Tag>
-              <CarouselInfo.Title>{currentItem.title}</CarouselInfo.Title>
+              <CarouselInfo.Title className="text-brand">{currentItem.title}</CarouselInfo.Title>
             </div>
             <CarouselInfo.Description>
               {currentItem.methodDirection || "설명이 없습니다"}

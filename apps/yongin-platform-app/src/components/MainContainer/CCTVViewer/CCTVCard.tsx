@@ -1,16 +1,50 @@
 import { useWHEPStream } from "@pf-dev/cctv";
+import { useCctvBookmarkStore } from "@/stores/cctvBookmark.store";
+
+const BOOKMARK_COLORS = {
+  active: "#FACC15",
+  inactive: {
+    fill: "none",
+    stroke: "#ffffff",
+  },
+} as const;
 
 interface CCTVCardProps {
   streamUrl: string;
+  streamName: string;
   name: string;
   onClick?: () => void;
+  showBookmark?: boolean;
+  onMaxBookmarkReached?: () => void;
 }
 
 /**
  * CCTV 단일 카드 컴포넌트
  */
-export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
+export function CCTVCard({
+  streamUrl,
+  streamName,
+  name,
+  onClick,
+  showBookmark = false,
+  onMaxBookmarkReached,
+}: CCTVCardProps) {
   const { videoRef, status, error, connect } = useWHEPStream(streamUrl);
+  const isBookmarked = useCctvBookmarkStore((s) => s.isBookmarked(streamName));
+  const add = useCctvBookmarkStore((s) => s.add);
+  const remove = useCctvBookmarkStore((s) => s.remove);
+
+  const handleToggleBookmark = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isBookmarked) {
+      await remove(streamName);
+    } else {
+      const success = await add(streamName);
+      if (!success) {
+        onMaxBookmarkReached?.();
+      }
+    }
+  };
 
   return (
     <div
@@ -25,7 +59,14 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
         }
       }}
     >
-      <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        disablePictureInPicture
+        className="w-full h-full object-cover"
+      />
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -35,7 +76,6 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
 
       {status === "failed" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/95 text-white">
-          {/* 경고 아이콘 */}
           <div className="w-12 h-12 mb-3 bg-brand/20 rounded-full flex items-center justify-center">
             <svg
               className="w-6 h-6 text-brand"
@@ -51,12 +91,8 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
               />
             </svg>
           </div>
-
-          {/* 에러 메시지 */}
           <p className="text-white font-medium mb-1 text-sm">연결 실패</p>
           {error && <p className="text-gray-400 text-xs mb-3">{error}</p>}
-
-          {/* 재연결 버튼 */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -69,14 +105,27 @@ export function CCTVCard({ streamUrl, name, onClick }: CCTVCardProps) {
         </div>
       )}
 
-      {/* 하단 오버레이 */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent">
-        {/* WebRTC 뱃지 */}
-        <span className="bg-purple-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
-          WebRTC
-        </span>
+      {/* 즐겨찾기 버튼 */}
+      {showBookmark && (
+        <button
+          onClick={handleToggleBookmark}
+          className="absolute top-1.5 right-1.5 w-7 h-7 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 transition-colors opacity-0 group-hover:opacity-100 z-10"
+          aria-label={isBookmarked ? "즐겨찾기 해제" : "즐겨찾기 등록"}
+        >
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill={isBookmarked ? BOOKMARK_COLORS.active : BOOKMARK_COLORS.inactive.fill}
+            stroke={isBookmarked ? BOOKMARK_COLORS.active : BOOKMARK_COLORS.inactive.stroke}
+            strokeWidth={2}
+          >
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </button>
+      )}
 
-        {/* CCTV 이름 */}
+      {/* 하단 오버레이 (hover 시 표시) */}
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         <span className="text-white text-xs font-medium">{name}</span>
       </div>
     </div>

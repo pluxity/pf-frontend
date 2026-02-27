@@ -4,3 +4,6 @@ export * from "./goal.service";
 export * from "./key-management.service";
 export * from "./weather.service";
 export * from "./types";
+export * from "./cctv-bookmark.service";
+export * from "./notice.service";
+export * from "./system-settings.service";

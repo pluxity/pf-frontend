@@ -10,6 +10,7 @@ interface DashboardState {
 interface DashboardActions {
   next: () => void;
   prev: () => void;
+  setPage: (page: number) => void;
   togglePlay: () => void;
   pause: () => void;
   play: () => void;
@@ -23,6 +24,7 @@ export const useDashboardStore = create<DashboardStore>()((set) => ({
 
   next: () => set((state) => ({ page: (state.page + 1) % PAGE_COUNT })),
   prev: () => set((state) => ({ page: (state.page - 1 + PAGE_COUNT) % PAGE_COUNT })),
+  setPage: (page) => set({ page }),
   togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
   pause: () => set({ isPlaying: false }),
   play: () => set({ isPlaying: true }),

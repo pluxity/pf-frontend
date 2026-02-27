@@ -1,4 +1,4 @@
-export type TemplateId = "1x1" | "2x2" | "3x3" | "4x4" | "1+5";
+export type TemplateId = "1x1" | "2x2" | "3x3" | "4x4" | "5x6";
 
 export interface GridTemplate {
   id: TemplateId;
@@ -7,16 +7,6 @@ export interface GridTemplate {
   rows: number;
   itemsPerPage: number;
 }
-
-/** 1+5 레이아웃의 GridLayout 셀 정의 */
-export const GRID_TEMPLATE_1_PLUS_5_CELLS = [
-  { id: "cell-1", colStart: 1, colSpan: 2, rowStart: 1, rowSpan: 2 },
-  { id: "cell-2", colStart: 3, colSpan: 1, rowStart: 1, rowSpan: 1 },
-  { id: "cell-3", colStart: 3, colSpan: 1, rowStart: 2, rowSpan: 1 },
-  { id: "cell-4", colStart: 1, colSpan: 1, rowStart: 3, rowSpan: 1 },
-  { id: "cell-5", colStart: 2, colSpan: 1, rowStart: 3, rowSpan: 1 },
-  { id: "cell-6", colStart: 3, colSpan: 1, rowStart: 3, rowSpan: 1 },
-];
 
 export const GRID_TEMPLATES: Record<TemplateId, GridTemplate> = {
   "1x1": {
@@ -47,11 +37,11 @@ export const GRID_TEMPLATES: Record<TemplateId, GridTemplate> = {
     rows: 4,
     itemsPerPage: 16,
   },
-  "1+5": {
-    id: "1+5",
-    name: "1+5",
-    columns: 3,
-    rows: 3,
-    itemsPerPage: 6,
+  "5x6": {
+    id: "5x6",
+    name: "30개",
+    columns: 5,
+    rows: 6,
+    itemsPerPage: 30,
   },
 };

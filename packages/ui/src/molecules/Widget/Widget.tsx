@@ -84,7 +84,7 @@ function Widget({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={cn(
-        "rounded-xl bg-white shadow-card",
+        "rounded-xl bg-white shadow-card overflow-hidden",
         border && "border border-border-light",
         isDragging && "opacity-50",
         isDropTarget && "ring-2 ring-primary",

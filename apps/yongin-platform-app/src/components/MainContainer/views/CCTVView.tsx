@@ -7,11 +7,11 @@ import { CCTVViewer } from "../CCTVViewer";
  * @see https://github.com/pluxity/pf-frontend/issues/252
  */
 export function CCTVView() {
-  const { paths, isLoading, isError, getWHEPUrl } = useCCTVStreams();
+  const { cctvs, isLoading, isError, getWHEPUrl } = useCCTVStreams();
 
   if (isLoading) {
     return (
-      <div className="flex flex-col h-full bg-primary-50/30 p-4 gap-4">
+      <div className="flex flex-col h-full p-4 gap-4">
         {/* 툴바 스켈레톤 */}
         <Skeleton className="h-12 w-full" />
 
@@ -25,9 +25,9 @@ export function CCTVView() {
     );
   }
 
-  if (isError || paths.length === 0) {
+  if (isError || cctvs.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full bg-primary-50/30">
+      <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-primary-800">CCTV</h2>
           <p className="mt-2 text-primary-700">
@@ -38,5 +38,5 @@ export function CCTVView() {
     );
   }
 
-  return <CCTVViewer cctvs={paths} getStreamUrl={getWHEPUrl} />;
+  return <CCTVViewer cctvs={cctvs} getStreamUrl={getWHEPUrl} />;
 }

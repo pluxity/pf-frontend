@@ -1,11 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { cn } from "@pf-dev/ui/utils";
 import { CCTVGrid } from "./CCTVGrid";
 import { GRID_TEMPLATES, type TemplateId } from "./types";
-import type { CCTVPath } from "@/services/types";
+import type { CCTVResponse } from "@/services/types";
+import { useCctvBookmarkStore } from "@/stores/cctvBookmark.store";
+import { useToastStore } from "@/stores/toast.store";
 
 interface CCTVViewerProps {
-  cctvs: CCTVPath[];
+  cctvs: CCTVResponse[];
   getStreamUrl: (name: string) => string;
   onCardClick?: (cctvIndex: number) => void;
 }
@@ -24,14 +26,18 @@ const TemplateIcons: Record<TemplateId, React.ReactNode> = {
       <rect x="13" y="13" width="8" height="8" rx="1" />
     </svg>
   ),
-  "1+5": (
+  "5x6": (
     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="11" height="11" rx="1" strokeWidth="1.5" />
-      <rect x="16" y="3" width="5" height="5" rx="1" />
-      <rect x="16" y="9.5" width="5" height="5" rx="1" />
-      <rect x="3" y="16" width="5" height="5" rx="1" />
-      <rect x="9.5" y="16" width="5" height="5" rx="1" />
-      <rect x="16" y="16" width="5" height="5" rx="1" />
+      <rect x="3" y="3" width="18" height="18" rx="1" />
+      <line x1="6.6" y1="3" x2="6.6" y2="21" />
+      <line x1="10.2" y1="3" x2="10.2" y2="21" />
+      <line x1="13.8" y1="3" x2="13.8" y2="21" />
+      <line x1="17.4" y1="3" x2="17.4" y2="21" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="9" x2="21" y2="9" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="15" x2="21" y2="15" />
+      <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
   ),
   "3x3": (
@@ -60,19 +66,34 @@ const TemplateIcons: Record<TemplateId, React.ReactNode> = {
   ),
 };
 
-const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "1+5", "3x3", "4x4"];
+const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "3x3", "4x4", "5x6"];
 
 export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("4x4");
   const [currentPage, setCurrentPage] = useState(0);
+  const bookmarks = useCctvBookmarkStore((s) => s.bookmarks);
+  const ensureLoaded = useCctvBookmarkStore((s) => s.ensureLoaded);
+  const toastWarning = useToastStore((s) => s.warning);
+
+  useEffect(() => {
+    ensureLoaded();
+  }, [ensureLoaded]);
+
+  // 즐겨찾기 CCTV를 상단으로 정렬
+  const sortedCctvs = useMemo(() => {
+    const bookmarkedNames = new Set(bookmarks.map((b) => b.streamName));
+    const bookmarked = cctvs.filter((c) => bookmarkedNames.has(c.streamName));
+    const rest = cctvs.filter((c) => !bookmarkedNames.has(c.streamName));
+    return [...bookmarked, ...rest];
+  }, [cctvs, bookmarks]);
 
   const template = GRID_TEMPLATES[selectedTemplate];
-  const totalPages = Math.ceil(cctvs.length / template.itemsPerPage);
+  const totalPages = Math.ceil(sortedCctvs.length / template.itemsPerPage);
 
   const currentCCTVs = useMemo(() => {
     const start = currentPage * template.itemsPerPage;
-    return cctvs.slice(start, start + template.itemsPerPage);
-  }, [cctvs, currentPage, template.itemsPerPage]);
+    return sortedCctvs.slice(start, start + template.itemsPerPage);
+  }, [sortedCctvs, currentPage, template.itemsPerPage]);
 
   const handleTemplateChange = (templateId: TemplateId) => {
     setSelectedTemplate(templateId);
@@ -90,7 +111,7 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-primary-100/70 border-b border-primary-100">
+      <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-1 bg-white/80 rounded-lg p-1">
           {TEMPLATE_ORDER.map((id) => {
             const tmpl = GRID_TEMPLATES[id];
@@ -147,14 +168,18 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden p-4 bg-primary-50/30">
+      <div className="flex-1 overflow-hidden p-1">
         <CCTVGrid
           template={template}
           cctvs={currentCCTVs}
           getStreamUrl={getStreamUrl}
+          showBookmark
           onCardClick={(index) => {
             const globalIndex = currentPage * template.itemsPerPage + index;
             onCardClick?.(globalIndex);
+          }}
+          onMaxBookmarkReached={() => {
+            toastWarning("즐겨찾기는 최대 4개까지 등록할 수 있습니다");
           }}
         />
       </div>

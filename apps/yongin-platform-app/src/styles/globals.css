@@ -4,7 +4,7 @@
   --breakpoint-qhd: 2560px;
   --breakpoint-4k: 3840px;
   --header-height: 3.75rem;
-  --footer-height: 2.1875rem;
+  --footer-height: 2.8125rem;
   --color-surface-dark: #55596c;
   --color-surface-body: #d6e1f4;
   --color-surface-footer: #0020ac;
@@ -48,14 +48,17 @@ html {
 }
 
 @keyframes marquee {
-  0% {
-    transform: translateX(100%);
+  from {
+    transform: translate3d(0, 0, 0);
   }
-  100% {
-    transform: translateX(-100%);
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 @theme {
-  --animate-marquee: marquee 15s linear infinite;
+  --color-brand-secondary: #54565a;
+  --color-brand: #f37021;
+  --color-brand-hover: #da6419;
+  --color-brand-active: #c25914;
 }

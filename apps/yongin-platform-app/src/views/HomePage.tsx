@@ -7,37 +7,49 @@ import {
   KeyManagement,
   Goal,
   Announcement,
+  BookmarkCctv,
+  SafetyManagement,
+  SafetyEquipment,
+  IoT1,
+  IoT2,
+  IoT3,
 } from "@/components/widgets";
+import { PageSkeleton } from "@/components/PageSkeleton";
 import { useDashboardStore, selectPage, selectIsPlaying } from "@/stores/dashboard.store";
-
-const INTERVAL_MS = 5000;
+import { useSystemSettings } from "@/hooks";
 
 export function HomePage() {
   const page = useDashboardStore(selectPage);
   const isPlaying = useDashboardStore(selectIsPlaying);
   const next = useDashboardStore((select) => select.next);
 
-  useEffect(() => {
-    if (!isPlaying) return;
+  const { systemSettings, isLoading } = useSystemSettings();
+  const interval = systemSettings?.rollingIntervalSeconds ?? 10;
 
-    const timerId = setInterval(next, INTERVAL_MS);
+  useEffect(() => {
+    if (!isPlaying || interval <= 0) return;
+    const timerId = setInterval(next, interval * 1000);
     return () => clearInterval(timerId);
-  }, [isPlaying, next]);
+  }, [isPlaying, next, interval, page]);
+
+  if (isLoading) return <PageSkeleton />;
 
   return (
-    <div className="grid grid-cols-[5fr_14fr_5fr] gap-4 p-4 h-[calc(100vh-var(--header-height)-var(--footer-height))]">
+    <div className="grid grid-cols-[20rem_1fr_20rem] gap-5 px-5 pt-5 pb-[0.9375rem] h-full">
       <div className="relative min-h-0">
         <div
-          className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <Weather id="weather" />
           <Attendance id="attendance" />
           <ProcessStatus id="processStatus" />
         </div>
         <div
-          className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity  ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity  ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          {/* TODO: 왼쪽 페이지 2 위젯 3개 */}
+          <BookmarkCctv id="bookmarkCctv" />
+          <SafetyManagement id="safetyManagement" />
+          <SafetyEquipment id="safetyEquipment" />
         </div>
       </div>
 
@@ -45,16 +57,18 @@ export function HomePage() {
 
       <div className="relative min-h-0">
         <div
-          className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <KeyManagement id="keyManagement" />
           <Goal id="goal" />
           <Announcement id="announcement" />
         </div>
         <div
-          className={`absolute inset-0 grid grid-rows-3 gap-4 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          {/* TODO: 오른쪽 페이지 2 위젯 3개 */}
+          <IoT1 id="iot1" />
+          <IoT2 id="iot2" />
+          <IoT3 id="iot3" />
         </div>
       </div>
     </div>
