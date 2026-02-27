@@ -7,3 +7,4 @@ export * from "./attendance";
 export * from "./cctv-bookmark";
 export * from "./notice";
 export * from "./system-settings";
+export * from "./safety-equipment";

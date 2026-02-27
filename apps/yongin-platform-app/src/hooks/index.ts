@@ -6,3 +6,4 @@ export { useWeather } from "./useWeather";
 export { useCCTVBookmarks } from "./useCCTVBookmarks";
 export { useNotices } from "./useNotices";
 export { useSystemSettings } from "./useSystemSetting";
+export { useSafetyEquipment } from "./useSafetyEquipment";
