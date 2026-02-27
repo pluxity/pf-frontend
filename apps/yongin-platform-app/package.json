@@ -17,6 +17,7 @@
     "@hookform/resolvers": "catalog:",
     "@pf-dev/api": "workspace:*",
     "@pf-dev/cctv": "workspace:*",
+    "@pf-dev/fonts": "workspace:*",
     "@pf-dev/map": "workspace:*",
     "@pf-dev/three": "workspace:*",
     "@pf-dev/ui": "workspace:*",

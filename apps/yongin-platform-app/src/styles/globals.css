@@ -57,6 +57,7 @@ html {
 }
 
 @theme {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   --color-brand-secondary: #54565a;
   --color-brand: #f37021;
   --color-brand-hover: #da6419;

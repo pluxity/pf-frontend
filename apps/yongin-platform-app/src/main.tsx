@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { configureApi } from "@pf-dev/api";
 import { useWHEPStore } from "@pf-dev/cctv";
 
+import "@pf-dev/fonts/pretendard";
 import { App } from "./App";
 import "./styles/globals.css";
 

@@ -22,41 +22,49 @@ export function Header() {
   const autoRollDisabled = (systemSettings?.rollingIntervalSeconds ?? 10) <= 0;
 
   return (
-    <header className="relative h-[var(--header-height)] px-4 ">
-      <div className="flex flex-col gap-1 items-center justify-center h-full">
-        <div className="flex w-full gap-2">
+    <header className="relative h-[var(--header-height)] px-5">
+      <div className="flex items-center justify-center h-full">
+        <div className="flex w-full">
           <h1 className="flex-1 min-w-0 flex justify-start items-center">
-            <img src={ciLogo} alt="경기주택도시공사" className="h-[2.5em]" />
+            <img src={ciLogo} alt="경기주택도시공사" className="h-[2.25rem]" />
           </h1>
-          <div className="flex-1 min-w-0 flex items-center justify-center gap-2">
-            <img src={hobanLogo} alt="HOBAN" className="h-[1.625rem]" />
-            <span className="font-extrabold text-2xl text-[#555]">
+          <div className="flex-1 min-w-0 flex items-center justify-center gap-4">
+            <img src={hobanLogo} alt="HOBAN" className="h-[1.9375rem]" />
+            <span className="font-bold text-[1.875rem] text-[#555]">
               용인 플랫폼시티 1공구 스마트건설
             </span>
           </div>
-          <div className="flex-1 min-w-0 flex items-center justify-end gap-2">
-            <div className="flex items-center gap-2 text-lg text-[#55596C]">
-              <DateTime format="YYYY년 MM월 DD일(ddd)" className="font-bold text-lg" />
-              <DateTime format="HH:mm:ss" className="text-lg" />
+          <div className="flex-1 min-w-0 flex items-center justify-end gap-2.5">
+            <div className="flex items-baseline gap-2.5 text-[#55596C]">
+              <DateTime format="YYYY년 MM월 DD일(ddd)" className="font-bold text-base leading-4" />
+              <DateTime format="HH:mm:ss" className="text-base leading-4" />
             </div>
-            <div className="border-1 border-gray-400 rounded-md">
-              <Button variant="ghost" className="w-10 p-0" onClick={prev}>
-                <img src={arrowPrev} alt="이전" className="w-6 h-6" />
+            <div className="flex border border-[#999] rounded-[0.625rem]">
+              <Button
+                variant="ghost"
+                className="w-8 h-10 p-0 rounded-l-[0.625rem] rounded-r-none"
+                onClick={prev}
+              >
+                <img src={arrowPrev} alt="이전" className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
-                className="border-x-1 border-gray-400 rounded-none w-10 p-0"
+                className="border-x border-[#999] rounded-none w-8 h-10 p-0"
                 onClick={togglePlay}
                 disabled={autoRollDisabled}
               >
                 <img
                   src={isPlaying && !autoRollDisabled ? pauseIcon : playIcon}
                   alt={isPlaying && !autoRollDisabled ? "일시정지" : "재생"}
-                  className={autoRollDisabled ? "w-6 h-6 opacity-30" : "w-6 h-6"}
+                  className={autoRollDisabled ? "w-5 h-5 opacity-30" : "w-5 h-5"}
                 />
               </Button>
-              <Button variant="ghost" className="w-10 p-0" onClick={next}>
-                <img src={arrowNext} alt="다음" className="w-6 h-6" />
+              <Button
+                variant="ghost"
+                className="w-8 h-10 p-0 rounded-r-[0.625rem] rounded-l-none"
+                onClick={next}
+              >
+                <img src={arrowNext} alt="다음" className="w-5 h-5" />
               </Button>
             </div>
             <nav>
@@ -65,7 +73,7 @@ export function Header() {
                 size="icon"
                 aria-label="관리자 페이지로 이동"
                 onClick={() => (window.location.href = ADMIN_URL)}
-                className="bg-white rounded-lg w-[2.5rem] h-[2.5rem]"
+                className="bg-white/50 rounded-[0.9375rem] border border-[#999] w-10 h-10"
               >
                 <Settings size="lg" className="text-gray-600" />
               </Button>
