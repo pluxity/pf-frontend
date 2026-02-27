@@ -36,38 +36,24 @@ function normalizeInput(input: ToastInput | string, variant?: ToastData["variant
   return { id, duration: DEFAULT_DURATION, ...input, variant: variant ?? input.variant };
 }
 
+function createToast(
+  set: (fn: (state: ToastState) => Partial<ToastState>) => void,
+  input: ToastInput | string,
+  variant?: ToastData["variant"]
+): string {
+  const toast = normalizeInput(input, variant);
+  set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
+  return toast.id;
+}
+
 export const useToastStore = create<ToastStore>()((set) => ({
   toasts: [],
 
-  add: (input) => {
-    const toast = normalizeInput(input);
-    set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
-    return toast.id;
-  },
-
-  success: (input) => {
-    const toast = normalizeInput(input, "success");
-    set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
-    return toast.id;
-  },
-
-  error: (input) => {
-    const toast = normalizeInput(input, "error");
-    set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
-    return toast.id;
-  },
-
-  warning: (input) => {
-    const toast = normalizeInput(input, "warning");
-    set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
-    return toast.id;
-  },
-
-  info: (input) => {
-    const toast = normalizeInput(input, "info");
-    set((state) => ({ toasts: [toast, ...state.toasts].slice(0, TOAST_LIMIT) }));
-    return toast.id;
-  },
+  add: (input) => createToast(set, input),
+  success: (input) => createToast(set, input, "success"),
+  error: (input) => createToast(set, input, "error"),
+  warning: (input) => createToast(set, input, "warning"),
+  info: (input) => createToast(set, input, "info"),
 
   dismiss: (id) => {
     set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));

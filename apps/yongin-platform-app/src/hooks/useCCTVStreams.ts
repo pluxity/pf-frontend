@@ -1,10 +1,10 @@
 import useSWR from "swr";
 import { cctvService } from "@/services";
 
-const PATHS_KEY = "/media/paths";
+const CCTVS_KEY = "/cctvs";
 
 export function useCCTVStreams() {
-  const { data, error, isLoading } = useSWR(PATHS_KEY, () => cctvService.getCctvs());
+  const { data, error, isLoading } = useSWR(CCTVS_KEY, () => cctvService.getCctvs());
 
   return {
     cctvs: data ?? [],

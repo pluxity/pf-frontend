@@ -11,8 +11,10 @@ export function Announcement({ id, className }: BaseWidgetProps) {
   const { notices, isLoading, isError } = useNotices();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const notice = notices[currentIndex];
   const total = notices.length;
+  // notices 목록이 줄어들어 currentIndex가 범위를 벗어나면 안전하게 보정
+  const safeIndex = total > 0 ? currentIndex % total : 0;
+  const notice = notices[safeIndex];
 
   const goPrev = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : total - 1));
@@ -22,7 +24,7 @@ export function Announcement({ id, className }: BaseWidgetProps) {
     setCurrentIndex((prev) => (prev < total - 1 ? prev + 1 : 0));
   };
 
-  // 자동 롤링 (5초 간격)
+  // 자동 롤링 (5초 간격) — currentIndex 의존성으로 수동 조작 시 타이머 리셋
   useEffect(() => {
     if (total <= 1) return;
 
@@ -31,7 +33,7 @@ export function Announcement({ id, className }: BaseWidgetProps) {
     }, AUTO_ROLL_INTERVAL);
 
     return () => clearInterval(timer);
-  }, [total]);
+  }, [total, currentIndex]);
 
   const formatDate = (dateStr: string) => {
     return dateStr.split("T")[0];

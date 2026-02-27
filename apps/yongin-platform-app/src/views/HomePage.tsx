@@ -30,7 +30,7 @@ export function HomePage() {
     if (!isPlaying || interval <= 0) return;
     const timerId = setInterval(next, interval * 1000);
     return () => clearInterval(timerId);
-  }, [isPlaying, next, interval]);
+  }, [isPlaying, next, interval, page]);
 
   if (isLoading) return <PageSkeleton />;
 
