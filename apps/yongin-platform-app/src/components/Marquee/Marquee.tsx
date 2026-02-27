@@ -19,8 +19,11 @@ export function Marquee({ children, animate = false, duration = 15, className }:
   return (
     <div className="relative h-6 overflow-hidden">
       <div
-        className="absolute top-0 left-full inline-flex whitespace-nowrap will-change-transform animate-marquee"
-        style={{ animationDuration: `${duration}s` }}
+        className="absolute top-0 left-full inline-flex whitespace-nowrap backface-hidden"
+        style={{
+          animation: `marquee ${duration}s linear infinite`,
+          willChange: "transform",
+        }}
       >
         <span className={cn("shrink-0", className)} style={{ paddingRight: "100vw" }}>
           {children}
