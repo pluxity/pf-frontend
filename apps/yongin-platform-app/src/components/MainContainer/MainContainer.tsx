@@ -92,7 +92,7 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
       className={cn("flex flex-col h-full", className)}
     >
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 min-h-0 overflow-hidden rounded-lg rounded-bl-none border border-[#9499B1]">
+      <div className="flex-1 min-h-0 overflow-hidden rounded-[0.9375rem] rounded-bl-none border border-[#9499B1]">
         <TabsContent value="birds-eye" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
             <BirdsEyeView />
@@ -125,7 +125,7 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
       </div>
 
       {/* 탭 트리거 */}
-      <div className="flex items-start gap-px shrink-0 h-10" role="tablist">
+      <div className="flex items-start gap-px shrink-0 h-[2.5rem]" role="tablist">
         {TABS.map((tab) => (
           <button
             key={tab.value}
@@ -133,10 +133,10 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
             aria-selected={activeTab === tab.value}
             onClick={() => switchTab(tab.value)}
             className={cn(
-              "px-9 text-xs font-medium transition-all rounded-b-lg",
+              "px-[3.125rem] transition-all rounded-b-lg flex items-center justify-center",
               activeTab === tab.value
-                ? "bg-brand text-white z-10 py-2.5 text-sm"
-                : "bg-slate-400/50 text-gray-600 hover:text-white py-2"
+                ? "bg-brand text-white z-10 h-[2.5rem] text-base font-bold min-w-[5.625rem]"
+                : "bg-[#BBBFCF] text-[#55596C] hover:text-white h-[1.875rem] text-sm font-normal min-w-[5rem]"
             )}
           >
             {tab.label}

@@ -9,10 +9,15 @@ export function RootLayout() {
   const dismiss = useToastStore((s) => s.dismiss);
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-b from-[#EFF1F8] to-[#D7D6D9]">
+    <div
+      className="h-screen flex flex-col"
+      style={{
+        background: "linear-gradient(180deg, #D4D6D7 0%, #EFF1F8 45%)",
+      }}
+    >
       <Header />
 
-      <main className="flex-1 h-[var(--main-height)] min-h-0 overflow-hidden bg-surface-body/70">
+      <main className="flex-1 min-h-0 overflow-hidden">
         <Outlet />
       </main>
 

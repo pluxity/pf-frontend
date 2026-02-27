@@ -22,7 +22,7 @@ export function Header() {
   const autoRollDisabled = (systemSettings?.rollingIntervalSeconds ?? 10) <= 0;
 
   return (
-    <header className="relative h-[var(--header-height)] px-4 bg-surface-body/70">
+    <header className="relative h-[var(--header-height)] px-4 ">
       <div className="flex flex-col gap-1 items-center justify-center h-full">
         <div className="flex w-full gap-2">
           <h1 className="flex-1 min-w-0 flex justify-start items-center">

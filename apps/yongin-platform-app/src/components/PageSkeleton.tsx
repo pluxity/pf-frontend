@@ -6,8 +6,8 @@ function CardSkeleton() {
 
 export function PageSkeleton() {
   return (
-    <div className="grid grid-cols-[20rem_1fr_20rem] gap-4 px-4 py-2 h-full">
-      <div className="grid grid-rows-3 gap-4">
+    <div className="grid grid-cols-[20rem_1fr_20rem] gap-5 px-5 pt-5 pb-[0.9375rem] h-full">
+      <div className="grid grid-rows-[repeat(3,18.75rem)] content-center gap-5">
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
@@ -15,7 +15,7 @@ export function PageSkeleton() {
 
       <CardSkeleton />
 
-      <div className="grid grid-rows-3 gap-4">
+      <div className="grid grid-rows-[repeat(3,18.75rem)] content-center gap-5">
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />

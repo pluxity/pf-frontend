@@ -111,7 +111,7 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-primary-100/70 border-b border-primary-100">
+      <div className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center gap-1 bg-white/80 rounded-lg p-1">
           {TEMPLATE_ORDER.map((id) => {
             const tmpl = GRID_TEMPLATES[id];

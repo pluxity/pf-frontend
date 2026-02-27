@@ -73,7 +73,7 @@ export function CCTVGrid({
                 onMaxBookmarkReached={onMaxBookmarkReached}
               />
             ) : (
-              <div className="flex items-center justify-center h-full bg-gray-800 rounded-lg text-gray-500 text-sm">
+              <div className="flex items-center justify-center h-full rounded-lg text-gray-500 text-sm">
                 No Signal
               </div>
             )}
