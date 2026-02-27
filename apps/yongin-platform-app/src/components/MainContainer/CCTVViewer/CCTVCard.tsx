@@ -59,7 +59,14 @@ export function CCTVCard({
         }
       }}
     >
-      <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-contain" />
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        disablePictureInPicture
+        className="w-full h-full object-cover"
+      />
 
       {status === "connecting" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -117,8 +124,8 @@ export function CCTVCard({
         </button>
       )}
 
-      {/* 하단 오버레이 */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent">
+      {/* 하단 오버레이 (hover 시 표시) */}
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
         <span className="text-white text-xs font-medium">{name}</span>
       </div>
     </div>

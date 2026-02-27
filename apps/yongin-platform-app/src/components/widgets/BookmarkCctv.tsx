@@ -14,8 +14,10 @@ export function BookmarkCctv({ id, className }: BookmarkCctvProps) {
   };
 
   return (
-    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
-      <div className="grid grid-cols-2 grid-rows-2 gap-1 h-full">
+    <Widget id={id} className={cn(className)} contentClassName="h-full flex flex-col p-3">
+      <h3 className="font-bold text-sm mb-2">즐겨찾기 CCTV</h3>
+
+      <div className="flex-1 min-h-0 grid grid-cols-2 grid-rows-2 gap-1">
         {isLoading &&
           Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="bg-gray-900 rounded-lg animate-pulse" />

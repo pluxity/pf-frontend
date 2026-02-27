@@ -7,6 +7,7 @@ import playIcon from "@/assets/icons/play.svg";
 import pauseIcon from "@/assets/icons/pause.svg";
 import { DateTime } from "@/components/DateTime";
 import { useDashboardStore, selectIsPlaying } from "@/stores/dashboard.store";
+import { useSystemSettings } from "@/hooks";
 
 const ADMIN_URL = import.meta.env.DEV
   ? `${window.location.protocol}//${window.location.hostname}:3001`
@@ -17,6 +18,8 @@ export function Header() {
   const togglePlay = useDashboardStore((select) => select.togglePlay);
   const prev = useDashboardStore((select) => select.prev);
   const next = useDashboardStore((select) => select.next);
+  const { systemSettings } = useSystemSettings();
+  const autoRollDisabled = (systemSettings?.rollingIntervalSeconds ?? 10) <= 0;
 
   return (
     <header className="relative h-[var(--header-height)] px-4 bg-surface-body/70">
@@ -44,11 +47,12 @@ export function Header() {
                 variant="ghost"
                 className="border-x-1 border-gray-400 rounded-none w-10 p-0"
                 onClick={togglePlay}
+                disabled={autoRollDisabled}
               >
                 <img
-                  src={isPlaying ? pauseIcon : playIcon}
-                  alt={isPlaying ? "일시정지" : "재생"}
-                  className="w-6 h-6"
+                  src={isPlaying && !autoRollDisabled ? pauseIcon : playIcon}
+                  alt={isPlaying && !autoRollDisabled ? "일시정지" : "재생"}
+                  className={autoRollDisabled ? "w-6 h-6 opacity-30" : "w-6 h-6"}
                 />
               </Button>
               <Button variant="ghost" className="w-10 p-0" onClick={next}>

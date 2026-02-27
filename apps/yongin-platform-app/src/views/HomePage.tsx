@@ -14,6 +14,7 @@ import {
   IoT2,
   IoT3,
 } from "@/components/widgets";
+import { PageSkeleton } from "@/components/PageSkeleton";
 import { useDashboardStore, selectPage, selectIsPlaying } from "@/stores/dashboard.store";
 import { useSystemSettings } from "@/hooks";
 
@@ -22,13 +23,16 @@ export function HomePage() {
   const isPlaying = useDashboardStore(selectIsPlaying);
   const next = useDashboardStore((select) => select.next);
 
-  const { systemSettings } = useSystemSettings();
+  const { systemSettings, isLoading } = useSystemSettings();
+  const interval = systemSettings?.rollingIntervalSeconds ?? 10;
 
   useEffect(() => {
-    if (!isPlaying) return;
-    const timerId = setInterval(next, (systemSettings?.rollingIntervalSeconds ?? 10) * 1000);
+    if (!isPlaying || interval <= 0) return;
+    const timerId = setInterval(next, interval * 1000);
     return () => clearInterval(timerId);
-  }, [isPlaying, next, systemSettings?.rollingIntervalSeconds]);
+  }, [isPlaying, next, interval]);
+
+  if (isLoading) return <PageSkeleton />;
 
   return (
     <div className="grid grid-cols-[20rem_1fr_20rem] gap-4 px-4 py-2 h-full">

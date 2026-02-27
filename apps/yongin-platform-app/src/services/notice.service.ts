@@ -3,7 +3,7 @@ import type { Notice } from "./types/notice";
 
 export const noticeService = {
   getActive: async (): Promise<Notice[]> => {
-    const result = await getApiClient().get<DataResponse<Notice[]>>("/notices");
+    const result = await getApiClient().get<DataResponse<Notice[]>>("/notices/active");
     return result.data;
   },
 };

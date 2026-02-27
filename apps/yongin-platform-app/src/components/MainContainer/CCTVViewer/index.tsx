@@ -26,14 +26,18 @@ const TemplateIcons: Record<TemplateId, React.ReactNode> = {
       <rect x="13" y="13" width="8" height="8" rx="1" />
     </svg>
   ),
-  "1+5": (
+  "5x6": (
     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="11" height="11" rx="1" strokeWidth="1.5" />
-      <rect x="16" y="3" width="5" height="5" rx="1" />
-      <rect x="16" y="9.5" width="5" height="5" rx="1" />
-      <rect x="3" y="16" width="5" height="5" rx="1" />
-      <rect x="9.5" y="16" width="5" height="5" rx="1" />
-      <rect x="16" y="16" width="5" height="5" rx="1" />
+      <rect x="3" y="3" width="18" height="18" rx="1" />
+      <line x1="6.6" y1="3" x2="6.6" y2="21" />
+      <line x1="10.2" y1="3" x2="10.2" y2="21" />
+      <line x1="13.8" y1="3" x2="13.8" y2="21" />
+      <line x1="17.4" y1="3" x2="17.4" y2="21" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="9" x2="21" y2="9" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="15" x2="21" y2="15" />
+      <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
   ),
   "3x3": (
@@ -62,7 +66,7 @@ const TemplateIcons: Record<TemplateId, React.ReactNode> = {
   ),
 };
 
-const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "1+5", "3x3", "4x4"];
+const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "3x3", "4x4", "5x6"];
 
 export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("4x4");
@@ -164,7 +168,7 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden p-4 bg-primary-50/30">
+      <div className="flex-1 overflow-hidden p-1">
         <CCTVGrid
           template={template}
           cctvs={currentCCTVs}

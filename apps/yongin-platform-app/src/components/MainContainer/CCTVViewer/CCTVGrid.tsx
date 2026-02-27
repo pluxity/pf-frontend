@@ -1,6 +1,5 @@
 import { GridLayout, Widget } from "@pf-dev/ui";
 import { CCTVCard } from "./CCTVCard";
-import { GRID_TEMPLATE_1_PLUS_5_CELLS } from "./types";
 import type { GridTemplate } from "./types";
 import type { CCTVResponse } from "@/services/types";
 
@@ -14,16 +13,6 @@ interface CCTVGridProps {
 }
 
 function buildGridTemplate(template: GridTemplate) {
-  if (template.id === "1+5") {
-    return {
-      id: "1+5",
-      name: "1+5",
-      columns: 3,
-      rows: 3,
-      cells: GRID_TEMPLATE_1_PLUS_5_CELLS,
-    };
-  }
-
   const cells = Array.from({ length: template.itemsPerPage }, (_, i) => ({
     id: `cell-${i + 1}`,
     colStart: (i % template.columns) + 1,
