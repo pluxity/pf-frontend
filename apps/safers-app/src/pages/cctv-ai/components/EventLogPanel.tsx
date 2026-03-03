@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { StompEventResponse, StompEventType, ConnectionStatus } from "@/services";
+import aiCircleIcon from "@/assets/icons/ai-circle.svg";
 
 // ─── 이벤트 타입 → 표시 정보 ───
 
@@ -13,7 +14,7 @@ interface EventTypeConfig {
 const EVENT_TYPE_CONFIG: Record<StompEventType, EventTypeConfig> = {
   NO_HELMET: { label: "안전모 미착용", level: "danger" },
   FALLEN_PERSON: { label: "쓰러짐 감지", level: "danger" },
-  INTRUSION: { label: "침입 감지", level: "warning" },
+  INTRUSION: { label: "위험지역 접근", level: "warning" },
   LINE_CROSSING: { label: "라인 크로싱", level: "warning" },
   EXIT: { label: "퇴장 감지", level: "warning" },
   HELMET: { label: "안전모 착용", level: "info" },
@@ -34,8 +35,11 @@ const LEVEL_LABEL: Record<DisplayLevel, string> = {
 // ─── 시간 포맷 ───
 
 function formatTime(isoStr: string): string {
-  const d = new Date(isoStr);
-  return d.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  return new Date(isoStr).toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 }
 
 // ─── 이벤트 행 ───
@@ -204,8 +208,12 @@ export function EventLogPanel({
 
   return (
     <div className="flex h-full flex-col">
-      {/* 상단: 필터 입력 */}
+      {/* 상단: SafeLog 타이틀 + 필터 입력 */}
       <div className="border-b border-[#2A2D3A] p-3">
+        <h2 className="mb-2 flex items-center gap-1.5 text-base font-bold text-white">
+          <img src={aiCircleIcon} alt="" className="h-5 w-5" />
+          <span className="text-lg flex-shrink-0 text-white leading-[unset]">SafeLog</span>
+        </h2>
         <div className="relative">
           <svg
             className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30"
@@ -224,7 +232,7 @@ export function EventLogPanel({
             type="text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            placeholder="이벤트 필터링... (유형, 카메라명)"
+            placeholder="이상감지 내역 검색"
             className="w-full rounded-md border border-[#2A2D3A] bg-[#252833] py-2 pl-10 pr-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-brand"
           />
           {filterText && (

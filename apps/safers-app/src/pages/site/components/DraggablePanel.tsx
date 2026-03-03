@@ -1,12 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { cn } from "@pf-dev/ui";
 import { ChevronUp } from "@pf-dev/ui/atoms";
 import { GlassPanel } from "./GlassPanel";
 import type { ReactNode } from "react";
 
-type GlassPanelVariant = "default" | "light" | "blue";
+type GlassPanelVariant = "default" | "light" | "blue" | "dark";
 
 let topZIndex = 40;
+
+const VIEWPORT_MARGIN = 40;
 
 interface DraggablePanelProps {
   title: string;
@@ -24,17 +26,58 @@ export function DraggablePanel({
   children,
 }: DraggablePanelProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const [expandUp, setExpandUp] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
+
+  // 펼칠 때 방향 결정 + 뷰포트 밖으로 나가면 위치 보정
+  useLayoutEffect(() => {
+    const el = panelRef.current;
+    if (collapsed || !el) return;
+
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const overflow = rect.bottom - (window.innerHeight - VIEWPORT_MARGIN);
+
+      if (overflow > 0) {
+        // 아래 공간 부족 → 위로 확장
+        setExpandUp(true);
+      } else {
+        setExpandUp(false);
+      }
+    });
+  }, [collapsed]);
+
+  // expandUp 전환 후 여전히 뷰포트 밖이면 transform 보정
+  useLayoutEffect(() => {
+    const el = panelRef.current;
+    if (collapsed || !el) return;
+
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+
+      // 위로 넘침 보정
+      if (rect.top < VIEWPORT_MARGIN) {
+        const shift = VIEWPORT_MARGIN - rect.top;
+        posRef.current.y += shift;
+        el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`;
+      }
+
+      // 아래로 넘침 보정
+      const overflowBottom = rect.bottom - (window.innerHeight - VIEWPORT_MARGIN);
+      if (overflowBottom > 0) {
+        posRef.current.y -= overflowBottom;
+        el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`;
+      }
+    });
+  }, [collapsed, expandUp]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = panelRef.current;
     if (!el) return;
 
-    // 클릭한 패널을 최상위로
     el.style.zIndex = String(++topZIndex);
 
-    // 버튼 클릭 시 드래그 시작하지 않음
     if ((e.target as HTMLElement).closest("button")) return;
 
     e.preventDefault();
@@ -42,7 +85,6 @@ export function DraggablePanel({
     const startX = e.clientX - posRef.current.x;
     const startY = e.clientY - posRef.current.y;
 
-    // 트랜스폼 없는 원래 CSS 위치 계산
     const rect = el.getBoundingClientRect();
     const naturalLeft = rect.left - posRef.current.x;
     const naturalTop = rect.top - posRef.current.y;
@@ -53,7 +95,6 @@ export function DraggablePanel({
       let newX = ev.clientX - startX;
       let newY = ev.clientY - startY;
 
-      // 뷰포트 경계 제한
       newX = Math.max(-naturalLeft, Math.min(window.innerWidth - w - naturalLeft, newX));
       newY = Math.max(-naturalTop, Math.min(window.innerHeight - h - naturalTop, newY));
 
@@ -72,6 +113,8 @@ export function DraggablePanel({
     window.addEventListener("pointerup", onUp);
   };
 
+  const isDark = variant === "dark";
+
   return (
     <div
       ref={panelRef}
@@ -79,14 +122,27 @@ export function DraggablePanel({
       className={cn("cursor-grab select-none active:cursor-grabbing", className)}
       style={{ willChange: "transform" }}
     >
-      <GlassPanel variant={variant} className={cn("flex flex-col", !collapsed && "h-full")}>
+      <GlassPanel
+        variant={variant}
+        className={cn("flex", expandUp && !collapsed ? "flex-col-reverse" : "flex-col")}
+      >
         {/* 헤더 */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-bold tracking-[-0.03125rem] text-[#333]">{title}</span>
+          <span
+            className={cn(
+              "text-sm font-bold tracking-[-0.03125rem]",
+              isDark ? "text-white" : "text-[#333]"
+            )}
+          >
+            {title}
+          </span>
           <button
             type="button"
             onClick={() => setCollapsed((c) => !c)}
-            className="flex h-6 w-6 items-center justify-center rounded text-[#666] transition-colors hover:bg-black/10"
+            className={cn(
+              "flex h-6 w-6 items-center justify-center rounded transition-colors",
+              isDark ? "text-white/60 hover:bg-white/10" : "text-[#666] hover:bg-black/10"
+            )}
             aria-label={collapsed ? "패널 펼치기" : "패널 접기"}
           >
             <ChevronUp

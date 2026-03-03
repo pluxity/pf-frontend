@@ -9,3 +9,4 @@ export { WeatherPanel } from "./WeatherPanel";
 export { WorkerListPanel } from "./WorkerListPanel";
 export type { WorkerEntry, WorkerStatus, Attendance } from "./WorkerListPanel";
 export { MapToolbar } from "./MapToolbar";
+export { SafetyScorePanel } from "./SafetyScorePanel";

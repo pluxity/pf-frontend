@@ -183,7 +183,7 @@ export function EventPanel({ events, className }: EventPanelProps) {
   });
 
   return (
-    <DraggablePanel title="이벤트 현황" variant="light" className={className}>
+    <DraggablePanel title="이벤트 현황" className={className}>
       {/* 요약 카드 */}
       <div className="mt-2 flex gap-2">
         <SummaryCard level="danger" count={counts.danger} />

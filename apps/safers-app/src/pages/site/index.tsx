@@ -8,6 +8,7 @@ import {
   WeatherPanel,
   EventPanel,
   MapToolbar,
+  SafetyScorePanel,
 } from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site, type SiteEvent } from "@/services";
@@ -25,6 +26,12 @@ import {
   DEFAULT_FLY_DURATION,
   nextEventId,
 } from "./config";
+
+function todayAt(hour: number, minute: number): string {
+  const d = new Date();
+  d.setHours(hour, minute, 0, 0);
+  return d.toISOString();
+}
 
 type ScenarioId = 1 | 2 | 3;
 
@@ -145,7 +152,7 @@ export function SitePage() {
                 skipSelect: true,
                 skipFlyTo: true,
                 message: "위험구역 침입 탐지",
-                bannerLabel: SCENARIO3.cctvId,
+                bannerLabel: SCENARIO3.workerId,
               });
 
               mapViewerRef.current?.selectFeature(SCENARIO3.cctvId, COLOR_DANGER);
@@ -209,6 +216,26 @@ export function SitePage() {
           siteDetailService.getSiteDetail(numericId),
         ]);
         setSite(siteRes.data);
+
+        // 초기 샘플 이벤트
+        setEvents([
+          {
+            id: "init-1",
+            level: "alert",
+            code: "ENV-02",
+            message: "미세먼지(PM10) 나쁨 단계",
+            site: { id: numericId, name: siteRes.data.name, region: siteRes.data.region },
+            createdAt: todayAt(8, 12),
+          },
+          {
+            id: "init-2",
+            level: "warning",
+            code: "ENV-01",
+            message: "소음 기준치 초과 (88dB)",
+            site: { id: numericId, name: siteRes.data.name, region: siteRes.data.region },
+            createdAt: todayAt(9, 5),
+          },
+        ]);
       } catch {
         navigate("/");
       } finally {
@@ -278,6 +305,7 @@ export function SitePage() {
         currentWeather={currentWeather}
         className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
       />
+      <SafetyScorePanel className="absolute right-4 top-[22rem] z-[45] w-[15rem]" />
       <MapToolbar
         selectionMode={selectionMode}
         onToggleSelection={() => setSelectionMode((prev) => !prev)}

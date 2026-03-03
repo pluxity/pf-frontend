@@ -1,128 +1,162 @@
-import { useRef } from "react";
-import { RadialBarChart, RadialBar, PolarAngleAxis } from "recharts";
-import type { SafetyScoreData, SafetyStatus } from "@/services";
-import { useContainerSize } from "@/hooks";
 import { DraggablePanel } from "./DraggablePanel";
 
-// ─── 상수 ───
-const STATUS_COLOR: Record<SafetyStatus, string> = {
-  safe: "#11C208",
-  warning: "#F86700",
-  danger: "#CA0014",
-};
+// ─── Mock 데이터 ───
 
-const GAUGE_ASPECT_RATIO = 0.38;
+interface SafetyDetail {
+  label: string;
+  current: number;
+  total: number;
+  type: "normal" | "inverse";
+}
 
-// ─── Gauge Chart (recharts RadialBarChart) ───
-function GaugeChart({ score, width }: { score: number; width: number }) {
-  const data = [{ name: "score", value: score, fill: "#11C208" }];
-  const chartHeight = Math.round(width * GAUGE_ASPECT_RATIO);
+const SAFETY_DETAILS: SafetyDetail[] = [
+  { label: "안전모 미착용", current: 1, total: 50, type: "inverse" },
+  { label: "출역현황", current: 50, total: 50, type: "normal" },
+  { label: "위험구역작업", current: 1, total: 50, type: "inverse" },
+  { label: "쓰러짐감지", current: 0, total: 50, type: "inverse" },
+  { label: "장비이상감지", current: 2, total: 50, type: "inverse" },
+  { label: "개구부열림", current: 3, total: 50, type: "inverse" },
+];
 
-  if (width <= 0) return null;
+function getSafetyRatio(item: SafetyDetail): number {
+  if (item.total === 0) return 0;
+  return item.type === "inverse"
+    ? (item.total - item.current) / item.total
+    : item.current / item.total;
+}
+
+function computeOverallScore(items: SafetyDetail[]): number {
+  if (items.length === 0) return 0;
+  const avg = items.reduce((sum, item) => sum + getSafetyRatio(item), 0) / items.length;
+  return Math.round(avg * 100);
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 90) return "#12C308";
+  if (score >= 70) return "#FDC200";
+  return "#CA0014";
+}
+
+function getBarColor(ratio: number, type: "normal" | "inverse"): string {
+  if (type === "normal") {
+    if (ratio >= 0.9) return "#12C308";
+    if (ratio >= 0.6) return "#FDC200";
+    return "#CA0014";
+  }
+  if (ratio >= 0.98) return "#12C308";
+  if (ratio >= 0.9) return "#FDC200";
+  return "#CA0014";
+}
+
+// ─── SVG 반원 게이지 ───
+
+function SemiCircleGauge({ score }: { score: number }) {
+  const size = 160;
+  const strokeWidth = 16;
+  const cy = size / 2;
+  const r = (size - strokeWidth) / 2;
+
+  const circumference = Math.PI * r;
+  const ratio = Math.min(score, 100) / 100;
+  const dashOffset = circumference * (1 - ratio);
+  const color = getScoreColor(score);
 
   return (
-    <div className="relative flex justify-center">
-      <div className="overflow-hidden" style={{ height: chartHeight }}>
-        <RadialBarChart
-          width={width}
-          height={chartHeight * 2}
-          innerRadius="70%"
-          outerRadius="100%"
-          startAngle={180}
-          endAngle={0}
-          data={data}
-        >
-          <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-          <RadialBar dataKey="value" cornerRadius={10} background={{ fill: "#BBBFCF" }} />
-        </RadialBarChart>
-      </div>
+    <div className="relative flex flex-col items-center">
+      <svg width={size} height={size / 2 + 12} viewBox={`0 0 ${size} ${size / 2 + 12}`}>
+        <defs>
+          <filter id="gauge-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-      {/* 중앙 텍스트 */}
-      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
-        <span className="text-xs text-[#55596C]">안전 점수</span>
-        <span className="text-2xl font-bold text-[#333]">{score}</span>
+        {/* 배경 arc */}
+        <path
+          d={`M ${strokeWidth / 2} ${cy} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${cy}`}
+          fill="none"
+          stroke="#BBBFCF"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+        />
+        {/* 값 arc */}
+        <path
+          d={`M ${strokeWidth / 2} ${cy} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${cy}`}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={dashOffset}
+          filter="url(#gauge-glow)"
+          className="transition-all duration-700"
+        />
+      </svg>
+
+      {/* 중앙 점수 */}
+      <div className="absolute inset-x-0 bottom-1 flex flex-col items-center">
+        <span className="text-4xl font-bold" style={{ color }}>
+          {score}
+        </span>
+        <span className="text-[0.625rem] text-[#777]">점</span>
       </div>
     </div>
   );
 }
 
-// ─── Category Row ───
-function CategoryRow({
-  name,
-  current,
-  total,
-  status,
-}: {
-  name: string;
-  current: number;
-  total: number;
-  status: SafetyStatus;
-}) {
-  const percentage = total > 0 ? (current / total) * 100 : 0;
+// ─── 프로그레스 바 행 ───
+
+const BAR_HEIGHT = "h-2";
+
+function DetailRow({ item }: { item: SafetyDetail }) {
+  const ratio = getSafetyRatio(item);
+  const percentage = ratio * 100;
+  const barColor = getBarColor(ratio, item.type);
 
   return (
     <div className="flex items-center gap-2">
-      {/* 상태 dot */}
-      <span
-        className="h-2 w-2 shrink-0 rounded-full"
-        style={{ backgroundColor: STATUS_COLOR[status] }}
-      />
-
-      {/* 카테고리명 */}
-      <span className="w-[4.5rem] shrink-0 text-[0.6875rem] text-[#343841]">{name}</span>
-
-      {/* 프로그레스 바 */}
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#999]">
+      <span className="w-[4.5rem] shrink-0 text-[0.6875rem] text-[#343841]">{item.label}</span>
+      <div className={`${BAR_HEIGHT} flex-1 overflow-hidden rounded-full bg-[#DDDFE5]`}>
         <div
-          className="h-full rounded-full bg-[#55596C]"
-          style={{ width: `${Math.min(percentage, 100)}%` }}
+          className={`${BAR_HEIGHT} rounded-full transition-all duration-500`}
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+            backgroundColor: barColor,
+            boxShadow: `0 0 8px ${barColor}90, 0 0 2px ${barColor}`,
+          }}
         />
       </div>
-
-      {/* 값 */}
-      <span className="shrink-0 text-sm tabular-nums">
-        <span className="text-[#555]">{current}</span>
-        <span className="text-[#999]">/{total}</span>
+      <span className="shrink-0 text-[0.6875rem] tabular-nums">
+        <span className="text-[#555]">{item.current}</span>
+        <span className="text-[#999]">/{item.total}</span>
       </span>
     </div>
   );
 }
 
 // ─── SafetyScorePanel ───
+
 interface SafetyScorePanelProps {
-  data?: SafetyScoreData;
   className?: string;
 }
 
-export function SafetyScorePanel({ data, className }: SafetyScorePanelProps) {
-  const gaugeRef = useRef<HTMLDivElement>(null);
-  const { width: gaugeWidth } = useContainerSize(gaugeRef);
-
-  if (!data) {
-    return (
-      <DraggablePanel title="안전율 데이터" className={className}>
-        <p className="mt-2 text-xs text-[#999]">안전율 데이터 없음</p>
-      </DraggablePanel>
-    );
-  }
+export function SafetyScorePanel({ className }: SafetyScorePanelProps) {
+  const score = computeOverallScore(SAFETY_DETAILS);
 
   return (
-    <DraggablePanel title="안전율 데이터" className={className}>
+    <DraggablePanel title="안전 점수" className={className}>
       {/* 게이지 차트 */}
-      <div ref={gaugeRef} className="mt-2 flex-shrink-0">
-        <GaugeChart score={data.score} width={gaugeWidth} />
+      <div className="mt-1 flex justify-center">
+        <SemiCircleGauge score={score} />
       </div>
 
-      {/* 카테고리 목록 */}
-      <div className="mt-auto flex flex-col gap-3">
-        {data.categories.map((cat) => (
-          <CategoryRow
-            key={cat.id}
-            name={cat.name}
-            current={cat.current}
-            total={cat.total}
-            status={cat.status}
-          />
+      {/* 상세 항목 */}
+      <div className="mt-2 flex flex-col gap-2.5 border-t border-black/10 pt-3">
+        {SAFETY_DETAILS.map((item) => (
+          <DetailRow key={item.label} item={item} />
         ))}
       </div>
     </DraggablePanel>
