@@ -3,17 +3,18 @@ import { useWHEPStream } from "@pf-dev/cctv";
 import { GridLayout } from "@pf-dev/ui/organisms";
 import { Widget } from "@pf-dev/ui/molecules";
 import type { GridTemplate } from "@pf-dev/ui";
-import { useCCTVStreams } from "@/hooks/useCCTVStreams";
-import type { CCTVPath, StompEventResponse } from "@/services";
+import { useCCTVStreams, type CCTVStreamItem } from "@/hooks/useCCTVStreams";
+import { PTZControl } from "./PTZControl";
+import type { StompEventResponse } from "@/services";
 
 // ─── CCTV 선택 드롭다운 ───
 
 function CCTVSelect({
-  paths,
+  items,
   selected,
   onChange,
 }: {
-  paths: CCTVPath[];
+  items: CCTVStreamItem[];
   selected: string;
   onChange: (streamName: string) => void;
 }) {
@@ -23,9 +24,9 @@ function CCTVSelect({
       onChange={(e) => onChange(e.target.value)}
       className="rounded-md border border-[#2A2D3A] bg-[#252833] px-3 py-1.5 text-sm text-white outline-none focus:border-brand"
     >
-      {paths.map((path) => (
-        <option key={path.name} value={path.name}>
-          {path.name}
+      {items.map((item) => (
+        <option key={item.streamName} value={item.streamName}>
+          {item.displayName}
         </option>
       ))}
     </select>
@@ -261,33 +262,31 @@ function EmptySlot() {
 // ─── 라이브 그리드 (GridLayout + Widget 기반) ───
 
 function LiveGrid({
-  paths,
+  items,
   gridMode,
   page,
-  getWHEPUrl,
 }: {
-  paths: CCTVPath[];
+  items: CCTVStreamItem[];
   gridMode: Exclude<GridMode, "1x1">;
   page: number;
-  getWHEPUrl: (name: string) => string;
 }) {
   const template = GRID_TEMPLATES[gridMode];
   const perPage = template.cells.length;
-  const pagePaths = paths.slice(page * perPage, (page + 1) * perPage);
-  const emptyCount = Math.max(0, perPage - pagePaths.length);
+  const pageItems = items.slice(page * perPage, (page + 1) * perPage);
+  const emptyCount = Math.max(0, perPage - pageItems.length);
   const compact = gridMode === "4x4";
 
   return (
     <GridLayout template={template} gap={6} editable className="h-full">
-      {pagePaths.map((path, i) => (
+      {pageItems.map((item, i) => (
         <Widget
-          key={path.name}
+          key={item.streamName}
           id={`cam-${i}`}
           border={false}
           className="h-full overflow-hidden rounded-lg bg-transparent shadow-none"
           contentClassName="h-full p-0"
         >
-          <LiveStreamPlayer streamUrl={getWHEPUrl(path.name)} name={path.name} compact={compact} />
+          <LiveStreamPlayer streamUrl={item.whepUrl} name={item.displayName} compact={compact} />
         </Widget>
       ))}
       {Array.from({ length: emptyCount }, (_, i) => (
@@ -320,12 +319,25 @@ export function VideoPanel({
   selectedEvent,
   onClearEvent,
 }: VideoPanelProps) {
-  const { paths, isLoading, isError, error, getWHEPUrl } = useCCTVStreams();
+  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>(undefined);
+  const { items: allItems, isLoading, isError, error } = useCCTVStreams();
   const [gridMode, setGridMode] = useState<GridMode>("1x1");
   const [page, setPage] = useState(0);
 
+  // 현장 목록 추출 (unique sites)
+  const sites = allItems.reduce<{ id: number; name: string }[]>((acc, item) => {
+    if (!acc.some((s) => s.id === item.siteId)) {
+      acc.push({ id: item.siteId, name: item.siteName });
+    }
+    return acc;
+  }, []);
+
+  // 현장 필터링
+  const items =
+    selectedSiteId != null ? allItems.filter((i) => i.siteId === selectedSiteId) : allItems;
+
   const perPage = gridMode === "1x1" ? 1 : gridMode === "2x2" ? 4 : 16;
-  const totalPages = Math.max(1, Math.ceil(paths.length / perPage));
+  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
 
   // 이벤트 영상 모드
   if (selectedEvent) {
@@ -364,7 +376,7 @@ export function VideoPanel({
     );
   }
 
-  if (!paths.length) {
+  if (!items.length) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-white/40">
         등록된 CCTV가 없습니다
@@ -372,7 +384,8 @@ export function VideoPanel({
     );
   }
 
-  const activeStream = selectedStream || paths[0]!.name;
+  const activeStream = selectedStream || items[0]!.streamName;
+  const activeItem = items.find((i) => i.streamName === activeStream) ?? items[0]!;
   const isSingle = gridMode === "1x1";
 
   return (
@@ -381,8 +394,25 @@ export function VideoPanel({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-white/60">라이브 스트림</span>
+          {/* 현장 셀렉터 */}
+          <select
+            value={selectedSiteId ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedSiteId(val ? Number(val) : undefined);
+              setPage(0);
+            }}
+            className="rounded-md border border-[#2A2D3A] bg-[#252833] px-3 py-1.5 text-sm text-white outline-none focus:border-brand"
+          >
+            <option value="">전체 현장</option>
+            {sites.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
           {isSingle && (
-            <CCTVSelect paths={paths} selected={activeStream} onChange={onStreamChange} />
+            <CCTVSelect items={items} selected={activeStream} onChange={onStreamChange} />
           )}
         </div>
         <div className="flex items-center gap-3">
@@ -435,9 +465,14 @@ export function VideoPanel({
       {/* 영상 영역 */}
       <div className="flex-1 min-h-0">
         {isSingle ? (
-          <LiveStreamPlayer streamUrl={getWHEPUrl(activeStream)} name={activeStream} />
+          <div className="relative h-full w-full">
+            <LiveStreamPlayer streamUrl={activeItem.whepUrl} name={activeItem.displayName} />
+            <div className="absolute bottom-3 right-3 z-10">
+              <PTZControl />
+            </div>
+          </div>
         ) : (
-          <LiveGrid paths={paths} gridMode={gridMode} page={page} getWHEPUrl={getWHEPUrl} />
+          <LiveGrid items={items} gridMode={gridMode} page={page} />
         )}
       </div>
     </div>

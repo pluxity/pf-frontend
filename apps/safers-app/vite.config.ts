@@ -27,18 +27,6 @@ export default defineConfig(({ mode }) => {
       host: "0.0.0.0",
       port: 3000,
       proxy: {
-        "/media/api": {
-          target: "http://14.51.233.128:9997",
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/media\/api/, ""),
-        },
-        "/media/webrtc": {
-          target: "http://14.51.233.128:8889",
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/media\/webrtc/, ""),
-        },
         "/api/stomp": {
           target: proxyTarget,
           changeOrigin: true,

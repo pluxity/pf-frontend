@@ -12,8 +12,8 @@ export const EVENT_REGION_MAP: Record<SiteRegion, string> = {
   JEJU: "제주",
 };
 
-// 이벤트 탭 목록
-export const EVENT_REGIONS = Object.values(EVENT_REGION_MAP);
+// 이벤트 탭 목록 ("전체" 포함)
+export const EVENT_REGIONS = ["전체", ...Object.values(EVENT_REGION_MAP)] as const;
 export type EventRegionTab = (typeof EVENT_REGIONS)[number];
 
 // 이벤트 레벨

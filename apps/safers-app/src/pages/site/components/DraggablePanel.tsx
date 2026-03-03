@@ -30,7 +30,20 @@ export function DraggablePanel({
   const panelRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
 
-  // 펼칠 때 방향 결정 + 뷰포트 밖으로 나가면 위치 보정
+  // 토글 시 현재 위치 기준으로 방향 결정 (드래그 후에도 정확)
+  const toggleCollapse = () => {
+    if (collapsed) {
+      // 펼칠 때: 현재 위치 기준으로 방향 결정
+      const el = panelRef.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setExpandUp(rect.top > window.innerHeight / 2);
+      }
+    }
+    setCollapsed((c) => !c);
+  };
+
+  // 펼친 뒤 뷰포트 밖 넘침 보정 (안전망)
   useLayoutEffect(() => {
     const el = panelRef.current;
     if (collapsed || !el) return;
@@ -40,10 +53,7 @@ export function DraggablePanel({
       const overflow = rect.bottom - (window.innerHeight - VIEWPORT_MARGIN);
 
       if (overflow > 0) {
-        // 아래 공간 부족 → 위로 확장
         setExpandUp(true);
-      } else {
-        setExpandUp(false);
       }
     });
   }, [collapsed]);
@@ -138,7 +148,7 @@ export function DraggablePanel({
           </span>
           <button
             type="button"
-            onClick={() => setCollapsed((c) => !c)}
+            onClick={toggleCollapse}
             className={cn(
               "flex h-6 w-6 items-center justify-center rounded transition-colors",
               isDark ? "text-white/60 hover:bg-white/10" : "text-[#666] hover:bg-black/10"

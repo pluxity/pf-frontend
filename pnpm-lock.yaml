@@ -45,9 +45,6 @@ catalogs:
     '@vitest/coverage-v8':
       specifier: ^3.1.3
       version: 3.2.4
-    cron-parser:
-      specifier: ^5.5.0
-      version: 5.5.0
     d3:
       specifier: ^7.9.0
       version: 7.9.0
@@ -264,15 +261,9 @@ importers:
       '@pf-dev/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
-      '@pf-dev/map':
-        specifier: workspace:*
-        version: link:../../packages/map
       '@pf-dev/services':
         specifier: workspace:*
         version: link:../../packages/services
-      '@pf-dev/three':
-        specifier: workspace:*
-        version: link:../../packages/three
       '@pf-dev/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -294,12 +285,6 @@ importers:
       '@types/d3-transition':
         specifier: ^3.0.9
         version: 3.0.9
-      cesium:
-        specifier: ^1.121.0
-        version: 1.136.0
-      cron-parser:
-        specifier: 'catalog:'
-        version: 5.5.0
       d3:
         specifier: 'catalog:'
         version: 7.9.0
@@ -3142,10 +3127,6 @@ packages:
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
 
-  cron-parser@5.5.0:
-    resolution: {integrity: sha512-oML4lKUXxizYswqmxuOCpgFS8BNUJpIu6k/2HVHyaL8Ynnf3wdf9tkns0yRdJLSIjkJ+b0DXHMZEHGpMwjnPww==}
-    engines: {node: '>=18'}
-
   cross-env@7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
     engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
@@ -4198,10 +4179,6 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
-
-  luxon@3.7.2:
-    resolution: {integrity: sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew==}
-    engines: {node: '>=12'}
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -7832,10 +7809,6 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cron-parser@5.5.0:
-    dependencies:
-      luxon: 3.7.2
-
   cross-env@7.0.3:
     dependencies:
       cross-spawn: 7.0.6
@@ -8883,8 +8856,6 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
-
-  luxon@3.7.2: {}
 
   lz-string@1.5.0: {}
 

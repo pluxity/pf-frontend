@@ -283,6 +283,9 @@ export function MapboxViewer({
               vitals={selectedFeature.vitals}
               location={selectedFeature.location}
               abnormal={emergency}
+              abnormalLabel={
+                emergency ? (bannerMessage.includes("침입") ? "침입감지" : "이상징후") : undefined
+              }
               onClose={() => {
                 setSelectedFeature(null);
                 overlayRef.current?.clearHighlight();

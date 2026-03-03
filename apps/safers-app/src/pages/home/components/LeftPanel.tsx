@@ -27,71 +27,68 @@ export function LeftPanel() {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const [sitesRes, regionsRes, eventsRes] = await Promise.all([
-          sitesService.getSites({ size: 1000 }),
-          sitesService.getRegions(),
-          eventsService.getEvents(),
-        ]);
+      // 각 API를 독립적으로 호출 — 하나가 실패해도 나머지는 동작
+      const [sitesResult, regionsResult, eventsResult] = await Promise.allSettled([
+        sitesService.getSites({ size: 1000 }),
+        sitesService.getRegions(),
+        eventsService.getEvents(),
+      ]);
 
-        const sites = sitesRes.data.content;
-        setTotalSites(sitesRes.data.totalElements);
+      const sites = sitesResult.status === "fulfilled" ? sitesResult.value.data.content : [];
+      const totalElements =
+        sitesResult.status === "fulfilled" ? sitesResult.value.data.totalElements : 0;
+      setTotalSites(totalElements);
 
-        // 최초 로드 시 id가 가장 낮은 사이트 자동 선택
-        const currentSelected = useSitesStore.getState().selectedSiteId;
-        if (currentSelected == null && sites.length > 0) {
-          const minSite = sites.reduce((min, s) => (s.id < min.id ? s : min), sites[0]!);
-          useSitesStore.getState().selectSite(minSite.id);
-        }
+      // 최초 로드 시 "김포 풍무" 현장 자동 선택 (없으면 첫 번째 사이트)
+      const currentSelected = useSitesStore.getState().selectedSiteId;
+      if (currentSelected == null && sites.length > 0) {
+        const gimpo = sites.find((s) => s.name.includes("김포 풍무"));
+        useSitesStore.getState().selectSite(gimpo?.id ?? sites[0]!.id);
+      }
 
-        // 지역 목록으로 사이트 그룹핑
-        const regions = regionsRes.data;
+      // 지역 목록으로 사이트 그룹핑
+      if (regionsResult.status === "fulfilled") {
+        const regions = regionsResult.value.data;
         const groups: RegionGroup[] = regions.map((r) => ({
           region: r.name,
           displayName: r.displayName || REGION_DISPLAY_NAMES[r.name as SiteRegion] || r.name,
           sites: sites.filter((s) => s.region === r.name),
         }));
         setRegionGroups(groups);
+      }
 
-        const allEvents = eventsRes.data;
-        setEvents(allEvents);
+      const allEvents = eventsResult.status === "fulfilled" ? eventsResult.value.data : [];
+      setEvents(allEvents);
 
-        // 이벤트 기반 현장 상태 집계
-        const siteStatuses = new Map<number, "normal" | "warning" | "danger">();
-        for (const site of sites) {
-          siteStatuses.set(site.id, "normal");
-        }
-        for (const evt of allEvents) {
-          const current = siteStatuses.get(evt.site.id);
-          if (!current) continue;
-          if (evt.level === "danger") {
-            siteStatuses.set(evt.site.id, "danger");
-          } else if (evt.level === "alert" || evt.level === "warning") {
-            if (current !== "danger") {
-              siteStatuses.set(evt.site.id, "warning");
-            }
+      // 이벤트 기반 현장 상태 집계
+      const siteStatuses = new Map<number, "normal" | "warning" | "danger">();
+      for (const site of sites) {
+        siteStatuses.set(site.id, "normal");
+      }
+      for (const evt of allEvents) {
+        const current = siteStatuses.get(evt.site.id);
+        if (!current) continue;
+        if (evt.level === "danger") {
+          siteStatuses.set(evt.site.id, "danger");
+        } else if (evt.level === "alert" || evt.level === "warning") {
+          if (current !== "danger") {
+            siteStatuses.set(evt.site.id, "warning");
           }
         }
-        const counts = { normal: 0, warning: 0, danger: 0 };
-        for (const status of siteStatuses.values()) {
-          counts[status]++;
-        }
-        setSiteStatusCounts(counts);
-      } catch {
-        // 대시보드 데이터 로드 실패
-      } finally {
-        setIsLoading(false);
       }
+      const counts = { normal: 0, warning: 0, danger: 0 };
+      for (const status of siteStatuses.values()) {
+        counts[status]++;
+      }
+      setSiteStatusCounts(counts);
+
+      setIsLoading(false);
     }
     fetchData();
   }, []);
 
   const handleSiteSelect = (site: Site) => {
-    if (selectedSiteId === site.id) {
-      selectSiteAction(null);
-    } else {
-      selectSiteAction(site.id);
-    }
+    selectSiteAction(site.id);
   };
 
   const handleEventClick = (_eventId: string) => {

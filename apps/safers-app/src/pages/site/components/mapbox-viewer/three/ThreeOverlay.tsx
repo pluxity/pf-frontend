@@ -179,14 +179,19 @@ export function ThreeOverlay({
       sceneApi.startPatrol("dump-1", DUMP_PATROL_PATH, DUMP_PATROL_DURATION);
     });
 
-    cctvService.getCCTVList().then(({ data }) => {
-      for (const cctv of data) {
-        sceneApi.addFeature(cctv.id, "cctv", cctv.position);
-        sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
-        if (cctv.frustumCorners) {
-          sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
-        }
-        store.setCCTVStreamUrl(cctv.id, cctvService.getStreamUrl(cctv.streamName));
+    cctvService.getCCTVs().then((cctvs) => {
+      for (const cctv of cctvs) {
+        if (cctv.lon == null || cctv.lat == null) continue;
+        const featureId = cctv.streamName;
+        sceneApi.addFeature(featureId, "cctv", {
+          lng: cctv.lon,
+          lat: cctv.lat,
+          altitude: cctv.alt ?? 0,
+        });
+        store.setCCTVStreamUrl(
+          featureId,
+          cctvService.getWHEPUrl(cctv.streamName, cctv.site.id, cctv.site.baseUrl)
+        );
       }
     });
 
@@ -214,6 +219,7 @@ export function ThreeOverlay({
       sceneApi.dispose();
       sceneRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- dangerZones는 초기 설정 후 변경되지 않음
   }, [getTransform, requestRepaint]);
 
   return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 z-[1]" />;

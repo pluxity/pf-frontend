@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { safetyService, SafetyItem } from "@/services";
+import { generateSafetyData } from "@/services/mocks/safety.mock";
+
+interface SafetyStatusProps {
+  siteId?: number | null;
+}
 
 function SafetyChart({ data }: { data: SafetyItem }) {
   return (
@@ -27,12 +32,14 @@ function SafetyChart({ data }: { data: SafetyItem }) {
   );
 }
 
-export function SafetyStatus() {
-  const [safetyData, setSafetyData] = useState<SafetyItem[]>([]);
+export function SafetyStatus({ siteId }: SafetyStatusProps) {
+  const [safetyData, setSafetyData] = useState<SafetyItem[]>(() =>
+    generateSafetyData(siteId ?? 17)
+  );
 
   useEffect(() => {
-    safetyService.getSafetyData().then(setSafetyData);
-  }, []);
+    safetyService.getSafetyData(siteId ?? undefined).then(setSafetyData);
+  }, [siteId]);
 
   return (
     <>

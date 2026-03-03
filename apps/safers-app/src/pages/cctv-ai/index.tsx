@@ -4,6 +4,7 @@ import { useCCTVAIEvents } from "@/hooks/useCCTVAIEvents";
 import type { StompEventResponse } from "@/services";
 import { VideoPanel } from "./components/VideoPanel";
 import { EventLogPanel } from "./components/EventLogPanel";
+import biLogo from "@/assets/images/BI.svg";
 
 export function CCTVAIPage() {
   const navigate = useNavigate();
@@ -44,7 +45,10 @@ export function CCTVAIPage() {
               />
             </svg>
           </button>
-          <h1 className="text-base font-bold text-white">CCTV AI 분석</h1>
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
+            <img src={biLogo} alt="Safers" className="h-6" />
+            <span className="text-brand mb-[-0.25rem]">AI CCTV</span>
+          </h1>
         </div>
 
         <div className="flex items-center gap-2">

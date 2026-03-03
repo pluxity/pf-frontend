@@ -27,6 +27,7 @@ export interface Site {
   latitude?: number;
   longitude?: number;
   location?: string;
+  baseUrl?: string;
   constructionStartDate?: string;
   constructionEndDate?: string;
   description?: string;

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useWeather } from "../../../hooks/useWeather";
-import { Spinner } from "@pf-dev/ui";
 import { Weather } from "./Weather";
 import { EnvironmentStatus } from "./EnvironmentStatus";
-import { mockEnvironments } from "../../../services/mocks/environments.mock";
+import { generateEnvironments } from "../../../services/mocks/environments.mock";
 import { SafetyStatus } from "./SafetyStatus";
 import { CCTVViewer } from "./CCTVViewer";
 import { sitesService, type Site } from "@/services";
@@ -11,8 +10,8 @@ import { useSitesStore, selectSelectedSiteId } from "@/stores";
 
 export function RightPanel() {
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
-  const [selectedSiteData, setSelectedSiteData] = useState<Site | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [displayData, setDisplayData] = useState<Site | null>(null);
+  const [progressDays, setProgressDays] = useState<number | null>(null);
 
   const { currentWeather, hourlyWeather } = useWeather({ siteId: selectedSiteId });
 
@@ -21,26 +20,20 @@ export function RightPanel() {
       try {
         if (selectedSiteId != null) {
           const res = await sitesService.getSite(selectedSiteId);
-          setSelectedSiteData(res.data);
-        } else {
-          setSelectedSiteData(null);
+          setDisplayData(res.data);
+          const start = new Date(res.data.constructionStartDate ?? "").getTime();
+          setProgressDays(
+            Number.isNaN(start)
+              ? null
+              : Math.max(0, Math.floor((Date.now() - start) / (1000 * 60 * 60 * 24)))
+          );
         }
       } catch {
-        // 사이트 데이터 로드 실패
-      } finally {
-        setIsLoading(false);
+        // 사이트 데이터 로드 실패 — 이전 데이터 유지
       }
     };
     fetchSiteData();
   }, [selectedSiteId]);
-
-  if (isLoading) {
-    return (
-      <aside className="z-10 flex h-full w-[50rem] flex-shrink-0 items-center justify-center">
-        <Spinner size="lg" />
-      </aside>
-    );
-  }
 
   return (
     <aside className="z-10 flex h-full w-[50rem] flex-shrink-0 flex-col gap-4 p-4">
@@ -51,9 +44,9 @@ export function RightPanel() {
           alt="location"
           className="w-6 h-6"
         />
-        <span className="font-semibold">{selectedSiteData?.name || "--"}</span>
+        <span className="font-semibold">{displayData?.name || "--"}</span>
         <span className="h-4 bg-white w-0.5"></span>
-        <span>진행 458 Days</span>
+        <span>진행 {progressDays ?? "--"} Days</span>
         <img
           src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/external-link.svg`}
           alt="external link"
@@ -67,17 +60,17 @@ export function RightPanel() {
 
       {/* 환경 데이터 */}
       <div className="rounded-lg bg-white h-[15rem] p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
-        <EnvironmentStatus data={mockEnvironments} />
+        <EnvironmentStatus data={generateEnvironments(selectedSiteId ?? 17)} />
       </div>
 
       {/* 안전 모니터링 */}
       <div className="rounded-lg bg-white h-[19rem] p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
-        <SafetyStatus />
+        <SafetyStatus siteId={selectedSiteId} />
       </div>
 
-      {/* CCTV */}
-      <div className="grid grid-cols-3 gap-4 flex-1">
-        <CCTVViewer />
+      {/* CCTV — grid row를 명시적으로 1fr 지정하여 flex-1 높이를 채움 */}
+      <div className="grid grid-cols-3 gap-4 flex-1 [grid-template-rows:1fr]">
+        <CCTVViewer siteId={selectedSiteId} />
       </div>
     </aside>
   );

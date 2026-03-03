@@ -8,6 +8,7 @@ interface FeaturePopupProps {
   vitals: WorkerVitals | null;
   location?: WorkerLocation | null;
   abnormal?: boolean;
+  abnormalLabel?: string;
   onClose: () => void;
 }
 
@@ -22,10 +23,12 @@ export function FeaturePopup({
   vitals,
   location,
   abnormal,
+  abnormalLabel,
   onClose,
 }: FeaturePopupProps) {
   // 외부에서 명시적으로 abnormal을 전달하면 우선, 아니면 vitals 기준 판단
   const isAbnormal = abnormal ?? (vitals ? isAbnormalVitals(vitals) : false);
+  const badgeText = abnormalLabel ?? (isAbnormal ? "이상징후" : null);
 
   return (
     <div className="flex flex-col items-center">
@@ -40,9 +43,9 @@ export function FeaturePopup({
 
         <div className="mb-2 flex items-center gap-2 pr-4">
           <span className="font-semibold">{workerName ?? featureId}</span>
-          {isAbnormal && (
+          {badgeText && (
             <span className="rounded bg-[#DE4545]/20 px-1.5 py-0.5 text-xs font-medium text-[#DE4545]">
-              이상징후
+              {badgeText}
             </span>
           )}
         </div>
@@ -99,11 +102,11 @@ export function FeaturePopup({
       </div>
 
       {/* 커넥터 라인 */}
-      <div className={`h-8 w-[0.125rem] ${isAbnormal ? "bg-[#DE4545]/90" : "bg-[#00C48C]/90"}`} />
+      <div className={`h-8 w-[0.125rem] ${badgeText ? "bg-[#DE4545]/90" : "bg-[#00C48C]/90"}`} />
 
       {/* 앵커 도트 */}
       <div
-        className={`h-2.5 w-2.5 rounded-full border ${isAbnormal ? "border-[#DE4545] bg-[#DE4545]" : "border-[#00C48C] bg-[#00C48C]"}`}
+        className={`h-2.5 w-2.5 rounded-full border ${badgeText ? "border-[#DE4545] bg-[#DE4545]" : "border-[#00C48C] bg-[#00C48C]"}`}
       />
     </div>
   );

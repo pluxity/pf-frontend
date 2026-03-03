@@ -56,6 +56,7 @@ export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
     for (const tab of EVENT_REGIONS) {
       grouped[tab] = [];
     }
+    grouped["전체"] = [...events];
     for (const event of events) {
       const tab = EVENT_REGION_MAP[event.site.region];
       if (tab) {
@@ -71,8 +72,8 @@ export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
         <h3 className="text-lg font-bold text-primary-600">전국 실시간 이벤트</h3>
       </div>
 
-      <Tabs defaultValue={EVENT_REGIONS[0]} className="flex w-full flex-1 flex-col">
-        <TabsList variant="filled" className="w-full border-none py-2">
+      <Tabs defaultValue={EVENT_REGIONS[0]} className="flex w-full min-h-0 flex-1 flex-col">
+        <TabsList variant="filled" className="w-full shrink-0 flex-wrap gap-y-1 border-none py-2">
           {EVENT_REGIONS.map((region) => (
             <TabsTrigger
               key={region}

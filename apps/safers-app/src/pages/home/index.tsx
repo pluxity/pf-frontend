@@ -86,20 +86,19 @@ export function DashboardPage() {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const [sitesRes, eventsRes] = await Promise.all([
-          sitesService.getSites({ size: 1000 }),
-          eventsService.getEvents(),
-        ]);
-        const sites = sitesRes.data.content;
-        const siteStatusMap = buildSiteStatusMap(eventsRes.data);
-        const sitePOIs = sites
-          .map((site) => siteToPOI(site, siteStatusMap))
-          .filter((poi): poi is POI => poi !== null);
-        setPois(sitePOIs);
-      } catch {
-        // 대시보드 데이터 로드 실패
-      }
+      const [sitesResult, eventsResult] = await Promise.allSettled([
+        sitesService.getSites({ size: 1000 }),
+        eventsService.getEvents(),
+      ]);
+
+      const sites = sitesResult.status === "fulfilled" ? sitesResult.value.data.content : [];
+      const events = eventsResult.status === "fulfilled" ? eventsResult.value.data : [];
+
+      const siteStatusMap = buildSiteStatusMap(events);
+      const sitePOIs = sites
+        .map((site) => siteToPOI(site, siteStatusMap))
+        .filter((poi): poi is POI => poi !== null);
+      setPois(sitePOIs);
     }
     fetchData();
   }, []);
