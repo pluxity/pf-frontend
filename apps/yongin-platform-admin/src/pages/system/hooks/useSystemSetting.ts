@@ -1,34 +1,48 @@
-import useSWR from "swr";
-import useSWRMutation from "swr/mutation";
+import { useEffect } from "react";
+import { useSystemSettingStore } from "../stores/systemSettingStore";
 import { systemSettingService } from "../services";
 import type { UpdateSystemSetting } from "../types";
 
-const SYSTEM_SETTING_KEY = "/system-settings";
-
 export function useSystemSetting() {
-  const { data, error, isLoading, mutate } = useSWR(SYSTEM_SETTING_KEY, () =>
-    systemSettingService.get()
-  );
+  const { data, isLoading, error, setData, setLoading, setError } = useSystemSettingStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await systemSettingService.get();
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("설정을 불러올 수 없습니다"));
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return {
-    setting: data ?? null,
+    data,
     isLoading,
     error,
-    mutate,
   };
 }
 
 export function useUpdateSystemSetting() {
-  const { trigger, isMutating, error } = useSWRMutation(
-    SYSTEM_SETTING_KEY,
-    async (_, { arg }: { arg: UpdateSystemSetting }) => {
-      await systemSettingService.update(arg);
+  const { setData } = useSystemSettingStore();
+
+  const updateSetting = async (updateData: UpdateSystemSetting) => {
+    try {
+      await systemSettingService.update(updateData);
+      const result = await systemSettingService.get();
+      setData(result);
+    } catch (err) {
+      throw err instanceof Error ? err : new Error("설정 저장에 실패했습니다");
     }
-  );
+  };
 
   return {
-    updateSetting: trigger,
-    isUpdating: isMutating,
-    error,
+    updateSetting,
+    isUpdating: false,
+    error: null,
   };
 }

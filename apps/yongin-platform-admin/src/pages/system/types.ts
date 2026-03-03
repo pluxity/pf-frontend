@@ -22,8 +22,8 @@ export interface FileInfo {
  */
 export interface SystemSetting {
   rollingIntervalSeconds?: number;
-  bimThumbnailFile: FileInfo;
-  aerialViewFile: FileInfo;
+  bimThumbnailFile: FileInfo | null;
+  aerialViewFile: FileInfo | null;
 }
 
 /**
@@ -31,6 +31,6 @@ export interface SystemSetting {
  */
 export interface UpdateSystemSetting {
   rollingIntervalSeconds: number;
-  bimThumbnailFileId?: number;
-  aerialViewFileId?: number;
+  bimThumbnailFileId?: number | null;
+  aerialViewFileId?: number | null;
 }

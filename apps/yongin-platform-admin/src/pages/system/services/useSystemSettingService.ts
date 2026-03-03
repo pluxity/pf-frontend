@@ -13,8 +13,7 @@ export const systemSettingService = {
   /**
    * 시스템 설정 업데이트
    */
-  update: async (data: UpdateSystemSetting): Promise<SystemSetting> => {
+  update: async (data: UpdateSystemSetting): Promise<void> => {
     await getApiClient().put("/system-settings", data);
-    return data as SystemSetting;
   },
 };

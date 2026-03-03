@@ -25,11 +25,11 @@ export function SystemSettingPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState<string | null>(null);
 
-  const { setting, isLoading, error: loadError } = useSystemSetting();
+  const { data, isLoading, error: loadError } = useSystemSetting();
   const { updateSetting, isUpdating, error: updateError } = useUpdateSystemSetting();
 
   const displayValue =
-    isEditing && editValue !== null ? editValue : String(setting?.rollingIntervalSeconds ?? 0);
+    isEditing && editValue !== null ? editValue : String(data?.rollingIntervalSeconds ?? 0);
 
   useEffect(() => {
     if (loadError) {
@@ -56,6 +56,8 @@ export function SystemSettingPage() {
     try {
       const updateData: UpdateSystemSetting = {
         rollingIntervalSeconds: parseInt(displayValue),
+        aerialViewFileId: data?.aerialViewFile?.id ?? null,
+        bimThumbnailFileId: data?.bimThumbnailFile?.id ?? null,
       };
       await updateSetting(updateData);
 
@@ -82,7 +84,7 @@ export function SystemSettingPage() {
   };
 
   const handleEdit = () => {
-    setEditValue(String(setting?.rollingIntervalSeconds ?? "0"));
+    setEditValue(String(data?.rollingIntervalSeconds ?? "0"));
     setIsEditing(true);
   };
 
