@@ -4,6 +4,7 @@ import { Button } from "@pf-dev/ui/atoms";
 import { uploadFile } from "../../services/fileService";
 import { useSystemSetting, useUpdateSystemSetting } from "./hooks/useSystemSetting";
 import { useToastContext } from "../../contexts/ToastContext";
+import { systemSettingService } from "./services";
 import type { UpdateSystemSetting } from "./types";
 
 export function ThumbnailManagementPage() {
@@ -46,8 +47,8 @@ export function ThumbnailManagementPage() {
   }, [originalState]);
 
   const hasChanges =
-    state.overviewImages.length !== originalState.overviewImages.length ||
-    state.bimImages.length !== originalState.bimImages.length;
+    state.overviewImages[0]?.id !== originalState.overviewImages[0]?.id ||
+    state.bimImages[0]?.id !== originalState.bimImages[0]?.id;
 
   const handleUpload = async (files: File[], type: "overview" | "bim") => {
     const file = files[0];
@@ -80,8 +81,10 @@ export function ThumbnailManagementPage() {
 
   const handleSave = async () => {
     try {
+      const latestSettings = await systemSettingService.get();
+
       const updateData: UpdateSystemSetting = {
-        rollingIntervalSeconds: data?.rollingIntervalSeconds ?? 5,
+        rollingIntervalSeconds: latestSettings.rollingIntervalSeconds ?? 5,
         aerialViewFileId:
           state.overviewImages.length > 0 ? parseInt(state.overviewImages[0]!.id) : null,
         bimThumbnailFileId: state.bimImages.length > 0 ? parseInt(state.bimImages[0]!.id) : null,
