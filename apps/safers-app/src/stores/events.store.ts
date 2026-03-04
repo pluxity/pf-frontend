@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import type { StompEventResponse } from "../services/types";
 import type { ConnectionStatus } from "../services/stomp.service";
-
-const MAX_EVENTS = 100;
+import { MAX_EVENTS } from "../services/config";
 
 interface EventsState {
   stompEvents: StompEventResponse[];

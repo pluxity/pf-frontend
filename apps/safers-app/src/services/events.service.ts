@@ -1,21 +1,13 @@
 import type { EventsResponse, EventResponse, GetEventsParams } from "./types/events.types";
 import { mockEvents } from "./mocks/events.mock";
-
-// API 기본 URL (나중에 실제 API로 변경)
-const API_BASE_URL = "/api";
-
-// Mock 모드 (true: mock 데이터, false: 실제 API)
-const USE_MOCK = true;
-
-// 지연 시뮬레이션 유틸
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+import { API_BASE_URL, MOCK_CONFIG, delay } from "./config";
 
 /**
  * 이벤트 목록 조회
  * GET /api/events
  */
 async function getEvents(params?: GetEventsParams): Promise<EventsResponse> {
-  if (USE_MOCK) {
+  if (MOCK_CONFIG.events) {
     await delay(300);
     let filtered = [...mockEvents];
 
@@ -52,7 +44,7 @@ async function getEvents(params?: GetEventsParams): Promise<EventsResponse> {
  * GET /api/events/:id
  */
 async function getEvent(id: string): Promise<EventResponse> {
-  if (USE_MOCK) {
+  if (MOCK_CONFIG.events) {
     await delay(200);
     const event = mockEvents.find((e) => e.id === id);
     if (!event) throw new Error("Event not found");

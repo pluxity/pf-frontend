@@ -6,8 +6,7 @@ import type {
   Site,
 } from "./types/sites.types";
 import { mockSites } from "./mocks/sites.mock";
-
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "./config";
 
 /** mock 데이터로 SitesResponse 생성 */
 function buildMockSitesResponse(params?: GetSitesParams): SitesResponse {

@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { Tabs, TabsList, TabsTrigger } from "@pf-dev/ui";
 import type { ProgressDataPoint, ProgressPeriod } from "@/services";
+import { STATUS_COLORS } from "@/styles/tokens";
 
 const PERIOD_TABS: { value: ProgressPeriod; label: string }[] = [
   { value: "daily", label: "일" },
@@ -53,12 +54,12 @@ export function ProgressChart({ data }: ProgressChartProps) {
           <AreaChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="gradPlan" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4D7EFF" stopOpacity={0.15} />
-                <stop offset="95%" stopColor="#4D7EFF" stopOpacity={0} />
+                <stop offset="5%" stopColor={STATUS_COLORS.brand} stopOpacity={0.15} />
+                <stop offset="95%" stopColor={STATUS_COLORS.brand} stopOpacity={0} />
               </linearGradient>
               <linearGradient id="gradActual" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00C48C" stopOpacity={0.15} />
-                <stop offset="95%" stopColor="#00C48C" stopOpacity={0} />
+                <stop offset="5%" stopColor={STATUS_COLORS.success} stopOpacity={0.15} />
+                <stop offset="95%" stopColor={STATUS_COLORS.success} stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -78,7 +79,7 @@ export function ProgressChart({ data }: ProgressChartProps) {
               type="monotone"
               dataKey="plan"
               name="계획"
-              stroke="#4D7EFF"
+              stroke={STATUS_COLORS.brand}
               fill="url(#gradPlan)"
               strokeWidth={2}
             />
@@ -86,7 +87,7 @@ export function ProgressChart({ data }: ProgressChartProps) {
               type="monotone"
               dataKey="actual"
               name="실적"
-              stroke="#00C48C"
+              stroke={STATUS_COLORS.success}
               fill="url(#gradActual)"
               strokeWidth={2}
             />

@@ -7,9 +7,7 @@ import {
   type DataResponseBody,
   type PageResponse,
 } from "@/services";
-
-const API_BASE_URL = "/api";
-const MAX_EVENTS = 200;
+import { API_BASE_URL, MAX_EVENTS } from "@/services/config";
 
 // STOMP 토픽
 const TOPIC_EVENTS = "/topic/events";

@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent, Badge } from "@pf-dev/ui";
 import { EVENT_LEVEL_STYLES, EVENT_REGION_MAP, EVENT_REGIONS, type Event } from "@/services";
 
@@ -50,21 +49,23 @@ function EventList({
   );
 }
 
+function groupEventsByRegion(events: Event[]): Record<string, Event[]> {
+  const grouped: Record<string, Event[]> = {};
+  for (const tab of EVENT_REGIONS) {
+    grouped[tab] = [];
+  }
+  grouped["전체"] = [...events];
+  for (const event of events) {
+    const tab = EVENT_REGION_MAP[event.site.region];
+    if (tab) {
+      grouped[tab]?.push(event);
+    }
+  }
+  return grouped;
+}
+
 export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
-  const eventsByTab = useMemo(() => {
-    const grouped: Record<string, Event[]> = {};
-    for (const tab of EVENT_REGIONS) {
-      grouped[tab] = [];
-    }
-    grouped["전체"] = [...events];
-    for (const event of events) {
-      const tab = EVENT_REGION_MAP[event.site.region];
-      if (tab) {
-        grouped[tab]?.push(event);
-      }
-    }
-    return grouped;
-  }, [events]);
+  const eventsByTab = groupEventsByRegion(events);
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-[0_0_24px_rgba(30,74,184,0.5)]">

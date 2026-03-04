@@ -4,6 +4,7 @@ import { GridLayout } from "@pf-dev/ui/organisms";
 import { Widget } from "@pf-dev/ui/molecules";
 import type { GridTemplate } from "@pf-dev/ui";
 import { useCCTVStreams, type CCTVStreamItem } from "@/hooks/useCCTVStreams";
+import { StreamLoadingOverlay, StreamErrorOverlay, StreamStatusBadge } from "@/components/cctv";
 import { PTZControl } from "./PTZControl";
 import type { StompEventResponse } from "@/services";
 
@@ -113,62 +114,12 @@ function LiveStreamPlayer({
     <div className="relative h-full w-full overflow-hidden rounded-lg bg-black">
       <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-contain" />
 
-      {status === "connecting" && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-          <div
-            className={`animate-spin rounded-full border-2 border-white border-t-transparent ${
-              compact ? "h-5 w-5" : "h-8 w-8"
-            }`}
-          />
-        </div>
-      )}
-
+      {status === "connecting" && <StreamLoadingOverlay compact={compact} />}
       {status === "failed" && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
-          <svg
-            className={`text-[#CA0014] ${compact ? "mb-1 h-5 w-5" : "mb-2 h-8 w-8"}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          {!compact && <p className="mb-2 text-sm text-white">연결 실패</p>}
-          <button
-            onClick={() => connect()}
-            className={`rounded-md bg-brand text-white transition-colors hover:bg-brand/80 ${
-              compact ? "px-2 py-1 text-[0.625rem]" : "px-4 py-1.5 text-xs"
-            }`}
-          >
-            재연결
-          </button>
-        </div>
+        <StreamErrorOverlay compact={compact} onReconnect={() => connect()} />
       )}
 
-      {/* 하단 상태 */}
-      <div
-        className={`absolute bottom-1 left-1 flex items-center gap-1.5 rounded-lg bg-black/60 backdrop-blur-sm ${
-          compact ? "px-1.5 py-1 text-[0.5625rem]" : "px-2.5 py-1.5 text-xs"
-        } font-bold`}
-      >
-        <span className="text-brand">LIVE</span>
-        <span className="h-3 w-px bg-white/40" />
-        <span className="truncate text-white">{name}</span>
-        <span
-          className={`ml-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-            status === "connected"
-              ? "bg-green-400"
-              : status === "connecting"
-                ? "bg-yellow-400"
-                : "bg-red-400"
-          }`}
-        />
-      </div>
+      <StreamStatusBadge label="LIVE" name={name} status={status} compact={compact} />
     </div>
   );
 }

@@ -5,10 +5,11 @@ import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
 import { KoreaMap, type POI } from "./components/KoreaMap";
 import { sitesService, eventsService, type Site, type Event } from "@/services";
+import { STATUS_COLORS } from "@/styles/tokens";
 
-const DEFAULT_POI_COLOR = "#4D7EFF";
-const WARNING_POI_COLOR = "#F59E0B";
-const DANGER_POI_COLOR = "#DE4545";
+const DEFAULT_POI_COLOR = STATUS_COLORS.brand;
+const WARNING_POI_COLOR = STATUS_COLORS.warning;
+const DANGER_POI_COLOR = STATUS_COLORS.danger;
 
 function parseWKTPolygonCentroid(wkt: string): { lng: number; lat: number } | null {
   const match = wkt.match(/POLYGON\s*\(\((.+)\)\)/i);

@@ -8,7 +8,12 @@ export {
 
 export type { SitesState, SitesActions, SitesStore } from "./sites.store";
 
-export { useWeatherStore } from "./weather.store";
+export {
+  useWeatherStore,
+  selectCurrentWeather,
+  selectHourlyWeather,
+  selectWeatherSiteId,
+} from "./weather.store";
 export type { WeatherState, WeatherActions } from "./weather.store";
 
 export { useEventsStore, selectStompEvents, selectConnectionStatus } from "./events.store";
@@ -16,4 +21,9 @@ export { useEventsStore, selectStompEvents, selectConnectionStatus } from "./eve
 export { useCCTVPopupStore, selectCCTVPopups } from "./cctv-popup.store";
 export type { CCTVPopupEntry } from "./cctv-popup.store";
 
-export { useFeatureDataStore } from "./feature-data.store";
+export {
+  useFeatureDataStore,
+  selectVitals,
+  selectLocations,
+  selectCCTVStreamUrls,
+} from "./feature-data.store";

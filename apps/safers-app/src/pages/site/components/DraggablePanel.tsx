@@ -26,61 +26,27 @@ export function DraggablePanel({
   children,
 }: DraggablePanelProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
-  const [expandUp, setExpandUp] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
 
-  // 토글 시 현재 위치 기준으로 방향 결정 (드래그 후에도 정확)
   const toggleCollapse = () => {
-    if (collapsed) {
-      // 펼칠 때: 현재 위치 기준으로 방향 결정
-      const el = panelRef.current;
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        setExpandUp(rect.top > window.innerHeight / 2);
-      }
-    }
     setCollapsed((c) => !c);
   };
 
-  // 펼친 뒤 뷰포트 밖 넘침 보정 (안전망)
+  // 펼친 뒤 뷰포트 아래로 넘치면 위로 밀어올림
   useLayoutEffect(() => {
     const el = panelRef.current;
     if (collapsed || !el) return;
 
     requestAnimationFrame(() => {
       const rect = el.getBoundingClientRect();
-      const overflow = rect.bottom - (window.innerHeight - VIEWPORT_MARGIN);
-
-      if (overflow > 0) {
-        setExpandUp(true);
-      }
-    });
-  }, [collapsed]);
-
-  // expandUp 전환 후 여전히 뷰포트 밖이면 transform 보정
-  useLayoutEffect(() => {
-    const el = panelRef.current;
-    if (collapsed || !el) return;
-
-    requestAnimationFrame(() => {
-      const rect = el.getBoundingClientRect();
-
-      // 위로 넘침 보정
-      if (rect.top < VIEWPORT_MARGIN) {
-        const shift = VIEWPORT_MARGIN - rect.top;
-        posRef.current.y += shift;
-        el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`;
-      }
-
-      // 아래로 넘침 보정
       const overflowBottom = rect.bottom - (window.innerHeight - VIEWPORT_MARGIN);
       if (overflowBottom > 0) {
         posRef.current.y -= overflowBottom;
         el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`;
       }
     });
-  }, [collapsed, expandUp]);
+  }, [collapsed]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = panelRef.current;
@@ -132,10 +98,7 @@ export function DraggablePanel({
       className={cn("cursor-grab select-none active:cursor-grabbing", className)}
       style={{ willChange: "transform" }}
     >
-      <GlassPanel
-        variant={variant}
-        className={cn("flex", expandUp && !collapsed ? "flex-col-reverse" : "flex-col")}
-      >
+      <GlassPanel variant={variant} className="flex flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between">
           <span

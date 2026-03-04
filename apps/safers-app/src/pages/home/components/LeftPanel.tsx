@@ -21,18 +21,33 @@ export function LeftPanel() {
   const [regionGroups, setRegionGroups] = useState<RegionGroup[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
   const selectSiteAction = useSitesStore(selectSelectSiteAction);
 
-  useEffect(() => {
-    async function fetchData() {
+  async function fetchData() {
+    setIsLoading(true);
+    setError(null);
+
+    try {
       // 각 API를 독립적으로 호출 — 하나가 실패해도 나머지는 동작
       const [sitesResult, regionsResult, eventsResult] = await Promise.allSettled([
         sitesService.getSites({ size: 1000 }),
         sitesService.getRegions(),
         eventsService.getEvents(),
       ]);
+
+      const allFailed =
+        sitesResult.status === "rejected" &&
+        regionsResult.status === "rejected" &&
+        eventsResult.status === "rejected";
+
+      if (allFailed) {
+        setError("데이터를 불러오지 못했습니다");
+        setIsLoading(false);
+        return;
+      }
 
       const sites = sitesResult.status === "fulfilled" ? sitesResult.value.data.content : [];
       const totalElements =
@@ -81,9 +96,14 @@ export function LeftPanel() {
         counts[status]++;
       }
       setSiteStatusCounts(counts);
-
+    } catch {
+      setError("데이터를 불러오는 중 오류가 발생했습니다");
+    } finally {
       setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -99,6 +119,20 @@ export function LeftPanel() {
     return (
       <aside className="z-10 flex h-full w-[25rem] flex-shrink-0 items-center justify-center">
         <Spinner size="lg" />
+      </aside>
+    );
+  }
+
+  if (error) {
+    return (
+      <aside className="z-10 flex h-full w-[25rem] flex-shrink-0 flex-col items-center justify-center gap-3 p-4">
+        <p className="text-sm text-error-brand">{error}</p>
+        <button
+          onClick={fetchData}
+          className="rounded-md bg-brand px-4 py-2 text-sm text-white transition-colors hover:bg-brand/80"
+        >
+          다시 시도
+        </button>
       </aside>
     );
   }

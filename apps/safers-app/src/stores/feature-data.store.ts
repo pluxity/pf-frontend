@@ -66,3 +66,8 @@ export const useFeatureDataStore = create<FeatureDataStore>()((set, get) => ({
     });
   },
 }));
+
+// Selectors
+export const selectVitals = (state: FeatureDataStore) => state.vitals;
+export const selectLocations = (state: FeatureDataStore) => state.locations;
+export const selectCCTVStreamUrls = (state: FeatureDataStore) => state.cctvStreamUrls;

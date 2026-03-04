@@ -4,8 +4,7 @@ import type {
   ParsedWeather,
   HourlyWeather,
 } from "./types/weather.types";
-
-const API_BASE_URL = "/api";
+import { API_BASE_URL } from "./config";
 
 const WIND_DIRECTIONS = [
   "북풍",

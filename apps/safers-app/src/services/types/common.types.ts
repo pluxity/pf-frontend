@@ -24,3 +24,6 @@ export interface FileResponse {
   contentType: string;
   fileStatus?: string;
 }
+
+/** 공유 안전 등급 타입 */
+export type SafetyLevel = "normal" | "warning" | "danger";

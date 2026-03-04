@@ -1,4 +1,5 @@
 import { usePTZControl, type PTZDirection } from "@/hooks/usePTZControl";
+import { STATUS_COLORS } from "@/styles/tokens";
 
 const DIRECTIONS: { dir: PTZDirection; angle: number; rotation: number }[] = [
   { dir: "N", angle: 270, rotation: -90 },
@@ -57,7 +58,7 @@ export function PTZJoystick({ size = 88, onDirectionChange }: PTZJoystickProps) 
                 transform: `rotate(${rotation}deg)`,
                 transition: "opacity 0.15s, color 0.15s",
                 opacity: isActive ? 1 : 0.35,
-                color: isActive ? "#4D7EFF" : "#ffffff",
+                color: isActive ? STATUS_COLORS.brand : "#ffffff",
               }}
             >
               <path
@@ -97,7 +98,7 @@ export function PTZJoystick({ size = 88, onDirectionChange }: PTZJoystickProps) 
             top: size / 2 - stickSize / 2 + state.position.y,
             background:
               state.isDragging || state.direction
-                ? "radial-gradient(circle, #6DA0FF 0%, #4D7EFF 60%, #3A65D0 100%)"
+                ? `radial-gradient(circle, #6DA0FF 0%, ${STATUS_COLORS.brand} 60%, #3A65D0 100%)`
                 : "radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.25) 60%, rgba(255,255,255,0.12) 100%)",
             boxShadow:
               state.isDragging || state.direction

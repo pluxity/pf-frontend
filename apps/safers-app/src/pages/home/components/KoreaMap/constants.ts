@@ -1,3 +1,5 @@
+import { STATUS_COLORS } from "@/styles/tokens";
+
 /** 지도 GeoJSON 경로 */
 export const SIDO_GEOJSON_PATH = "/geojson/sido_no_islands_ver20260201_optimized.geojson";
 
@@ -10,7 +12,7 @@ export const MAP_COLORS = {
   stroke: "#A4A9C2",
   brand: "#FF7500",
   shadow: "#3A4A5A",
-  defaultPOI: "#4D7EFF",
+  defaultPOI: STATUS_COLORS.brand,
 } as const;
 
 /** 지도 프로젝션 설정 */

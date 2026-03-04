@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DraggablePanel } from "./DraggablePanel";
 import type { SiteEvent, EventLevel } from "@/services";
+import { STATUS_COLORS } from "@/styles/tokens";
 
 // ─── Figma 디자인 토큰 ───
 
@@ -9,9 +10,9 @@ const LEVEL_COLORS: Record<
   { border: string; icon: string; text: string; cardBg: string; cardShadow: string }
 > = {
   danger: {
-    border: "#CA0014",
-    icon: "#CA0014",
-    text: "#CA0014",
+    border: STATUS_COLORS.dangerDetection,
+    icon: STATUS_COLORS.dangerDetection,
+    text: STATUS_COLORS.dangerDetection,
     cardBg: "#FFE7E7",
     cardShadow: "0px 4px 4px rgba(255, 49, 36, 0.1)",
   },
@@ -23,8 +24,8 @@ const LEVEL_COLORS: Record<
     cardShadow: "0px 4px 4px rgba(255, 141, 36, 0.1)",
   },
   warning: {
-    border: "#FDC200",
-    icon: "#FDC200",
+    border: STATUS_COLORS.warningAlt,
+    icon: STATUS_COLORS.warningAlt,
     text: "#9E6523",
     cardBg: "#FFFCEE",
     cardShadow: "0px 4px 4px rgba(255, 207, 36, 0.1)",

@@ -1,4 +1,5 @@
 import { DraggablePanel } from "./DraggablePanel";
+import { STATUS_COLORS } from "@/styles/tokens";
 
 // ─── Mock 데이터 ───
 
@@ -32,20 +33,20 @@ function computeOverallScore(items: SafetyDetail[]): number {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 90) return "#12C308";
-  if (score >= 70) return "#FDC200";
-  return "#CA0014";
+  if (score >= 90) return STATUS_COLORS.successAlt;
+  if (score >= 70) return STATUS_COLORS.warningAlt;
+  return STATUS_COLORS.dangerDetection;
 }
 
 function getBarColor(ratio: number, type: "normal" | "inverse"): string {
   if (type === "normal") {
-    if (ratio >= 0.9) return "#12C308";
-    if (ratio >= 0.6) return "#FDC200";
-    return "#CA0014";
+    if (ratio >= 0.9) return STATUS_COLORS.successAlt;
+    if (ratio >= 0.6) return STATUS_COLORS.warningAlt;
+    return STATUS_COLORS.dangerDetection;
   }
-  if (ratio >= 0.98) return "#12C308";
-  if (ratio >= 0.9) return "#FDC200";
-  return "#CA0014";
+  if (ratio >= 0.98) return STATUS_COLORS.successAlt;
+  if (ratio >= 0.9) return STATUS_COLORS.warningAlt;
+  return STATUS_COLORS.dangerDetection;
 }
 
 // ─── SVG 반원 게이지 ───

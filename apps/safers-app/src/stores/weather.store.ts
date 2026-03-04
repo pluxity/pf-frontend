@@ -44,3 +44,8 @@ export const useWeatherStore = create<WeatherStore>()((set) => ({
     });
   },
 }));
+
+// Selectors
+export const selectCurrentWeather = (state: WeatherStore) => state.currentWeather;
+export const selectHourlyWeather = (state: WeatherStore) => state.hourlyWeather;
+export const selectWeatherSiteId = (state: WeatherStore) => state.siteId;

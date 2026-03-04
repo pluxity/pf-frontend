@@ -1,3 +1,4 @@
+export * from "./config";
 export * from "./types";
 export * from "./cctv.service";
 export * from "./events.service";
