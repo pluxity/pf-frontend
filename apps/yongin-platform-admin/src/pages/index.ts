@@ -9,3 +9,4 @@ export { PasswordChangePage } from "./settings";
 export { KeyManagementPage } from "./key-management";
 export { NoticePage } from "./notice";
 export { AnnouncementPage } from "./announcement";
+export { SystemSettingPage, ThumbnailManagementPage } from "./system";

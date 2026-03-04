@@ -1,2 +1,2 @@
-export { SystemSettingsPage } from "./SystemSettingsPage";
+export { SystemSettingPage } from "./SystemSettingPage";
 export { ThumbnailManagementPage } from "./ThumbnailManagementPage";
