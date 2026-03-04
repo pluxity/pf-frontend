@@ -3,7 +3,7 @@ import { ErrorPage } from "@pf-dev/ui/templates";
 import { ProtectedRouter } from "@pf-dev/services";
 import { Spinner } from "@pf-dev/ui/atoms";
 
-import { CCTVAIPage, DashboardPage, LoginPage, SitePage } from "@/pages";
+import { CCTVAIPage, CCTVPlaybackPage, DashboardPage, LoginPage, SitePage } from "@/pages";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -36,7 +36,8 @@ export function AppRoutes() {
       <Route element={<AuthLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path="site/:id" element={<SitePage />} />
-        <Route path="cctv-ai" element={<CCTVAIPage />} />
+        <Route path="cctv-ai/:siteId" element={<CCTVAIPage />} />
+        <Route path="cctv-playback/:siteId" element={<CCTVPlaybackPage />} />
       </Route>
 
       {/* 404 */}

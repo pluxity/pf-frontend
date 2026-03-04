@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSitesStore, selectSelectedSiteId, selectSelectSiteAction } from "@/stores";
 import Outline1 from "@/assets/images/outline_1.svg";
 import Outline2 from "@/assets/images/outline_2.svg";
@@ -12,12 +12,20 @@ export function KoreaMap({
   pois = [],
   onPOIClick,
   onPOIHover,
-  onPOIInfoClick,
+  onPOISiteClick,
+  onPOICctvAIClick,
 }: KoreaMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
   const selectSiteAction = useSitesStore(selectSelectSiteAction);
+
+  // 언마운트 시 선택 상태 초기화
+  useEffect(() => {
+    return () => {
+      useSitesStore.getState().clearSelection();
+    };
+  }, []);
 
   const { svgRef, mainProjectionRef, jejuProjectionRef, isLoading, coastlineScale } =
     useMapRenderer({
@@ -47,7 +55,8 @@ export function KoreaMap({
     jejuProjectionRef,
     pois,
     selectedSiteId: selectedSiteIdStr,
-    onPOIInfoClick,
+    onPOISiteClick,
+    onPOICctvAIClick,
   });
 
   return (

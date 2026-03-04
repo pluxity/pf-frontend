@@ -4,8 +4,9 @@ import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
 import { KoreaMap, type POI } from "./components/KoreaMap";
-import { sitesService, eventsService, type Site, type Event } from "@/services";
+import { sitesService, eventsService, type Site } from "@/services";
 import { STATUS_COLORS } from "@/styles/tokens";
+import { buildSiteStatusMap } from "./utils";
 
 const DEFAULT_POI_COLOR = STATUS_COLORS.brand;
 const WARNING_POI_COLOR = STATUS_COLORS.warning;
@@ -36,19 +37,6 @@ function parseWKTPolygonCentroid(wkt: string): { lng: number; lat: number } | nu
     lat: 0,
   });
   return { lng: sum.lng / ring.length, lat: sum.lat / ring.length };
-}
-
-function buildSiteStatusMap(events: Event[]): Map<number, "warning" | "danger"> {
-  const statusMap = new Map<number, "warning" | "danger">();
-  for (const evt of events) {
-    const current = statusMap.get(evt.site.id);
-    if (evt.level === "danger") {
-      statusMap.set(evt.site.id, "danger");
-    } else if ((evt.level === "alert" || evt.level === "warning") && current !== "danger") {
-      statusMap.set(evt.site.id, "warning");
-    }
-  }
-  return statusMap;
 }
 
 function siteToPOI(site: Site, siteStatusMap: Map<number, "warning" | "danger">): POI | null {
@@ -104,13 +92,22 @@ export function DashboardPage() {
     fetchData();
   }, []);
 
-  const handlePOIInfoClick = (poi: POI) => {
+  const handlePOISiteClick = (poi: POI) => {
     navigate(`/site/${poi.id}`);
+  };
+
+  const handlePOICctvAIClick = (poi: POI) => {
+    navigate(`/cctv-ai/${poi.id}`);
   };
 
   return (
     <DashboardLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />}>
-      <KoreaMap className="w-full h-full" pois={pois} onPOIInfoClick={handlePOIInfoClick} />
+      <KoreaMap
+        className="w-full h-full"
+        pois={pois}
+        onPOISiteClick={handlePOISiteClick}
+        onPOICctvAIClick={handlePOICctvAIClick}
+      />
     </DashboardLayout>
   );
 }

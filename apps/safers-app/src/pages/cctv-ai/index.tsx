@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCCTVAIEvents } from "@/hooks/useCCTVAIEvents";
 import type { StompEventResponse } from "@/services";
 import { VideoPanel } from "./components/VideoPanel";
@@ -8,6 +8,7 @@ import biLogo from "@/assets/images/BI.svg";
 
 export function CCTVAIPage() {
   const navigate = useNavigate();
+  const { siteId } = useParams<{ siteId: string }>();
   const [selectedStream, setSelectedStream] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<StompEventResponse | null>(null);
   const { events, connectionStatus, isLoading } = useCCTVAIEvents();
@@ -72,6 +73,7 @@ export function CCTVAIPage() {
         {/* 좌측: 영상 패널 */}
         <section className="flex flex-[3] flex-col border-r border-[#2A2D3A] p-4">
           <VideoPanel
+            siteId={Number(siteId)}
             selectedStream={selectedStream}
             onStreamChange={setSelectedStream}
             selectedEvent={activeSelectedEvent}

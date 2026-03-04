@@ -13,6 +13,7 @@ import {
   type SiteRegion,
 } from "@/services";
 import { useSitesStore, selectSelectedSiteId, selectSelectSiteAction } from "@/stores";
+import { buildSiteStatusMap, countSiteStatuses } from "../utils";
 
 /** 대시보드 좌측 패널 - 현황, 지역 목록, 실시간 이벤트 표시 */
 export function LeftPanel() {
@@ -76,26 +77,8 @@ export function LeftPanel() {
       setEvents(allEvents);
 
       // 이벤트 기반 현장 상태 집계
-      const siteStatuses = new Map<number, "normal" | "warning" | "danger">();
-      for (const site of sites) {
-        siteStatuses.set(site.id, "normal");
-      }
-      for (const evt of allEvents) {
-        const current = siteStatuses.get(evt.site.id);
-        if (!current) continue;
-        if (evt.level === "danger") {
-          siteStatuses.set(evt.site.id, "danger");
-        } else if (evt.level === "alert" || evt.level === "warning") {
-          if (current !== "danger") {
-            siteStatuses.set(evt.site.id, "warning");
-          }
-        }
-      }
-      const counts = { normal: 0, warning: 0, danger: 0 };
-      for (const status of siteStatuses.values()) {
-        counts[status]++;
-      }
-      setSiteStatusCounts(counts);
+      const siteStatusMap = buildSiteStatusMap(allEvents);
+      setSiteStatusCounts(countSiteStatuses(sites, siteStatusMap));
     } catch {
       setError("데이터를 불러오는 중 오류가 발생했습니다");
     } finally {

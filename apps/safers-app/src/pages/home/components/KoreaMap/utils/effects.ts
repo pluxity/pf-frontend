@@ -84,34 +84,50 @@ export function createPulseRipple(
   });
 }
 
-/** 선택된 POI의 정보 라벨 표시 */
+/** 선택된 POI의 팝오버 표시 (현장명 pill + 통합관제/AI CCTV 버튼) */
 export function showPOIInfo(
   layer: SVGGroupSelection,
   x: number,
   y: number,
   siteName: string,
   rootFontSize: number,
-  onClick?: () => void
+  actions?: {
+    onSiteClick?: () => void;
+    onCctvAIClick?: () => void;
+  }
 ): void {
   clearPOIInfo(layer);
 
   const infoGroup = layer.append("g").attr("class", "poi-info");
 
+  // 고정 크기 팝오버: 8.75rem x 3.3125rem
+  const popoverWidth = 8.75 * rootFontSize;
+  const popoverHeight = 3.3125 * rootFontSize;
+  const popoverRadius = 0.5 * rootFontSize;
+  const lineLength = 2 * rootFontSize;
+
+  // SVG 폭 기준으로 좌/우 방향 결정
+  const svgEl = layer.node()?.ownerSVGElement;
+  const svgWidth = svgEl ? svgEl.clientWidth || svgEl.getBoundingClientRect().width : 0;
+  const isRight = svgWidth > 0 && x > svgWidth / 2;
+
+  // 방향에 따른 좌표 계산
   const lineStartX = x;
   const lineStartY = y;
-  const lineEndX = x + 2 * rootFontSize;
-  const lineY = lineStartY;
+  const lineEndX = isRight ? x - lineLength : x + lineLength;
+  const popoverX = isRight ? lineEndX - popoverWidth : lineEndX;
+  const popoverY = lineStartY - popoverHeight + 0.0625 * rootFontSize;
 
-  const arrowSize = 0.4 * rootFontSize;
-  const arrowGap = 0.4 * rootFontSize;
-  const textLength = siteName.length;
-  const textWidth = textLength * 0.55 * rootFontSize;
-  const boxPaddingX = 0.75 * rootFontSize;
-  const boxWidth = Math.max(5 * rootFontSize, textWidth + arrowSize + arrowGap + boxPaddingX * 2);
-  const boxHeight = 1.5 * rootFontSize;
-  const boxX = lineEndX;
-  const boxY = lineY - boxHeight / 2;
+  // 내부 레이아웃 역산
+  const padX = 0.4 * rootFontSize;
+  const padY = 0.4 * rootFontSize;
+  const innerGap = 0.25 * rootFontSize;
+  const btnGap = 0.25 * rootFontSize;
+  const btnHeight = 1.3 * rootFontSize;
+  const titleAreaHeight = popoverHeight - padY * 2 - innerGap - btnHeight;
 
+  // 연결선 (border-radius 안쪽까지 연장하여 끊김 방지)
+  const lineActualEndX = isRight ? lineEndX - popoverRadius : lineEndX + popoverRadius;
   infoGroup
     .append("line")
     .attr("x1", lineStartX)
@@ -122,75 +138,129 @@ export function showPOIInfo(
     .attr("stroke-width", 0.125 * rootFontSize)
     .transition()
     .duration(200)
-    .attr("x2", lineEndX);
+    .attr("x2", lineActualEndX);
 
-  const pillGroup = infoGroup
-    .append("g")
-    .attr("class", "poi-info-pill")
-    .style("opacity", 0)
-    .style("cursor", onClick ? "pointer" : "default")
-    .style("pointer-events", onClick ? "all" : "none");
+  const popoverGroup = infoGroup.append("g").attr("class", "poi-info-pill").style("opacity", 0);
 
-  pillGroup
+  // 배경 rect (전체 팝오버)
+  popoverGroup
     .append("rect")
-    .attr("x", boxX)
-    .attr("y", boxY)
-    .attr("width", boxWidth)
-    .attr("height", boxHeight)
-    .attr("rx", boxHeight / 2)
+    .attr("x", popoverX)
+    .attr("y", popoverY)
+    .attr("width", popoverWidth)
+    .attr("height", popoverHeight)
+    .attr("rx", popoverRadius)
     .attr("fill", MAP_COLORS.brand);
 
-  const contentCenterX =
-    boxX + boxPaddingX + (boxWidth - boxPaddingX * 2 - arrowSize - arrowGap) / 2;
-
-  pillGroup
+  // 현장명 텍스트
+  const titleCenterY = popoverY + padY + titleAreaHeight / 2;
+  popoverGroup
     .append("text")
-    .attr("x", contentCenterX)
-    .attr("y", boxY + boxHeight / 2)
+    .attr("x", popoverX + popoverWidth / 2)
+    .attr("y", titleCenterY)
     .attr("dy", "0.35em")
     .attr("text-anchor", "middle")
     .attr("fill", "white")
     .attr("font-size", `${0.75 * rootFontSize}px`)
-    .attr("font-weight", "500")
-    .attr("text-decoration", onClick ? "underline" : "none")
+    .attr("font-weight", "600")
     .style("pointer-events", "none")
     .text(siteName);
 
-  // 화살표 아이콘 (>)
-  const arrowX = boxX + boxWidth - boxPaddingX - arrowSize;
-  const arrowCenterY = boxY + boxHeight / 2;
-  pillGroup
-    .append("path")
-    .attr(
-      "d",
-      `M${arrowX},${arrowCenterY - arrowSize * 0.5} L${arrowX + arrowSize * 0.5},${arrowCenterY} L${arrowX},${arrowCenterY + arrowSize * 0.5}`
-    )
-    .attr("fill", "none")
-    .attr("stroke", "white")
-    .attr("stroke-width", 1.5)
-    .attr("stroke-linecap", "round")
-    .attr("stroke-linejoin", "round")
-    .style("pointer-events", "none");
+  // 하단 버튼 행
+  const btnWidth = (popoverWidth - padX * 2 - btnGap) / 2;
+  const btnY = popoverY + padY + titleAreaHeight + innerGap;
+  const btnRadius = btnHeight / 2;
+  const btnFontSize = 0.6 * rootFontSize;
+  const btnStartX = popoverX + padX;
 
-  if (onClick) {
-    pillGroup.on("click", (event: MouseEvent) => {
-      event.stopPropagation();
-      onClick();
-    });
+  createPopoverButton(popoverGroup, {
+    className: "poi-btn-site",
+    x: btnStartX,
+    y: btnY,
+    width: btnWidth,
+    height: btnHeight,
+    radius: btnRadius,
+    label: "통합관제",
+    fontSize: btnFontSize,
+    onClick: actions?.onSiteClick,
+  });
 
-    pillGroup
-      .on("mouseenter", function () {
-        pillGroup.select("rect").transition().duration(150).attr("fill", "#E06800");
-      })
-      .on("mouseleave", function () {
-        pillGroup.select("rect").transition().duration(150).attr("fill", MAP_COLORS.brand);
-      });
-  }
+  createPopoverButton(popoverGroup, {
+    className: "poi-btn-cctv",
+    x: btnStartX + btnWidth + btnGap,
+    y: btnY,
+    width: btnWidth,
+    height: btnHeight,
+    radius: btnRadius,
+    label: "AI CCTV",
+    fontSize: btnFontSize,
+    onClick: actions?.onCctvAIClick,
+  });
 
-  pillGroup.transition().delay(150).duration(200).style("opacity", 1);
+  popoverGroup.transition().delay(150).duration(200).style("opacity", 1);
 }
 
 /** POI 정보 라벨 제거 */
 export function clearPOIInfo(layer: SVGGroupSelection): void {
   layer.selectAll(".poi-info").transition().duration(150).style("opacity", 0).remove();
+}
+
+/** 팝오버 내부 버튼 생성 헬퍼 */
+function createPopoverButton(
+  parent: SVGGroupSelection,
+  options: {
+    className: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    radius: number;
+    label: string;
+    fontSize: number;
+    onClick?: () => void;
+  }
+): void {
+  const { className, x, y, width, height, radius, label, fontSize, onClick } = options;
+  const textColor = "#FF7500";
+  const defaultFill = "white";
+  const hoverFill = "#F0F0F0";
+
+  const btn = parent.append("g").attr("class", className);
+
+  btn
+    .append("rect")
+    .attr("x", x)
+    .attr("y", y)
+    .attr("width", width)
+    .attr("height", height)
+    .attr("rx", radius)
+    .attr("fill", defaultFill);
+
+  btn
+    .append("text")
+    .attr("x", x + width / 2)
+    .attr("y", y + height / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", "middle")
+    .attr("fill", textColor)
+    .attr("font-size", `${fontSize}px`)
+    .attr("font-weight", "600")
+    .style("pointer-events", "none")
+    .text(label);
+
+  if (onClick) {
+    btn
+      .style("cursor", "pointer")
+      .style("pointer-events", "all")
+      .on("click", (event: MouseEvent) => {
+        event.stopPropagation();
+        onClick();
+      })
+      .on("mouseenter", function () {
+        btn.select("rect").transition().duration(150).attr("fill", hoverFill);
+      })
+      .on("mouseleave", function () {
+        btn.select("rect").transition().duration(150).attr("fill", defaultFill);
+      });
+  }
 }

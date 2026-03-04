@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { select } from "d3-selection";
 import "d3-transition";
 import type { GeoProjection } from "d3-geo";
@@ -12,6 +12,19 @@ import {
   clearPOIInfo,
 } from "../utils";
 import { useSitesStore } from "@/stores";
+
+/** 페이지 가시성 상태를 React 상태로 관리하는 훅 */
+function usePageVisible(): boolean {
+  const [visible, setVisible] = useState(!document.hidden);
+
+  useEffect(() => {
+    const handler = () => setVisible(!document.hidden);
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
+  }, []);
+
+  return visible;
+}
 
 interface UsePOILayerOptions {
   svgRef: React.MutableRefObject<SVGSelection | null>;
@@ -33,7 +46,8 @@ export function usePOILayer({
   onPOIHover,
   onSelectSite,
 }: UsePOILayerOptions): void {
-  const pulseIntervalsRef = useRef<number[]>([]);
+  const isPageVisible = usePageVisible();
+  const pulsePOIsRef = useRef<{ x: number; y: number; color: string }[]>([]);
   const onPOIClickRef = useRef(onPOIClick);
   const onPOIHoverRef = useRef(onPOIHover);
   const onSelectSiteRef = useRef(onSelectSite);
@@ -44,6 +58,7 @@ export function usePOILayer({
     onSelectSiteRef.current = onSelectSite;
   }, [onPOIClick, onPOIHover, onSelectSite]);
 
+  // POI 마커 렌더링
   useEffect(() => {
     const svg = svgRef.current;
     const mainProjection = mainProjectionRef.current;
@@ -56,9 +71,6 @@ export function usePOILayer({
     if (poiLayer.empty() || rippleLayer.empty()) return;
 
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-
-    clearPulseIntervals(pulseIntervalsRef.current);
-    pulseIntervalsRef.current = [];
 
     poiLayer.selectAll("*").remove();
     rippleLayer.selectAll("*").remove();
@@ -88,15 +100,34 @@ export function usePOILayer({
       }
     });
 
-    if (pulsePOIs.length > 0) {
-      startPulseAnimation(rippleLayer, pulsePOIs, rootFontSize, pulseIntervalsRef);
-    }
+    pulsePOIsRef.current = pulsePOIs;
+  }, [pois, svgRef, mainProjectionRef, jejuProjectionRef]);
+
+  // 펄스 애니메이션 — 페이지 비활성 시 자동 정지, 활성 시 재시작
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || !isPageVisible || pulsePOIsRef.current.length === 0) return;
+
+    const rippleLayer = svg.select<SVGGElement>(".ripple-layer");
+    if (rippleLayer.empty()) return;
+
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const targets = pulsePOIsRef.current;
+
+    const pulse = () => {
+      targets.forEach(({ x, y, color }) => {
+        createPulseRipple(rippleLayer, x, y, color, rootFontSize);
+      });
+    };
+
+    pulse();
+    const intervalId = window.setInterval(pulse, 2000);
 
     return () => {
-      clearPulseIntervals(pulseIntervalsRef.current);
-      pulseIntervalsRef.current = [];
+      clearInterval(intervalId);
+      rippleLayer.selectAll(".pulse-ripple").remove();
     };
-  }, [pois, svgRef, mainProjectionRef, jejuProjectionRef]);
+  }, [isPageVisible, pois, svgRef]);
 }
 
 interface UseSelectedPOIOptions {
@@ -105,7 +136,8 @@ interface UseSelectedPOIOptions {
   jejuProjectionRef: React.MutableRefObject<GeoProjection | null>;
   pois: POI[];
   selectedSiteId: string | null;
-  onPOIInfoClick?: (poi: POI) => void;
+  onPOISiteClick?: (poi: POI) => void;
+  onPOICctvAIClick?: (poi: POI) => void;
 }
 
 /** 선택된 POI 시각 업데이트를 담당하는 훅 */
@@ -115,14 +147,17 @@ export function useSelectedPOI({
   jejuProjectionRef,
   pois,
   selectedSiteId,
-  onPOIInfoClick,
+  onPOISiteClick,
+  onPOICctvAIClick,
 }: UseSelectedPOIOptions): void {
   const prevSelectedSiteIdRef = useRef<string | null>(null);
-  const onPOIInfoClickRef = useRef(onPOIInfoClick);
+  const onPOISiteClickRef = useRef(onPOISiteClick);
+  const onPOICctvAIClickRef = useRef(onPOICctvAIClick);
 
   useEffect(() => {
-    onPOIInfoClickRef.current = onPOIInfoClick;
-  }, [onPOIInfoClick]);
+    onPOISiteClickRef.current = onPOISiteClick;
+    onPOICctvAIClickRef.current = onPOICctvAIClick;
+  }, [onPOISiteClick, onPOICctvAIClick]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -161,13 +196,18 @@ export function useSelectedPOI({
     if (!coords) return;
 
     const poiCoords = calculatePOICoords(poiData, coords, rootFontSize);
-    highlightSelectedPOI(poiLayer, selectedSiteId, poiCoords);
+    const isReHighlight = selectedSiteId === prevId;
+    highlightSelectedPOI(poiLayer, selectedSiteId, poiCoords, isReHighlight);
 
-    clearPOIInfo(poiInfoLayer);
-    const siteName = (poiData.data?.name as string) ?? poiData.id;
-    showPOIInfo(poiInfoLayer, poiCoords.x, poiCoords.y, siteName, rootFontSize, () => {
-      onPOIInfoClickRef.current?.(poiData);
-    });
+    // 같은 siteId에 대해 팝오버가 이미 있으면 재생성하지 않음 (pois 변경 시 깜빡임 방지)
+    if (selectedSiteId !== prevId) {
+      clearPOIInfo(poiInfoLayer);
+      const siteName = (poiData.data?.name as string) ?? poiData.id;
+      showPOIInfo(poiInfoLayer, poiCoords.x, poiCoords.y, siteName, rootFontSize, {
+        onSiteClick: () => onPOISiteClickRef.current?.(poiData),
+        onCctvAIClick: () => onPOICctvAIClickRef.current?.(poiData),
+      });
+    }
 
     prevSelectedSiteIdRef.current = selectedSiteId;
   }, [selectedSiteId, pois, svgRef, mainProjectionRef, jejuProjectionRef]);
@@ -284,31 +324,6 @@ function renderPOILabel(
     .text(label);
 }
 
-/** 펄스 애니메이션 시작 */
-function startPulseAnimation(
-  layer: SVGGroupSelection,
-  pulsePOIs: { x: number; y: number; color: string }[],
-  rootFontSize: number,
-  intervalsRef: React.MutableRefObject<number[]>
-): void {
-  pulsePOIs.forEach(({ x, y, color }) => {
-    createPulseRipple(layer, x, y, color, rootFontSize);
-  });
-
-  const intervalId = window.setInterval(() => {
-    pulsePOIs.forEach(({ x, y, color }) => {
-      createPulseRipple(layer, x, y, color, rootFontSize);
-    });
-  }, 2000);
-
-  intervalsRef.current.push(intervalId);
-}
-
-/** 펄스 인터벌 정리 */
-function clearPulseIntervals(intervals: number[]): void {
-  intervals.forEach((id) => clearInterval(id));
-}
-
 /** POI 시각 상태 초기화 */
 function resetPOIVisual(layer: SVGGroupSelection, poiId: string): void {
   const prevPoi = layer.select(`[data-poi-id="${poiId}"]`);
@@ -327,8 +342,13 @@ function resetPOIVisual(layer: SVGGroupSelection, poiId: string): void {
     .attr("fill", originalColor ?? MAP_COLORS.defaultPOI);
 }
 
-/** 선택된 POI 하이라이트 */
-function highlightSelectedPOI(layer: SVGGroupSelection, poiId: string, coords: POICoords): void {
+/** 선택된 POI 하이라이트 (skipTransition=true면 트랜지션 없이 즉시 적용) */
+function highlightSelectedPOI(
+  layer: SVGGroupSelection,
+  poiId: string,
+  coords: POICoords,
+  skipTransition = false
+): void {
   const { x, y, scale, offsetX, offsetY, color } = coords;
   const newPoi = layer.select(`[data-poi-id="${poiId}"]`);
 
@@ -346,13 +366,16 @@ function highlightSelectedPOI(layer: SVGGroupSelection, poiId: string, coords: P
 
   newPoi.raise();
 
-  newPoi
-    .transition()
-    .duration(200)
-    .attr(
-      "transform",
-      `translate(${x - selectedOffsetX}, ${y - selectedOffsetY}) scale(${selectedScale})`
-    )
-    .select("path")
-    .attr("fill", MAP_COLORS.brand);
+  const selectedTransform = `translate(${x - selectedOffsetX}, ${y - selectedOffsetY}) scale(${selectedScale})`;
+
+  if (skipTransition) {
+    newPoi.attr("transform", selectedTransform).select("path").attr("fill", MAP_COLORS.brand);
+  } else {
+    newPoi
+      .transition()
+      .duration(200)
+      .attr("transform", selectedTransform)
+      .select("path")
+      .attr("fill", MAP_COLORS.brand);
+  }
 }

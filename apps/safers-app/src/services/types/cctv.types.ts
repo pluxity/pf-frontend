@@ -27,6 +27,8 @@ export interface SafersCCTV {
   lon?: number;
   lat?: number;
   alt?: number;
+  nvrName?: string;
+  channel?: number;
   site: CCTVSite;
   createdAt: string;
   createdBy: string;
@@ -47,4 +49,6 @@ export interface CctvUpdateRequest {
   lon?: number;
   lat?: number;
   alt?: number;
+  nvrName?: string;
+  channel?: number;
 }

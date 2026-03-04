@@ -33,8 +33,10 @@ export interface KoreaMapProps {
   pois?: POI[];
   onPOIClick?: (poi: POI) => void;
   onPOIHover?: (poi: POI | null) => void;
-  /** POI 정보 라벨(pill) 클릭 시 호출 */
-  onPOIInfoClick?: (poi: POI) => void;
+  /** POI 팝오버 "통합관제" 클릭 */
+  onPOISiteClick?: (poi: POI) => void;
+  /** POI 팝오버 "AI CCTV" 클릭 */
+  onPOICctvAIClick?: (poi: POI) => void;
 }
 
 /** SVG Selection 타입 */

@@ -258,6 +258,7 @@ function LiveGrid({
 // ─── VideoPanel ───
 
 interface VideoPanelProps {
+  siteId: number;
   selectedStream: string;
   onStreamChange: (streamName: string) => void;
   selectedEvent: StompEventResponse | null;
@@ -265,27 +266,15 @@ interface VideoPanelProps {
 }
 
 export function VideoPanel({
+  siteId,
   selectedStream,
   onStreamChange,
   selectedEvent,
   onClearEvent,
 }: VideoPanelProps) {
-  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>(undefined);
-  const { items: allItems, isLoading, isError, error } = useCCTVStreams();
+  const { items, isLoading, isError, error } = useCCTVStreams(siteId);
   const [gridMode, setGridMode] = useState<GridMode>("1x1");
   const [page, setPage] = useState(0);
-
-  // 현장 목록 추출 (unique sites)
-  const sites = allItems.reduce<{ id: number; name: string }[]>((acc, item) => {
-    if (!acc.some((s) => s.id === item.siteId)) {
-      acc.push({ id: item.siteId, name: item.siteName });
-    }
-    return acc;
-  }, []);
-
-  // 현장 필터링
-  const items =
-    selectedSiteId != null ? allItems.filter((i) => i.siteId === selectedSiteId) : allItems;
 
   const perPage = gridMode === "1x1" ? 1 : gridMode === "2x2" ? 4 : 16;
   const totalPages = Math.max(1, Math.ceil(items.length / perPage));
@@ -345,23 +334,6 @@ export function VideoPanel({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-white/60">라이브 스트림</span>
-          {/* 현장 셀렉터 */}
-          <select
-            value={selectedSiteId ?? ""}
-            onChange={(e) => {
-              const val = e.target.value;
-              setSelectedSiteId(val ? Number(val) : undefined);
-              setPage(0);
-            }}
-            className="rounded-md border border-[#2A2D3A] bg-[#252833] px-3 py-1.5 text-sm text-white outline-none focus:border-brand"
-          >
-            <option value="">전체 현장</option>
-            {sites.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
           {isSingle && (
             <CCTVSelect items={items} selected={activeStream} onChange={onStreamChange} />
           )}
