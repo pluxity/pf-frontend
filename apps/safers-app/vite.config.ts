@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { resolve } from "path";
 
+/** 현장별 WHEP 포트 목록 (cctv.service.ts의 SITE_WHEP_PORT와 동기화) */
+const WHEP_PORTS = [8811, 8812, 8813, 8814, 8815, 8816, 8817, 8818, 8819];
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
@@ -11,9 +14,23 @@ export default defineConfig(({ mode }) => {
   const projectPath = env.VITE_PROJECT_PATH || "";
   const proxyTarget = `${apiServerUrl}${projectPath}`;
   const cookiePath = `${projectPath}/api`;
+  const mediaServerUrl = env.VITE_MEDIA_SERVER_URL || "http://14.51.233.128";
 
   // Base path 설정 (staging 환경에서 contextPath 적용)
   const contextPath = env.VITE_CONTEXT_PATH || "";
+
+  // /webrtc/{port} → mediaServer:{port} 프록시 엔트리 생성
+  const webrtcProxy = Object.fromEntries(
+    WHEP_PORTS.map((port) => [
+      `/webrtc/${port}`,
+      {
+        target: `${mediaServerUrl}:${port}`,
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path: string) => path.replace(`/webrtc/${port}`, ""),
+      },
+    ])
+  );
 
   return {
     base: contextPath || "/",
@@ -40,7 +57,7 @@ export default defineConfig(({ mode }) => {
           configure: (proxy) => {
             if (!projectPath) return;
 
-            const cookiePathRegex = new RegExp(`Path=${cookiePath.replace(/\//g, "\\/")}`, "gi");
+            const cookiePathRegex = new RegExp(`Path=${cookiePath.replace(/\//g, "/")}`, "gi");
 
             proxy.on("proxyRes", (proxyRes) => {
               const setCookie = proxyRes.headers["set-cookie"];
@@ -52,6 +69,7 @@ export default defineConfig(({ mode }) => {
             });
           },
         },
+        ...webrtcProxy,
       },
     },
     build: {

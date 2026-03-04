@@ -14,6 +14,8 @@ export { SCENARIO_EMERGENCIES, SCENARIO_CAMERAS, SCENARIO3, nextEventId } from "
 
 export { MOCK_DANGER_ZONES } from "./danger-zones.config";
 
+export { MOCK_CCTVS } from "./cctv.config";
+
 export {
   ASSET_URLS,
   BUILDING_OPACITY,

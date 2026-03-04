@@ -3,7 +3,6 @@ import type { ModelTransform, ThreeOverlayHandle, FeaturePosition, DangerZone } 
 import type { GeoPosition } from "@/services/types/worker.types";
 import { createThreeScene, type ThreeSceneApi } from "./create-three-scene";
 import { MODEL_URL } from "../config/site.config";
-import { cctvService } from "@/services";
 import { useFeatureDataStore } from "@/stores";
 import {
   ASSET_URLS,
@@ -14,6 +13,7 @@ import {
   WORKER4_PATROL_DURATION,
   DUMP_PATROL_PATH,
   DUMP_PATROL_DURATION,
+  MOCK_CCTVS,
 } from "../../../config";
 
 interface ThreeOverlayProps {
@@ -179,21 +179,14 @@ export function ThreeOverlay({
       sceneApi.startPatrol("dump-1", DUMP_PATROL_PATH, DUMP_PATROL_DURATION);
     });
 
-    cctvService.getCCTVs().then((cctvs) => {
-      for (const cctv of cctvs) {
-        if (cctv.lon == null || cctv.lat == null) continue;
-        const featureId = cctv.streamName;
-        sceneApi.addFeature(featureId, "cctv", {
-          lng: cctv.lon,
-          lat: cctv.lat,
-          altitude: cctv.alt ?? 0,
-        });
-        store.setCCTVStreamUrl(
-          featureId,
-          cctvService.getWHEPUrl(cctv.streamName, cctv.site.id, cctv.site.baseUrl)
-        );
+    for (const cctv of MOCK_CCTVS) {
+      sceneApi.addFeature(cctv.id, "cctv", cctv.position);
+      sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
+      if (cctv.frustumCorners) {
+        sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
       }
-    });
+      store.setCCTVStreamUrl(cctv.id, "/webrtc/8819/" + cctv.streamName + "/whep");
+    }
 
     const parent = canvas.parentElement;
     if (!parent) return;

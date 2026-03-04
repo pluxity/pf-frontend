@@ -36,7 +36,7 @@ export function useCCTVStreams(siteId?: number) {
               displayName: c.name,
               siteId: c.site.id,
               siteName: c.site.name,
-              whepUrl: cctvService.getWHEPUrl(c.streamName, c.site.id, c.site.baseUrl),
+              whepUrl: cctvService.getWHEPUrl(c.streamName, c.site.id),
               cctv: c,
             }))
           );

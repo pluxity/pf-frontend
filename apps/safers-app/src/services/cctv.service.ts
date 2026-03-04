@@ -56,12 +56,11 @@ async function syncCCTVs(siteId?: number): Promise<void> {
   if (!res.ok) throw new Error(`Failed to sync CCTVs: ${res.status}`);
 }
 
-/** 현장 정보 기반으로 WHEP URL 생성 — {baseUrl}:{port}/{streamName}/whep */
-function getWHEPUrl(streamName: string, siteId: number, baseUrl?: string): string {
+/** 현장 정보 기반으로 WHEP URL 생성 — /webrtc/{port}/{streamName}/whep */
+function getWHEPUrl(streamName: string, siteId: number): string {
   const port = SITE_WHEP_PORT[siteId];
-  const base = baseUrl ?? "";
-  if (port) return `${base}:${port}/${streamName}/whep`;
-  return `${base}/${streamName}/whep`;
+  if (port) return `/webrtc/${port}/${streamName}/whep`;
+  return `/webrtc/${streamName}/whep`;
 }
 
 export const cctvService = {
