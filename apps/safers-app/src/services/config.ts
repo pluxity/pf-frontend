@@ -2,9 +2,6 @@
 
 export const API_BASE_URL = "/api";
 
-/** CCTV 전용 API (safers 관리 서버) */
-export const SAFERS_API_URL = "https://safers.pluxity.com/api";
-
 /**
  * 도메인별 mock 사용 여부
  * - true: mock 데이터 반환 (API 미구현)

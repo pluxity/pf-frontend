@@ -1,17 +1,33 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { SafersCCTV, TimeRange } from "@/services";
+import { cctvService } from "@/services";
 import { useCCTVStreams } from "@/hooks/useCCTVStreams";
 import biLogo from "@/assets/images/BI.svg";
 import { PlaybackPanel } from "./components/PlaybackPanel";
 import { ControlPanel } from "./components/ControlPanel";
 
+/** baseDate의 자정 기준으로 minutes를 더해 yyyyMMddHHmmss 문자열 생성 */
+function toPlaybackDateStr(baseDate: Date, minutes: number): string {
+  const d = new Date(baseDate);
+  d.setHours(0, 0, 0, 0);
+  d.setMinutes(d.getMinutes() + minutes);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, "0");
+  const D = String(d.getDate()).padStart(2, "0");
+  const h = String(d.getHours()).padStart(2, "0");
+  const m = String(d.getMinutes()).padStart(2, "0");
+  const s = String(d.getSeconds()).padStart(2, "0");
+  return `${Y}${M}${D}${h}${m}${s}`;
+}
+
 export function CCTVPlaybackPage() {
   const navigate = useNavigate();
   const { siteId } = useParams<{ siteId: string }>();
+  const numericSiteId = Number(siteId);
 
   // 현장 CCTV 목록
-  const { items, isLoading } = useCCTVStreams(Number(siteId));
+  const { items, isLoading } = useCCTVStreams(numericSiteId);
   const cctvs = items.map((item) => item.cctv);
 
   // 선택된 CCTV
@@ -22,12 +38,23 @@ export function CCTVPlaybackPage() {
   const [includeNextDay, setIncludeNextDay] = useState(false);
   const [timeRange, setTimeRange] = useState<TimeRange | null>(null);
 
+  // 재생 상태
+  const [playbackWhepUrl, setPlaybackWhepUrl] = useState<string | null>(null);
+  const [isRequesting, setIsRequesting] = useState(false);
+
   const totalMinutes = includeNextDay ? 2880 : 1440;
 
-  // 날짜 변경 시 타임라인 범위 초기화
+  // CCTV 변경 시 재생 초기화
+  function handleSelectCCTV(cctv: SafersCCTV | null) {
+    setSelectedCCTV(cctv);
+    setPlaybackWhepUrl(null);
+  }
+
+  // 날짜 변경 시 타임라인 범위 + 재생 초기화
   function handleDateChange(date: Date) {
     setSelectedDate(date);
     setTimeRange(null);
+    setPlaybackWhepUrl(null);
   }
 
   function handleIncludeNextDayChange(include: boolean) {
@@ -35,13 +62,31 @@ export function CCTVPlaybackPage() {
     if (!include && timeRange && timeRange.end > 1440) {
       setTimeRange(null);
     }
+    setPlaybackWhepUrl(null);
+  }
+
+  // 시간 범위 변경 시 재생 초기화
+  function handleTimeRangeChange(range: TimeRange | null) {
+    setTimeRange(range);
+    setPlaybackWhepUrl(null);
   }
 
   // 재생 요청
-  function handleRequestPlayback() {
+  async function handleRequestPlayback() {
     if (!selectedCCTV || !timeRange) return;
 
-    // TODO: 실제 API 연동 시 교체
+    setIsRequesting(true);
+    try {
+      const startDate = toPlaybackDateStr(selectedDate, timeRange.start);
+      const endDate = toPlaybackDateStr(selectedDate, timeRange.end);
+      const pathName = await cctvService.requestPlayback(selectedCCTV.id, startDate, endDate);
+      const whepUrl = cctvService.getWHEPUrl(pathName, numericSiteId);
+      setPlaybackWhepUrl(whepUrl);
+    } catch (err) {
+      console.error("Playback request failed:", err);
+    } finally {
+      setIsRequesting(false);
+    }
   }
 
   return (
@@ -79,7 +124,9 @@ export function CCTVPlaybackPage() {
             timeRange={timeRange}
             baseDate={selectedDate}
             includeNextDay={includeNextDay}
-            onTimeRangeChange={setTimeRange}
+            onTimeRangeChange={handleTimeRangeChange}
+            playbackWhepUrl={playbackWhepUrl}
+            isRequesting={isRequesting}
           />
         </section>
 
@@ -92,7 +139,7 @@ export function CCTVPlaybackPage() {
             selectedDate={selectedDate}
             includeNextDay={includeNextDay}
             timeRange={timeRange}
-            onSelectCCTV={setSelectedCCTV}
+            onSelectCCTV={handleSelectCCTV}
             onDateChange={handleDateChange}
             onIncludeNextDayChange={handleIncludeNextDayChange}
             onRequestPlayback={handleRequestPlayback}

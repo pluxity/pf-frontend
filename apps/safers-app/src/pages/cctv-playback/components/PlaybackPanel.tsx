@@ -1,4 +1,6 @@
+import { useWHEPStream } from "@pf-dev/cctv";
 import type { SafersCCTV, TimeRange } from "@/services";
+import { StreamLoadingOverlay, StreamErrorOverlay } from "@/components/cctv";
 import { PlaybackTimeline } from "./PlaybackTimeline";
 
 interface PlaybackPanelProps {
@@ -8,6 +10,8 @@ interface PlaybackPanelProps {
   baseDate: Date;
   includeNextDay: boolean;
   onTimeRangeChange: (range: TimeRange | null) => void;
+  playbackWhepUrl: string | null;
+  isRequesting: boolean;
 }
 
 export function PlaybackPanel({
@@ -17,12 +21,21 @@ export function PlaybackPanel({
   baseDate,
   includeNextDay,
   onTimeRangeChange,
+  playbackWhepUrl,
+  isRequesting,
 }: PlaybackPanelProps) {
   return (
     <div className="flex h-full flex-col gap-4">
       {/* 영상 영역 */}
       <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-xl border border-[#2A2D3A] bg-black/40">
-        {selectedCCTV ? (
+        {playbackWhepUrl ? (
+          <PlaybackStream whepUrl={playbackWhepUrl} />
+        ) : isRequesting ? (
+          <div className="flex flex-col items-center gap-3 text-white/40">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            <p className="text-sm">녹화영상 요청 중...</p>
+          </div>
+        ) : selectedCCTV ? (
           <div className="flex flex-col items-center gap-3 text-white/30">
             <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -70,5 +83,18 @@ export function PlaybackPanel({
         />
       </div>
     </div>
+  );
+}
+
+/** WHEP 스트림 재생 — playbackWhepUrl이 바뀌면 자동 연결 */
+function PlaybackStream({ whepUrl }: { whepUrl: string }) {
+  const { videoRef, status, connect } = useWHEPStream(whepUrl);
+
+  return (
+    <>
+      <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-contain" />
+      {status === "connecting" && <StreamLoadingOverlay />}
+      {status === "failed" && <StreamErrorOverlay onReconnect={() => connect()} />}
+    </>
   );
 }

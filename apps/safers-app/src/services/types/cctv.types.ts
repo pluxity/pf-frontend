@@ -52,3 +52,10 @@ export interface CctvUpdateRequest {
   nvrName?: string;
   channel?: number;
 }
+
+/** POST /cctvs/{id}/playback 응답 */
+export interface CctvPlaybackResponse {
+  data: {
+    pathName: string; // e.g. "playback-pb_38ae550d"
+  };
+}
