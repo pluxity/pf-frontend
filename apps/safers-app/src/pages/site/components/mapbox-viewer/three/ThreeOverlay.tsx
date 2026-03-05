@@ -21,6 +21,7 @@ interface ThreeOverlayProps {
   getTransform: () => ModelTransform;
   requestRepaint: () => void;
   dangerZones?: DangerZone[];
+  onLoad?: () => void;
 }
 
 export function ThreeOverlay({
@@ -28,6 +29,7 @@ export function ThreeOverlay({
   getTransform,
   requestRepaint,
   dangerZones,
+  onLoad,
 }: ThreeOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<ThreeSceneApi | null>(null);
@@ -151,62 +153,66 @@ export function ThreeOverlay({
       sceneApi.setDangerZones(dangerZones);
     }
 
-    sceneApi.registerAsset("worker", ASSET_URLS.worker);
+    // 에셋은 건물 모델과 병렬로 로드 시작
+    const workerReady = sceneApi.registerAsset("worker", ASSET_URLS.worker);
     const walkReady = sceneApi.registerAsset("worker-walk", ASSET_URLS.workerWalk);
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
-    sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
+    const cctvReady = sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
     const dumpReady = sceneApi.registerAsset("dump", ASSET_URLS.dump);
     const crane01Ready = sceneApi.registerAsset("crane-01", ASSET_URLS.crane01);
     const crane02Ready = sceneApi.registerAsset("crane-02", ASSET_URLS.crane02);
 
-    fetchWorkerPositions().then(async (workers) => {
+    // 건물 모델 로드 완료 후 feature 배치
+    sceneApi.modelReady.then(async () => {
+      // 건물 로드 완료 → 에셋 로드 대기 후 feature 배치
+      await Promise.all([workerReady, cctvReady, dumpReady, crane01Ready, crane02Ready]);
+
+      // 작업자
+      const workers = await fetchWorkerPositions();
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
         store.updateWorkerVitals(w.id, w.vitals);
         store.updateWorkerLocation(w.id, w.location);
       }
-
       sceneApi.setFeatureHeading("worker-5", Math.PI);
 
       await walkReady;
       sceneApi.swapFeatureAsset("worker-1", "worker-walk");
       sceneApi.startPatrol("worker-1", WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION);
-
       sceneApi.swapFeatureAsset("worker-4", "worker-walk");
       sceneApi.startPatrol("worker-4", WORKER4_PATROL_PATH, WORKER4_PATROL_DURATION);
-    });
 
-    dumpReady.then(() => {
+      // 덤프트럭
       sceneApi.addFeature("dump-1", "dump", DUMP_PATROL_PATH[0]!);
       sceneApi.startPatrol("dump-1", DUMP_PATROL_PATH, DUMP_PATROL_DURATION);
-    });
 
-    crane01Ready.then(() => {
+      // 크레인
       sceneApi.addFeature("crane-1", "crane-01", {
         lng: 126.847021,
         lat: 37.499858,
         altitude: 8.5,
       });
       sceneApi.setFeatureHeading("crane-1", (Math.PI * 110) / 180);
-    });
 
-    crane02Ready.then(() => {
       sceneApi.addFeature("crane-2", "crane-02", {
         lng: 126.846997,
         lat: 37.498983,
         altitude: 3.4,
       });
       sceneApi.setFeatureHeading("crane-2", (Math.PI * 110) / 180);
-    });
 
-    for (const cctv of MOCK_CCTVS) {
-      sceneApi.addFeature(cctv.id, "cctv", cctv.position);
-      sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
-      if (cctv.frustumCorners) {
-        sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
+      // CCTV
+      for (const cctv of MOCK_CCTVS) {
+        sceneApi.addFeature(cctv.id, "cctv", cctv.position);
+        sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
+        if (cctv.frustumCorners) {
+          sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
+        }
+        store.setCCTVStreamUrl(cctv.id, "/webrtc/8819/" + cctv.streamName + "/whep");
       }
-      store.setCCTVStreamUrl(cctv.id, "/webrtc/8819/" + cctv.streamName + "/whep");
-    }
+
+      onLoad?.();
+    });
 
     const parent = canvas.parentElement;
     if (!parent) return;

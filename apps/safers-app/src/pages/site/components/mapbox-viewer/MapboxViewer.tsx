@@ -53,6 +53,7 @@ export function MapboxViewer({
   const currentStyleRef = useRef<MapStyleKey>("day");
   const renderCallbacksRef = useRef<Set<() => void>>(new Set());
 
+  const [sceneLoaded, setSceneLoaded] = useState(false);
   const [showCCTVLabels, setShowCCTVLabels] = useState(false);
   const [showWorkerLabels, setShowWorkerLabels] = useState(false);
   const [searchHitIds, setSearchHitIds] = useState<Set<string>>(new Set());
@@ -207,6 +208,7 @@ export function MapboxViewer({
         getTransform={getTransform}
         requestRepaint={requestRepaint}
         dangerZones={dangerZones}
+        onLoad={() => setSceneLoaded(true)}
       />
 
       <AreaSelectionOverlay
@@ -303,6 +305,15 @@ export function MapboxViewer({
           mapRef={mapRef}
           renderCallbacksRef={renderCallbacksRef}
         />
+      )}
+
+      {!sceneLoaded && (
+        <div className="absolute inset-0 z-[10] flex items-center justify-center bg-white/20 backdrop-blur-xl">
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/40 bg-white/30 px-10 py-8 shadow-lg backdrop-blur-md">
+            <div className="h-10 w-10 animate-spin rounded-full border-3 border-black/10 border-t-brand" />
+            <p className="text-sm font-medium text-black/50">현장 모델을 불러오는 중...</p>
+          </div>
+        </div>
       )}
 
       {import.meta.env.DEV && (
