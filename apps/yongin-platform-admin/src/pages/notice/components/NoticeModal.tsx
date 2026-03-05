@@ -14,16 +14,36 @@ import {
   ModalTitle,
   ModalDescription,
 } from "@pf-dev/ui";
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import type { ValidationError } from "@/utils";
 import { formatDateKST } from "@/utils/date";
 import type { Notice, NoticeFormData } from "../types";
 import { validateNotice } from "../validation";
 
-const getLastDayOfMonth = (): string => {
-  const today = new Date();
-  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-  return formatDateKST(lastDay);
+const getInitialFormData = (selectedNotice: Notice | null): NoticeFormData => {
+  return selectedNotice
+    ? {
+        title: selectedNotice.title || "",
+        content: selectedNotice.content || "",
+        isVisible: selectedNotice.isVisible ?? true,
+        isAlways: selectedNotice.isAlways ?? false,
+        startDate: selectedNotice.startDate || "",
+        endDate: selectedNotice.endDate || "",
+      }
+    : {
+        title: "",
+        content: "",
+        isVisible: true,
+        isAlways: false,
+        startDate: formatDateKST(),
+        endDate: formatDateKST(
+          (() => {
+            const date = new Date();
+            date.setMonth(date.getMonth() + 1);
+            return date;
+          })()
+        ),
+      };
 };
 
 export interface NoticeModalProps {
@@ -41,42 +61,23 @@ export function NoticeModal({
   onSave,
   isLoading,
 }: NoticeModalProps) {
-  const [formData, setFormData] = useState<NoticeFormData>({
+  const [formData, setFormData] = useState<NoticeFormData>(() => ({
     title: "",
     content: "",
     isVisible: true,
     isAlways: false,
     startDate: "",
     endDate: "",
-  });
+  }));
   const [errors, setErrors] = useState<ValidationError[]>([]);
 
   useEffect(() => {
     if (!open) return;
 
-    const data = selectedNotice
-      ? {
-          title: selectedNotice.title || "",
-          content: selectedNotice.content || "",
-          isVisible: selectedNotice.isVisible ?? true,
-          isAlways: selectedNotice.isAlways ?? false,
-          startDate: selectedNotice.startDate
-            ? formatDateKST(new Date(selectedNotice.startDate))
-            : "",
-          endDate: selectedNotice.endDate ? formatDateKST(new Date(selectedNotice.endDate)) : "",
-        }
-      : {
-          title: "",
-          content: "",
-          isVisible: true,
-          isAlways: false,
-          startDate: formatDateKST(),
-          endDate: getLastDayOfMonth(),
-        };
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFormData(data);
-  }, [open, selectedNotice]);
+    startTransition(() => {
+      setFormData(getInitialFormData(selectedNotice));
+    });
+  }, [open, selectedNotice?.id]);
 
   const getFieldError = (fieldName: string) => {
     return errors.find((e) => e.field === fieldName)?.message;

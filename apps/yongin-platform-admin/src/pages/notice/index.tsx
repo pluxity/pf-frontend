@@ -26,11 +26,6 @@ import { NoticeModal } from "./components";
 import { AgGridPagination, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("ko-KR");
-};
-
 interface ConfirmModalState {
   title: string;
   description: string;
@@ -82,7 +77,7 @@ export function NoticePage() {
   const columnDefs = useMemo<ColDef<Notice>[]>(() => {
     const formatDateRange = (startDate: string, endDate: string, isAlways: boolean) => {
       if (isAlways) return "상시";
-      return `${formatDate(startDate)} ~ ${formatDate(endDate)}`;
+      return `${startDate || "--"} ~ ${endDate || "--"}`;
     };
 
     const statusRenderer = (params: ICellRendererParams<Notice>) => {
@@ -103,8 +98,6 @@ export function NoticePage() {
         width: 100,
         sortable: true,
         comparator: (a: number, b: number) => b - a,
-        checkboxSelection: true,
-        headerCheckboxSelection: true,
       },
       {
         headerName: "제목",
@@ -135,9 +128,11 @@ export function NoticePage() {
       {
         headerName: "등록일",
         field: "createdAt",
-        width: 120,
-        cellRenderer: (params: ICellRendererParams<Notice>) =>
-          formatDate(params.data?.createdAt || ""),
+        width: 130,
+        cellRenderer: (params: ICellRendererParams<Notice>) => {
+          const date = params.data?.createdAt?.split("T")[0];
+          return date || "--";
+        },
         sortable: true,
       },
       {
@@ -303,7 +298,7 @@ export function NoticePage() {
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 animateRows={true}
-                rowSelection="multiple"
+                rowSelection={{ mode: "multiRow", checkboxes: true, headerCheckbox: true }}
                 pagination={true}
                 paginationPageSize={20}
                 suppressPaginationPanel={true}
