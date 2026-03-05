@@ -48,6 +48,7 @@ coverage
 *.gltf
 
 # Claude
+.claude
 nul
 tmpclaude-*-cwd
 
