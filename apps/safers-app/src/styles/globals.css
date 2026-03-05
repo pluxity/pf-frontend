@@ -30,6 +30,32 @@ body {
     sans-serif;
 }
 
+/* 다크 테마 커스텀 스크롤바 (브랜드 컬러) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 117, 0, 0.05);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 117, 0, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 117, 0, 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 117, 0, 0.3) transparent;
+}
+
 /* Mapbox 로고 & 카피라이트 숨기기 */
 .mapboxgl-ctrl-logo,
 .mapboxgl-ctrl-attrib {

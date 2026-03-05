@@ -8,6 +8,7 @@ interface ControlPanelProps {
   selectedDate: Date;
   includeNextDay: boolean;
   timeRange: TimeRange | null;
+  validationError: string | null;
   onSelectCCTV: (cctv: SafersCCTV | null) => void;
   onDateChange: (date: Date) => void;
   onIncludeNextDayChange: (include: boolean) => void;
@@ -41,6 +42,7 @@ export function ControlPanel({
   selectedDate,
   includeNextDay,
   timeRange,
+  validationError,
   onSelectCCTV,
   onDateChange,
   onIncludeNextDayChange,
@@ -48,15 +50,15 @@ export function ControlPanel({
 }: ControlPanelProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const canRequest = selectedCCTV && timeRange;
+  const canRequest = selectedCCTV && timeRange && !validationError;
 
   const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
 
   return (
-    <div className="flex h-full flex-col gap-5 overflow-y-auto p-5">
-      {/* CCTV 선택 */}
-      <section>
-        <label className="mb-2 block text-xs font-semibold tracking-wide text-white/40">
+    <div className="flex h-full flex-col p-5">
+      {/* CCTV 선택 — 스크롤 영역 */}
+      <section className="mb-5 flex min-h-0 shrink flex-col">
+        <label className="mb-2 block shrink-0 text-xs font-semibold tracking-wide text-white/40">
           CCTV 선택
         </label>
         {isLoading ? (
@@ -68,12 +70,12 @@ export function ControlPanel({
             등록된 CCTV가 없습니다
           </p>
         ) : (
-          <div className="flex flex-col gap-1">
+          <div className="flex min-h-0 flex-col gap-1 overflow-y-auto">
             {cctvs.map((cctv) => (
               <button
                 key={cctv.id}
                 onClick={() => onSelectCCTV(cctv)}
-                className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm transition-colors ${
+                className={`flex shrink-0 items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm transition-colors ${
                   selectedCCTV?.id === cctv.id
                     ? "bg-brand/15 text-brand border border-brand/30"
                     : "border border-transparent bg-[#252833] text-white/70 hover:bg-[#2A2D3A] hover:text-white"
@@ -104,7 +106,7 @@ export function ControlPanel({
       </section>
 
       {/* 날짜 선택 */}
-      <section>
+      <section className="shrink-0">
         <label className="mb-2 block text-xs font-semibold tracking-wide text-white/40">날짜</label>
         <div className="relative">
           <button
@@ -152,7 +154,7 @@ export function ControlPanel({
 
       {/* 선택된 범위 */}
       {timeRange && (
-        <section>
+        <section className="mt-5 shrink-0">
           <label className="mb-2 block text-xs font-semibold tracking-wide text-white/40">
             선택된 범위
           </label>
@@ -175,7 +177,7 @@ export function ControlPanel({
       )}
 
       {/* 재생 버튼 */}
-      <div className="mt-auto pt-4">
+      <div className="shrink-0 pt-4">
         <button
           disabled={!canRequest}
           onClick={onRequestPlayback}
@@ -190,6 +192,9 @@ export function ControlPanel({
           </svg>
           재생 요청
         </button>
+        {validationError && (
+          <p className="mt-2 text-center text-xs text-error-brand">{validationError}</p>
+        )}
       </div>
     </div>
   );

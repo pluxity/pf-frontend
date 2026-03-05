@@ -44,17 +44,35 @@ export function CCTVPlaybackPage() {
 
   const totalMinutes = includeNextDay ? 2880 : 1440;
 
-  // CCTV 변경 시 재생 초기화
-  function handleSelectCCTV(cctv: SafersCCTV | null) {
-    setSelectedCCTV(cctv);
+  // 에러 상태
+  const [requestError, setRequestError] = useState<string | null>(null);
+
+  // 미래 시간 범위 검증
+  function getValidationError(): string | null {
+    if (!selectedCCTV || !timeRange) return null;
+    const now = new Date();
+    const endTime = new Date(selectedDate);
+    endTime.setHours(0, 0, 0, 0);
+    endTime.setMinutes(endTime.getMinutes() + timeRange.end);
+    if (endTime > now) return "해당 시간대의 녹화영상이 없습니다";
+    return null;
+  }
+  const validationError = getValidationError() ?? requestError;
+
+  function resetPlaybackState() {
     setPlaybackWhepUrl(null);
+    setRequestError(null);
   }
 
-  // 날짜 변경 시 타임라인 범위 + 재생 초기화
+  function handleSelectCCTV(cctv: SafersCCTV | null) {
+    setSelectedCCTV(cctv);
+    resetPlaybackState();
+  }
+
   function handleDateChange(date: Date) {
     setSelectedDate(date);
     setTimeRange(null);
-    setPlaybackWhepUrl(null);
+    resetPlaybackState();
   }
 
   function handleIncludeNextDayChange(include: boolean) {
@@ -62,13 +80,12 @@ export function CCTVPlaybackPage() {
     if (!include && timeRange && timeRange.end > 1440) {
       setTimeRange(null);
     }
-    setPlaybackWhepUrl(null);
+    resetPlaybackState();
   }
 
-  // 시간 범위 변경 시 재생 초기화
   function handleTimeRangeChange(range: TimeRange | null) {
     setTimeRange(range);
-    setPlaybackWhepUrl(null);
+    resetPlaybackState();
   }
 
   // 재생 요청
@@ -76,6 +93,7 @@ export function CCTVPlaybackPage() {
     if (!selectedCCTV || !timeRange) return;
 
     setIsRequesting(true);
+    setRequestError(null);
     try {
       const startDate = toPlaybackDateStr(selectedDate, timeRange.start);
       const endDate = toPlaybackDateStr(selectedDate, timeRange.end);
@@ -84,6 +102,7 @@ export function CCTVPlaybackPage() {
       setPlaybackWhepUrl(whepUrl);
     } catch (err) {
       console.error("Playback request failed:", err);
+      setRequestError("해당 시간대의 녹화영상이 없습니다");
     } finally {
       setIsRequesting(false);
     }
@@ -139,6 +158,7 @@ export function CCTVPlaybackPage() {
             selectedDate={selectedDate}
             includeNextDay={includeNextDay}
             timeRange={timeRange}
+            validationError={validationError}
             onSelectCCTV={handleSelectCCTV}
             onDateChange={handleDateChange}
             onIncludeNextDayChange={handleIncludeNextDayChange}
