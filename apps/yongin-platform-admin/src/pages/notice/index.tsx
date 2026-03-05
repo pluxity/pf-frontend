@@ -1,297 +1,362 @@
-import { useState, useMemo, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { AgGridReact } from "ag-grid-react";
+import type { AgGridReact as AgGridReactType } from "ag-grid-react";
+import type {
+  ColDef,
+  ICellRendererParams,
+  GridApi,
+  GridReadyEvent,
+  RowClickedEvent,
+} from "ag-grid-community";
+import { useRef, useState, useMemo } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@pf-dev/ui/molecules";
-import {
-  DataTable,
-  type DataTableColumn,
-  EmptyState,
+  Badge,
+  Button,
   Modal,
   ModalContent,
   ModalHeader,
-  ModalBody,
   ModalFooter,
   ModalTitle,
-} from "@pf-dev/ui/organisms";
-import {
-  Button,
-  Input,
-  Label,
-  Textarea,
-  Plus,
-  Edit,
-  Close,
-  MoreVertical,
+  ModalDescription,
   Spinner,
-} from "@pf-dev/ui/atoms";
-import { useToastContext } from "@/contexts";
-import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "./hooks";
+} from "@pf-dev/ui";
 import type { Notice, NoticeFormData } from "./types";
+import { useToastContext } from "../../contexts/ToastContext";
+import { useNotices, useCreateNotice, useUpdateNotice, useDeleteNotice } from "./hooks";
+import { NoticeModal } from "./components";
+import { AgGridPagination, AgGridSearchFilter } from "../../components";
+import type { SearchFilters } from "../../components";
 
-const noticeSchema = z.object({
-  title: z
-    .string()
-    .min(1, "공지사항 제목을 입력해주세요")
-    .max(255, "제목은 255자 이내로 입력해주세요"),
-  content: z
-    .string()
-    .min(1, "공지사항 내용을 입력해주세요")
-    .max(1000, "내용은 1000자 이내로 입력해주세요"),
-});
+interface ConfirmModalState {
+  title: string;
+  description: string;
+  onConfirm: () => void | Promise<void>;
+}
 
-function NoticeSection() {
+export function NoticePage() {
+  const gridRef = useRef<AgGridReactType<Notice>>(null);
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const { toast } = useToastContext();
-  const { notices, isLoading, mutate } = useNotices();
+  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<ConfirmModalState | null>(null);
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
+
+  const [filters, setFilters] = useState<SearchFilters>({ search: "", startDate: "", endDate: "" });
+
+  const { notices, isLoading, isError, mutate } = useNotices();
   const { createNotice, isCreating } = useCreateNotice();
   const { updateNotice, isUpdating } = useUpdateNotice();
   const { deleteNotice, isDeleting } = useDeleteNotice();
 
-  const [formModalOpen, setFormModalOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
+  const filteredNotices = useMemo(() => {
+    if (!notices || notices.length === 0) return [];
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<NoticeFormData>({
-    resolver: zodResolver(noticeSchema),
-    defaultValues: { title: "", content: "" },
-  });
+    return notices.filter((notice) => {
+      if (filters.search.trim()) {
+        const query = filters.search.toLowerCase();
+        const titleMatch = (notice.title || "").toLowerCase().includes(query);
+        const contentMatch = (notice.content || "").toLowerCase().includes(query);
+        if (!titleMatch && !contentMatch) return false;
+      }
 
-  const handleCreate = () => {
-    setSelectedNotice(null);
-    reset({ title: "", content: "" });
-    setFormModalOpen(true);
+      return true;
+    });
+  }, [notices, filters]);
+
+  const onGridReady = (event: GridReadyEvent<Notice>) => {
+    setGridApi(event.api);
   };
 
-  const handleEdit = useCallback(
-    (notice: Notice) => {
-      setSelectedNotice(notice);
-      reset({ title: notice.title, content: notice.content });
-      setFormModalOpen(true);
-    },
-    [reset]
-  );
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR");
+  };
 
-  const handleDeleteClick = useCallback((notice: Notice) => {
-    setSelectedNotice(notice);
-    setDeleteDialogOpen(true);
+  const handleRowClicked = (event: RowClickedEvent<Notice>) => {
+    if (event.data) {
+      setSelectedNotice(event.data);
+      setShowModal(true);
+    }
+  };
+
+  const columnDefs = useMemo<ColDef<Notice>[]>(() => {
+    const formatDateRange = (startDate: string, endDate: string, isAlways: boolean) => {
+      if (isAlways) return "상시";
+      return `${formatDate(startDate)} ~ ${formatDate(endDate)}`;
+    };
+
+    const statusRenderer = (params: ICellRendererParams<Notice>) => {
+      const isVisible = params.data?.isVisible ?? false;
+      return (
+        <Badge variant={isVisible ? "primary" : "default"}>{isVisible ? "노출" : "미노출"}</Badge>
+      );
+    };
+
+    const titleRenderer = (params: ICellRendererParams<Notice>) => {
+      return <>{params.data?.title || "-"}</>;
+    };
+
+    return [
+      {
+        headerName: "번호",
+        field: "id",
+        width: 80,
+        sortable: true,
+        comparator: (a: number, b: number) => b - a,
+      },
+      {
+        headerName: "제목",
+        field: "title",
+        flex: 2,
+        cellRenderer: titleRenderer,
+      },
+      {
+        headerName: "게시기간",
+        field: "startDate",
+        flex: 1.5,
+        cellRenderer: (params: ICellRendererParams<Notice>) =>
+          formatDateRange(
+            params.data?.startDate || "",
+            params.data?.endDate || "",
+            params.data?.isAlways ?? false
+          ),
+        sortable: false,
+      },
+      {
+        headerName: "상태",
+        field: "isVisible",
+        width: 100,
+        cellRenderer: statusRenderer,
+        sortable: true,
+        cellStyle: { display: "flex", alignItems: "center", justifyContent: "center" },
+      },
+      {
+        headerName: "등록일",
+        field: "createdAt",
+        width: 120,
+        cellRenderer: (params: ICellRendererParams<Notice>) =>
+          formatDate(params.data?.createdAt || ""),
+        sortable: true,
+      },
+      {
+        headerName: "등록자",
+        field: "createdBy",
+        width: 100,
+        sortable: true,
+      },
+    ];
   }, []);
 
-  const onSubmit = async (data: NoticeFormData) => {
-    try {
-      if (selectedNotice) {
-        await updateNotice({ id: selectedNotice.id, data });
-        toast({
-          title: "수정 완료",
-          description: "공지사항이 수정되었습니다.",
-          variant: "success",
-        });
-      } else {
-        await createNotice(data);
-        toast({
-          title: "등록 완료",
-          description: "공지사항이 등록되었습니다.",
-          variant: "success",
-        });
-      }
-      await mutate();
-      setFormModalOpen(false);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "저장에 실패했습니다";
-      toast({
-        title: "저장 실패",
-        description: message,
-        variant: "error",
-      });
-    }
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!selectedNotice) return;
-
-    try {
-      await deleteNotice(selectedNotice.id);
-      await mutate();
-      toast({
-        title: "삭제 완료",
-        description: "공지사항이 삭제되었습니다.",
-        variant: "success",
-      });
-      setDeleteDialogOpen(false);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "삭제에 실패했습니다";
-      toast({
-        title: "삭제 실패",
-        description: message,
-        variant: "error",
-      });
-    }
-  };
-
-  const columns: DataTableColumn<Notice>[] = useMemo(
-    () => [
-      {
-        key: "title",
-        header: "제목",
-        className: "w-48",
-        sortable: true,
-      },
-      {
-        key: "content",
-        header: "내용",
-        render: (notice) => (
-          <span className="line-clamp-1" title={notice.content}>
-            {notice.content}
-          </span>
-        ),
-      },
-      {
-        key: "updatedAt",
-        header: "수정일",
-        className: "w-44",
-        sortable: true,
-        render: (notice) => new Date(notice.updatedAt).toLocaleString("ko-KR"),
-      },
-      {
-        key: "updatedBy",
-        header: "수정자",
-        className: "w-28",
-      },
-      {
-        key: "id",
-        header: "",
-        className: "w-12",
-        render: (notice) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <MoreVertical size="sm" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleEdit(notice)}>
-                <Edit size="sm" className="mr-2" />
-                수정
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDeleteClick(notice)} className="text-red-600">
-                <Close size="sm" className="mr-2" />
-                삭제
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      },
-    ],
-    [handleEdit, handleDeleteClick]
+  const defaultColDef = useMemo<ColDef>(
+    () => ({
+      sortable: false,
+      filter: false,
+      resizable: true,
+    }),
+    []
   );
 
-  const isMutating = isCreating || isUpdating || isDeleting;
+  const handleAddNotice = () => {
+    setSelectedNotice(null);
+    setShowModal(true);
+  };
+
+  const handleDeleteNotices = () => {
+    const selectedRows = gridRef.current?.api.getSelectedRows();
+
+    if (!selectedRows || selectedRows.length === 0) {
+      toast.error("삭제할 항목을 선택해주세요.");
+      return;
+    }
+
+    setConfirmModal({
+      title: "공지사항 삭제",
+      description: `${selectedRows.length}개의 공지사항을 삭제하시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await Promise.all(selectedRows.map((row) => deleteNotice(row.id)));
+          toast.success("삭제되었습니다.");
+        } catch (err) {
+          console.error("Delete error:", err);
+          toast.error("삭제 중 오류가 발생했습니다.");
+        }
+      },
+    });
+  };
+
+  const handleCloseModal = () => {
+    setSelectedNotice(null);
+    setShowModal(false);
+  };
+
+  const handleSave = async (formData: NoticeFormData) => {
+    try {
+      if (selectedNotice) {
+        await updateNotice({ id: selectedNotice.id, data: formData });
+        await mutate();
+        toast.success("수정되었습니다.");
+      } else {
+        await createNotice(formData);
+        await mutate();
+        toast.success("등록되었습니다.");
+      }
+
+      handleCloseModal();
+    } catch (err) {
+      console.error("Save error:", err);
+      toast.error("저장 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleSearch = (newFilters: SearchFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleReset = () => {
+    setFilters({ search: "", startDate: "", endDate: "" });
+  };
+
+  const handleConfirm = async () => {
+    try {
+      setIsConfirmLoading(true);
+      await confirmModal?.onConfirm();
+      setConfirmModal(null);
+    } finally {
+      setIsConfirmLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner size="lg" />
+          <p className="text-gray-500">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-red-500">
+            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-700">데이터를 불러오는데 실패했습니다.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
+    <div className="flex h-full flex-col">
+      <div className="mb-4">
+        <div className="flex flex-col gap-3">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">공지사항 목록</h1>
-            <p className="mt-1 text-sm text-gray-500">총 {notices.length}개의 공지사항</p>
+            <h1 className="text-lg font-semibold text-gray-900">공지사항 관리</h1>
+            <p className="mt-1 text-sm text-gray-500">공지사항을 관리합니다.</p>
           </div>
-          <Button onClick={handleCreate}>
-            <Plus size="sm" className="mr-1" />
-            등록
-          </Button>
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto">
-        {isLoading ? (
-          <div className="flex h-32 items-center justify-center">
-            <Spinner size="lg" />
+      <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
+        <AgGridSearchFilter
+          onSearch={handleSearch}
+          onReset={handleReset}
+          searchPlaceholder="제목 또는 내용으로 검색하세요."
+          showDateRange={false}
+        />
+      </div>
+
+      <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-gray-200">
+        {filteredNotices.length === 0 ? (
+          <div className="flex flex-1 items-center justify-center bg-white">
+            <div className="flex flex-col items-center gap-2 text-gray-500">
+              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p>{filters.search ? "검색 결과가 없습니다." : "공지사항이 없습니다."}</p>
+            </div>
           </div>
-        ) : notices.length === 0 ? (
-          <EmptyState variant="no-data" />
         ) : (
-          <DataTable data={notices} columns={columns} pagination pageSize={5} />
+          <>
+            <div className="flex-1">
+              <AgGridReact
+                ref={gridRef}
+                rowData={filteredNotices}
+                columnDefs={columnDefs}
+                defaultColDef={defaultColDef}
+                animateRows={true}
+                rowSelection={{
+                  mode: "multiRow",
+                  checkboxes: true,
+                  headerCheckbox: true,
+                  selectAll: "currentPage",
+                }}
+                pagination={true}
+                paginationPageSize={20}
+                suppressPaginationPanel={true}
+                onGridReady={onGridReady}
+                onRowClicked={handleRowClicked}
+                getRowId={(params) => String(params.data.id)}
+              />
+            </div>
+            <AgGridPagination api={gridApi} pageSizeOptions={[10, 20, 50, 100]} />
+          </>
         )}
       </div>
 
-      <Modal open={formModalOpen} onOpenChange={setFormModalOpen}>
-        <ModalContent>
-          <ModalHeader>
-            <ModalTitle>{selectedNotice ? "공지사항 수정" : "공지사항 등록"}</ModalTitle>
-          </ModalHeader>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="title">제목</Label>
-                  <Input
-                    id="title"
-                    placeholder="공지사항 제목을 입력하세요"
-                    {...register("title")}
-                  />
-                  {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="content">내용</Label>
-                  <Textarea
-                    id="content"
-                    placeholder="공지사항 내용을 입력하세요"
-                    rows={5}
-                    {...register("content")}
-                  />
-                  {errors.content && (
-                    <p className="text-sm text-red-500">{errors.content.message}</p>
-                  )}
-                </div>
-              </div>
-            </ModalBody>
+      <div className="mt-4 flex gap-2">
+        <Button onClick={handleAddNotice}>등록</Button>
+        <Button onClick={handleDeleteNotices} variant="error">
+          삭제
+        </Button>
+      </div>
+
+      <NoticeModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        selectedNotice={selectedNotice}
+        onSave={handleSave}
+        isLoading={isCreating || isUpdating}
+      />
+
+      {confirmModal && (
+        <Modal open={confirmModal !== null} onOpenChange={(open) => !open && setConfirmModal(null)}>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>{confirmModal.title}</ModalTitle>
+              <ModalDescription>{confirmModal.description}</ModalDescription>
+            </ModalHeader>
             <ModalFooter>
-              <Button type="button" variant="outline" onClick={() => setFormModalOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setConfirmModal(null)}
+                disabled={isConfirmLoading}
+              >
                 취소
               </Button>
-              <Button type="submit" disabled={isMutating}>
-                {isMutating ? "저장 중..." : "저장"}
+              <Button onClick={handleConfirm} disabled={isConfirmLoading || isDeleting}>
+                {isConfirmLoading ? "처리 중..." : "확인"}
               </Button>
             </ModalFooter>
-          </form>
-        </ModalContent>
-      </Modal>
-
-      <Modal open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <ModalContent>
-          <ModalHeader>
-            <ModalTitle>공지사항 삭제</ModalTitle>
-          </ModalHeader>
-          <ModalBody>
-            <p>"{selectedNotice?.title}" 공지사항을 삭제하시겠습니까?</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button type="button" variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-              취소
-            </Button>
-            <Button variant="error" onClick={handleDeleteConfirm} disabled={isDeleting}>
-              {isDeleting ? "삭제 중..." : "삭제"}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
-
-export function NoticePage() {
-  return (
-    <div className="flex h-full flex-col space-y-6">
-      <NoticeSection />
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -26,9 +26,8 @@ export const noticeService = {
     return response.data;
   },
 
-  update: async (id: number, data: NoticeFormData): Promise<Notice> => {
-    const response = await getApiClient().put<DataResponse<Notice>>(`/notices/${id}`, data);
-    return response.data;
+  update: async (id: number, data: NoticeFormData): Promise<void> => {
+    await getApiClient().put(`/notices/${id}`, data);
   },
 
   delete: async (id: number): Promise<void> => {
