@@ -26,6 +26,11 @@ import { NoticeModal } from "./components";
 import { AgGridPagination, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("ko-KR");
+};
+
 interface ConfirmModalState {
   title: string;
   description: string;
@@ -67,11 +72,6 @@ export function NoticePage() {
     setGridApi(event.api);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ko-KR");
-  };
-
   const handleRowClicked = (event: RowClickedEvent<Notice>) => {
     if (event.data) {
       setSelectedNotice(event.data);
@@ -100,9 +100,11 @@ export function NoticePage() {
       {
         headerName: "번호",
         field: "id",
-        width: 80,
+        width: 100,
         sortable: true,
         comparator: (a: number, b: number) => b - a,
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
       },
       {
         headerName: "제목",
@@ -301,12 +303,7 @@ export function NoticePage() {
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 animateRows={true}
-                rowSelection={{
-                  mode: "multiRow",
-                  checkboxes: true,
-                  headerCheckbox: true,
-                  selectAll: "currentPage",
-                }}
+                rowSelection="multiple"
                 pagination={true}
                 paginationPageSize={20}
                 suppressPaginationPanel={true}

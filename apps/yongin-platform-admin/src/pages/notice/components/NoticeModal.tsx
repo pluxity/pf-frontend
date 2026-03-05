@@ -20,6 +20,12 @@ import { formatDateKST } from "@/utils/date";
 import type { Notice, NoticeFormData } from "../types";
 import { validateNotice } from "../validation";
 
+const getLastDayOfMonth = (): string => {
+  const today = new Date();
+  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  return formatDateKST(lastDay);
+};
+
 export interface NoticeModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -44,12 +50,6 @@ export function NoticeModal({
     endDate: "",
   });
   const [errors, setErrors] = useState<ValidationError[]>([]);
-
-  const getLastDayOfMonth = (): string => {
-    const today = new Date();
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    return formatDateKST(lastDay);
-  };
 
   useEffect(() => {
     if (!open) return;

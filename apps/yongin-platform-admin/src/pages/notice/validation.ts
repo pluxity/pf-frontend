@@ -2,15 +2,7 @@
  * 공지사항 Validation
  */
 import { validators, collectErrors, type ValidationError } from "@/utils";
-
-export interface NoticeFormData {
-  title: string;
-  content: string;
-  isVisible: boolean;
-  isAlways: boolean;
-  startDate: string;
-  endDate: string;
-}
+import type { NoticeFormData } from "./types";
 
 /**
  * 공지사항 폼 유효성 검사
