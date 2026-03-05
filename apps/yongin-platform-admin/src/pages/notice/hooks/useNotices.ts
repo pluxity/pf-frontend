@@ -6,7 +6,9 @@ import type { NoticeFormData } from "../types";
 const NOTICES_KEY = "/notices";
 
 export function useNotices() {
-  const { data, error, isLoading, mutate } = useSWR(NOTICES_KEY, () => noticeService.getList());
+  const { data, error, isLoading, mutate } = useSWR(NOTICES_KEY, () => noticeService.getList(), {
+    revalidateOnFocus: false,
+  });
 
   return {
     notices: data ?? [],
