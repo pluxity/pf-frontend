@@ -56,8 +56,8 @@ pf-dev/
 | ------------------------------------------------- | ------- | ---------------------------------------------------------------------- |
 | [@pf-dev/ui](./packages/ui/README.md)             | `1.3.0` | TypeScript, Tailwind CSS, Radix UI 기반 모던 React 컴포넌트 라이브러리 |
 | [@pf-dev/map](./packages/map/README.md)           | `0.1.1` | CesiumJS 기반 3D 지도 시각화 React 패키지                              |
-| [@pf-dev/three](./packages/three/README.md)       | `0.4.0` | React Three Fiber 기반 독립형 3D 시각화 패키지                         |
-| [@pf-dev/cctv](./packages/cctv/README.md)         | `0.1.0` | HLS/WHEP 프로토콜 지원 실시간 영상 스트리밍 패키지                     |
+| [@pf-dev/three](./packages/three/README.md)       | `0.4.1` | React Three Fiber 기반 독립형 3D 시각화 패키지                         |
+| [@pf-dev/cctv](./packages/cctv/README.md)         | `0.2.0` | HLS/WHEP 프로토콜 지원 실시간 영상 스트리밍 패키지                     |
 | [@pf-dev/fonts](./packages/fonts/README.md)       | `0.1.0` | Pretendard, SUIT, DSEG 로컬 폰트 패키지                                |
 | [@pf-dev/services](./packages/services/README.md) | `0.2.0` | HttpOnly 쿠키 기반 인증 등 공통 서비스 모듈                            |
 | [@pf-dev/api](./packages/api/README.md)           | `0.1.1` | API 클라이언트 및 타입 정의 (README 미작성)                            |
