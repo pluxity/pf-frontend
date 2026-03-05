@@ -7,6 +7,7 @@ export interface AssetEntry {
   scene: THREE.Group;
   animations: THREE.AnimationClip[];
   scale: number;
+  autoPlay: boolean;
 }
 
 export interface FeatureEntry {

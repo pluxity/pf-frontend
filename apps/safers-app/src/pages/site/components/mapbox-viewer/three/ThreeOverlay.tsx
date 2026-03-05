@@ -156,6 +156,8 @@ export function ThreeOverlay({
     sceneApi.registerAsset("worker-stunned", ASSET_URLS.workerStunned);
     sceneApi.registerAsset("cctv", ASSET_URLS.cctv);
     const dumpReady = sceneApi.registerAsset("dump", ASSET_URLS.dump);
+    const crane01Ready = sceneApi.registerAsset("crane-01", ASSET_URLS.crane01);
+    const crane02Ready = sceneApi.registerAsset("crane-02", ASSET_URLS.crane02);
 
     fetchWorkerPositions().then(async (workers) => {
       for (const w of workers) {
@@ -177,6 +179,24 @@ export function ThreeOverlay({
     dumpReady.then(() => {
       sceneApi.addFeature("dump-1", "dump", DUMP_PATROL_PATH[0]!);
       sceneApi.startPatrol("dump-1", DUMP_PATROL_PATH, DUMP_PATROL_DURATION);
+    });
+
+    crane01Ready.then(() => {
+      sceneApi.addFeature("crane-1", "crane-01", {
+        lng: 126.847021,
+        lat: 37.499858,
+        altitude: 8.5,
+      });
+      sceneApi.setFeatureHeading("crane-1", (Math.PI * 110) / 180);
+    });
+
+    crane02Ready.then(() => {
+      sceneApi.addFeature("crane-2", "crane-02", {
+        lng: 126.846997,
+        lat: 37.498983,
+        altitude: 3.4,
+      });
+      sceneApi.setFeatureHeading("crane-2", (Math.PI * 110) / 180);
     });
 
     for (const cctv of MOCK_CCTVS) {

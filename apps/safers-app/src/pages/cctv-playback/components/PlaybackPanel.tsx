@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useWHEPStream } from "@pf-dev/cctv";
 import type { SafersCCTV, TimeRange } from "@/services";
 import { StreamLoadingOverlay, StreamErrorOverlay } from "@/components/cctv";
@@ -12,6 +13,7 @@ interface PlaybackPanelProps {
   onTimeRangeChange: (range: TimeRange | null) => void;
   playbackWhepUrl: string | null;
   isRequesting: boolean;
+  onReplay?: () => void;
 }
 
 export function PlaybackPanel({
@@ -23,13 +25,14 @@ export function PlaybackPanel({
   onTimeRangeChange,
   playbackWhepUrl,
   isRequesting,
+  onReplay,
 }: PlaybackPanelProps) {
   return (
     <div className="flex h-full flex-col gap-4">
       {/* 영상 영역 */}
       <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-xl border border-[#2A2D3A] bg-black/40">
         {playbackWhepUrl ? (
-          <PlaybackStream whepUrl={playbackWhepUrl} />
+          <PlaybackStream key={playbackWhepUrl} whepUrl={playbackWhepUrl} onReplay={onReplay} />
         ) : isRequesting ? (
           <div className="flex flex-col items-center gap-3 text-white/40">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -86,9 +89,57 @@ export function PlaybackPanel({
   );
 }
 
-/** WHEP 스트림 재생 — playbackWhepUrl이 바뀌면 자동 연결 */
-function PlaybackStream({ whepUrl }: { whepUrl: string }) {
-  const { videoRef, status, connect } = useWHEPStream(whepUrl);
+/** WHEP 스트림 재생 — 녹화 종료 시 "재생 완료" 오버레이 표시 */
+function PlaybackStream({ whepUrl, onReplay }: { whepUrl: string; onReplay?: () => void }) {
+  const { videoRef, status, connect, disconnect } = useWHEPStream(whepUrl);
+  const [ended, setEnded] = useState(false);
+  const wasConnectedRef = useRef(false);
+
+  // connected → failed/disconnected 전환 시 "재생 완료"로 판단
+  // key={whepUrl}로 리마운트되므로 ended는 항상 false로 시작
+  useEffect(() => {
+    if (status === "connected") {
+      wasConnectedRef.current = true;
+    } else if (wasConnectedRef.current && (status === "failed" || status === "connecting")) {
+      // 서버가 연결을 끊음 → store가 재연결 시도(connecting) 또는 실패(failed)
+      // 녹화 재생은 재연결 불필요하므로 즉시 disconnect 후 종료 처리
+      disconnect();
+      setEnded(true); // eslint-disable-line react-hooks/set-state-in-effect -- WebRTC 외부 상태 구독
+      wasConnectedRef.current = false;
+    }
+  }, [status, disconnect]);
+
+  if (ended) {
+    return (
+      <div className="flex flex-col items-center gap-4 text-white/60">
+        <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1}
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p className="text-sm">재생이 완료되었습니다</p>
+        {onReplay && (
+          <button
+            onClick={onReplay}
+            className="flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand/80"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            다시보기
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>

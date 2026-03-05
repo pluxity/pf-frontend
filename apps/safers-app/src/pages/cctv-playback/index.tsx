@@ -146,6 +146,7 @@ export function CCTVPlaybackPage() {
             onTimeRangeChange={handleTimeRangeChange}
             playbackWhepUrl={playbackWhepUrl}
             isRequesting={isRequesting}
+            onReplay={handleRequestPlayback}
           />
         </section>
 

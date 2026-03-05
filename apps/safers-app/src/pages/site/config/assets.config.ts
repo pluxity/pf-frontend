@@ -4,6 +4,8 @@ export const ASSET_URLS = {
   workerStunned: "/assets/models/worker_stunned.glb",
   cctv: "/assets/models/cctv.glb",
   dump: "/assets/models/Dump.glb",
+  crane01: "/assets/models/Crane_01.glb",
+  crane02: "/assets/models/Crane_02.glb",
 } as const;
 
 export const BUILDING_OPACITY = {

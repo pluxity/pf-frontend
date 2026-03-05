@@ -37,7 +37,7 @@ export function createAssetRegistry(
 
     entry.group.add(clone);
 
-    if (asset.animations.length > 0) {
+    if (asset.autoPlay && asset.animations.length > 0) {
       const mixer = new THREE.AnimationMixer(clone);
       for (const clip of asset.animations) {
         const action = mixer.clipAction(clip);
@@ -64,6 +64,7 @@ export function createAssetRegistry(
           scene: gltf.scene,
           animations: gltf.animations,
           scale: opts?.scale ?? 1,
+          autoPlay: opts?.autoPlay ?? true,
         });
 
         for (const [id, entry] of features) {

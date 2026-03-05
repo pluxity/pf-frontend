@@ -34,7 +34,7 @@ export function createProjection(ctx: SceneContext) {
     if (!ctx.lastCombinedMatrix) return result;
 
     for (const [id, entry] of ctx.features) {
-      if (id.startsWith("dump-")) continue;
+      if (id.startsWith("dump-") || id.startsWith("crane-")) continue;
       const pos = entry.group.position.clone();
       pos.z += POPUP_HEAD_OFFSET;
       const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
@@ -69,7 +69,7 @@ export function createProjection(ctx: SceneContext) {
     ctx.raycaster.set(near, direction);
     const targets: THREE.Object3D[] = [ctx.modelGroup];
     for (const [id, feature] of ctx.features) {
-      if (id.startsWith("dump-")) continue;
+      if (id.startsWith("dump-") || id.startsWith("crane-")) continue;
       targets.push(feature.group);
     }
     const intersects = ctx.raycaster.intersectObjects(targets, true);

@@ -16,4 +16,5 @@ export interface MaterialRule {
 
 export interface AssetOptions {
   scale?: number;
+  autoPlay?: boolean;
 }
