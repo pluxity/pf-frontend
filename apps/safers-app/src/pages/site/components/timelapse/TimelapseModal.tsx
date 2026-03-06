@@ -47,7 +47,7 @@ export function TimelapseModal({ open, onOpenChange }: TimelapseModalProps) {
         className="!max-w-[95vw] !w-[95vw] !h-[90vh] !rounded-2xl !bg-[#1A1D2E] !p-0 flex flex-col overflow-hidden"
       >
         <div className="flex items-center justify-between bg-gradient-to-r from-[#ff7500] to-[#e66a00] px-5 py-2.5">
-          <ModalTitle className="text-sm font-bold text-white">4D TimeLine</ModalTitle>
+          <ModalTitle className="!text-sm !font-bold !text-white">4D TimeLine</ModalTitle>
           <ModalClose className="flex h-7 w-7 items-center justify-center rounded-lg text-white/70 transition-colors hover:bg-white/20 hover:text-white">
             <X size="sm" />
             <span className="sr-only">닫기</span>
