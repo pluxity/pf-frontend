@@ -26,6 +26,7 @@ export interface GoalResponse {
   completionDate: string;
   plannedWorkDays: number;
   delayDays: number;
+  isActive: boolean;
 }
 
 // API 요청 타입
@@ -44,6 +45,7 @@ export interface GoalRequest {
   plannedWorkDays: number;
   completionDate: string;
   delayDays: number;
+  isActive: boolean;
 }
 
 export interface GoalBulkRequest {
@@ -68,5 +70,5 @@ export interface GoalData {
   plannedWorkDays: number;
   completionDate: string;
   delayDays: number;
-  isNew?: boolean;
+  isActive: boolean;
 }
