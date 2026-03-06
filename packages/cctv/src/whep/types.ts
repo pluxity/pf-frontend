@@ -2,7 +2,6 @@ import type { BaseStreamConfig, IceServerConfig, StreamStatus, CCTVInfo } from "
 
 export interface WHEPNegotiationResult {
   answerSdp: string;
-  sessionUrl: string | null;
 }
 
 export interface WHEPConfig extends BaseStreamConfig {
