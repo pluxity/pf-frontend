@@ -14,14 +14,19 @@ interface SiteHeaderProps {
   siteName: string;
   mapStyle: MapStyleKey;
   onMapStyleChange: (style: MapStyleKey) => void;
+  onTimelineOpen?: () => void;
 }
 
-export function SiteHeader({ siteName, mapStyle, onMapStyleChange }: SiteHeaderProps) {
+export function SiteHeader({
+  siteName,
+  mapStyle,
+  onMapStyleChange,
+  onTimelineOpen,
+}: SiteHeaderProps) {
   const navigate = useNavigate();
 
   return (
     <div className="flex h-full items-center justify-between bg-white/80 px-4 shadow-[0_0.1875rem_0.1875rem_rgba(164,164,164,0.15)] backdrop-blur-[0.3125rem]">
-      {/* 좌측: 햄버거 메뉴 + 시계 */}
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -38,15 +43,22 @@ export function SiteHeader({ siteName, mapStyle, onMapStyleChange }: SiteHeaderP
             />
           </svg>
         </button>
+        {onTimelineOpen && (
+          <button
+            type="button"
+            onClick={onTimelineOpen}
+            className="rounded-lg bg-[#4D7EFF] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#3A6AE8]"
+          >
+            4D TimeLine
+          </button>
+        )}
         <HeaderClock />
       </div>
 
-      {/* 중앙: 로고 + 현장명 */}
       <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
         <span className="text-xl font-bold text-[#555555]">{siteName}</span>
       </div>
 
-      {/* 우측: 맵 스타일 토글 + 사용자 */}
       <div className="flex items-center gap-2">
         <SegmentedSwitch
           options={MAP_STYLE_OPTIONS}

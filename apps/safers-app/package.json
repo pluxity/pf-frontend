@@ -19,6 +19,7 @@
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/fonts": "workspace:*",
     "@pf-dev/services": "workspace:*",
+    "@pf-dev/three": "workspace:*",
     "@pf-dev/ui": "workspace:*",
     "@stomp/stompjs": "catalog:",
     "@types/d3-ease": "^3.0.2",

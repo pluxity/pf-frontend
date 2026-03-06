@@ -9,6 +9,7 @@ import {
   EventPanel,
   MapToolbar,
   SafetyScorePanel,
+  TimelapseModal,
 } from "./components";
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site } from "@/services";
@@ -42,6 +43,7 @@ export function SitePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>("day");
   const [selectionMode, setSelectionMode] = useState(false);
+  const [timelapseOpen, setTimelapseOpen] = useState(false);
   const mapViewerRef = useRef<MapboxViewerHandle>(null);
 
   const siteId = id ? Number(id) : null;
@@ -86,11 +88,8 @@ export function SitePage() {
     setSelectedWorkerId(workerId);
   };
 
-  const handleAreaSelect = (featureIds: string[]) => {
+  const handleAreaSelect = (_featureIds: string[]) => {
     setSelectionMode(false);
-    if (featureIds.length > 0) {
-      // TODO: 영역 선택 결과 처리
-    }
   };
 
   const handleSelectionCancel = () => {
@@ -115,8 +114,7 @@ export function SitePage() {
         ]);
         setSite(siteRes.data);
         initializeEvents(siteRes.data.name, siteRes.data.region);
-      } catch (err) {
-        console.error("현장 데이터 로드 실패:", err);
+      } catch {
         navigate("/");
       } finally {
         setIsLoading(false);
@@ -155,10 +153,10 @@ export function SitePage() {
           siteName={site.name}
           mapStyle={mapStyle}
           onMapStyleChange={handleMapStyleChange}
+          onTimelineOpen={() => setTimelapseOpen(true)}
         />
       </header>
 
-      {/* 좌측 패널 */}
       <EventPanel events={events} className="absolute left-4 top-[4.75rem] z-40 w-[18.75rem]" />
       <WorkerListPanel
         className="absolute left-4 top-[calc(100vh-12rem)] z-40"
@@ -168,7 +166,6 @@ export function SitePage() {
         onWorkerClick={handlePanelWorkerClick}
       />
 
-      {/* 우측 패널 */}
       <WeatherPanel
         currentWeather={currentWeather}
         className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
@@ -189,6 +186,8 @@ export function SitePage() {
           <ScenarioButton label="위험구역 접근" scenario={3} onTrigger={triggerScenario} />
         </div>
       )}
+
+      <TimelapseModal open={timelapseOpen} onOpenChange={setTimelapseOpen} />
     </div>
   );
 }
