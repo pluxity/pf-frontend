@@ -8,8 +8,8 @@ import type {
   GridReadyEvent,
   RowClassParams,
 } from "ag-grid-community";
-import { useRef, useState, useMemo, useCallback } from "react";
-import { Button, Progress, Spinner } from "@pf-dev/ui";
+import { useRef, useState, useMemo, useCallback, useEffect } from "react";
+import { Button, Progress, Spinner, RadioGroup, RadioGroupItem } from "@pf-dev/ui";
 import type { GoalData, GoalBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useGoals, CalculateGoal } from "./hooks";
@@ -43,6 +43,9 @@ export function GoalsPage() {
   const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
   const [activeSearchTerm, setActiveSearchTerm] = useState("");
 
+  // handleIsActiveChange에서 모든 데이터에 접근하기 위한 ref (동일 시공 구간 중복 불가능)
+  const allDataRef = useRef<GoalData[]>([]);
+
   // 임시 ID 생성 (신규 행)
   const tempIdRef = useRef(-1);
   const generateTempId = () => {
@@ -50,26 +53,63 @@ export function GoalsPage() {
     return tempIdRef.current;
   };
 
-  // 서버 데이터 + 로컬 편집을 합친 전체 데이터
-  const allData = useMemo(() => {
-    // 서버 데이터에서 삭제된 것 제외하고 편집 적용
-    const serverData = (data ?? [])
+  // 행 순서 고정
+  const orderedIds = useMemo(() => {
+    const serverIds = (data ?? [])
       .filter((row) => !deletedIds.has(row.id))
-      .map((row) => {
-        const edits = localEdits.get(row.id);
-        const merged = edits ? { ...row, ...edits } : row;
-        return CalculateGoal(merged);
-      });
+      .sort((a, b) => {
+        const dateCompare = b.inputDate.localeCompare(a.inputDate);
+        if (dateCompare !== 0) return dateCompare;
+        return b.id - a.id;
+      })
+      .map((row) => row.id);
+    return [...localAdditions.map((row) => row.id), ...serverIds];
+  }, [data, localAdditions, deletedIds]);
 
-    // 로컬 추가 데이터에 편집 적용
-    const addedData = localAdditions.map((row) => {
-      const edits = localEdits.get(row.id);
-      const merged = edits ? { ...row, ...edits } : row;
-      return CalculateGoal(merged);
+  const allData = useMemo(() => {
+    const dataMap = new Map<number, GoalData>();
+    (data ?? []).forEach((row) => dataMap.set(row.id, row));
+    localAdditions.forEach((row) => dataMap.set(row.id, row));
+
+    return orderedIds.reduce<GoalData[]>((acc, id) => {
+      const baseRow = dataMap.get(id);
+      if (!baseRow) return acc;
+      const edits = localEdits.get(id);
+      const merged = edits ? { ...baseRow, ...edits } : baseRow;
+      acc.push(CalculateGoal(merged));
+      return acc;
+    }, []);
+  }, [orderedIds, data, localAdditions, localEdits]);
+
+  useEffect(() => {
+    allDataRef.current = allData;
+  }, [allData]);
+
+  const handleIsActiveChange = useCallback((rowId: number, value: string) => {
+    setLocalEdits((prev) => {
+      const newMap = new Map(prev);
+
+      if (value === "Y") {
+        const currentRow = allDataRef.current.find((row) => row.id === rowId);
+        if (currentRow) {
+          allDataRef.current.forEach((row) => {
+            if (
+              row.id !== rowId &&
+              row.constructionSectionId === currentRow.constructionSectionId &&
+              row.isActive
+            ) {
+              const existing = newMap.get(row.id) ?? {};
+              newMap.set(row.id, { ...existing, isActive: false });
+            }
+          });
+        }
+      }
+
+      const existing = newMap.get(rowId) ?? {};
+      newMap.set(rowId, { ...existing, isActive: value === "Y" });
+      return newMap;
     });
-
-    return [...addedData, ...serverData];
-  }, [data, localAdditions, localEdits, deletedIds]);
+  }, []);
 
   // 필터링된 데이터
   const [filteredData, setFilteredData] = useState<GoalData[] | null>(null);
@@ -117,8 +157,8 @@ export function GoalsPage() {
         headerName: "작업일",
         field: "inputDate",
         flex: 1.3,
-        editable: true,
         cellEditor: "agDateStringCellEditor",
+        sortable: false,
       },
       {
         headerName: "시공구간",
@@ -242,6 +282,31 @@ export function GoalsPage() {
           return value >= 0 ? `+${value}` : value;
         },
       },
+      {
+        headerName: "화면노출",
+        field: "isActive",
+        flex: 1,
+        editable: false,
+        cellRenderer: (params: ICellRendererParams<GoalData, boolean>) => {
+          const rowId = params.data?.id;
+
+          return (
+            <div className="flex h-full items-center">
+              <RadioGroup
+                value={params.value ? "Y" : "N"}
+                onValueChange={(value) => {
+                  if (rowId === undefined) return;
+                  handleIsActiveChange(rowId, value);
+                }}
+                className="flex gap-2"
+              >
+                <RadioGroupItem value="Y" id={`active-y-${rowId}`} label="Y" />
+                <RadioGroupItem value="N" id={`active-n-${rowId}`} label="N" />
+              </RadioGroup>
+            </div>
+          );
+        },
+      },
     ],
     [
       constructionSections,
@@ -249,12 +314,13 @@ export function GoalsPage() {
       addConstructionSection,
       removeConstructionSection,
       toast,
+      handleIsActiveChange,
     ]
   );
 
   const defaultColDef = useMemo<ColDef>(
     () => ({
-      sortable: true,
+      sortable: false,
       resizable: true,
     }),
     []
@@ -333,9 +399,6 @@ export function GoalsPage() {
     const updatedData = allData.find((row) => row.id === rowId);
     if (updatedData) {
       const recalculated = CalculateGoal({ ...updatedData, [field]: event.newValue });
-      event.api.applyTransaction({ update: [recalculated] });
-
-      // 유효성 검사
       const errors = validateGoal(recalculated);
       if (errors.length > 0 && errors[0]) {
         toast.warning(errors[0].message);
@@ -370,7 +433,7 @@ export function GoalsPage() {
       plannedWorkDays: 0,
       completionDate: today,
       delayDays: 0,
-      isNew: true,
+      isActive: false,
     };
 
     setLocalAdditions((prev) => [newRow, ...prev]);
@@ -427,6 +490,7 @@ export function GoalsPage() {
               plannedWorkDays: row.plannedWorkDays,
               completionDate: row.completionDate,
               delayDays: row.delayDays,
+              isActive: row.isActive,
             };
           }
         }
@@ -446,6 +510,7 @@ export function GoalsPage() {
           plannedWorkDays: row.plannedWorkDays,
           completionDate: row.completionDate,
           delayDays: row.delayDays,
+          isActive: row.isActive,
         };
       });
 
@@ -603,7 +668,6 @@ export function GoalsPage() {
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 tooltipShowDelay={300}
-                animateRows={true}
                 rowSelection={{
                   mode: "multiRow",
                   checkboxes: true,
@@ -613,6 +677,8 @@ export function GoalsPage() {
                 pagination={true}
                 paginationPageSize={20}
                 suppressPaginationPanel={true}
+                animateRows={false}
+                singleClickEdit={true}
                 onGridReady={onGridReady}
                 onCellValueChanged={handleCellValueChanged}
                 getRowId={(params) => String(params.data.id)}
