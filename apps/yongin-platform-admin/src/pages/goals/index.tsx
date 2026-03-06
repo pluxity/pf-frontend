@@ -39,10 +39,8 @@ export function GoalsPage() {
 
   // 로컬 편집 상태
   const [localAdditions, setLocalAdditions] = useState<GoalData[]>([]);
-  const [localEdits, setLocalEdits] = useState<Map<number | null, Partial<GoalData>>>(new Map());
+  const [localEdits, setLocalEdits] = useState<Map<number, Partial<GoalData>>>(new Map());
   const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
-  const [activeSearchTerm, setActiveSearchTerm] = useState("");
-
   // handleIsActiveChange에서 모든 데이터에 접근하기 위한 ref (동일 시공 구간 중복 불가능)
   const allDataRef = useRef<GoalData[]>([]);
 
@@ -111,13 +109,30 @@ export function GoalsPage() {
     });
   }, []);
 
+  // 검색 필터 상태
+  const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
+  const activeSearchTerm = searchFilters?.search ?? "";
+
   // 필터링된 데이터
-  const [filteredData, setFilteredData] = useState<GoalData[] | null>(null);
-  const displayData = filteredData ?? allData;
+  const displayData = useMemo(() => {
+    if (!searchFilters) return allData;
+    const { search, startDate, endDate } = searchFilters;
+    return allData.filter((row) => {
+      const searchLower = search.toLowerCase();
+      const filterSearch =
+        search === "" ||
+        row.constructionSectionName.toLowerCase().includes(searchLower) ||
+        row.progressRate.toString().includes(search) ||
+        row.delayDays.toString().includes(search);
+      const filterDate =
+        (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
+      return filterSearch && filterDate;
+    });
+  }, [allData, searchFilters]);
 
   // 변경된 행 ID 목록
   const editedRowIds = useMemo(() => {
-    const ids = new Set<number | null>();
+    const ids = new Set<number>();
     localAdditions.forEach((row) => ids.add(row.id));
     localEdits.forEach((_, id) => ids.add(id));
     return ids;
@@ -327,40 +342,17 @@ export function GoalsPage() {
   );
 
   // 검색 필터링
-  const handleSearch = useCallback(
-    (filters: SearchFilters) => {
-      const { search, startDate, endDate } = filters;
-
-      const filtered = allData.filter((row) => {
-        const searchLower = search.toLowerCase();
-        const filterSearch =
-          search === "" ||
-          row.constructionSectionName.toLowerCase().includes(searchLower) ||
-          row.progressRate.toString().includes(search) ||
-          row.delayDays.toString().includes(search);
-
-        const filterDate =
-          (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
-
-        return filterSearch && filterDate;
-      });
-
-      setFilteredData(filtered);
-      setActiveSearchTerm(search);
-    },
-    [allData]
-  );
+  const handleSearch = useCallback((filters: SearchFilters) => {
+    setSearchFilters(filters);
+  }, []);
 
   // 필터 초기화
   const handleResetFilter = useCallback(() => {
-    setFilteredData(null);
-    setActiveSearchTerm("");
+    setSearchFilters(null);
   }, []);
 
   const handleExport = () => {
-    const date = new Date();
-    const dateString = date.toISOString().split("T")[0];
-    const fileName = `목표관리_${dateString}.csv`;
+    const fileName = `목표관리_${formatDateKST()}.csv`;
 
     gridRef.current?.api.exportDataAsCsv({
       fileName: fileName,
@@ -468,35 +460,7 @@ export function GoalsPage() {
       });
 
       const upserts = dataToSave.map((row) => {
-        // 새로 추가된 행인 경우, 삭제될 항목 중 같은 (날짜, 시공구간)이 있는지 확인
-        if (row.id < 0) {
-          const key = `${row.inputDate}_${row.constructionSectionId}`;
-          const reusableId = deletedByKey.get(key);
-          if (reusableId) {
-            // 같은 조합이 있으면 해당 ID를 재사용
-            deletedByKey.delete(key); // deletedIds에서 제외하기 위해 삭제(재사용으로 인해 삭제 목록에서 제거)
-            return {
-              id: reusableId,
-              inputDate: row.inputDate,
-              constructionSectionId: row.constructionSectionId,
-              totalQuantity: row.totalQuantity,
-              cumulativeQuantity: row.cumulativeQuantity,
-              previousCumulativeQuantity: row.previousCumulativeQuantity,
-              targetQuantity: row.targetQuantity,
-              workQuantity: row.workQuantity,
-              constructionRate: row.constructionRate,
-              progressRate: row.progressRate,
-              startDate: row.startDate,
-              plannedWorkDays: row.plannedWorkDays,
-              completionDate: row.completionDate,
-              delayDays: row.delayDays,
-              isActive: row.isActive,
-            };
-          }
-        }
-
-        return {
-          id: row.id > 0 ? row.id : undefined,
+        const baseUpsert = {
           inputDate: row.inputDate,
           constructionSectionId: row.constructionSectionId,
           totalQuantity: row.totalQuantity,
@@ -512,6 +476,19 @@ export function GoalsPage() {
           delayDays: row.delayDays,
           isActive: row.isActive,
         };
+
+        // 새로 추가된 행인 경우, 삭제될 항목 중 같은 (날짜, 시공구간)이 있는지 확인
+        if (row.id < 0) {
+          const key = `${row.inputDate}_${row.constructionSectionId}`;
+          const reusableId = deletedByKey.get(key);
+          if (reusableId) {
+            // 같은 조합이 있으면 해당 ID를 재사용 (deletedIds에서 제외하기 위해 삭제 목록에서 제거)
+            deletedByKey.delete(key);
+            return { ...baseUpsert, id: reusableId };
+          }
+        }
+
+        return { ...baseUpsert, id: row.id > 0 ? row.id : undefined };
       });
 
       // 재사용되지 않은 ID만 삭제 목록에 포함
@@ -529,7 +506,7 @@ export function GoalsPage() {
       setLocalAdditions([]);
       setLocalEdits(new Map());
       setDeletedIds(new Set());
-      setFilteredData(null);
+      setSearchFilters(null);
 
       toast.success("저장되었습니다.");
     } catch (err) {
@@ -550,10 +527,12 @@ export function GoalsPage() {
     const selectedIds = selectedRows.map((row) => row.id);
 
     // 기존 데이터는 deletedIds에 추가
-    selectedIds.forEach((id) => {
-      if (id !== null && id > 0) {
-        setDeletedIds((prev) => new Set(prev).add(id));
-      }
+    setDeletedIds((prev) => {
+      const next = new Set(prev);
+      selectedIds.forEach((id) => {
+        if (id > 0) next.add(id);
+      });
+      return next;
     });
 
     // 로컬 추가 데이터는 바로 제거
@@ -565,11 +544,6 @@ export function GoalsPage() {
       selectedIds.forEach((id) => newMap.delete(id));
       return newMap;
     });
-
-    // 필터된 데이터에서도 제거
-    if (filteredData) {
-      setFilteredData(filteredData.filter((row) => !selectedIds.includes(row.id)));
-    }
   };
 
   // 로딩 상태 렌더링
@@ -590,7 +564,13 @@ export function GoalsPage() {
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="text-red-500">
-            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              aria-hidden="true"
+              className="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -616,7 +596,7 @@ export function GoalsPage() {
         <div className="flex flex-col gap-3">
           <div>
             <h1 className="text-lg font-semibold text-gray-900">목표 관리</h1>
-            <p className="mt-1 text-sm text-gray-500">목표 관리</p>
+            <p className="mt-1 text-sm text-gray-500">시공구간별 목표 및 진행 현황을 관리합니다.</p>
           </div>
         </div>
       </div>
@@ -648,7 +628,13 @@ export function GoalsPage() {
         {displayData.length === 0 ? (
           <div className="flex flex-1 items-center justify-center bg-white">
             <div className="flex flex-col items-center gap-2 text-gray-500">
-              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                aria-hidden="true"
+                className="h-12 w-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
