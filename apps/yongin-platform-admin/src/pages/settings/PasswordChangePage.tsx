@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { z } from "zod/v3";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@pf-dev/ui/molecules";
 import { Button, Input, Label } from "@pf-dev/ui/atoms";
 import { useAuthStore, selectUser } from "@pf-dev/services";

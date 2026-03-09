@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { z } from "zod/v3";
 import { Button, Input, Label, Textarea, Checkbox, ChevronDown } from "@pf-dev/ui/atoms";
 import { cn } from "@pf-dev/ui/utils";
 import {
