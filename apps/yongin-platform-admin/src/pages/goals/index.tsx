@@ -122,8 +122,8 @@ export function GoalsPage() {
       const filterSearch =
         search === "" ||
         row.constructionSectionName.toLowerCase().includes(searchLower) ||
-        row.progressRate.toString().includes(search) ||
-        row.delayDays.toString().includes(search);
+        row.progressRate.toString().includes(searchLower) ||
+        row.delayDays.toString().includes(searchLower);
       const filterDate =
         (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
       return filterSearch && filterDate;
