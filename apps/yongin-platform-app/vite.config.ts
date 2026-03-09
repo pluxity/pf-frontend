@@ -28,6 +28,11 @@ export default defineConfig(({ mode }) => {
       host: "0.0.0.0",
       port: 3000,
       proxy: {
+        "/files": {
+          target: proxyTarget,
+          changeOrigin: true,
+          secure: false,
+        },
         "/api": {
           target: proxyTarget,
           changeOrigin: true,
