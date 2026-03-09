@@ -8,8 +8,8 @@ import type {
   GridReadyEvent,
   RowClassParams,
 } from "ag-grid-community";
-import { useRef, useState, useMemo, useCallback } from "react";
-import { Button, Progress, Spinner } from "@pf-dev/ui";
+import { useRef, useState, useMemo, useCallback, useEffect } from "react";
+import { Button, Progress, Spinner, Checkbox } from "@pf-dev/ui";
 import type { GoalData, GoalBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useGoals, CalculateGoal } from "./hooks";
@@ -39,9 +39,10 @@ export function GoalsPage() {
 
   // 로컬 편집 상태
   const [localAdditions, setLocalAdditions] = useState<GoalData[]>([]);
-  const [localEdits, setLocalEdits] = useState<Map<number | null, Partial<GoalData>>>(new Map());
+  const [localEdits, setLocalEdits] = useState<Map<number, Partial<GoalData>>>(new Map());
   const [deletedIds, setDeletedIds] = useState<Set<number>>(new Set());
-  const [activeSearchTerm, setActiveSearchTerm] = useState("");
+  // handleIsActiveChange에서 모든 데이터에 접근하기 위한 ref (동일 시공 구간 중복 불가능)
+  const allDataRef = useRef<GoalData[]>([]);
 
   // 임시 ID 생성 (신규 행)
   const tempIdRef = useRef(-1);
@@ -50,38 +51,102 @@ export function GoalsPage() {
     return tempIdRef.current;
   };
 
-  // 서버 데이터 + 로컬 편집을 합친 전체 데이터
-  const allData = useMemo(() => {
-    // 서버 데이터에서 삭제된 것 제외하고 편집 적용
-    const serverData = (data ?? [])
+  // 행 순서 고정
+  const orderedIds = useMemo(() => {
+    const serverIds = (data ?? [])
       .filter((row) => !deletedIds.has(row.id))
-      .map((row) => {
-        const edits = localEdits.get(row.id);
-        const merged = edits ? { ...row, ...edits } : row;
-        return CalculateGoal(merged);
-      });
+      .sort((a, b) => {
+        const dateCompare = b.inputDate.localeCompare(a.inputDate);
+        if (dateCompare !== 0) return dateCompare;
+        return b.id - a.id;
+      })
+      .map((row) => row.id);
+    return [...localAdditions.map((row) => row.id), ...serverIds];
+  }, [data, localAdditions, deletedIds]);
 
-    // 로컬 추가 데이터에 편집 적용
-    const addedData = localAdditions.map((row) => {
-      const edits = localEdits.get(row.id);
-      const merged = edits ? { ...row, ...edits } : row;
-      return CalculateGoal(merged);
+  const allData = useMemo(() => {
+    const dataMap = new Map<number, GoalData>();
+    (data ?? []).forEach((row) => dataMap.set(row.id, row));
+    localAdditions.forEach((row) => dataMap.set(row.id, row));
+
+    return orderedIds.reduce<GoalData[]>((acc, id) => {
+      const baseRow = dataMap.get(id);
+      if (!baseRow) return acc;
+      const edits = localEdits.get(id);
+      const merged = edits ? { ...baseRow, ...edits } : baseRow;
+      acc.push(CalculateGoal(merged));
+      return acc;
+    }, []);
+  }, [orderedIds, data, localAdditions, localEdits]);
+
+  useEffect(() => {
+    allDataRef.current = allData;
+  }, [allData]);
+
+  const handleIsActiveChange = useCallback((rowId: number, value: string) => {
+    setLocalEdits((prev) => {
+      const newMap = new Map(prev);
+
+      if (value === "Y") {
+        const currentRow = allDataRef.current.find((row) => row.id === rowId);
+        if (currentRow) {
+          allDataRef.current.forEach((row) => {
+            if (
+              row.id !== rowId &&
+              row.constructionSectionId === currentRow.constructionSectionId &&
+              row.isActive
+            ) {
+              const existing = newMap.get(row.id) ?? {};
+              newMap.set(row.id, { ...existing, isActive: false });
+            }
+          });
+        }
+      }
+
+      const existing = newMap.get(rowId) ?? {};
+      newMap.set(rowId, { ...existing, isActive: value === "Y" });
+      return newMap;
     });
+  }, []);
 
-    return [...addedData, ...serverData];
-  }, [data, localAdditions, localEdits, deletedIds]);
+  // 검색 필터 상태
+  const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
+  const activeSearchTerm = searchFilters?.search ?? "";
 
   // 필터링된 데이터
-  const [filteredData, setFilteredData] = useState<GoalData[] | null>(null);
-  const displayData = filteredData ?? allData;
+  const displayData = useMemo(() => {
+    if (!searchFilters) return allData;
+    const { search, startDate, endDate } = searchFilters;
+    return allData.filter((row) => {
+      const searchLower = search.toLowerCase();
+      const filterSearch =
+        search === "" ||
+        row.constructionSectionName.toLowerCase().includes(searchLower) ||
+        row.progressRate.toString().includes(searchLower) ||
+        row.delayDays.toString().includes(searchLower);
+      const filterDate =
+        (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
+      return filterSearch && filterDate;
+    });
+  }, [allData, searchFilters]);
 
   // 변경된 행 ID 목록
   const editedRowIds = useMemo(() => {
-    const ids = new Set<number | null>();
+    const ids = new Set<number>();
     localAdditions.forEach((row) => ids.add(row.id));
-    localEdits.forEach((_, id) => ids.add(id));
+    localEdits.forEach((edits, id) => {
+      const original = data?.find((row) => row.id === id);
+      if (!original) {
+        ids.add(id);
+        return;
+      }
+      const hasRealChange = Object.entries(edits).some(
+        ([key, val]) => val !== original[key as keyof GoalData]
+      );
+      if (hasRealChange) ids.add(id);
+    });
     return ids;
-  }, [localAdditions, localEdits]);
+  }, [localAdditions, localEdits, data]);
 
   // 변경된 행 스타일 적용
   const getRowStyle = useCallback(
@@ -117,8 +182,8 @@ export function GoalsPage() {
         headerName: "작업일",
         field: "inputDate",
         flex: 1.3,
-        editable: true,
         cellEditor: "agDateStringCellEditor",
+        sortable: false,
       },
       {
         headerName: "시공구간",
@@ -242,6 +307,27 @@ export function GoalsPage() {
           return value >= 0 ? `+${value}` : value;
         },
       },
+      {
+        headerName: "화면노출",
+        field: "isActive",
+        flex: 0.8,
+        editable: false,
+        cellRenderer: (params: ICellRendererParams<GoalData, boolean>) => {
+          const rowId = params.data?.id;
+
+          return (
+            <div className="flex h-full items-center">
+              <Checkbox
+                checked={!!params.value}
+                onCheckedChange={(checked) => {
+                  if (rowId === undefined) return;
+                  handleIsActiveChange(rowId, checked ? "Y" : "N");
+                }}
+              />
+            </div>
+          );
+        },
+      },
     ],
     [
       constructionSections,
@@ -249,52 +335,30 @@ export function GoalsPage() {
       addConstructionSection,
       removeConstructionSection,
       toast,
+      handleIsActiveChange,
     ]
   );
 
   const defaultColDef = useMemo<ColDef>(
     () => ({
-      sortable: true,
+      sortable: false,
       resizable: true,
     }),
     []
   );
 
   // 검색 필터링
-  const handleSearch = useCallback(
-    (filters: SearchFilters) => {
-      const { search, startDate, endDate } = filters;
-
-      const filtered = allData.filter((row) => {
-        const searchLower = search.toLowerCase();
-        const filterSearch =
-          search === "" ||
-          row.constructionSectionName.toLowerCase().includes(searchLower) ||
-          row.progressRate.toString().includes(search) ||
-          row.delayDays.toString().includes(search);
-
-        const filterDate =
-          (!startDate || row.inputDate >= startDate) && (!endDate || row.inputDate <= endDate);
-
-        return filterSearch && filterDate;
-      });
-
-      setFilteredData(filtered);
-      setActiveSearchTerm(search);
-    },
-    [allData]
-  );
+  const handleSearch = useCallback((filters: SearchFilters) => {
+    setSearchFilters(filters);
+  }, []);
 
   // 필터 초기화
   const handleResetFilter = useCallback(() => {
-    setFilteredData(null);
-    setActiveSearchTerm("");
+    setSearchFilters(null);
   }, []);
 
   const handleExport = () => {
-    const date = new Date();
-    const dateString = date.toISOString().split("T")[0];
-    const fileName = `목표관리_${dateString}.csv`;
+    const fileName = `목표관리_${formatDateKST()}.csv`;
 
     gridRef.current?.api.exportDataAsCsv({
       fileName: fileName,
@@ -333,9 +397,6 @@ export function GoalsPage() {
     const updatedData = allData.find((row) => row.id === rowId);
     if (updatedData) {
       const recalculated = CalculateGoal({ ...updatedData, [field]: event.newValue });
-      event.api.applyTransaction({ update: [recalculated] });
-
-      // 유효성 검사
       const errors = validateGoal(recalculated);
       if (errors.length > 0 && errors[0]) {
         toast.warning(errors[0].message);
@@ -370,7 +431,7 @@ export function GoalsPage() {
       plannedWorkDays: 0,
       completionDate: today,
       delayDays: 0,
-      isNew: true,
+      isActive: false,
     };
 
     setLocalAdditions((prev) => [newRow, ...prev]);
@@ -405,34 +466,7 @@ export function GoalsPage() {
       });
 
       const upserts = dataToSave.map((row) => {
-        // 새로 추가된 행인 경우, 삭제될 항목 중 같은 (날짜, 시공구간)이 있는지 확인
-        if (row.id < 0) {
-          const key = `${row.inputDate}_${row.constructionSectionId}`;
-          const reusableId = deletedByKey.get(key);
-          if (reusableId) {
-            // 같은 조합이 있으면 해당 ID를 재사용
-            deletedByKey.delete(key); // deletedIds에서 제외하기 위해 삭제(재사용으로 인해 삭제 목록에서 제거)
-            return {
-              id: reusableId,
-              inputDate: row.inputDate,
-              constructionSectionId: row.constructionSectionId,
-              totalQuantity: row.totalQuantity,
-              cumulativeQuantity: row.cumulativeQuantity,
-              previousCumulativeQuantity: row.previousCumulativeQuantity,
-              targetQuantity: row.targetQuantity,
-              workQuantity: row.workQuantity,
-              constructionRate: row.constructionRate,
-              progressRate: row.progressRate,
-              startDate: row.startDate,
-              plannedWorkDays: row.plannedWorkDays,
-              completionDate: row.completionDate,
-              delayDays: row.delayDays,
-            };
-          }
-        }
-
-        return {
-          id: row.id > 0 ? row.id : undefined,
+        const baseUpsert = {
           inputDate: row.inputDate,
           constructionSectionId: row.constructionSectionId,
           totalQuantity: row.totalQuantity,
@@ -446,7 +480,21 @@ export function GoalsPage() {
           plannedWorkDays: row.plannedWorkDays,
           completionDate: row.completionDate,
           delayDays: row.delayDays,
+          isActive: row.isActive,
         };
+
+        // 새로 추가된 행인 경우, 삭제될 항목 중 같은 (날짜, 시공구간)이 있는지 확인
+        if (row.id < 0) {
+          const key = `${row.inputDate}_${row.constructionSectionId}`;
+          const reusableId = deletedByKey.get(key);
+          if (reusableId) {
+            // 같은 조합이 있으면 해당 ID를 재사용 (deletedIds에서 제외하기 위해 삭제 목록에서 제거)
+            deletedByKey.delete(key);
+            return { ...baseUpsert, id: reusableId };
+          }
+        }
+
+        return { ...baseUpsert, id: row.id > 0 ? row.id : undefined };
       });
 
       // 재사용되지 않은 ID만 삭제 목록에 포함
@@ -464,7 +512,7 @@ export function GoalsPage() {
       setLocalAdditions([]);
       setLocalEdits(new Map());
       setDeletedIds(new Set());
-      setFilteredData(null);
+      setSearchFilters(null);
 
       toast.success("저장되었습니다.");
     } catch (err) {
@@ -485,10 +533,12 @@ export function GoalsPage() {
     const selectedIds = selectedRows.map((row) => row.id);
 
     // 기존 데이터는 deletedIds에 추가
-    selectedIds.forEach((id) => {
-      if (id !== null && id > 0) {
-        setDeletedIds((prev) => new Set(prev).add(id));
-      }
+    setDeletedIds((prev) => {
+      const next = new Set(prev);
+      selectedIds.forEach((id) => {
+        if (id > 0) next.add(id);
+      });
+      return next;
     });
 
     // 로컬 추가 데이터는 바로 제거
@@ -500,11 +550,6 @@ export function GoalsPage() {
       selectedIds.forEach((id) => newMap.delete(id));
       return newMap;
     });
-
-    // 필터된 데이터에서도 제거
-    if (filteredData) {
-      setFilteredData(filteredData.filter((row) => !selectedIds.includes(row.id)));
-    }
   };
 
   // 로딩 상태 렌더링
@@ -525,7 +570,13 @@ export function GoalsPage() {
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="text-red-500">
-            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              aria-hidden="true"
+              className="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -551,7 +602,7 @@ export function GoalsPage() {
         <div className="flex flex-col gap-3">
           <div>
             <h1 className="text-lg font-semibold text-gray-900">목표 관리</h1>
-            <p className="mt-1 text-sm text-gray-500">목표 관리</p>
+            <p className="mt-1 text-sm text-gray-500">시공구간별 목표 및 진행 현황을 관리합니다.</p>
           </div>
         </div>
       </div>
@@ -583,7 +634,13 @@ export function GoalsPage() {
         {displayData.length === 0 ? (
           <div className="flex flex-1 items-center justify-center bg-white">
             <div className="flex flex-col items-center gap-2 text-gray-500">
-              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                aria-hidden="true"
+                className="h-12 w-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -603,7 +660,6 @@ export function GoalsPage() {
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 tooltipShowDelay={300}
-                animateRows={true}
                 rowSelection={{
                   mode: "multiRow",
                   checkboxes: true,
@@ -613,6 +669,8 @@ export function GoalsPage() {
                 pagination={true}
                 paginationPageSize={20}
                 suppressPaginationPanel={true}
+                animateRows={false}
+                singleClickEdit={true}
                 onGridReady={onGridReady}
                 onCellValueChanged={handleCellValueChanged}
                 getRowId={(params) => String(params.data.id)}
