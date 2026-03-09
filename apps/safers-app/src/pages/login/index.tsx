@@ -32,12 +32,7 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <LoginCard
-        title="로그인"
-        subtitle="PLUG SAFERS"
-        onLoginSubmit={handleLogin}
-        loading={loading}
-      />
+      <LoginCard title="로그인" subtitle="Safers" onLoginSubmit={handleLogin} loading={loading} />
       <Toaster toasts={toasts} onDismiss={dismissToast} />
     </div>
   );

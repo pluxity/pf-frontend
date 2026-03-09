@@ -26,4 +26,5 @@ export {
   selectVitals,
   selectLocations,
   selectCCTVStreamUrls,
+  selectCCTVNames,
 } from "./feature-data.store";

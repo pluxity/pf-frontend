@@ -60,6 +60,7 @@ export function useFeatureSelection(options: UseFeatureSelectionOptions) {
         const pos = overlayRef.current?.getFeaturePosition(featureId);
         if (!pos) return;
         const vitals = featureData.getWorkerVitals(featureId);
+        const location = featureData.getWorkerLocation(featureId);
         setSelectedFeature({
           id: featureId,
           lng: pos.lng,
@@ -67,7 +68,7 @@ export function useFeatureSelection(options: UseFeatureSelectionOptions) {
           altitude: pos.altitude,
           vitals,
           streamUrl: null,
-          location: featureData.getWorkerLocation(featureId),
+          location,
         });
         overlayRef.current?.highlightFeature(featureId);
         onWorkerSelectRef.current?.(featureId);

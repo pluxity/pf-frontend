@@ -14,6 +14,7 @@ export type LocationType = "indoor" | "outdoor";
 
 export interface WorkerLocation {
   locationType: LocationType;
+  building?: string;
   floor: string;
   floorNumber: number;
 }

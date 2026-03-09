@@ -13,6 +13,7 @@ interface WorkerEntry {
   status: WorkerStatus;
   info: string;
   locationType?: LocationType;
+  building?: string;
   floor?: string;
 }
 
@@ -57,7 +58,7 @@ export function WorkerListPanel({
   className,
 }: WorkerListPanelProps) {
   return (
-    <DraggablePanel title="작업자 정보" className={cn("w-[18.75rem]", className)}>
+    <DraggablePanel title="작업자 정보" className={cn("w-[22rem]", className)}>
       {/* 출근현황 카드 */}
       <div className="mt-3 flex overflow-hidden rounded-[0.3125rem]">
         {STAT_CARDS.map((card) => (
@@ -86,10 +87,10 @@ export function WorkerListPanel({
           <div className="flex flex-1 items-center justify-center border-r border-[#BBC0CF] px-5 text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             작업자 이름
           </div>
-          <div className="flex w-[4.5rem] items-center justify-center border-r border-[#BBC0CF] px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
+          <div className="flex w-[7rem] items-center justify-center border-r border-[#BBC0CF] px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             위치
           </div>
-          <div className="flex w-[6rem] items-center justify-center px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
+          <div className="flex w-[7rem] items-center justify-center px-[0.3125rem] text-xs font-bold tracking-[-0.015rem] text-[#949AB1]">
             정보
           </div>
         </div>
@@ -123,12 +124,12 @@ export function WorkerListPanel({
                   </span>
                 </div>
                 {/* 위치 열 */}
-                <div className="flex w-[4.5rem] items-center justify-center gap-1 border-r border-[#BBC0CF] px-[0.3125rem]">
+                <div className="flex w-[7rem] items-center justify-center gap-1 border-r border-[#BBC0CF] px-[0.3125rem]">
                   {worker.locationType && (
                     <>
                       <span
                         className={cn(
-                          "rounded px-1 py-0.5 text-[9px] font-medium leading-none",
+                          "shrink-0 rounded px-1 py-0.5 text-[9px] font-medium leading-none",
                           worker.locationType === "indoor"
                             ? "bg-[#5E81F4]/15 text-[#5E81F4]"
                             : "bg-[#00C48C]/15 text-[#00C48C]"
@@ -136,12 +137,16 @@ export function WorkerListPanel({
                       >
                         {worker.locationType === "indoor" ? "실내" : "실외"}
                       </span>
-                      <span className="text-[10px] text-[#555]">{worker.floor}</span>
+                      {worker.locationType === "indoor" && worker.floor && (
+                        <span className="truncate text-[10px] text-[#555]">
+                          {worker.building ? `${worker.building} ${worker.floor}` : worker.floor}
+                        </span>
+                      )}
                     </>
                   )}
                 </div>
                 {/* 정보 열 */}
-                <div className="w-[6rem] truncate px-[0.3125rem] text-center text-xs tracking-[-0.015rem] text-[#555]">
+                <div className="w-[7rem] truncate px-[0.3125rem] text-center text-xs tracking-[-0.015rem] text-[#555]">
                   {worker.info}
                 </div>
               </button>

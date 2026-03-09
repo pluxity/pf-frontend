@@ -14,6 +14,7 @@ import {
 import type { MapboxViewerHandle, MapStyleKey, Attendance } from "./components";
 import { sitesService, siteDetailService, type Site } from "@/services";
 import { useWeather } from "@/hooks";
+import { useFeatureDataStore, selectLocations } from "@/stores";
 import { MOCK_DANGER_ZONES } from "./config";
 import { useScenarioTrigger, type ScenarioId } from "./hooks";
 
@@ -62,13 +63,28 @@ export function SitePage() {
     mapViewerRef,
   });
 
-  const workerNames = Object.fromEntries(workers.map((w) => [w.id, w.name]));
+  // store의 위치 정보를 구독하여 workers에 반영
+  const storeLocations = useFeatureDataStore(selectLocations);
+  const enrichedWorkers = workers.map((w) => {
+    const loc = storeLocations.get(w.id);
+    if (!loc) return w;
+    return {
+      ...w,
+      locationType: loc.locationType,
+      building: loc.building,
+      floor: loc.floor,
+    };
+  });
+
+  const workerNames = Object.fromEntries(enrichedWorkers.map((w) => [w.id, w.name]));
   const workerLocations = Object.fromEntries(
-    workers.filter((w) => w.floor).map((w) => [w.id, { floor: w.floor! }])
+    enrichedWorkers
+      .filter((w) => w.floor)
+      .map((w) => [w.id, { floor: w.floor!, building: w.building }])
   );
 
   const attendance: Attendance = {
-    working: workers.length,
+    working: enrichedWorkers.length,
     standby: 0,
     offDuty: 0,
     absent: 0,
@@ -161,7 +177,7 @@ export function SitePage() {
       <WorkerListPanel
         className="absolute left-4 top-[calc(100vh-12rem)] z-40"
         attendance={attendance}
-        workers={workers}
+        workers={enrichedWorkers}
         selectedWorkerId={selectedWorkerId}
         onWorkerClick={handlePanelWorkerClick}
       />

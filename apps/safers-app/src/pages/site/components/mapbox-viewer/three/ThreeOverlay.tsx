@@ -13,8 +13,10 @@ import {
   WORKER4_PATROL_DURATION,
   DUMP_PATROL_PATH,
   DUMP_PATROL_DURATION,
-  MOCK_CCTVS,
+  CCTV_PLACEMENTS,
+  SAMPLE_SITE_ID,
 } from "../../../config";
+import { cctvService } from "@/services";
 
 interface ThreeOverlayProps {
   ref?: React.Ref<ThreeOverlayHandle>;
@@ -172,7 +174,12 @@ export function ThreeOverlay({
       for (const w of workers) {
         sceneApi.addFeature(w.id, "worker", w.position);
         store.updateWorkerVitals(w.id, w.vitals);
-        store.updateWorkerLocation(w.id, w.location);
+        store.updateWorkerLocation(
+          w.id,
+          w.id === "worker-6"
+            ? { locationType: "indoor", building: "103동", floor: "12F", floorNumber: 12 }
+            : { locationType: "outdoor", floor: "", floorNumber: 0 }
+        );
       }
       sceneApi.setFeatureHeading("worker-5", Math.PI);
 
@@ -201,14 +208,25 @@ export function ThreeOverlay({
       });
       sceneApi.setFeatureHeading("crane-2", (Math.PI * 110) / 180);
 
-      // CCTV
-      for (const cctv of MOCK_CCTVS) {
-        sceneApi.addFeature(cctv.id, "cctv", cctv.position);
-        sceneApi.setFeatureHeading(cctv.id, (cctv.heading * Math.PI) / 180);
-        if (cctv.frustumCorners) {
-          sceneApi.setFeatureFrustum(cctv.id, cctv.frustumCorners);
+      // CCTV — API에서 목록 가져오고, 3D 배치는 mock 보충 데이터 사용
+      const cctvs = await cctvService.getCCTVs(SAMPLE_SITE_ID).catch(() => []);
+      for (const cctv of cctvs) {
+        const placement = CCTV_PLACEMENTS[cctv.id];
+        if (!placement) continue; // 3D 배치 정보 없는 CCTV는 스킵
+        const featureId = `cctv-${cctv.id}`;
+        sceneApi.addFeature(featureId, "cctv", placement.position);
+        sceneApi.setFeatureHeading(featureId, (placement.heading * Math.PI) / 180);
+        if (placement.frustumCorners) {
+          sceneApi.setFeatureFrustum(featureId, placement.frustumCorners);
         }
-        store.setCCTVStreamUrl(cctv.id, "/webrtc/8819/" + cctv.streamName + "/whep");
+        const whepUrl = cctvService.getWHEPUrl(cctv.streamName, SAMPLE_SITE_ID);
+        store.setCCTVStreamUrl(featureId, whepUrl);
+        const displayName =
+          cctv.name
+            .replace(cctv.site.name, "")
+            .replace(/^[-_\s]+/, "")
+            .trim() || cctv.name;
+        store.setCCTVName(featureId, displayName);
       }
 
       onLoad?.();

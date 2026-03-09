@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useWHEPStream } from "@pf-dev/cctv";
-import { useCCTVPopupStore } from "@/stores";
+import { useCCTVPopupStore, useFeatureDataStore, selectCCTVNames } from "@/stores";
 
 interface CCTVPopupCardProps {
   featureId: string;
@@ -10,6 +10,8 @@ interface CCTVPopupCardProps {
 
 export function CCTVPopupCard({ featureId, streamUrl, onHeaderPointerDown }: CCTVPopupCardProps) {
   const closePopup = useCCTVPopupStore((s) => s.closePopup);
+  const cctvNames = useFeatureDataStore(selectCCTVNames);
+  const displayName = cctvNames.get(featureId) ?? featureId;
   const { videoRef, status, error, connect, disconnect } = useWHEPStream(streamUrl);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function CCTVPopupCard({ featureId, streamUrl, onHeaderPointerDown }: CCT
         className="flex cursor-grab items-center justify-between px-3 py-2 active:cursor-grabbing"
         onPointerDown={onHeaderPointerDown}
       >
-        <span className="select-none font-semibold">{featureId.toUpperCase()}</span>
+        <span className="select-none font-semibold">{displayName}</span>
         <button onClick={() => closePopup(featureId)} className="text-white/60 hover:text-white">
           &times;
         </button>

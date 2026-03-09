@@ -184,6 +184,13 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
       ctx.modelGroup = gltf.scene;
       scene.add(ctx.modelGroup);
 
+      // 모델 transform 적용 후 BoundingBox 인덱스 빌드
+      const t = getTransform();
+      const deg = Math.PI / 180;
+      ctx.modelGroup.rotation.set(t.rotationX * deg, t.rotationY * deg, t.rotationZ * deg);
+      ctx.modelGroup.scale.setScalar(t.scale);
+      ctx.modelGroup.updateMatrixWorld(true);
+
       requestRepaint();
     })
     .catch(() => {

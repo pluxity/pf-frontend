@@ -39,7 +39,7 @@ export const SCENARIO_CAMERAS: Record<
 
 export const SCENARIO3 = {
   workerId: "worker-1",
-  cctvId: "CCTV-JEJU2-46",
+  cctvId: "cctv-118",
   dangerZoneEntry: { lng: 126.846852, lat: 37.500211, altitude: 0.15 } satisfies GeoPosition,
   moveDurationMs: 6000,
   camera: {

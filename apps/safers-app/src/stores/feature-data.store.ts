@@ -5,6 +5,7 @@ interface FeatureDataState {
   vitals: Map<string, WorkerVitals>;
   locations: Map<string, WorkerLocation>;
   cctvStreamUrls: Map<string, string>;
+  cctvNames: Map<string, string>;
 }
 
 interface FeatureDataActions {
@@ -14,6 +15,7 @@ interface FeatureDataActions {
   updateWorkerLocation: (id: string, location: WorkerLocation) => void;
   getCCTVStreamUrl: (id: string) => string | null;
   setCCTVStreamUrl: (id: string, url: string) => void;
+  setCCTVName: (id: string, name: string) => void;
   reset: () => void;
 }
 
@@ -23,6 +25,7 @@ const initialState: FeatureDataState = {
   vitals: new Map(),
   locations: new Map(),
   cctvStreamUrls: new Map(),
+  cctvNames: new Map(),
 };
 
 export const useFeatureDataStore = create<FeatureDataStore>()((set, get) => ({
@@ -58,11 +61,19 @@ export const useFeatureDataStore = create<FeatureDataStore>()((set, get) => ({
       return { cctvStreamUrls: next };
     });
   },
+  setCCTVName(id, name) {
+    set((state) => {
+      const next = new Map(state.cctvNames);
+      next.set(id, name);
+      return { cctvNames: next };
+    });
+  },
   reset() {
     set({
       vitals: new Map(),
       locations: new Map(),
       cctvStreamUrls: new Map(),
+      cctvNames: new Map(),
     });
   },
 }));
@@ -71,3 +82,4 @@ export const useFeatureDataStore = create<FeatureDataStore>()((set, get) => ({
 export const selectVitals = (state: FeatureDataStore) => state.vitals;
 export const selectLocations = (state: FeatureDataStore) => state.locations;
 export const selectCCTVStreamUrls = (state: FeatureDataStore) => state.cctvStreamUrls;
+export const selectCCTVNames = (state: FeatureDataStore) => state.cctvNames;

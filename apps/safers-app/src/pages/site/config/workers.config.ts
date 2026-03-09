@@ -13,54 +13,12 @@ export const DEFAULT_WORKER_VITALS: Record<string, WorkerVitals> = {
 };
 
 export const INITIAL_WORKERS: WorkerEntry[] = [
-  {
-    id: "worker-1",
-    name: "김철수",
-    status: "normal",
-    info: "36.5°C / 78bpm",
-    locationType: "outdoor",
-    floor: "1F",
-  },
-  {
-    id: "worker-2",
-    name: "이영희",
-    status: "normal",
-    info: "36.8°C / 92bpm",
-    locationType: "outdoor",
-    floor: "3F",
-  },
-  {
-    id: "worker-3",
-    name: "박민수",
-    status: "normal",
-    info: "36.7°C / 82bpm",
-    locationType: "outdoor",
-    floor: "3F",
-  },
-  {
-    id: "worker-4",
-    name: "정수진",
-    status: "normal",
-    info: "36.4°C / 85bpm",
-    locationType: "outdoor",
-    floor: "3F",
-  },
-  {
-    id: "worker-5",
-    name: "최동훈",
-    status: "normal",
-    info: "36.6°C / 72bpm",
-    locationType: "outdoor",
-    floor: "3F",
-  },
-  {
-    id: "worker-6",
-    name: "한지원",
-    status: "normal",
-    info: "36.5°C / 76bpm",
-    locationType: "indoor",
-    floor: "12F",
-  },
+  { id: "worker-1", name: "김철수", status: "normal", info: "36.5°C / 78bpm" },
+  { id: "worker-2", name: "이영희", status: "normal", info: "36.8°C / 92bpm" },
+  { id: "worker-3", name: "박민수", status: "normal", info: "36.7°C / 82bpm" },
+  { id: "worker-4", name: "정수진", status: "normal", info: "36.4°C / 85bpm" },
+  { id: "worker-5", name: "최동훈", status: "normal", info: "36.6°C / 72bpm" },
+  { id: "worker-6", name: "한지원", status: "normal", info: "36.5°C / 76bpm" },
 ];
 
 export const WORKER1_PATROL_PATH: GeoPosition[] = [

@@ -74,6 +74,7 @@ export function FeaturePopup({
                 >
                   {location.locationType === "indoor" ? "실내" : "실외"}
                 </span>
+                {location.building && <span>{location.building}</span>}
                 <span>{location.floor}</span>
               </span>
             </div>

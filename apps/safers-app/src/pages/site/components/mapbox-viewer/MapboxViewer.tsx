@@ -15,7 +15,12 @@ import { useEmergencyState } from "./hooks/useEmergencyState";
 import { useFeatureSelection } from "./hooks/useFeatureSelection";
 import { useMapboxViewerHandle } from "./hooks/useMapboxViewerHandle";
 import { CameraDebugPanel } from "./overlays/CameraDebugPanel";
-import { useCCTVPopupStore, selectCCTVPopups } from "@/stores";
+import {
+  useCCTVPopupStore,
+  selectCCTVPopups,
+  useFeatureDataStore,
+  selectCCTVNames,
+} from "@/stores";
 import { FilterChip, FilterChipGroup } from "@pf-dev/ui/molecules";
 import { CCTV as CCTVIcon, User as UserIcon, X as XIcon } from "@pf-dev/ui/atoms";
 
@@ -25,7 +30,7 @@ interface MapboxViewerProps {
   ref?: React.Ref<MapboxViewerHandle>;
   sitePolygonWKT?: string;
   workerNames?: Record<string, string>;
-  workerLocations?: Record<string, { floor: string }>;
+  workerLocations?: Record<string, { floor: string; building?: string }>;
   dangerZones?: DangerZone[];
   onWorkerSelect?: (workerId: string | null) => void;
   onScenarioEnd?: () => void;
@@ -122,6 +127,8 @@ export function MapboxViewer({
   });
 
   const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
+  const storeCCTVNames = useFeatureDataStore(selectCCTVNames);
+  const cctvNamesRecord = Object.fromEntries(storeCCTVNames);
 
   // FOV visible only while CCTV popup is open
   const prevPopupIdsRef = useRef<Set<string>>(new Set());
@@ -264,6 +271,7 @@ export function MapboxViewer({
           ])
         }
         workerNames={workerNames}
+        cctvNames={cctvNamesRecord}
         workerLocations={workerLocations}
         overlayRef={overlayRef}
         mapRef={mapRef}
@@ -286,7 +294,11 @@ export function MapboxViewer({
               location={selectedFeature.location}
               abnormal={emergency}
               abnormalLabel={
-                emergency ? (bannerMessage.includes("침입") ? "침입감지" : "이상징후") : undefined
+                emergency
+                  ? bannerMessage.includes("위험구역")
+                    ? "위험구역 접근"
+                    : "이상징후"
+                  : undefined
               }
               onClose={() => {
                 setSelectedFeature(null);

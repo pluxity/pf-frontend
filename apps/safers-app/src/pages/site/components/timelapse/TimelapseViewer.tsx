@@ -5,7 +5,7 @@ import type { Group, MeshStandardMaterial, Object3D } from "three";
 import type { ConstructionSchedule } from "./types";
 import { useTimelapseStore, resolveCurrentPhases, getLeafPaths } from "./timelapse.store";
 
-const MODEL_URL = "/assets/models/timelapse.glb";
+const MODEL_URL = "/assets/models/safers.glb";
 
 function buildMeshPath(obj: Object3D, root: Object3D): string {
   const parts: string[] = [];

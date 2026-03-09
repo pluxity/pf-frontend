@@ -94,7 +94,7 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
               skipModelSwap: true,
               skipSelect: true,
               skipFlyTo: true,
-              message: "위험구역 침입 탐지",
+              message: "위험구역 접근 감지",
               bannerLabel: SCENARIO3.workerId,
             });
 
