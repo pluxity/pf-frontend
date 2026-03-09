@@ -103,7 +103,13 @@ export async function performWhepNegotiation(
 
   const locationHeader = response.headers.get("location");
   if (locationHeader) {
-    sessionUrl = new URL(locationHeader, streamUrl).toString();
+    try {
+      sessionUrl = new URL(locationHeader, streamUrl).toString();
+    } catch {
+      console.warn(
+        "[WHEP] ICE trickle disabled — cannot resolve session URL from relative streamUrl"
+      );
+    }
   }
 
   const answerSdp = await response.text();
