@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
   const projectPath = env.VITE_PROJECT_PATH || "";
   const proxyTarget = `${apiServerUrl}${projectPath}`;
   const cookiePath = `${projectPath}/api`;
-  const mediaServerUrl = env.VITE_MEDIA_SERVER_URL || "http://14.51.233.128";
+  // const mediaServerUrl = env.VITE_MEDIA_SERVER_URL || "https://14.51.233.128";
 
   // Base path 설정 (staging 환경에서 contextPath 적용)
   const contextPath = env.VITE_CONTEXT_PATH || "";
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
     WHEP_PORTS.map((port) => [
       `/webrtc/${port}`,
       {
-        target: `${mediaServerUrl}:${port}`,
+        target: `${apiServerUrl}/webrtc/${port}`,
         changeOrigin: true,
         secure: false,
         rewrite: (path: string) => path.replace(`/webrtc/${port}`, ""),
