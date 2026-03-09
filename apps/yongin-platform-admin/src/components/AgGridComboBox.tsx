@@ -22,6 +22,7 @@ export interface AgGridComboBoxProps extends ICellEditorParams {
   onDelete?: (id: number) => Promise<void>;
   onAddSuccess?: (name: string) => void;
   onDeleteSuccess?: () => void;
+  isDeleteDisabled?: (item: ComboBoxItem) => boolean;
   placeholder?: string;
   addErrorMessage?: string;
   deleteErrorMessage?: string;
@@ -35,6 +36,7 @@ export function AgGridComboBox({
   onDelete,
   onAddSuccess,
   onDeleteSuccess,
+  isDeleteDisabled,
   stopEditing,
   column,
   node,
@@ -171,7 +173,7 @@ export function AgGridComboBox({
             }`}
           >
             <span>{item.name}</span>
-            {showDeleteButton && (
+            {showDeleteButton && !isDeleteDisabled?.(item) && (
               <button
                 onClick={(e) => handleDelete(item.id, e)}
                 disabled={deletingId === item.id}

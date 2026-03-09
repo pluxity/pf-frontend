@@ -25,6 +25,7 @@ catalog:
   lodash: ^4.17.21
   react: ^19.2.3
   react-dom: ^19.2.3
+  recharts: ^2.15.3
   react-hook-form: ^7.71.0
   react-router-dom: ^7.12.0
   storybook: ^10.2.3
