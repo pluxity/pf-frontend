@@ -9,7 +9,7 @@ import type {
   RowClassParams,
 } from "ag-grid-community";
 import { useRef, useState, useMemo, useCallback, useEffect } from "react";
-import { Button, Progress, Spinner, RadioGroup, RadioGroupItem } from "@pf-dev/ui";
+import { Button, Progress, Spinner, Checkbox } from "@pf-dev/ui";
 import type { GoalData, GoalBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useGoals, CalculateGoal } from "./hooks";
@@ -134,9 +134,19 @@ export function GoalsPage() {
   const editedRowIds = useMemo(() => {
     const ids = new Set<number>();
     localAdditions.forEach((row) => ids.add(row.id));
-    localEdits.forEach((_, id) => ids.add(id));
+    localEdits.forEach((edits, id) => {
+      const original = data?.find((row) => row.id === id);
+      if (!original) {
+        ids.add(id);
+        return;
+      }
+      const hasRealChange = Object.entries(edits).some(
+        ([key, val]) => val !== original[key as keyof GoalData]
+      );
+      if (hasRealChange) ids.add(id);
+    });
     return ids;
-  }, [localAdditions, localEdits]);
+  }, [localAdditions, localEdits, data]);
 
   // 변경된 행 스타일 적용
   const getRowStyle = useCallback(
@@ -300,24 +310,20 @@ export function GoalsPage() {
       {
         headerName: "화면노출",
         field: "isActive",
-        flex: 1,
+        flex: 0.8,
         editable: false,
         cellRenderer: (params: ICellRendererParams<GoalData, boolean>) => {
           const rowId = params.data?.id;
 
           return (
             <div className="flex h-full items-center">
-              <RadioGroup
-                value={params.value ? "Y" : "N"}
-                onValueChange={(value) => {
+              <Checkbox
+                checked={!!params.value}
+                onCheckedChange={(checked) => {
                   if (rowId === undefined) return;
-                  handleIsActiveChange(rowId, value);
+                  handleIsActiveChange(rowId, checked ? "Y" : "N");
                 }}
-                className="flex gap-2"
-              >
-                <RadioGroupItem value="Y" id={`active-y-${rowId}`} label="Y" />
-                <RadioGroupItem value="N" id={`active-n-${rowId}`} label="N" />
-              </RadioGroup>
+              />
             </div>
           );
         },
