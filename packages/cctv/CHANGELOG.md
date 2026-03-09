@@ -1,5 +1,11 @@
 # @pf-dev/cctv
 
+## 0.2.1
+
+### Patch Changes
+
+- WHEP session URL 파싱 시 `new URL(locationHeader, streamUrl)`이 상대 경로 `streamUrl`을 base로 받으면 TypeError를 던지는 문제 수정. try/catch로 감싸서 프록시 환경에서는 ICE trickle을 스킵하고 연결은 정상 동작하도록 변경.
+
 ## 0.2.0
 
 ### Minor Changes
