@@ -26,6 +26,7 @@ function toGridData(response: GoalResponse): GoalData {
     plannedWorkDays: response.plannedWorkDays,
     completionDate: response.completionDate,
     delayDays: response.delayDays,
+    isActive: response.isActive ?? false,
   };
 }
 
