@@ -35,6 +35,14 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
     const map = mapRef.current;
     if (!map) return;
 
+    const doRaycast = (point: { x: number; y: number }) => {
+      const canvas = map.getCanvas();
+      return (
+        overlayRef.current?.raycast(point.x, point.y, canvas.clientWidth, canvas.clientHeight) ??
+        null
+      );
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
       if (!keys.includes(e.key)) return;
@@ -51,17 +59,14 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
     };
     window.addEventListener("keydown", handleKeyDown);
 
+    let lastHoverFeatureId: string | null = null;
+
     const handleMouseMove = (e: {
       point: { x: number; y: number };
       lngLat: { lng: number; lat: number };
     }) => {
       const canvas = map.getCanvas();
-      const hit = overlayRef.current?.raycast(
-        e.point.x,
-        e.point.y,
-        canvas.clientWidth,
-        canvas.clientHeight
-      );
+      const hit = doRaycast(e.point);
 
       if (coordRef?.current) {
         if (hit) {
@@ -72,20 +77,25 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
         }
       }
 
-      if (!selectedIdRef.current) {
-        if (hit?.featureId) {
-          overlayRef.current?.highlightFeature(hit.featureId);
-          canvas.style.cursor = "pointer";
+      const currentFeatureId = hit?.featureId ?? null;
+      if (currentFeatureId !== lastHoverFeatureId) {
+        lastHoverFeatureId = currentFeatureId;
+        if (!selectedIdRef.current) {
+          if (currentFeatureId) {
+            overlayRef.current?.highlightFeature(currentFeatureId);
+            canvas.style.cursor = "pointer";
+          } else {
+            overlayRef.current?.clearHighlight();
+            canvas.style.cursor = "";
+          }
         } else {
-          overlayRef.current?.clearHighlight();
-          canvas.style.cursor = "";
+          canvas.style.cursor = currentFeatureId ? "pointer" : "";
         }
-      } else {
-        canvas.style.cursor = hit?.featureId ? "pointer" : "";
       }
     };
 
     const handleMouseOut = () => {
+      lastHoverFeatureId = null;
       if (coordRef?.current) {
         coordRef.current.textContent = "";
       }
@@ -98,14 +108,9 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
       point: { x: number; y: number };
       lngLat: { lng: number; lat: number };
     }) => {
+      const hit = doRaycast(e.point);
+
       if (pathEditingRef?.current) {
-        const canvas = map.getCanvas();
-        const hit = overlayRef.current?.raycast(
-          e.point.x,
-          e.point.y,
-          canvas.clientWidth,
-          canvas.clientHeight
-        );
         const point: FeaturePosition = hit
           ? {
               lng: Math.round(hit.lng * 1e6) / 1e6,
@@ -120,14 +125,6 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
         addPathPointRef?.current?.(point);
         return;
       }
-
-      const canvas = map.getCanvas();
-      const hit = overlayRef.current?.raycast(
-        e.point.x,
-        e.point.y,
-        canvas.clientWidth,
-        canvas.clientHeight
-      );
 
       if (hit?.featureId) {
         const featureData = useFeatureDataStore.getState();

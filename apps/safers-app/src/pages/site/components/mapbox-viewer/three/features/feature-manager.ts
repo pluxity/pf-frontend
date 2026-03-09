@@ -102,6 +102,13 @@ export function createFeatureManager(ctx: SceneContext) {
     const toRemove = entry.group.children.filter((c) => !c.userData.isFOV && !c.userData.isMarker);
     for (const child of toRemove) {
       entry.group.remove(child);
+      child.traverse((node) => {
+        if (node instanceof THREE.Mesh) {
+          node.geometry?.dispose();
+          const mats = Array.isArray(node.material) ? node.material : [node.material];
+          for (const mat of mats) mat.dispose();
+        }
+      });
     }
 
     entry.assetId = newAssetId;

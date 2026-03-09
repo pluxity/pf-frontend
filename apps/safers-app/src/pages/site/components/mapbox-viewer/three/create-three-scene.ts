@@ -355,7 +355,16 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
         const toRemove = entry.group.children.filter(
           (c) => !c.userData.isFOV && !c.userData.isMarker
         );
-        for (const child of toRemove) entry.group.remove(child);
+        for (const child of toRemove) {
+          entry.group.remove(child);
+          child.traverse((node) => {
+            if (node instanceof THREE.Mesh) {
+              node.geometry?.dispose();
+              const mats = Array.isArray(node.material) ? node.material : [node.material];
+              for (const mat of mats) mat.dispose();
+            }
+          });
+        }
         entry.assetId = "worker-walk";
         assetRegistry.applyAssetToFeature(id);
         if (highlight.state.highlightedFeatureId === id) {
@@ -394,7 +403,16 @@ export function createThreeScene(options: CreateThreeSceneOptions): ThreeSceneAp
             e.mixer = null;
           }
           const rem = e.group.children.filter((c) => !c.userData.isFOV && !c.userData.isMarker);
-          for (const child of rem) e.group.remove(child);
+          for (const child of rem) {
+            e.group.remove(child);
+            child.traverse((node) => {
+              if (node instanceof THREE.Mesh) {
+                node.geometry?.dispose();
+                const mats = Array.isArray(node.material) ? node.material : [node.material];
+                for (const mat of mats) mat.dispose();
+              }
+            });
+          }
           e.assetId = "worker";
           assetRegistry.applyAssetToFeature(id);
           if (highlight.state.highlightedFeatureId === id) {

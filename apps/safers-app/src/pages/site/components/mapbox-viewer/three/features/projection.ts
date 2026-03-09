@@ -6,6 +6,13 @@ import { gpsToScenePosition } from "../core/geo-utils";
 import { POPUP_HEAD_OFFSET } from "../../../../config/assets.config";
 
 export function createProjection(ctx: SceneContext) {
+  // Reusable objects to avoid per-frame allocation
+  const _inverse = new THREE.Matrix4();
+  const _near = new THREE.Vector3();
+  const _far = new THREE.Vector3();
+  const _projVec4 = new THREE.Vector4();
+  const _projPos = new THREE.Vector3();
+
   function projectFeatureToScreen(
     id: string,
     width: number,
@@ -14,15 +21,15 @@ export function createProjection(ctx: SceneContext) {
     const entry = ctx.features.get(id);
     if (!entry || !ctx.lastCombinedMatrix) return null;
 
-    const pos = entry.group.position.clone();
-    pos.z += POPUP_HEAD_OFFSET;
+    _projPos.copy(entry.group.position);
+    _projPos.z += POPUP_HEAD_OFFSET;
 
-    const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
-    if (p.w <= 0) return null;
+    _projVec4.set(_projPos.x, _projPos.y, _projPos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
+    if (_projVec4.w <= 0) return null;
 
     return {
-      x: ((p.x / p.w) * 0.5 + 0.5) * width,
-      y: (-(p.y / p.w) * 0.5 + 0.5) * height,
+      x: ((_projVec4.x / _projVec4.w) * 0.5 + 0.5) * width,
+      y: (-(_projVec4.y / _projVec4.w) * 0.5 + 0.5) * height,
     };
   }
 
@@ -35,13 +42,13 @@ export function createProjection(ctx: SceneContext) {
 
     for (const [id, entry] of ctx.features) {
       if (id.startsWith("dump-") || id.startsWith("crane-")) continue;
-      const pos = entry.group.position.clone();
-      pos.z += POPUP_HEAD_OFFSET;
-      const p = new THREE.Vector4(pos.x, pos.y, pos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
-      if (p.w <= 0) continue;
+      _projPos.copy(entry.group.position);
+      _projPos.z += POPUP_HEAD_OFFSET;
+      _projVec4.set(_projPos.x, _projPos.y, _projPos.z, 1).applyMatrix4(ctx.lastCombinedMatrix);
+      if (_projVec4.w <= 0) continue;
       result.set(id, {
-        x: ((p.x / p.w) * 0.5 + 0.5) * width,
-        y: (-(p.y / p.w) * 0.5 + 0.5) * height,
+        x: ((_projVec4.x / _projVec4.w) * 0.5 + 0.5) * width,
+        y: (-(_projVec4.y / _projVec4.w) * 0.5 + 0.5) * height,
       });
     }
     return result;
@@ -61,12 +68,12 @@ export function createProjection(ctx: SceneContext) {
     const ndcX = (screenX / width) * 2 - 1;
     const ndcY = -(screenY / height) * 2 + 1;
 
-    const inverse = ctx.lastCombinedMatrix.clone().invert();
-    const near = new THREE.Vector3(ndcX, ndcY, -1).applyMatrix4(inverse);
-    const far = new THREE.Vector3(ndcX, ndcY, 1).applyMatrix4(inverse);
-    const direction = far.sub(near).normalize();
+    _inverse.copy(ctx.lastCombinedMatrix).invert();
+    _near.set(ndcX, ndcY, -1).applyMatrix4(_inverse);
+    _far.set(ndcX, ndcY, 1).applyMatrix4(_inverse);
+    const direction = _far.sub(_near).normalize();
 
-    ctx.raycaster.set(near, direction);
+    ctx.raycaster.set(_near, direction);
     const targets: THREE.Object3D[] = [ctx.modelGroup];
     for (const [id, feature] of ctx.features) {
       if (id.startsWith("dump-") || id.startsWith("crane-")) continue;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { ThreeOverlayHandle, DangerZone, MapboxViewerHandle } from "./types";
 import type { MapStyleKey } from "./constants";
@@ -128,7 +128,7 @@ export function MapboxViewer({
 
   const cctvPopups = useCCTVPopupStore(selectCCTVPopups);
   const storeCCTVNames = useFeatureDataStore(selectCCTVNames);
-  const cctvNamesRecord = Object.fromEntries(storeCCTVNames);
+  const cctvNamesRecord = useMemo(() => Object.fromEntries(storeCCTVNames), [storeCCTVNames]);
 
   // FOV visible only while CCTV popup is open
   const prevPopupIdsRef = useRef<Set<string>>(new Set());
@@ -200,6 +200,15 @@ export function MapboxViewer({
     [mapRef, onAreaSelect]
   );
 
+  const hiddenIds = useMemo(
+    () =>
+      new Set([
+        ...(selectedFeature ? [selectedFeature.id] : []),
+        ...cctvPopups.map((p) => p.featureId),
+      ]),
+    [selectedFeature, cctvPopups]
+  );
+
   const handleSelectionCancel = useCallback(() => {
     overlayRef.current?.clearAllMarkers();
     overlayRef.current?.clearHighlight();
@@ -264,12 +273,7 @@ export function MapboxViewer({
         showCCTV={showCCTVLabels}
         showWorker={showWorkerLabels}
         forcedIds={searchHitIds}
-        hiddenIds={
-          new Set([
-            ...(selectedFeature ? [selectedFeature.id] : []),
-            ...cctvPopups.map((p) => p.featureId),
-          ])
-        }
+        hiddenIds={hiddenIds}
         workerNames={workerNames}
         cctvNames={cctvNamesRecord}
         workerLocations={workerLocations}
