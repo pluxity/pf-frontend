@@ -1,4 +1,4 @@
-import { Widget, cn, Spinner } from "@pf-dev/ui";
+import { Widget, Spinner } from "@pf-dev/ui";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { ProcessStatusProps } from "./types";
 import { useProcessStatus } from "@/hooks/useProcessStatus";
@@ -107,7 +107,7 @@ export function ProcessStatus({ id, className }: ProcessStatusProps) {
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <Spinner size="lg" />
         </div>
@@ -117,7 +117,7 @@ export function ProcessStatus({ id, className }: ProcessStatusProps) {
 
   if (isError) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <p className="text-sm text-gray-500">
             {error instanceof Error ? error.message : "데이터를 불러오는데 실패했습니다."}
@@ -130,7 +130,7 @@ export function ProcessStatus({ id, className }: ProcessStatusProps) {
   const overall = overallStatus ?? { plannedRate: 0, actualRate: 0 };
 
   return (
-    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+    <Widget id={id} className={className} contentClassName="h-full">
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-1.5 shrink-0">
           <div className="font-bold text-sm">공정현황</div>

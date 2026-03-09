@@ -169,6 +169,20 @@ export function ProcessStatusPage() {
     [activeSearchTerm]
   );
 
+  // 중복 키 Set (cellClassRules 성능 최적화)
+  const duplicateKeys = useMemo(() => {
+    const seen = new Map<string, number>();
+    const duplicates = new Set<string>();
+    for (const row of allData) {
+      const key = `${row.workDate}:${row.workTypeId}`;
+      if (seen.has(key)) {
+        duplicates.add(key);
+      }
+      seen.set(key, row.id);
+    }
+    return duplicates;
+  }, [allData]);
+
   // 컬럼 정의
   const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
     () => [
@@ -180,7 +194,9 @@ export function ProcessStatusPage() {
         cellEditor: "agDateStringCellEditor",
         cellClassRules: {
           "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data ? !!checkDuplicate(allData, params.data) : false,
+            params.data
+              ? duplicateKeys.has(`${params.data.workDate}:${params.data.workTypeId}`)
+              : false,
         },
       },
       {
@@ -253,7 +269,7 @@ export function ProcessStatusPage() {
     ],
     [
       workTypes,
-      allData,
+      duplicateKeys,
       workTypeNameCellRenderer,
       plannedRateCellRenderer,
       actualRateCellRenderer,

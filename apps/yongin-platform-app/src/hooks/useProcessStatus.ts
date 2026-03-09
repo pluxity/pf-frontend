@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useSWR from "swr";
 import { processStatusService } from "@/services";
 import type { ProcessStatusData } from "@/services";
@@ -12,28 +13,32 @@ export function useProcessStatus() {
     { refreshInterval: 600000 }
   );
 
-  const allStatuses = data ?? [];
+  const { overallStatus, workStatuses, latestDate } = useMemo(() => {
+    const allStatuses = data ?? [];
 
-  // 가장 최근 workDate 찾기
-  const latestDate = allStatuses.reduce<string | null>((latest, row) => {
-    if (!latest || row.workDate > latest) return row.workDate;
-    return latest;
-  }, null);
+    // 가장 최근 workDate 찾기
+    const latestDate = allStatuses.reduce<string | null>((latest, row) => {
+      if (!latest || row.workDate > latest) return row.workDate;
+      return latest;
+    }, null);
 
-  // 최근 피리어드 데이터만 필터링
-  const latestData = latestDate ? allStatuses.filter((row) => row.workDate === latestDate) : [];
+    // 최근 피리어드 데이터만 필터링
+    const latestData = latestDate ? allStatuses.filter((row) => row.workDate === latestDate) : [];
 
-  // "전체" 항목 분리
-  let overallStatus: ProcessStatusData | null = null;
-  const workStatuses: ProcessStatusData[] = [];
+    // "전체" 항목 분리
+    let overallStatus: ProcessStatusData | null = null;
+    const workStatuses: ProcessStatusData[] = [];
 
-  for (const row of latestData) {
-    if (row.workTypeName === OVERALL_WORK_TYPE_NAME) {
-      overallStatus = row;
-    } else {
-      workStatuses.push(row);
+    for (const row of latestData) {
+      if (row.workTypeName === OVERALL_WORK_TYPE_NAME) {
+        overallStatus = row;
+      } else {
+        workStatuses.push(row);
+      }
     }
-  }
+
+    return { overallStatus, workStatuses, latestDate };
+  }, [data]);
 
   return {
     overallStatus,
