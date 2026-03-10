@@ -33,15 +33,16 @@ export function useSafetyEquipment() {
   );
 
   // 삭제
-  const { trigger: remove } = useSWRMutation(API_PATH, (_key, { arg }: { arg: number }) =>
-    deleteSafetyEquipment(arg)
+  const { trigger: remove, isMutating: isDeleting } = useSWRMutation(
+    API_PATH,
+    (_key, { arg }: { arg: number }) => deleteSafetyEquipment(arg)
   );
 
   return {
     data: data ?? [],
     isLoading,
     isError: !!error,
-    isMutating: isCreating || isUpdating,
+    isMutating: isCreating || isUpdating || isDeleting,
 
     refresh,
     create,

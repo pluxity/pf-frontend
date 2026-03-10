@@ -7,7 +7,7 @@ import type {
   GridApi,
   GridReadyEvent,
 } from "ag-grid-community";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useCallback } from "react";
 import {
   Button,
   Modal,
@@ -87,12 +87,15 @@ export function SafetyEquipmentPage() {
     setGridApi(event.api);
   };
 
-  const getRowStyle = (params: RowClassParams<SafetyEquipmentRow>) => {
-    if (params.data && editedRowIds.has(params.data.id)) {
-      return { backgroundColor: "#fef3c7" };
-    }
-    return undefined;
-  };
+  const getRowStyle = useCallback(
+    (params: RowClassParams<SafetyEquipmentRow>) => {
+      if (params.data && editedRowIds.has(params.data.id)) {
+        return { backgroundColor: "#fef3c7" };
+      }
+      return undefined;
+    },
+    [editedRowIds]
+  );
 
   const columnDefs = useMemo<ColDef<SafetyEquipmentRow>[]>(
     () => [
@@ -126,7 +129,7 @@ export function SafetyEquipmentPage() {
   const defaultColDef = useMemo<ColDef>(() => ({ sortable: false, resizable: false }), []);
 
   // 셀 값 변경
-  const handleCellValueChanged = (event: CellValueChangedEvent<SafetyEquipmentRow>) => {
+  const handleCellValueChanged = useCallback((event: CellValueChangedEvent<SafetyEquipmentRow>) => {
     if (!event.data) return;
     const rowId = event.data.id;
     const field = event.colDef.field as keyof SafetyEquipmentRow;
@@ -137,7 +140,7 @@ export function SafetyEquipmentPage() {
       newMap.set(rowId, { ...existing, [field]: event.newValue });
       return newMap;
     });
-  };
+  }, []);
 
   const handleAddRow = () => {
     if (isMax) return;
@@ -196,15 +199,14 @@ export function SafetyEquipmentPage() {
 
     setIsSaving(true);
     try {
-      for (const row of dataToSave.filter((row) => row.id < 0)) {
-        await create({ name: row.name, quantity: row.quantity });
-      }
-      for (const row of dataToSave.filter((row) => row.id > 0)) {
-        await update({ id: row.id, data: { name: row.name, quantity: row.quantity } });
-      }
-      for (const id of deletedIds) {
-        await remove(id);
-      }
+      const createPromises = dataToSave
+        .filter((row) => row.id < 0)
+        .map((row) => create({ name: row.name, quantity: row.quantity }));
+      const updatePromises = dataToSave
+        .filter((row) => row.id > 0)
+        .map((row) => update({ id: row.id, data: { name: row.name, quantity: row.quantity } }));
+      const deletePromises = Array.from(deletedIds).map((id) => remove(id));
+      await Promise.all([...createPromises, ...updatePromises, ...deletePromises]);
 
       await refresh();
 
@@ -260,9 +262,16 @@ export function SafetyEquipmentPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">안전장비 관리</h1>
-        <p className="mt-1 text-sm text-gray-500">안전장비는 최대 10개까지 등록 가능합니다.</p>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-900">안전장비 관리</h1>
+          <p className="mt-1 text-sm text-gray-500">안전장비는 최대 10개까지 등록 가능합니다.</p>
+        </div>
+        <Button onClick={handleSave} disabled={isSaving || !hasChanges}>
+          {isSaving
+            ? "저장 중..."
+            : `저장${hasChanges ? ` (${editedRowIds.size + deletedIds.size})` : ""}`}
+        </Button>
       </div>
 
       <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-gray-200">
@@ -288,19 +297,12 @@ export function SafetyEquipmentPage() {
         <AgGridPagination api={gridApi} pageSizeOptions={[10, 20, 50, 100]} />
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex gap-2">
-          <Button onClick={handleAddRow} disabled={isMax || isSaving}>
-            등록
-          </Button>
-          <Button onClick={handleDeleteRows} variant="error" disabled={isSaving}>
-            삭제
-          </Button>
-        </div>
-        <Button onClick={handleSave} disabled={isSaving || !hasChanges}>
-          {isSaving
-            ? "저장 중..."
-            : `저장${hasChanges ? ` (${editedRowIds.size + deletedIds.size})` : ""}`}
+      <div className="mt-4 flex gap-2">
+        <Button onClick={handleAddRow} disabled={isMax || isSaving}>
+          등록
+        </Button>
+        <Button onClick={handleDeleteRows} variant="error" disabled={isSaving}>
+          삭제
         </Button>
       </div>
 
