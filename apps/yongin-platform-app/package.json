@@ -7,7 +7,7 @@
     "dev": "vite --port 3000",
     "dev:staging": "vite --mode staging --port 3000",
     "build": "tsc && vite build",
-    "build:staging": "tsc && vite build --mode staging && node scripts/post-build.js",
+    "build:staging": "tsc && vite build --mode staging",
     "build:production": "tsc && vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -18,10 +18,8 @@
     "@pf-dev/api": "workspace:*",
     "@pf-dev/cctv": "workspace:*",
     "@pf-dev/fonts": "workspace:*",
-    "@pf-dev/map": "workspace:*",
     "@pf-dev/three": "workspace:*",
     "@pf-dev/ui": "workspace:*",
-    "cesium": "^1.121.0",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
@@ -41,7 +39,6 @@
     "rimraf": "^6.0.1",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
-    "vite-plugin-cesium": "^1.2.23"
+    "vite": "catalog:"
   }
 }

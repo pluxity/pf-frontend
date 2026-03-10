@@ -355,18 +355,12 @@ importers:
       '@pf-dev/fonts':
         specifier: workspace:*
         version: link:../../packages/fonts
-      '@pf-dev/map':
-        specifier: workspace:*
-        version: link:../../packages/map
       '@pf-dev/three':
         specifier: workspace:*
         version: link:../../packages/three
       '@pf-dev/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      cesium:
-        specifier: ^1.121.0
-        version: 1.136.0
       react:
         specifier: 'catalog:'
         version: 19.2.3
@@ -422,9 +416,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
-      vite-plugin-cesium:
-        specifier: ^1.2.23
-        version: 1.2.23(cesium@1.136.0)(rollup@4.53.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
 
   packages/api:
     devDependencies:
