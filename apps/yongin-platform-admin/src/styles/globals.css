@@ -3,6 +3,11 @@
 
 @import "@pf-dev/ui/globals.css";
 
+/* AgGrid 헤더 가운데 정렬 */
+.ag-header-cell-center .ag-header-cell-label {
+  justify-content: center;
+}
+
 /* Dashboard Grid 반응형 스타일 */
 .dashboard-grid-responsive > div {
   /* 모바일: 1 column */

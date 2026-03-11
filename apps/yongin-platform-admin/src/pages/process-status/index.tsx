@@ -9,12 +9,17 @@ import type {
   GridApi,
   GridReadyEvent,
 } from "ag-grid-community";
-import { useRef, useState, useMemo, useCallback } from "react";
+import { useRef, useState, useMemo, useCallback, useEffect } from "react";
 import { Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
-import { validateProcessStatus, isValidProcessStatus } from "./validation";
+import {
+  validateProcessStatus,
+  isValidProcessStatus,
+  checkDuplicate,
+  OVERALL_WORK_TYPE_NAME,
+} from "./validation";
 import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
 import { highlightText } from "@/utils";
@@ -38,6 +43,19 @@ export function ProcessStatusPage() {
     removeWorkType,
   } = useProcessStatus();
 
+  // "전체" 공종이 없으면 자동 생성
+  const hasCreatedOverallRef = useRef(false);
+  useEffect(() => {
+    if (
+      !hasCreatedOverallRef.current &&
+      workTypes.length > 0 &&
+      !workTypes.some((wt) => wt.name === OVERALL_WORK_TYPE_NAME)
+    ) {
+      hasCreatedOverallRef.current = true;
+      addWorkType(OVERALL_WORK_TYPE_NAME);
+    }
+  }, [workTypes, addWorkType]);
+
   // 로컬 편집 상태 (서버 데이터와 분리)
   const [localAdditions, setLocalAdditions] = useState<ProcessStatusData[]>([]);
   const [localEdits, setLocalEdits] = useState<Map<number | null, Partial<ProcessStatusData>>>(
@@ -55,7 +73,7 @@ export function ProcessStatusPage() {
     return tempIdRef.current;
   };
 
-  // 서버 데이터 + 로컬 편집을 합친 전체 데이터
+  // 서버 데이터 + 로컬 편집을 합친 전체 데이터 ("전체" 항상 상단)
   const allData = useMemo(() => {
     // 서버 데이터에서 삭제된 것 제외하고 편집 적용
     const serverData = (data ?? [])
@@ -71,7 +89,24 @@ export function ProcessStatusPage() {
       return edits ? { ...row, ...edits } : row;
     });
 
-    return [...addedData, ...serverData];
+    const combined = [...addedData, ...serverData];
+
+    // 1순위: 입력일자(workDate) 내림차순, 2순위: 같은 날짜 내 "전체" 상단, 3순위: 신규 행 우선
+    combined.sort((a, b) => {
+      // 1순위: workDate 내림차순
+      const dateCompare = b.workDate.localeCompare(a.workDate);
+      if (dateCompare !== 0) return dateCompare;
+      // 2순위: 같은 날짜 내에서 "전체" 상단
+      const aIsOverall = a.workTypeName === OVERALL_WORK_TYPE_NAME ? 0 : 1;
+      const bIsOverall = b.workTypeName === OVERALL_WORK_TYPE_NAME ? 0 : 1;
+      if (aIsOverall !== bIsOverall) return aIsOverall - bIsOverall;
+      // 3순위: 신규 행 우선
+      const aIsNew = a.isNew ? 0 : 1;
+      const bIsNew = b.isNew ? 0 : 1;
+      return aIsNew - bIsNew;
+    });
+
+    return combined;
   }, [data, localAdditions, localEdits, deletedIds]);
 
   // 필터링된 데이터
@@ -136,15 +171,35 @@ export function ProcessStatusPage() {
     [activeSearchTerm]
   );
 
+  // 중복 키 Set (cellClassRules 성능 최적화)
+  const duplicateKeys = useMemo(() => {
+    const seen = new Map<string, number>();
+    const duplicates = new Set<string>();
+    for (const row of allData) {
+      const key = `${row.workDate}:${row.workTypeId}`;
+      if (seen.has(key)) {
+        duplicates.add(key);
+      }
+      seen.set(key, row.id);
+    }
+    return duplicates;
+  }, [allData]);
+
   // 컬럼 정의
   const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
     () => [
       {
-        headerName: "작업일",
+        headerName: "입력일자",
         field: "workDate",
-        width: 150,
+        width: 200,
         editable: true,
         cellEditor: "agDateStringCellEditor",
+        cellClassRules: {
+          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
+            params.data
+              ? duplicateKeys.has(`${params.data.workDate}:${params.data.workTypeId}`)
+              : false,
+        },
       },
       {
         headerName: "공정명",
@@ -158,6 +213,7 @@ export function ProcessStatusPage() {
           onDelete: removeWorkType,
           onAddSuccess: (name: string) => toast.success(`"${name}" 공정명이 추가되었습니다.`),
           onDeleteSuccess: () => toast.success("공정명이 삭제되었습니다."),
+          isDeleteDisabled: (item: { name: string }) => item.name === OVERALL_WORK_TYPE_NAME,
           placeholder: "새 공정명",
         },
         cellEditorPopup: true,
@@ -215,6 +271,7 @@ export function ProcessStatusPage() {
     ],
     [
       workTypes,
+      duplicateKeys,
       workTypeNameCellRenderer,
       plannedRateCellRenderer,
       actualRateCellRenderer,
@@ -228,6 +285,8 @@ export function ProcessStatusPage() {
     () => ({
       sortable: true,
       resizable: true,
+      headerClass: "ag-header-cell-center",
+      cellStyle: { textAlign: "center" },
     }),
     []
   );
@@ -307,6 +366,12 @@ export function ProcessStatusPage() {
     if (errors.length > 0 && errors[0]) {
       toast.warning(errors[0].message);
     }
+
+    // 중복 검사
+    const duplicateError = checkDuplicate(allData, event.data);
+    if (duplicateError) {
+      toast.warning(duplicateError.message);
+    }
   };
 
   // 신규 행 생성
@@ -330,7 +395,29 @@ export function ProcessStatusPage() {
       isNew: true,
     };
 
-    setLocalAdditions((prev) => [newRow, ...prev]);
+    const newRows: ProcessStatusData[] = [newRow];
+
+    // 해당 workDate에 "전체" 행이 없으면 자동 생성
+    const overallWorkType = workTypes.find((wt) => wt.name === OVERALL_WORK_TYPE_NAME);
+    if (overallWorkType) {
+      const hasOverallForDate = allData.some(
+        (row) => row.workDate === today && row.workTypeName === OVERALL_WORK_TYPE_NAME
+      );
+      if (!hasOverallForDate) {
+        const overallRow: ProcessStatusData = {
+          id: generateTempId(),
+          workDate: today,
+          workTypeId: overallWorkType.id,
+          workTypeName: overallWorkType.name,
+          plannedRate: 0,
+          actualRate: 0,
+          isNew: true,
+        };
+        newRows.push(overallRow);
+      }
+    }
+
+    setLocalAdditions((prev) => [...newRows, ...prev]);
   };
 
   // 저장
@@ -349,6 +436,15 @@ export function ProcessStatusPage() {
       if (allErrors.length > 0 && allErrors[0]) {
         toast.error(`유효성 검사 실패: ${allErrors[0].message}`);
         return;
+      }
+
+      // 중복 검사
+      for (const row of dataToSave) {
+        const duplicateError = checkDuplicate(allData, row);
+        if (duplicateError) {
+          toast.error(`중복 검사 실패: ${duplicateError.message}`);
+          return;
+        }
       }
 
       const request: ProcessStatusBulkRequest = {
@@ -384,6 +480,13 @@ export function ProcessStatusPage() {
     const selectedRows = gridRef.current?.api.getSelectedRows();
     if (!selectedRows || selectedRows.length === 0) {
       toast.error("삭제할 항목을 선택해주세요.");
+      return;
+    }
+
+    // "전체" 공종 삭제 차단
+    const hasOverall = selectedRows.some((row) => row.workTypeName === OVERALL_WORK_TYPE_NAME);
+    if (hasOverall) {
+      toast.warning('"전체" 공정은 삭제할 수 없습니다.');
       return;
     }
 
