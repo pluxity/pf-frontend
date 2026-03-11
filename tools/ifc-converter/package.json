@@ -1,0 +1,25 @@
+{
+  "name": "@pf-dev/ifc-converter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "ifc-convert": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "convert": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "web-ifc": "^0.0.68",
+    "@gltf-transform/core": "^4.3.0",
+    "@gltf-transform/extensions": "^4.3.0",
+    "@gltf-transform/functions": "^4.3.0",
+    "draco3dgltf": "^1.5.7"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "^4.19.0",
+    "typescript": "catalog:"
+  }
+}

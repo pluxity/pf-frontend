@@ -2,8 +2,12 @@ packages:
   - apps/*
   - packages/*
   - tooling/*
+  - tools/*
 
 catalog:
+  "@babylonjs/core": ^7.52.5
+  "@babylonjs/loaders": ^7.52.5
+  recast-detour: ^1.5.1
   "@eslint/js": ^9.39.2
   "@hookform/resolvers": ^5.2.2
   "@storybook/addon-docs": ^10.2.3

@@ -27,11 +27,7 @@ const widgets = [
 
 export function HomePage() {
   return (
-    <GridLayout
-      template={dashboardTemplate}
-      gap={0}
-      className="dashboard-grid p-[1rem] h-[calc(100vh-var(--header-height)-var(--footer-height))]"
-    >
+    <GridLayout template={dashboardTemplate} gap={0} className="dashboard-grid p-[1rem] h-full">
       {widgets.map(({ id, component: Component }) => (
         <Component key={id} id={id} />
       ))}
