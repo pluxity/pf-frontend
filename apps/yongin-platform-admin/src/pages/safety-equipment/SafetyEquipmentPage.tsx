@@ -208,8 +208,6 @@ export function SafetyEquipmentPage() {
       const deletePromises = Array.from(deletedIds).map((id) => remove(id));
       await Promise.all([...createPromises, ...updatePromises, ...deletePromises]);
 
-      await refresh();
-
       setLocalAdditions([]);
       setLocalEdits(new Map());
       setDeletedIds(new Set());
@@ -218,6 +216,7 @@ export function SafetyEquipmentPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "저장에 실패했습니다.");
     } finally {
+      await refresh();
       setIsSaving(false);
     }
   };

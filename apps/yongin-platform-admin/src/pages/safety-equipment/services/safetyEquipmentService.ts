@@ -2,7 +2,7 @@ import { getApiClient, type DataResponse } from "@pf-dev/api";
 import {
   SafetyEquipmentResponse,
   SafetyEquipmentRequest,
-  SafetyEquipmentUpdateResquest,
+  SafetyEquipmentUpdateRequest,
 } from "../types";
 
 // 안전 장비 목록 조회
@@ -28,7 +28,7 @@ export async function deleteSafetyEquipment(id: number): Promise<void> {
 // 안전 장비 수정
 export async function updateSafetyEquipment(
   id: number,
-  data: SafetyEquipmentUpdateResquest
+  data: SafetyEquipmentUpdateRequest
 ): Promise<void> {
   await getApiClient().put<void>(`/safety-equipments/${id}`, data);
 }

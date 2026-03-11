@@ -8,15 +8,14 @@ export interface SafetyEquipmentResponse {
   updatedBy: string;
 }
 
-export interface SafetyEquipmentRequest {
+export interface SafetyEquipmentPayload {
   name: string;
   quantity: number;
 }
 
-export interface SafetyEquipmentUpdateResquest {
-  name: string;
-  quantity: number;
-}
+export type SafetyEquipmentRequest = SafetyEquipmentPayload;
+
+export type SafetyEquipmentUpdateRequest = SafetyEquipmentPayload;
 
 // 그리드용 내부 타입
 export interface SafetyEquipmentRow {

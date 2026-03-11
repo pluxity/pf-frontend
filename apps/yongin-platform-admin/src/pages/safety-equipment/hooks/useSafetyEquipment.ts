@@ -6,7 +6,7 @@ import {
   updateSafetyEquipment,
   deleteSafetyEquipment,
 } from "../services/safetyEquipmentService";
-import type { SafetyEquipmentRequest, SafetyEquipmentUpdateResquest } from "../types";
+import type { SafetyEquipmentRequest, SafetyEquipmentUpdateRequest } from "../types";
 
 const API_PATH = "/safety-equipments";
 
@@ -28,7 +28,7 @@ export function useSafetyEquipment() {
   // 수정
   const { trigger: update, isMutating: isUpdating } = useSWRMutation(
     API_PATH,
-    (_key, { arg }: { arg: { id: number; data: SafetyEquipmentUpdateResquest } }) =>
+    (_key, { arg }: { arg: { id: number; data: SafetyEquipmentUpdateRequest } }) =>
       updateSafetyEquipment(arg.id, arg.data)
   );
 
