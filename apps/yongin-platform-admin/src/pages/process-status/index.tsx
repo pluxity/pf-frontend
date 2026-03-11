@@ -91,17 +91,19 @@ export function ProcessStatusPage() {
 
     const combined = [...addedData, ...serverData];
 
-    // "전체" 행을 항상 상단에 배치
+    // 1순위: 입력일자(workDate) 내림차순, 2순위: 같은 날짜 내 "전체" 상단, 3순위: 신규 행 우선
     combined.sort((a, b) => {
+      // 1순위: workDate 내림차순
+      const dateCompare = b.workDate.localeCompare(a.workDate);
+      if (dateCompare !== 0) return dateCompare;
+      // 2순위: 같은 날짜 내에서 "전체" 상단
       const aIsOverall = a.workTypeName === OVERALL_WORK_TYPE_NAME ? 0 : 1;
       const bIsOverall = b.workTypeName === OVERALL_WORK_TYPE_NAME ? 0 : 1;
       if (aIsOverall !== bIsOverall) return aIsOverall - bIsOverall;
-      // 같은 그룹 내에서 신규 행 우선
+      // 3순위: 신규 행 우선
       const aIsNew = a.isNew ? 0 : 1;
       const bIsNew = b.isNew ? 0 : 1;
-      if (aIsNew !== bIsNew) return aIsNew - bIsNew;
-      // 같은 그룹 내에서는 workDate 내림차순
-      return b.workDate.localeCompare(a.workDate);
+      return aIsNew - bIsNew;
     });
 
     return combined;
