@@ -7,4 +7,5 @@ export { useCCTVBookmarks } from "./useCCTVBookmarks";
 export { useNotices } from "./useNotices";
 export { useSystemSettings } from "./useSystemSetting";
 export { useSafetyEquipment } from "./useSafetyEquipment";
+export { useProcessStatus } from "./useProcessStatus";
 export { useWorkerLocations } from "./useWorkerLocations";
