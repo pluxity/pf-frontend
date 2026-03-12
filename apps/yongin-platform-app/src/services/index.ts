@@ -8,3 +8,4 @@ export * from "./cctv-bookmark.service";
 export * from "./notice.service";
 export * from "./system-settings.service";
 export * from "./safety-equipment.service";
+export * from "./worker-location.service";

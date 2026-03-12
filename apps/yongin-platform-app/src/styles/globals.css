@@ -63,3 +63,15 @@ html {
   --color-brand-hover: #da6419;
   --color-brand-active: #c25914;
 }
+
+/* MapLibre 팝업 기본 스타일 초기화 */
+.maplibregl-popup-content {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.maplibregl-popup-tip {
+  display: none !important;
+}

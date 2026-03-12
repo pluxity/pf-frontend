@@ -27,7 +27,7 @@ interface Tab {
 const TABS: Tab[] = [
   { value: "birds-eye", label: "조감도" },
   { value: "bim", label: "BIM" },
-  { value: "gps", label: "GPS" },
+  { value: "gps", label: "위치정보" },
   { value: "management", label: "주요 관리 사항" },
   { value: "cctv", label: "CCTV" },
 ];
