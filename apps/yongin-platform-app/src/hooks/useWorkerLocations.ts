@@ -1,12 +1,10 @@
 import useSWR from "swr";
 import { getWorkerLocations } from "../services/worker-location.service";
 
-const API_PATH = {
-  WORKER_LOCATIONS: "/worker-locations",
-} as const;
+const WORKER_LOCATIONS_KEY = "/worker-locations";
 
 export function useWorkerLocations() {
-  const { data, error, isLoading } = useSWR(API_PATH.WORKER_LOCATIONS, getWorkerLocations, {
+  const { data, error, isLoading } = useSWR(WORKER_LOCATIONS_KEY, getWorkerLocations, {
     refreshInterval: 60000,
     revalidateOnFocus: false,
   });

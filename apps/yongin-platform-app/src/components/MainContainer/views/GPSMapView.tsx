@@ -5,6 +5,7 @@ import type { MapRef } from "react-map-gl/maplibre";
 import Supercluster from "supercluster";
 import workerIcon from "../../../assets/icons/worker.svg";
 import workerActiveIcon from "../../../assets/icons/worker-active.svg";
+import { cn } from "@pf-dev/ui";
 import { useWorkerLocations } from "@/hooks";
 import polygonData from "@/assets/data/yonginplatform1.json";
 import type { PolygonFeatureCollection } from "@/services/types";
@@ -28,12 +29,14 @@ interface PopupInfo {
 function getPolygonCenter(data: PolygonFeatureCollection) {
   const coords = data.features.flatMap((feature) => feature.geometry.coordinates[0] ?? []);
   if (coords.length === 0) return { longitude: 127.0, latitude: 37.3 };
-  let lngSum = 0;
-  let latSum = 0;
-  for (const [lng, lat] of coords) {
-    lngSum += lng ?? 0;
-    latSum += lat ?? 0;
-  }
+  const { lngSum, latSum } = coords.reduce(
+    (sums, [lng, lat]) => {
+      sums.lngSum += lng ?? 0;
+      sums.latSum += lat ?? 0;
+      return sums;
+    },
+    { lngSum: 0, latSum: 0 }
+  );
   return { longitude: lngSum / coords.length, latitude: latSum / coords.length };
 }
 
@@ -55,7 +58,7 @@ function getMapStyle(mode: MapMode) {
       gps: { type: "raster" as const, tiles: [tileUrl], tileSize: 256 },
       polygon: {
         type: "geojson" as const,
-        data: polygonData as unknown as GeoJSON.FeatureCollection,
+        data: polygonData as GeoJSON.FeatureCollection,
       },
     },
     layers: [
@@ -86,7 +89,12 @@ export function GPSMapView() {
   const mapRef = useRef<MapRef>(null);
   const { workers } = useWorkerLocations();
 
-  const center = getPolygonCenter(polygonData as unknown as PolygonFeatureCollection);
+  const resetSelection = () => {
+    setPopupInfo(null);
+    setSelectedKey(null);
+  };
+
+  const center = getPolygonCenter(polygonData as PolygonFeatureCollection);
   const mapStyle = useMemo(() => getMapStyle(mapMode), [mapMode]);
 
   const supercluster = useMemo(
@@ -152,14 +160,8 @@ export function GPSMapView() {
         mapStyle={mapStyle}
         onMove={updateViewport}
         onLoad={updateViewport}
-        onClick={() => {
-          setPopupInfo(null);
-          setSelectedKey(null);
-        }}
-        onZoomEnd={() => {
-          setPopupInfo(null);
-          setSelectedKey(null);
-        }}
+        onClick={resetSelection}
+        onZoomEnd={resetSelection}
       >
         {clusters.map((cluster) => {
           const [longitude, latitude] = cluster.geometry.coordinates as [number, number];
@@ -178,14 +180,16 @@ export function GPSMapView() {
             >
               <div className="flex flex-col items-center cursor-pointer">
                 <div
-                  className={`relative flex flex-col items-center gap-1 px-3 py-2 rounded-sm shadow-lg ${
+                  className={cn(
+                    "relative flex flex-col items-center gap-1 px-3 py-2 rounded-sm shadow-lg",
                     isSelected ? "bg-orange-500" : "bg-white border border-orange-400"
-                  }`}
+                  )}
                 >
                   <span
-                    className={`text-lg font-bold leading-none ${
+                    className={cn(
+                      "text-lg font-bold leading-none",
                       isSelected ? "text-white" : "text-orange-500"
-                    }`}
+                    )}
                   >
                     {count > 5 ? "5+" : count}
                   </span>
@@ -195,9 +199,10 @@ export function GPSMapView() {
                     alt="worker"
                   />
                   <div
-                    className={`absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 ${
+                    className={cn(
+                      "absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45",
                       isSelected ? "bg-orange-500" : "bg-white border-r border-b border-orange-400"
-                    }`}
+                    )}
                   />
                 </div>
               </div>
@@ -209,10 +214,7 @@ export function GPSMapView() {
           <Popup
             longitude={popupInfo.longitude}
             latitude={popupInfo.latitude}
-            onClose={() => {
-              setPopupInfo(null);
-              setSelectedKey(null);
-            }}
+            onClose={resetSelection}
             closeButton={false}
             anchor="top-left"
             offset={[-30, 50]}
@@ -235,13 +237,19 @@ export function GPSMapView() {
 
       <div className="absolute top-4 right-4 flex rounded overflow-hidden shadow-lg">
         <button
-          className={`px-3 py-1.5 text-sm font-medium ${mapMode === "base" ? "bg-blue-500 text-white" : "bg-white text-gray-700"}`}
+          className={cn(
+            "px-3 py-1.5 text-sm font-medium",
+            mapMode === "base" ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+          )}
           onClick={() => setMapMode("base")}
         >
           기본
         </button>
         <button
-          className={`px-3 py-1.5 text-sm font-medium ${mapMode === "satellite" ? "bg-blue-500 text-white" : "bg-white text-gray-700"}`}
+          className={cn(
+            "px-3 py-1.5 text-sm font-medium",
+            mapMode === "satellite" ? "bg-blue-500 text-white" : "bg-white text-gray-700"
+          )}
           onClick={() => setMapMode("satellite")}
         >
           위성
