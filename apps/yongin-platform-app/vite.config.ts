@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import cesium from "vite-plugin-cesium";
 import { resolve } from "path";
 
 export default defineConfig(({ mode }) => {
@@ -18,7 +17,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: contextPath || "/",
-    plugins: [react(), tailwindcss(), cesium()],
+    plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),

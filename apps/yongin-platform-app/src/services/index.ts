@@ -9,3 +9,4 @@ export * from "./notice.service";
 export * from "./system-settings.service";
 export * from "./safety-equipment.service";
 export * from "./process-status.service";
+export * from "./worker-location.service";
