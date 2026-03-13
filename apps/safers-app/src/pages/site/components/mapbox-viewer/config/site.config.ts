@@ -1,6 +1,6 @@
 import type { ModelTransform } from "../types";
 
-export const MODEL_URL = "/assets/models/safers.glb";
+export const MODEL_URL = `${import.meta.env.VITE_MINIO_URL}/models/buildings/safers.glb`;
 export const MODEL_LNG_LAT: [number, number] = [126.8469, 37.499386];
 
 export const MODEL_TRANSFORM: ModelTransform = {

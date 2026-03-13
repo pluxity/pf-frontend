@@ -1,11 +1,13 @@
+const MINIO_MODELS = `${import.meta.env.VITE_MINIO_URL}/models`;
+
 export const ASSET_URLS = {
-  worker: "/assets/models/worker_working.glb",
-  workerWalk: "/assets/models/worker_walk.glb",
-  workerStunned: "/assets/models/worker_stunned.glb",
-  cctv: "/assets/models/cctv.glb",
-  dump: "/assets/models/Dump.glb",
-  crane01: "/assets/models/Crane_01.glb",
-  crane02: "/assets/models/Crane_02.glb",
+  worker: `${MINIO_MODELS}/assets/worker_working.glb`,
+  workerWalk: `${MINIO_MODELS}/assets/worker_walk.glb`,
+  workerStunned: `${MINIO_MODELS}/assets/worker_stunned.glb`,
+  cctv: `${MINIO_MODELS}/assets/cctv.glb`,
+  dump: `${MINIO_MODELS}/assets/Dump.glb`,
+  crane01: `${MINIO_MODELS}/assets/Crane_01.glb`,
+  crane02: `${MINIO_MODELS}/assets/Crane_02.glb`,
 } as const;
 
 export const BUILDING_OPACITY = {
