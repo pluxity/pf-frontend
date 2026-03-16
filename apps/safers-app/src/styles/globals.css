@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
+@import "@pf-dev/ui/globals.css";
+
+/* safers-app 브랜드 컬러 오버라이드 */
+@theme {
+  --color-brand: #ff7500;
+  --color-brand-hover: #e66a00;
+  --color-brand-active: #cc5e00;
+}
+
+/*
+ * 해상도별 반응형 root font-size
+ * - FHD (1920px): 16px
+ * - QHD (2560px): ~21px
+ * - UHD (3840px): 32px
+ * - 0.833vw = 16px at 1920px viewport
+ */
+html {
+  font-size: clamp(0.875rem, 0.833vw, 2rem);
+}
+
+/* 모바일: vw 기반 스케일링 대신 16px 고정 */
+@media (max-width: 767px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* iOS Safari 100vh 문제 → dvh 사용 */
+.h-dvh {
+  height: 100dvh;
+}
+
+/* Safe area insets (노치/제스처 바) */
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* iOS input focus 시 자동 줌 방지 */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+body {
+  font-family:
+    "Pretendard Variable",
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+/* 다크 테마 커스텀 스크롤바 — 데스크톱만 (브랜드 컬러) */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 117, 0, 0.05);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 117, 0, 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 117, 0, 0.5);
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 117, 0, 0.3) transparent;
+  }
+}
+
+/* Mapbox 로고 & 카피라이트 숨기기 */
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib {
+  display: none !important;
+}
