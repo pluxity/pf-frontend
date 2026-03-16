@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCCTVAIEvents } from "@/hooks/useCCTVAIEvents";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import type { StompEventResponse } from "@/services";
 import { VideoPanel } from "./components/VideoPanel";
 import { EventLogPanel } from "./components/EventLogPanel";
+import { MobileEventSheet } from "./components/MobileEventSheet";
 import biLogo from "@/assets/images/BI.svg";
 
 export function CCTVAIPage() {
   const navigate = useNavigate();
   const { siteId } = useParams<{ siteId: string }>();
+  const isMobile = useIsMobile();
   const [selectedStream, setSelectedStream] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<StompEventResponse | null>(null);
   const { events, connectionStatus, isLoading } = useCCTVAIEvents();
@@ -29,10 +32,10 @@ export function CCTVAIPage() {
     : null;
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#0F1117]">
+    <div className="flex h-dvh w-screen flex-col bg-[#0F1117] safe-area-inset-top">
       {/* 헤더 */}
-      <header className="flex shrink-0 items-center justify-between border-b border-[#2A2D3A] px-5 py-3">
-        <div className="flex items-center gap-3">
+      <header className="flex shrink-0 items-center justify-between border-b border-[#2A2D3A] px-3 py-2 md:px-5 md:py-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={() => navigate("/")}
             className="flex items-center justify-center rounded-md p-1.5 text-white/60 transition-colors hover:bg-[#1A1D27] hover:text-white"
@@ -46,13 +49,13 @@ export function CCTVAIPage() {
               />
             </svg>
           </button>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
-            <img src={biLogo} alt="Safers" className="h-6" />
+          <h1 className="flex items-center gap-2 text-lg font-bold text-white md:text-2xl">
+            <img src={biLogo} alt="Safers" className="h-5 md:h-6" />
             <span className="text-brand mb-[-0.25rem]">AI CCTV</span>
           </h1>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2">
           <span
             className={`h-2 w-2 rounded-full ${
               connectionStatus === "connected"
@@ -62,35 +65,46 @@ export function CCTVAIPage() {
                   : "bg-red-400"
             }`}
           />
-          <span className="text-xs text-white/40">
+          <span className="hidden text-xs text-white/40 md:inline">
             {connectionStatus === "connected" ? "AI 엔진 연결됨" : "연결 대기"}
           </span>
         </div>
       </header>
 
-      {/* 메인 콘텐츠: 좌 영상 / 우 이벤트 로그 */}
-      <main className="flex min-h-0 flex-1">
-        {/* 좌측: 영상 패널 */}
-        <section className="flex flex-[3] flex-col border-r border-[#2A2D3A] p-4">
+      {/* 메인 콘텐츠 */}
+      <main className="flex min-h-0 flex-1 flex-col md:flex-row">
+        {/* 영상 패널 */}
+        <section className="flex flex-1 flex-col p-2 md:flex-[3] md:border-r md:border-[#2A2D3A] md:p-4">
           <VideoPanel
             siteId={Number(siteId)}
             selectedStream={selectedStream}
             onStreamChange={setSelectedStream}
             selectedEvent={activeSelectedEvent}
             onClearEvent={handleClearEvent}
+            isMobile={isMobile}
           />
         </section>
 
-        {/* 우측: 이벤트 로그 패널 */}
-        <section className="flex w-[25rem] shrink-0 flex-col">
-          <EventLogPanel
+        {/* 데스크톱: 사이드 패널 / 모바일: 바텀 시트 */}
+        {isMobile ? (
+          <MobileEventSheet
             events={events}
             connectionStatus={connectionStatus}
             isLoading={isLoading}
             selectedEventId={activeSelectedEvent?.eventId ?? null}
             onSelectEvent={handleSelectEvent}
           />
-        </section>
+        ) : (
+          <section className="flex w-[25rem] shrink-0 flex-col">
+            <EventLogPanel
+              events={events}
+              connectionStatus={connectionStatus}
+              isLoading={isLoading}
+              selectedEventId={activeSelectedEvent?.eventId ?? null}
+              onSelectEvent={handleSelectEvent}
+            />
+          </section>
+        )}
       </main>
     </div>
   );

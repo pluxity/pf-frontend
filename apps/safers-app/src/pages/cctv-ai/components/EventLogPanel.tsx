@@ -60,12 +60,13 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
     <button
       type="button"
       onClick={() => onSelect(event)}
-      className={`flex w-full gap-3 border-b border-[#2A2D3A] px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-[#252833] ${
+      className={`flex w-full gap-3 border-b border-[#2A2D3A] px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-[#252833] md:py-2.5 ${
         isSelected ? "bg-[#252833] ring-1 ring-inset ring-brand/40" : ""
       }`}
+      style={{ minHeight: 44 }}
     >
-      {/* 썸네일 */}
-      <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded bg-[#252833]">
+      {/* 썸네일 — 모바일에서 약간 확대 */}
+      <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded bg-[#252833] md:h-14 md:w-20">
         {hasSnapshot ? (
           <img
             src={event.snapshot!.url}

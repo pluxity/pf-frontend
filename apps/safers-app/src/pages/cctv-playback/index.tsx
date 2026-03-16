@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { SafersCCTV, TimeRange } from "@/services";
 import { cctvService } from "@/services";
 import { useCCTVStreams } from "@/hooks/useCCTVStreams";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import biLogo from "@/assets/images/BI.svg";
 import { PlaybackPanel } from "./components/PlaybackPanel";
 import { ControlPanel } from "./components/ControlPanel";
@@ -25,6 +26,7 @@ export function CCTVPlaybackPage() {
   const navigate = useNavigate();
   const { siteId } = useParams<{ siteId: string }>();
   const numericSiteId = Number(siteId);
+  const isMobile = useIsMobile();
 
   // 현장 CCTV 목록
   const { items, isLoading } = useCCTVStreams(numericSiteId);
@@ -109,10 +111,10 @@ export function CCTVPlaybackPage() {
   }
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#0F1117]">
+    <div className="flex h-dvh w-screen flex-col bg-[#0F1117] safe-area-inset-top">
       {/* 헤더 */}
-      <header className="flex shrink-0 items-center justify-between border-b border-[#2A2D3A] px-5 py-3">
-        <div className="flex items-center gap-3">
+      <header className="flex shrink-0 items-center justify-between border-b border-[#2A2D3A] px-3 py-2 md:px-5 md:py-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={() => navigate("/")}
             className="flex items-center justify-center rounded-md p-1.5 text-white/60 transition-colors hover:bg-[#1A1D27] hover:text-white"
@@ -126,46 +128,85 @@ export function CCTVPlaybackPage() {
               />
             </svg>
           </button>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
-            <img src={biLogo} alt="Safers" className="h-6" />
+          <h1 className="flex items-center gap-2 text-lg font-bold text-white md:text-2xl">
+            <img src={biLogo} alt="Safers" className="h-5 md:h-6" />
             <span className="text-brand mb-[-0.25rem]">녹화영상</span>
           </h1>
         </div>
       </header>
 
       {/* 메인 콘텐츠 */}
-      <main className="flex min-h-0 flex-1">
-        {/* 좌측: 영상 + 타임라인 */}
-        <section className="flex flex-[3] flex-col border-r border-[#2A2D3A] p-4">
-          <PlaybackPanel
-            selectedCCTV={selectedCCTV}
-            totalMinutes={totalMinutes}
-            timeRange={timeRange}
-            baseDate={selectedDate}
-            includeNextDay={includeNextDay}
-            onTimeRangeChange={handleTimeRangeChange}
-            playbackWhepUrl={playbackWhepUrl}
-            isRequesting={isRequesting}
-            onReplay={handleRequestPlayback}
-          />
-        </section>
+      <main className="flex min-h-0 flex-1 flex-col md:flex-row">
+        {/* 모바일: 컨트롤 → 영상 → 타임라인 순서 / 데스크톱: 좌 영상 + 우 컨트롤 */}
+        {isMobile ? (
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            {/* 컨트롤 패널 (접을 수 있음) */}
+            <ControlPanel
+              cctvs={cctvs}
+              selectedCCTV={selectedCCTV}
+              isLoading={isLoading}
+              selectedDate={selectedDate}
+              includeNextDay={includeNextDay}
+              timeRange={timeRange}
+              validationError={validationError}
+              onSelectCCTV={handleSelectCCTV}
+              onDateChange={handleDateChange}
+              onIncludeNextDayChange={handleIncludeNextDayChange}
+              onRequestPlayback={handleRequestPlayback}
+              isMobile
+            />
 
-        {/* 우측: 컨트롤 패널 */}
-        <section className="flex w-[22rem] shrink-0 flex-col border-l border-[#2A2D3A] bg-[#1A1D27]">
-          <ControlPanel
-            cctvs={cctvs}
-            selectedCCTV={selectedCCTV}
-            isLoading={isLoading}
-            selectedDate={selectedDate}
-            includeNextDay={includeNextDay}
-            timeRange={timeRange}
-            validationError={validationError}
-            onSelectCCTV={handleSelectCCTV}
-            onDateChange={handleDateChange}
-            onIncludeNextDayChange={handleIncludeNextDayChange}
-            onRequestPlayback={handleRequestPlayback}
-          />
-        </section>
+            {/* 영상 + 타임라인 */}
+            <section className="flex flex-1 flex-col p-2">
+              <PlaybackPanel
+                selectedCCTV={selectedCCTV}
+                totalMinutes={totalMinutes}
+                timeRange={timeRange}
+                baseDate={selectedDate}
+                includeNextDay={includeNextDay}
+                onTimeRangeChange={handleTimeRangeChange}
+                playbackWhepUrl={playbackWhepUrl}
+                isRequesting={isRequesting}
+                onReplay={handleRequestPlayback}
+                isMobile
+              />
+            </section>
+          </div>
+        ) : (
+          <>
+            {/* 좌측: 영상 + 타임라인 */}
+            <section className="flex flex-[3] flex-col border-r border-[#2A2D3A] p-4">
+              <PlaybackPanel
+                selectedCCTV={selectedCCTV}
+                totalMinutes={totalMinutes}
+                timeRange={timeRange}
+                baseDate={selectedDate}
+                includeNextDay={includeNextDay}
+                onTimeRangeChange={handleTimeRangeChange}
+                playbackWhepUrl={playbackWhepUrl}
+                isRequesting={isRequesting}
+                onReplay={handleRequestPlayback}
+              />
+            </section>
+
+            {/* 우측: 컨트롤 패널 */}
+            <section className="flex w-[22rem] shrink-0 flex-col border-l border-[#2A2D3A] bg-[#1A1D27]">
+              <ControlPanel
+                cctvs={cctvs}
+                selectedCCTV={selectedCCTV}
+                isLoading={isLoading}
+                selectedDate={selectedDate}
+                includeNextDay={includeNextDay}
+                timeRange={timeRange}
+                validationError={validationError}
+                onSelectCCTV={handleSelectCCTV}
+                onDateChange={handleDateChange}
+                onIncludeNextDayChange={handleIncludeNextDayChange}
+                onRequestPlayback={handleRequestPlayback}
+              />
+            </section>
+          </>
+        )}
       </main>
     </div>
   );

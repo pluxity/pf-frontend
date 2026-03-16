@@ -23,7 +23,7 @@ function CCTVSelect({
     <select
       value={selected}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-md border border-[#2A2D3A] bg-[#252833] px-3 py-1.5 text-sm text-white outline-none focus:border-brand"
+      className="min-w-0 flex-1 rounded-md border border-[#2A2D3A] bg-[#252833] px-3 py-1.5 text-sm text-white outline-none focus:border-brand md:flex-initial"
     >
       {items.map((item) => (
         <option key={item.streamName} value={item.streamName}>
@@ -263,6 +263,7 @@ interface VideoPanelProps {
   onStreamChange: (streamName: string) => void;
   selectedEvent: StompEventResponse | null;
   onClearEvent: () => void;
+  isMobile?: boolean;
 }
 
 export function VideoPanel({
@@ -271,12 +272,16 @@ export function VideoPanel({
   onStreamChange,
   selectedEvent,
   onClearEvent,
+  isMobile,
 }: VideoPanelProps) {
   const { items, isLoading, isError, error } = useCCTVStreams(siteId);
   const [gridMode, setGridMode] = useState<GridMode>("1x1");
   const [page, setPage] = useState(0);
 
-  const perPage = gridMode === "1x1" ? 1 : gridMode === "2x2" ? 4 : 16;
+  // 모바일: 그리드 1x1 강제
+  const effectiveGridMode = isMobile ? "1x1" : gridMode;
+
+  const perPage = effectiveGridMode === "1x1" ? 1 : effectiveGridMode === "2x2" ? 4 : 16;
   const totalPages = Math.max(1, Math.ceil(items.length / perPage));
 
   // 이벤트 영상 모드
@@ -326,19 +331,19 @@ export function VideoPanel({
 
   const activeStream = selectedStream || items[0]!.streamName;
   const activeItem = items.find((i) => i.streamName === activeStream) ?? items[0]!;
-  const isSingle = gridMode === "1x1";
+  const isSingle = effectiveGridMode === "1x1";
 
   return (
     <div className="flex h-full flex-col gap-3">
       {/* 헤더: 모드 제목 + 페이지 네비게이션 + 그리드 선택 */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-white/60">라이브 스트림</span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <span className="shrink-0 text-sm font-medium text-white/60">라이브 스트림</span>
           {isSingle && (
             <CCTVSelect items={items} selected={activeStream} onChange={onStreamChange} />
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           {/* 페이지 네비게이션 */}
           {!isSingle && totalPages > 1 && (
             <div className="flex items-center gap-1.5">
@@ -375,13 +380,16 @@ export function VideoPanel({
               </button>
             </div>
           )}
-          <GridModeSelector
-            mode={gridMode}
-            onChange={(m) => {
-              setGridMode(m);
-              setPage(0);
-            }}
-          />
+          {/* 모바일: GridModeSelector 숨김 */}
+          {!isMobile && (
+            <GridModeSelector
+              mode={gridMode}
+              onChange={(m) => {
+                setGridMode(m);
+                setPage(0);
+              }}
+            />
+          )}
         </div>
       </div>
 
@@ -390,12 +398,15 @@ export function VideoPanel({
         {isSingle ? (
           <div className="relative h-full w-full">
             <LiveStreamPlayer streamUrl={activeItem.whepUrl} name={activeItem.displayName} />
-            <div className="absolute bottom-3 right-3 z-10">
-              <PTZControl />
-            </div>
+            {/* PTZ: 모바일 숨김 (관제 기능 제외) */}
+            {!isMobile && (
+              <div className="absolute bottom-3 right-3 z-10">
+                <PTZControl />
+              </div>
+            )}
           </div>
         ) : (
-          <LiveGrid items={items} gridMode={gridMode} page={page} />
+          <LiveGrid items={items} gridMode={effectiveGridMode} page={page} />
         )}
       </div>
     </div>

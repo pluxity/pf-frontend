@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { DashboardLayout } from "./DashboardLayout";
 import { LeftPanel } from "./components/LeftPanel";
 import { RightPanel } from "./components/RightPanel";
 import { KoreaMap, type POI } from "./components/KoreaMap";
+import { MobileHome } from "./components/MobileHome";
 import { sitesService, eventsService, type Site } from "@/services";
 import { STATUS_COLORS } from "@/styles/tokens";
 import { buildSiteStatusMap } from "./utils";
@@ -71,9 +73,11 @@ function siteToPOI(site: Site, siteStatusMap: Map<number, "warning" | "danger">)
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [pois, setPois] = useState<POI[]>([]);
 
   useEffect(() => {
+    if (isMobile) return; // 모바일에서는 대시보드 데이터 불필요
     async function fetchData() {
       const [sitesResult, eventsResult] = await Promise.allSettled([
         sitesService.getSites({ size: 1000 }),
@@ -90,7 +94,11 @@ export function DashboardPage() {
       setPois(sitePOIs);
     }
     fetchData();
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) {
+    return <MobileHome />;
+  }
 
   const handlePOISiteClick = (poi: POI) => {
     navigate(`/site/${poi.id}`);

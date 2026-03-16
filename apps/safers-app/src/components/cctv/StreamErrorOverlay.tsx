@@ -23,8 +23,9 @@ export function StreamErrorOverlay({ compact, onReconnect }: StreamErrorOverlayP
       <button
         onClick={onReconnect}
         className={`rounded-md bg-brand text-white transition-colors hover:bg-brand/80 ${
-          compact ? "px-2 py-1 text-[0.625rem]" : "px-4 py-1.5 text-xs"
+          compact ? "px-2 py-1 text-[0.625rem]" : "px-4 py-2 text-xs"
         }`}
+        style={{ minHeight: 44, minWidth: 44 }}
       >
         재연결
       </button>

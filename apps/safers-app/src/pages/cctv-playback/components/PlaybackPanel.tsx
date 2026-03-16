@@ -14,6 +14,7 @@ interface PlaybackPanelProps {
   playbackWhepUrl: string | null;
   isRequesting: boolean;
   onReplay?: () => void;
+  isMobile?: boolean;
 }
 
 export function PlaybackPanel({
@@ -26,11 +27,16 @@ export function PlaybackPanel({
   playbackWhepUrl,
   isRequesting,
   onReplay,
+  isMobile,
 }: PlaybackPanelProps) {
   return (
-    <div className="flex h-full flex-col gap-4">
-      {/* 영상 영역 */}
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-xl border border-[#2A2D3A] bg-black/40">
+    <div className="flex h-full flex-col gap-3 md:gap-4">
+      {/* 영상 영역 — 모바일: 16:9 비율 고정 */}
+      <div
+        className={`relative flex items-center justify-center overflow-hidden rounded-xl border border-[#2A2D3A] bg-black/40 ${
+          isMobile ? "aspect-video" : "flex-1"
+        }`}
+      >
         {playbackWhepUrl ? (
           <PlaybackStream key={playbackWhepUrl} whepUrl={playbackWhepUrl} onReplay={onReplay} />
         ) : isRequesting ? (
@@ -76,7 +82,7 @@ export function PlaybackPanel({
       </div>
 
       {/* 타임라인 */}
-      <div className="shrink-0 rounded-xl border border-[#2A2D3A] bg-[#1A1D27] p-4">
+      <div className="shrink-0 rounded-xl border border-[#2A2D3A] bg-[#1A1D27] p-3 md:p-4">
         <PlaybackTimeline
           totalMinutes={totalMinutes}
           timeRange={timeRange}
@@ -124,7 +130,8 @@ function PlaybackStream({ whepUrl, onReplay }: { whepUrl: string; onReplay?: () 
         {onReplay && (
           <button
             onClick={onReplay}
-            className="flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand/80"
+            className="flex items-center gap-2 rounded-lg bg-brand px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand/80"
+            style={{ minHeight: 44 }}
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

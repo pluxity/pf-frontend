@@ -133,7 +133,8 @@ export function PlaybackTimeline({
       {/* 타임라인 트랙 */}
       <div
         ref={trackRef}
-        className="relative h-12 cursor-crosshair select-none rounded-lg bg-[#252833]"
+        className="relative h-12 cursor-crosshair select-none rounded-lg bg-[#252833] md:h-12"
+        style={{ touchAction: "none", minHeight: 48 }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -168,28 +169,30 @@ export function PlaybackTimeline({
             {/* 범위 내부 색상 */}
             <div className="absolute inset-0 rounded border border-brand/40 bg-brand/10" />
 
-            {/* 왼쪽 핸들 */}
+            {/* 왼쪽 핸들 — 모바일 터치 타겟 확대 */}
             <div
-              className="absolute -left-1 top-0 z-10 h-full w-2 cursor-ew-resize"
+              className="absolute -left-3 top-0 z-10 h-full w-6 cursor-ew-resize md:-left-1 md:w-2"
+              style={{ touchAction: "none" }}
               onPointerDown={(e) => {
                 e.stopPropagation();
                 setDragState({ type: "moving-start", initialMinutes: timeRange.start });
                 (e.target as HTMLElement).setPointerCapture(e.pointerId);
               }}
             >
-              <div className="absolute left-0.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-brand" />
+              <div className="absolute left-1/2 top-1/2 h-5 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand" />
             </div>
 
-            {/* 오른쪽 핸들 */}
+            {/* 오른쪽 핸들 — 모바일 터치 타겟 확대 */}
             <div
-              className="absolute -right-1 top-0 z-10 h-full w-2 cursor-ew-resize"
+              className="absolute -right-3 top-0 z-10 h-full w-6 cursor-ew-resize md:-right-1 md:w-2"
+              style={{ touchAction: "none" }}
               onPointerDown={(e) => {
                 e.stopPropagation();
                 setDragState({ type: "moving-end", initialMinutes: timeRange.end });
                 (e.target as HTMLElement).setPointerCapture(e.pointerId);
               }}
             >
-              <div className="absolute right-0.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-brand" />
+              <div className="absolute right-1/2 top-1/2 h-5 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand md:translate-x-1/2" />
             </div>
           </div>
         )}

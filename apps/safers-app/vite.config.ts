@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 import { resolve } from "path";
 
 /** 현장별 WHEP 포트 목록 (cctv.service.ts의 SITE_WHEP_PORT와 동기화) */
@@ -34,7 +35,29 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: contextPath || "/",
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA({
+        registerType: "autoUpdate",
+        manifest: false, // public/manifest.json 직접 사용
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+          runtimeCaching: [
+            {
+              urlPattern: /^https?:\/\/.*\/api\//,
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "api-cache",
+                expiration: { maxEntries: 50, maxAgeSeconds: 300 },
+              },
+            },
+          ],
+          navigateFallback: "index.html",
+        },
+      }),
+    ],
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),

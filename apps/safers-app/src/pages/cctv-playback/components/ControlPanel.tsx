@@ -13,6 +13,7 @@ interface ControlPanelProps {
   onDateChange: (date: Date) => void;
   onIncludeNextDayChange: (include: boolean) => void;
   onRequestPlayback: () => void;
+  isMobile?: boolean;
 }
 
 function formatMinutesToTime(
@@ -47,13 +48,148 @@ export function ControlPanel({
   onDateChange,
   onIncludeNextDayChange,
   onRequestPlayback,
+  isMobile,
 }: ControlPanelProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const canRequest = selectedCCTV && timeRange && !validationError;
 
   const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
 
+  // 모바일 레이아웃: 접을 수 있는 아코디언
+  if (isMobile) {
+    return (
+      <div className="border-b border-[#2A2D3A] bg-[#1A1D27]">
+        {/* 아코디언 헤더 */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex w-full items-center justify-between px-4 py-3"
+        >
+          <span className="text-sm font-semibold text-white">
+            {selectedCCTV ? selectedCCTV.name : "CCTV 선택"}
+            {selectedCCTV && timeRange && (
+              <span className="ml-2 text-xs font-normal text-white/40">
+                {formatMinutesToTime(timeRange.start, selectedDate, includeNextDay)} ~{" "}
+                {formatMinutesToTime(timeRange.end, selectedDate, includeNextDay)}
+              </span>
+            )}
+          </span>
+          <svg
+            className={`h-4 w-4 text-white/40 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {isExpanded && (
+          <div className="flex flex-col gap-4 px-4 pb-4">
+            {/* CCTV 선택 — 드롭다운 */}
+            <section>
+              <label className="mb-1.5 block text-xs font-semibold tracking-wide text-white/40">
+                CCTV 선택
+              </label>
+              {isLoading ? (
+                <div className="flex items-center justify-center rounded-lg bg-[#252833] px-4 py-3">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
+                </div>
+              ) : cctvs.length === 0 ? (
+                <p className="rounded-lg bg-[#252833] px-4 py-3 text-sm text-white/30">
+                  등록된 CCTV가 없습니다
+                </p>
+              ) : (
+                <select
+                  value={selectedCCTV?.id ?? ""}
+                  onChange={(e) => {
+                    const cctv = cctvs.find((c) => c.id === Number(e.target.value));
+                    onSelectCCTV(cctv ?? null);
+                  }}
+                  className="w-full rounded-lg border border-[#2A2D3A] bg-[#252833] px-4 py-3 text-sm text-white outline-none focus:border-brand"
+                >
+                  <option value="">선택하세요</option>
+                  {cctvs.map((cctv) => (
+                    <option key={cctv.id} value={cctv.id}>
+                      {cctv.name}
+                      {cctv.nvrName ? ` · ${cctv.nvrName}` : ""}
+                      {cctv.channel != null ? ` · CH-${String(cctv.channel).padStart(2, "0")}` : ""}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </section>
+
+            {/* 날짜 선택 — 네이티브 input */}
+            <section>
+              <label className="mb-1.5 block text-xs font-semibold tracking-wide text-white/40">
+                날짜
+              </label>
+              <input
+                type="date"
+                value={dateStr}
+                onChange={(e) => {
+                  const [y, m, d] = e.target.value.split("-").map(Number);
+                  if (y && m && d) onDateChange(new Date(y, m - 1, d));
+                }}
+                className="w-full rounded-lg border border-[#2A2D3A] bg-[#252833] px-4 py-3 text-sm text-white outline-none focus:border-brand"
+              />
+              <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-white/60">
+                <input
+                  type="checkbox"
+                  checked={includeNextDay}
+                  onChange={(e) => onIncludeNextDayChange(e.target.checked)}
+                  className="h-4 w-4 rounded border-[#2A2D3A] bg-[#252833] accent-brand"
+                />
+                다음날까지 포함 (48h)
+              </label>
+            </section>
+
+            {/* 선택된 범위 */}
+            {timeRange && (
+              <section>
+                <div className="flex items-center justify-between rounded-lg border border-[#2A2D3A] bg-[#252833] px-4 py-2.5 text-sm">
+                  <span className="text-white/50">
+                    {formatMinutesToTime(timeRange.start, selectedDate, includeNextDay)}
+                  </span>
+                  <span className="text-white/30">~</span>
+                  <span className="text-white/50">
+                    {formatMinutesToTime(timeRange.end, selectedDate, includeNextDay)}
+                  </span>
+                </div>
+              </section>
+            )}
+
+            {/* 재생 버튼 */}
+            <button
+              disabled={!canRequest}
+              onClick={() => {
+                onRequestPlayback();
+                setIsExpanded(false);
+              }}
+              className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold transition-colors ${
+                canRequest
+                  ? "bg-brand text-white hover:bg-brand/90"
+                  : "cursor-not-allowed bg-[#252833] text-white/20"
+              }`}
+              style={{ minHeight: 44 }}
+            >
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              재생 요청
+            </button>
+            {validationError && (
+              <p className="text-center text-xs text-error-brand">{validationError}</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // 데스크톱 레이아웃 (기존 유지)
   return (
     <div className="flex h-full flex-col p-5">
       {/* CCTV 선택 — 스크롤 영역 */}

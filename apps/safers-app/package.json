@@ -56,8 +56,11 @@
     "eslint": "catalog:",
     "mapshaper": "^0.6.113",
     "rimraf": "^6.0.1",
+    "sharp": "^0.34.5",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plugin-pwa": "^1.2.0",
+    "workbox-window": "^7.4.0"
   }
 }

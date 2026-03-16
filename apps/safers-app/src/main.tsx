@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { configureApi } from "@pf-dev/api";
 import { useWHEPStore } from "@pf-dev/cctv";
 import { AuthProvider } from "@pf-dev/services";
+import { registerSW } from "virtual:pwa-register";
 
 import "@pf-dev/fonts/pretendard";
 import { App } from "./App";
@@ -17,6 +18,9 @@ configureApi({
 });
 
 useWHEPStore.getState().initialize();
+
+// PWA Service Worker 등록 (자동 업데이트)
+registerSW({ immediate: true });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
