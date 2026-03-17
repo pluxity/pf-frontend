@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import type { User, Role, UserCreateData, UserUpdateData } from "../types";
 import {
@@ -73,86 +73,75 @@ export function useUsers(): UseUsersReturn {
     revalidateOnFocus: false,
   });
 
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
-    });
-  }, [users, searchQuery]);
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / ITEMS_PER_PAGE));
 
-  const paginatedUsers = useMemo(() => {
-    const effectivePage = Math.min(currentPage, totalPages);
-    const start = (effectivePage - 1) * ITEMS_PER_PAGE;
-    return filteredUsers.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredUsers, currentPage, totalPages]);
+  const effectivePage = Math.min(currentPage, totalPages);
+  const start = (effectivePage - 1) * ITEMS_PER_PAGE;
+  const paginatedUsers = filteredUsers.slice(start, start + ITEMS_PER_PAGE);
 
-  const handleCreate = useCallback(() => {
+  const handleCreate = () => {
     setSelectedUser(null);
     setFormError(null);
     setUserFormModalOpen(true);
-  }, []);
+  };
 
-  const handleEdit = useCallback((user: User) => {
+  const handleEdit = (user: User) => {
     setSelectedUser(user);
     setFormError(null);
     setUserFormModalOpen(true);
-  }, []);
+  };
 
-  const handleDelete = useCallback((user: User) => {
+  const handleDelete = (user: User) => {
     setSelectedUser(user);
     setDeleteDialogOpen(true);
-  }, []);
+  };
 
-  const handleResetPassword = useCallback((user: User) => {
+  const handleResetPassword = (user: User) => {
     setSelectedUser(user);
     setPasswordResetDialogOpen(true);
-  }, []);
+  };
 
-  const handleCreateSubmit = useCallback(
-    async (data: UserCreateData) => {
-      setIsLoading(true);
-      setFormError(null);
-      try {
-        await createUser(data);
-        await mutateUsers();
-        setUserFormModalOpen(false);
-      } catch (error) {
-        console.error("Failed to create user:", error);
-        setFormError("사용자 등록에 실패했습니다. 다시 시도해주세요.");
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [mutateUsers]
-  );
+  const handleCreateSubmit = async (data: UserCreateData) => {
+    setIsLoading(true);
+    setFormError(null);
+    try {
+      await createUser(data);
+      await mutateUsers();
+      setUserFormModalOpen(false);
+    } catch (error) {
+      console.error("Failed to create user:", error);
+      setFormError("사용자 등록에 실패했습니다. 다시 시도해주세요.");
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleUpdateSubmit = useCallback(
-    async (data: UserUpdateData) => {
-      if (!selectedUser) return;
+  const handleUpdateSubmit = async (data: UserUpdateData) => {
+    if (!selectedUser) return;
 
-      setIsLoading(true);
-      setFormError(null);
-      try {
-        await updateUser(selectedUser.id, data);
-        await mutateUsers();
-        setUserFormModalOpen(false);
-      } catch (error) {
-        console.error("Failed to update user:", error);
-        setFormError("사용자 수정에 실패했습니다. 다시 시도해주세요.");
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [selectedUser, mutateUsers]
-  );
+    setIsLoading(true);
+    setFormError(null);
+    try {
+      await updateUser(selectedUser.id, data);
+      await mutateUsers();
+      setUserFormModalOpen(false);
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      setFormError("사용자 수정에 실패했습니다. 다시 시도해주세요.");
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     if (!selectedUser) return;
 
     setIsLoading(true);
@@ -166,9 +155,9 @@ export function useUsers(): UseUsersReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedUser, mutateUsers]);
+  };
 
-  const handlePasswordResetConfirm = useCallback(async () => {
+  const handlePasswordResetConfirm = async () => {
     if (!selectedUser) return;
 
     setIsLoading(true);
@@ -181,16 +170,16 @@ export function useUsers(): UseUsersReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedUser]);
+  };
 
-  const handleSearch = useCallback((query: string) => {
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
-  }, []);
+  };
 
-  const clearFormError = useCallback(() => {
+  const clearFormError = () => {
     setFormError(null);
-  }, []);
+  };
 
   return {
     users,

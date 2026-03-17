@@ -6,16 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>용인 플랫폼시티 (1공구)</title>
     <style>
-      html { font-size: 16px; }
-      @media (min-width: 2560px) { html { font-size: 21.33px; } }
-      @media (min-width: 3840px) { html { font-size: 32px; } }
-      body { margin: 0; }
+      html {
+        font-size: 16px;
+      }
+      @media (min-width: 2560px) {
+        html {
+          font-size: 21.33px;
+        }
+      }
+      @media (min-width: 3840px) {
+        html {
+          font-size: 32px;
+        }
+      }
+      body {
+        margin: 0;
+      }
 
       .app-skeleton {
         display: flex;
         flex-direction: column;
         height: 100vh;
-        background: linear-gradient(180deg, #D4D6D7 0%, #EFF1F8 45%);
+        background: linear-gradient(180deg, #d4d6d7 0%, #eff1f8 45%);
       }
       /* Header */
       .app-skeleton-header {
@@ -24,7 +36,9 @@
         align-items: center;
         padding: 0 1.25rem;
       }
-      .app-skeleton-header-left { flex: 1; }
+      .app-skeleton-header-left {
+        flex: 1;
+      }
       .app-skeleton-header-left-block {
         width: 9.375rem;
         height: 2.25rem;
@@ -94,7 +108,7 @@
         height: 18.75rem;
         background: white;
         border-radius: 0.9375rem;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         animation: skeleton-pulse 1.8s ease-in-out infinite;
       }
       /* Footer */
@@ -103,8 +117,13 @@
         background: #54565a;
       }
       @keyframes skeleton-pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
       }
     </style>
   </head>
@@ -131,7 +150,10 @@
             <div class="app-skeleton-card" style="animation-delay: 0.2s"></div>
             <div class="app-skeleton-card" style="animation-delay: 0.3s"></div>
           </div>
-          <div class="app-skeleton-card" style="height: auto; animation-delay: 0.15s; border-radius: 0.9375rem"></div>
+          <div
+            class="app-skeleton-card"
+            style="height: auto; animation-delay: 0.15s; border-radius: 0.9375rem"
+          ></div>
           <div class="app-skeleton-side">
             <div class="app-skeleton-card" style="animation-delay: 0.2s"></div>
             <div class="app-skeleton-card" style="animation-delay: 0.3s"></div>

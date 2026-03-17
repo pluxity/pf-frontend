@@ -36,21 +36,21 @@ CarouselCard.Header = function CarouselCardHeader({
             onClick={onPrev}
             aria-label="prev"
             className={cn(
-              "px-[0.3125rem] py-[0.375rem] rounded-tl-[0.625rem] rounded-bl-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
+              "px-[0.5rem] py-[0.375rem] rounded-tl-[0.625rem] rounded-bl-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
               prevClassName
             )}
           >
-            <ChevronLeftSmall size={10} className="text-[#9399B0]" />
+            <ChevronLeftSmall size="xs" className="text-[#9399B0]" />
           </button>
           <button
             onClick={onNext}
             aria-label="next"
             className={cn(
-              "px-[0.3125rem] py-[0.375rem] rounded-tr-[0.625rem] rounded-br-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
+              "px-[0.5rem] py-[0.375rem] rounded-tr-[0.625rem] rounded-br-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
               nextClassName
             )}
           >
-            <ChevronRightSmall size={10} className="text-[#9399B0]" />
+            <ChevronRightSmall size="xs" className="text-[#9399B0]" />
           </button>
         </div>
       )}

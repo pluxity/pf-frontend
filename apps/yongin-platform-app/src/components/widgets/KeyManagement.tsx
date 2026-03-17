@@ -1,10 +1,10 @@
 import { Widget, cn } from "@pf-dev/ui";
-import { KeyManagementProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { CarouselCard, CarouselInfo } from "@/components/CarouselCard";
 import { useKeyManagement } from "@/hooks/useKeyManagement";
 import { useKeyManagementStore } from "@/stores/keyManagement.store";
 
-export function KeyManagement({ id, className }: KeyManagementProps) {
+export function KeyManagement({ id, className }: BaseWidgetProps) {
   const { items, isLoading, error, getTypeDescription } = useKeyManagement();
   const { activeIndex, setActiveIndex } = useKeyManagementStore();
 

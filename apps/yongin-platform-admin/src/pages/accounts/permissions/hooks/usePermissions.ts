@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import type { Permission, PermissionFormData, ResourceTypeInfo } from "../types";
 import {
@@ -71,44 +71,39 @@ export function usePermissions(): UsePermissionsReturn {
     revalidateOnFocus: false,
   });
 
-  const filteredPermissions = useMemo(() => {
-    return permissions.filter((permission) => {
-      const matchesSearch =
-        permission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (permission.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-      return matchesSearch;
-    });
-  }, [permissions, searchQuery]);
+  const filteredPermissions = permissions.filter(
+    (permission) =>
+      permission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (permission.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+  );
 
   const totalPages = Math.max(1, Math.ceil(filteredPermissions.length / ITEMS_PER_PAGE));
 
-  const paginatedPermissions = useMemo(() => {
-    const effectivePage = Math.min(currentPage, totalPages);
-    const start = (effectivePage - 1) * ITEMS_PER_PAGE;
-    return filteredPermissions.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredPermissions, currentPage, totalPages]);
+  const effectivePage = Math.min(currentPage, totalPages);
+  const start = (effectivePage - 1) * ITEMS_PER_PAGE;
+  const paginatedPermissions = filteredPermissions.slice(start, start + ITEMS_PER_PAGE);
 
-  const handleCreate = useCallback(() => {
+  const handleCreate = () => {
     setEditingPermission(null);
     setFormModalOpen(true);
-  }, []);
+  };
 
-  const handleEdit = useCallback((permission: Permission) => {
+  const handleEdit = (permission: Permission) => {
     setEditingPermission(permission);
     setFormModalOpen(true);
-  }, []);
+  };
 
-  const handleDelete = useCallback((permission: Permission) => {
+  const handleDelete = (permission: Permission) => {
     setDeletingPermission(permission);
     setDeleteConfirmOpen(true);
-  }, []);
+  };
 
-  const handleViewDetail = useCallback((permission: Permission) => {
+  const handleViewDetail = (permission: Permission) => {
     setViewingPermission(permission);
     setDetailModalOpen(true);
-  }, []);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingPermission) return;
 
     setIsLoading(true);
@@ -125,33 +120,30 @@ export function usePermissions(): UsePermissionsReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [deletingPermission, permissions, mutatePermissions]);
+  };
 
-  const handleFormSubmit = useCallback(
-    async (data: PermissionFormData) => {
-      setIsLoading(true);
-      try {
-        if (editingPermission) {
-          await updatePermission(editingPermission.id, data);
-        } else {
-          await createPermission(data);
-        }
-        await mutatePermissions();
-        setFormModalOpen(false);
-        setEditingPermission(null);
-      } catch (error) {
-        console.error("Failed to save permission:", error);
-      } finally {
-        setIsLoading(false);
+  const handleFormSubmit = async (data: PermissionFormData) => {
+    setIsLoading(true);
+    try {
+      if (editingPermission) {
+        await updatePermission(editingPermission.id, data);
+      } else {
+        await createPermission(data);
       }
-    },
-    [editingPermission, mutatePermissions]
-  );
+      await mutatePermissions();
+      setFormModalOpen(false);
+      setEditingPermission(null);
+    } catch (error) {
+      console.error("Failed to save permission:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleSearch = useCallback((query: string) => {
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
-  }, []);
+  };
 
   return {
     permissions,

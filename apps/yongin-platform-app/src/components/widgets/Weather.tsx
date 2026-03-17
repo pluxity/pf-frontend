@@ -1,5 +1,5 @@
 import { Widget, cn, Spinner } from "@pf-dev/ui";
-import { WeatherProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { useWeather } from "@/hooks";
 import {
   getPMStatus,
@@ -15,7 +15,7 @@ import directionIcon from "@/assets/icons/direction.svg";
 import rainIcon from "@/assets/icons/rain.svg";
 import noiseIcon from "@/assets/icons/noise.svg";
 
-export function Weather({ id, className }: WeatherProps) {
+export function Weather({ id, className }: BaseWidgetProps) {
   const { weather, openWeather, isLoading, isError, error } = useWeather();
 
   if (isLoading) {

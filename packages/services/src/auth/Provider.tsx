@@ -12,7 +12,10 @@ interface AuthProviderProps {
 export function AuthProvider({ children, loginPath = "/login", onAuthError }: AuthProviderProps) {
   const setUser = useAuthStore((state) => state.setUser);
   const onAuthErrorRef = useRef(onAuthError);
-  onAuthErrorRef.current = onAuthError;
+
+  useEffect(() => {
+    onAuthErrorRef.current = onAuthError;
+  }, [onAuthError]);
 
   useEffect(() => {
     getMe()

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@pf-dev/ui/organisms";
 import { ChevronDown } from "@pf-dev/ui/atoms";
@@ -26,11 +26,13 @@ export function AdminSidebar({
   const navigate = useNavigate();
   const user = useAuthStore(selectUser);
 
-  const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
-  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
-  const menuSections = useMemo(
-    () => buildMenuSections(protectedRoutes, sectionConfigs, userRoles, userPermissions),
-    [userRoles, userPermissions]
+  const userRoles = user?.roles.map((r) => r.name) ?? [];
+  const userPermissions = extractDomainPermissions(user?.roles);
+  const menuSections = buildMenuSections(
+    protectedRoutes,
+    sectionConfigs,
+    userRoles,
+    userPermissions
   );
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {

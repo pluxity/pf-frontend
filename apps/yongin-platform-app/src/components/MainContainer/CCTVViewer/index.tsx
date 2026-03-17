@@ -90,10 +90,8 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
   const template = GRID_TEMPLATES[selectedTemplate];
   const totalPages = Math.ceil(sortedCctvs.length / template.itemsPerPage);
 
-  const currentCCTVs = useMemo(() => {
-    const start = currentPage * template.itemsPerPage;
-    return sortedCctvs.slice(start, start + template.itemsPerPage);
-  }, [sortedCctvs, currentPage, template.itemsPerPage]);
+  const start = currentPage * template.itemsPerPage;
+  const currentCCTVs = sortedCctvs.slice(start, start + template.itemsPerPage);
 
   const handleTemplateChange = (templateId: TemplateId) => {
     setSelectedTemplate(templateId);

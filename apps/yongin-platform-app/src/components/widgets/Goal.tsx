@@ -1,6 +1,5 @@
 import {
   Widget,
-  cn,
   Table,
   TableHeader,
   TableBody,
@@ -9,7 +8,7 @@ import {
   TableCell,
   Spinner,
 } from "@pf-dev/ui";
-import { GoalProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { useGoal } from "@/hooks/useGoal";
 
 const goalHeader = [
@@ -21,12 +20,12 @@ const goalHeader = [
   { key: "delayDays", label: "지연일" },
 ] as const;
 
-export function Goal({ id, className }: GoalProps) {
+export function Goal({ id, className }: BaseWidgetProps) {
   const { goals, isLoading, isError, error } = useGoal();
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
@@ -39,7 +38,7 @@ export function Goal({ id, className }: GoalProps) {
 
   if (isError) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="text-red-500">
@@ -62,7 +61,7 @@ export function Goal({ id, className }: GoalProps) {
   }
 
   return (
-    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+    <Widget id={id} className={className} contentClassName="h-full">
       <div className="flex flex-col gap-2 h-full">
         <div className="font-bold">목표관리</div>
         <div className="flex-1 overflow-hidden">

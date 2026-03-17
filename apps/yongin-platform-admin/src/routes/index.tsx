@@ -1,4 +1,4 @@
-import { useMemo, Suspense } from "react";
+import { Suspense } from "react";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { ErrorPage } from "@pf-dev/ui/templates";
 import { ProtectedRouter, useAuthStore, selectUser } from "@pf-dev/services";
@@ -37,8 +37,8 @@ function ForbiddenPage() {
 
 function RoleGuard({ route, children }: { route: RouteConfig; children: React.ReactNode }) {
   const user = useAuthStore(selectUser);
-  const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
-  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
+  const userRoles = user?.roles.map((r) => r.name) ?? [];
+  const userPermissions = extractDomainPermissions(user?.roles);
   const isAdmin = userRoles.some((role) => role.toUpperCase() === "ADMIN");
 
   if (route.roles && route.roles.length > 0) {
@@ -57,13 +57,9 @@ function RoleGuard({ route, children }: { route: RouteConfig; children: React.Re
 
 function DefaultRedirect() {
   const user = useAuthStore(selectUser);
-  const userRoles = useMemo(() => user?.roles.map((r) => r.name) ?? [], [user]);
-  const userPermissions = useMemo(() => extractDomainPermissions(user?.roles), [user]);
-
-  const defaultPath = useMemo(
-    () => getDefaultRoute(protectedRoutes, userRoles, userPermissions),
-    [userRoles, userPermissions]
-  );
+  const userRoles = user?.roles.map((r) => r.name) ?? [];
+  const userPermissions = extractDomainPermissions(user?.roles);
+  const defaultPath = getDefaultRoute(protectedRoutes, userRoles, userPermissions);
 
   return <Navigate to={defaultPath} replace />;
 }

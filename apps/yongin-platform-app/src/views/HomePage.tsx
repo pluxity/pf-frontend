@@ -10,9 +10,7 @@ import {
   BookmarkCctv,
   SafetyManagement,
   SafetyEquipment,
-  IoT1,
-  IoT2,
-  IoT3,
+  IoTWidget,
 } from "@/components/widgets";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { useDashboardStore, selectPage, selectIsPlaying } from "@/stores/dashboard.store";
@@ -66,9 +64,9 @@ export function HomePage() {
         <div
           className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          <IoT1 id="iot1" />
-          <IoT2 id="iot2" />
-          <IoT3 id="iot3" />
+          <IoTWidget id="iot1" />
+          <IoTWidget id="iot2" />
+          <IoTWidget id="iot3" />
         </div>
       </div>
     </div>

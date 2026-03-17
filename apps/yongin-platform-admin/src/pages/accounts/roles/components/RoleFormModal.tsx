@@ -71,13 +71,13 @@ export function RoleFormModal({
   });
 
   // 모달이 열릴 때 폼 초기화
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open && editingRole) {
       reset({
         name: editingRole.name,
         description: editingRole.description || "",
       });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 모달 열림 시 폼 데이터 동기화
       setSelectedPermissionIds(editingRole.permissions.map((p) => p.id));
     } else if (open) {
       reset({ name: "", description: "" });
@@ -85,7 +85,6 @@ export function RoleFormModal({
     }
     setExpandedPermissionIds([]);
   }, [open, editingRole, reset]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handlePermissionToggle = (permissionId: number) => {
     setSelectedPermissionIds((prev) =>

@@ -1,11 +1,11 @@
 import { Widget, cn } from "@pf-dev/ui";
-import type { BookmarkCctvProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { CCTVCard } from "../MainContainer/CCTVViewer/CCTVCard";
 import { useCCTVBookmarks } from "@/hooks/useCCTVBookmarks";
 import { cctvService } from "@/services";
 import { useMainContainerStore } from "@/stores/mainContainer.store";
 
-export function BookmarkCctv({ id, className }: BookmarkCctvProps) {
+export function BookmarkCctv({ id, className }: BaseWidgetProps) {
   const { bookmarks, isLoading, error } = useCCTVBookmarks();
   const requestTab = useMainContainerStore((s) => s.requestTab);
 

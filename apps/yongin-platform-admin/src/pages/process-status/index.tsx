@@ -1,9 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import type {
-  ColDef,
   CellValueChangedEvent,
-  CellClassParams,
   ICellRendererParams,
   RowClassParams,
   GridApi,
@@ -14,15 +12,11 @@ import { Button, Spinner } from "@pf-dev/ui";
 import type { ProcessStatusData, ProcessStatusBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useProcessStatus } from "./hooks";
-import {
-  validateProcessStatus,
-  isValidProcessStatus,
-  checkDuplicate,
-  OVERALL_WORK_TYPE_NAME,
-} from "./validation";
-import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
+import { validateProcessStatus, checkDuplicate, OVERALL_WORK_TYPE_NAME } from "./validation";
+import { AgGridPagination, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
 import { highlightText } from "@/utils";
+import { createColumnDefs, DEFAULT_COL_DEF } from "./columns";
 
 export function ProcessStatusPage() {
   const gridRef = useRef<AgGridReactType<ProcessStatusData>>(null);
@@ -133,9 +127,9 @@ export function ProcessStatusPage() {
   );
 
   // 그리드 준비 완료 핸들러
-  const onGridReady = useCallback((event: GridReadyEvent) => {
+  const onGridReady = (event: GridReadyEvent) => {
     setGridApi(event.api);
-  }, []);
+  };
 
   // 커스텀 셀 렌더러 (검색 하이라이트용)
   const workTypeNameCellRenderer = useCallback(
@@ -186,89 +180,18 @@ export function ProcessStatusPage() {
   }, [allData]);
 
   // 컬럼 정의
-  const columnDefs = useMemo<ColDef<ProcessStatusData>[]>(
-    () => [
-      {
-        headerName: "입력일자",
-        field: "workDate",
-        width: 200,
-        editable: true,
-        cellEditor: "agDateStringCellEditor",
-        cellClassRules: {
-          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data
-              ? duplicateKeys.has(`${params.data.workDate}:${params.data.workTypeId}`)
-              : false,
-        },
-      },
-      {
-        headerName: "공정명",
-        field: "workTypeId",
-        flex: 2,
-        editable: true,
-        cellEditor: AgGridComboBox,
-        cellEditorParams: {
-          items: workTypes,
-          onAdd: addWorkType,
-          onDelete: removeWorkType,
-          onAddSuccess: (name: string) => toast.success(`"${name}" 공정명이 추가되었습니다.`),
-          onDeleteSuccess: () => toast.success("공정명이 삭제되었습니다."),
-          isDeleteDisabled: (item: { name: string }) => item.name === OVERALL_WORK_TYPE_NAME,
-          placeholder: "새 공정명",
-        },
-        cellEditorPopup: true,
-        valueFormatter: (params) => {
-          const workType = workTypes.find((wt) => wt.id === params.value);
-          return workType?.name ?? "";
-        },
-        valueSetter: (params) => {
-          const workType = workTypes.find((wt) => wt.id === params.newValue);
-          if (workType) {
-            params.data.workTypeId = workType.id;
-            params.data.workTypeName = workType.name;
-            return true;
-          }
-          return false;
-        },
-        cellRenderer: workTypeNameCellRenderer,
-      },
-      {
-        headerName: "목표율 (%)",
-        field: "plannedRate",
-        flex: 1,
-        editable: true,
-        cellEditor: "agNumberCellEditor",
-        cellEditorParams: {
-          precision: 0,
-          step: 1,
-          min: 0,
-          max: 100,
-        },
-        cellRenderer: plannedRateCellRenderer,
-        cellClassRules: {
-          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data ? !isValidProcessStatus(params.data) : false,
-        },
-      },
-      {
-        headerName: "공정률 (%)",
-        field: "actualRate",
-        flex: 1,
-        editable: true,
-        cellEditor: "agNumberCellEditor",
-        cellEditorParams: {
-          precision: 0,
-          step: 1,
-          min: 0,
-          max: 100,
-        },
-        cellRenderer: actualRateCellRenderer,
-        cellClassRules: {
-          "bg-red-100": (params: CellClassParams<ProcessStatusData>) =>
-            params.data ? !isValidProcessStatus(params.data) : false,
-        },
-      },
-    ],
+  const columnDefs = useMemo(
+    () =>
+      createColumnDefs({
+        workTypes,
+        duplicateKeys,
+        addWorkType,
+        removeWorkType,
+        toast,
+        workTypeNameCellRenderer,
+        plannedRateCellRenderer,
+        actualRateCellRenderer,
+      }),
     [
       workTypes,
       duplicateKeys,
@@ -279,16 +202,6 @@ export function ProcessStatusPage() {
       removeWorkType,
       toast,
     ]
-  );
-
-  const defaultColDef = useMemo<ColDef>(
-    () => ({
-      sortable: true,
-      resizable: true,
-      headerClass: "ag-header-cell-center",
-      cellStyle: { textAlign: "center" },
-    }),
-    []
   );
 
   // 검색 필터링
@@ -317,10 +230,10 @@ export function ProcessStatusPage() {
   );
 
   // 필터 초기화
-  const handleResetFilter = useCallback(() => {
+  const handleResetFilter = () => {
     setFilteredData(null);
     setActiveSearchTerm("");
-  }, []);
+  };
 
   // 내보내기
   const handleExport = () => {
@@ -609,7 +522,7 @@ export function ProcessStatusPage() {
                 ref={gridRef}
                 rowData={displayData}
                 columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
+                defaultColDef={DEFAULT_COL_DEF}
                 animateRows={true}
                 rowSelection={{
                   mode: "multiRow",

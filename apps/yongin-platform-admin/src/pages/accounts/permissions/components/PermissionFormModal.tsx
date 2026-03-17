@@ -78,76 +78,75 @@ export function PermissionFormModal({
   });
 
   // 모달이 열릴 때 폼 초기화
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    if (open) {
-      if (editingPermission) {
-        // 수정 모드: 기존 데이터로 초기화
-        reset({
-          name: editingPermission.name,
-          description: editingPermission.description || "",
-        });
+    if (!open) return;
 
-        const types = new Set<string>();
-        const resources: Record<string, Set<string>> = {};
-        const levels: Record<string, PermissionLevelType> = {};
+    if (editingPermission) {
+      // 수정 모드: 기존 데이터로 초기화
+      reset({
+        name: editingPermission.name,
+        description: editingPermission.description || "",
+      });
 
-        // 도메인 권한 (전체 리소스) 처리
-        editingPermission.domainPermissions.forEach((dp) => {
-          types.add(dp.resourceType);
-          levels[dp.resourceType] = dp.level;
-          // 전체 선택이므로 해당 타입의 모든 리소스 선택
-          const rt = resourceTypes.find((r) => r.key === dp.resourceType);
-          if (rt && rt.resources.length > 0) {
-            resources[dp.resourceType] = new Set(rt.resources.map((r) => String(r.id)));
-          }
-        });
+      const types = new Set<string>();
+      const resources: Record<string, Set<string>> = {};
+      const levels: Record<string, PermissionLevelType> = {};
 
-        // 개별 리소스 권한 처리
-        editingPermission.resourcePermissions.forEach((rp) => {
-          if (!resources[rp.resourceType]) {
-            resources[rp.resourceType] = new Set();
-          }
-          resources[rp.resourceType]!.add(rp.resourceId);
-          if (!levels[rp.resourceType]) {
-            levels[rp.resourceType] = rp.level;
-          }
-        });
+      // 도메인 권한 (전체 리소스) 처리
+      editingPermission.domainPermissions.forEach((dp) => {
+        types.add(dp.resourceType);
+        levels[dp.resourceType] = dp.level;
+        // 전체 선택이므로 해당 타입의 모든 리소스 선택
+        const rt = resourceTypes.find((r) => r.key === dp.resourceType);
+        if (rt && rt.resources.length > 0) {
+          resources[dp.resourceType] = new Set(rt.resources.map((r) => String(r.id)));
+        }
+      });
 
-        // 나머지 타입들 기본 레벨 설정
-        resourceTypes.forEach((rt) => {
-          if (!levels[rt.key]) {
-            levels[rt.key] = "READ";
-          }
-        });
+      // 개별 리소스 권한 처리
+      editingPermission.resourcePermissions.forEach((rp) => {
+        if (!resources[rp.resourceType]) {
+          resources[rp.resourceType] = new Set();
+        }
+        resources[rp.resourceType]!.add(rp.resourceId);
+        if (!levels[rp.resourceType]) {
+          levels[rp.resourceType] = rp.level;
+        }
+      });
 
-        setSelectedTypes(types);
-        setSelectedResources(resources);
-        setLevelByType(levels);
-        // 개별 리소스가 선택된 타입만 펼침 (전체 선택은 펼치지 않음)
-        const expanded = new Set<string>();
-        Object.entries(resources).forEach(([typeKey, ids]) => {
-          const rt = resourceTypes.find((r) => r.key === typeKey);
-          if (rt && ids.size > 0 && ids.size < rt.resources.length) {
-            expanded.add(typeKey);
-          }
-        });
-        setExpandedTypes(expanded);
-      } else {
-        // 생성 모드: 빈 폼으로 초기화
-        reset({ name: "", description: "" });
-        setSelectedTypes(new Set());
-        setSelectedResources({});
-        setExpandedTypes(new Set());
-        const initialLevels: Record<string, PermissionLevelType> = {};
-        resourceTypes.forEach((rt) => {
-          initialLevels[rt.key] = "READ";
-        });
-        setLevelByType(initialLevels);
-      }
+      // 나머지 타입들 기본 레벨 설정
+      resourceTypes.forEach((rt) => {
+        if (!levels[rt.key]) {
+          levels[rt.key] = "READ";
+        }
+      });
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 모달 열림 시 폼 데이터 동기화
+      setSelectedTypes(types);
+      setSelectedResources(resources);
+      setLevelByType(levels);
+      // 개별 리소스가 선택된 타입만 펼침 (전체 선택은 펼치지 않음)
+      const expanded = new Set<string>();
+      Object.entries(resources).forEach(([typeKey, ids]) => {
+        const rt = resourceTypes.find((r) => r.key === typeKey);
+        if (rt && ids.size > 0 && ids.size < rt.resources.length) {
+          expanded.add(typeKey);
+        }
+      });
+      setExpandedTypes(expanded);
+    } else {
+      // 생성 모드: 빈 폼으로 초기화
+      reset({ name: "", description: "" });
+      setSelectedTypes(new Set());
+      setSelectedResources({});
+      setExpandedTypes(new Set());
+      const initialLevels: Record<string, PermissionLevelType> = {};
+      resourceTypes.forEach((rt) => {
+        initialLevels[rt.key] = "READ";
+      });
+      setLevelByType(initialLevels);
     }
   }, [open, editingPermission, resourceTypes, reset]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleTypeCheck = (typeKey: string, checked: boolean) => {
     const rt = resourceTypes.find((r) => r.key === typeKey);

@@ -1,5 +1,5 @@
 import { Widget, Spinner } from "@pf-dev/ui";
-import { ProcessStatusProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { useProcessStatus } from "@/hooks/useProcessStatus";
 
 function OverallSection({ plannedRate, actualRate }: { plannedRate: number; actualRate: number }) {
@@ -72,7 +72,7 @@ function ProgressBar({
   );
 }
 
-export function ProcessStatus({ id, className }: ProcessStatusProps) {
+export function ProcessStatus({ id, className }: BaseWidgetProps) {
   const { overallStatus, workStatuses, isLoading, isError, error } = useProcessStatus();
 
   if (isLoading) {

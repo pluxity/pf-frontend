@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
-import type { ColDef, ICellRendererParams } from "ag-grid-community";
-import { useRef, useState, useMemo, useCallback } from "react";
+import type { ICellRendererParams } from "ag-grid-community";
+import { useRef, useState, useMemo } from "react";
 import {
   Checkbox,
   Button,
@@ -16,6 +16,7 @@ import type { KeyManagementItem, KeyManagementFormData } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useKeyManagement } from "./hooks";
 import { KeyManagementModal } from "./components";
+import { DEFAULT_COL_DEF, createColumnDefs } from "./columns";
 
 interface MatrixRow {
   rowIndex: number;
@@ -47,6 +48,11 @@ export function KeyManagementPage() {
     return tempIdRef.current;
   };
 
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+    setShowDialog(false);
+  };
+
   // 모든 고유한 displayOrder 수집
   const allDisplayOrders = useMemo<Set<number>>(() => {
     const orders = new Set<number>();
@@ -73,45 +79,42 @@ export function KeyManagementPage() {
     });
   }, [data, allDisplayOrders]);
 
-  const handleCheckboxClick = useCallback(
-    async (item: KeyManagementItem) => {
-      const nextSelected = !item.selected;
+  const handleCheckboxClick = async (item: KeyManagementItem) => {
+    const nextSelected = !item.selected;
 
-      try {
-        await mutate(
-          (prev) =>
-            prev?.map((group) =>
-              group.type !== item.type
-                ? group
-                : {
-                    ...group,
-                    items: group.items.map((index) =>
-                      index.id === item.id ? { ...index, selected: nextSelected } : index
-                    ),
-                  }
-            ),
-          { revalidate: false }
-        );
+    try {
+      await mutate(
+        (prev) =>
+          prev?.map((group) =>
+            group.type !== item.type
+              ? group
+              : {
+                  ...group,
+                  items: group.items.map((index) =>
+                    index.id === item.id ? { ...index, selected: nextSelected } : index
+                  ),
+                }
+          ),
+        { revalidate: false }
+      );
 
-        toast.success(nextSelected ? "항목이 선택되었습니다." : "선택이 해제되었습니다.");
+      toast.success(nextSelected ? "항목이 선택되었습니다." : "선택이 해제되었습니다.");
 
-        if (nextSelected) {
-          await select(item.id);
-        } else {
-          await deselect(item.id);
-        }
-
-        mutate();
-      } catch (err) {
-        console.error("Checkbox update error:", err);
-        toast.error("선택 상태 변경에 실패했습니다.");
-        mutate();
+      if (nextSelected) {
+        await select(item.id);
+      } else {
+        await deselect(item.id);
       }
-    },
-    [mutate, toast, select, deselect]
-  );
 
-  const handleAddRow = useCallback(() => {
+      mutate();
+    } catch (err) {
+      console.error("Checkbox update error:", err);
+      toast.error("선택 상태 변경에 실패했습니다.");
+      mutate();
+    }
+  };
+
+  const handleAddRow = () => {
     const nextDisplayOrder =
       allDisplayOrders.size > 0 ? Math.max(...Array.from(allDisplayOrders)) + 1 : 1;
 
@@ -136,9 +139,9 @@ export function KeyManagementPage() {
     );
 
     toast.success("새 행이 추가되었습니다.");
-  }, [allDisplayOrders, mutate, toast]);
+  };
 
-  const handleDeleteRows = useCallback(() => {
+  const handleDeleteRows = () => {
     const selectedRows = gridRef.current?.api.getSelectedRows();
 
     if (!selectedRows || selectedRows.length === 0) {
@@ -187,138 +190,120 @@ export function KeyManagementPage() {
         }
       },
     });
-  }, [types, remove, mutate, toast]);
+  };
 
-  const cellRenderer = useCallback(
-    (params: ICellRendererParams<MatrixRow>) => {
-      const item = params.value as KeyManagementItem | undefined;
-      const row = params.data as MatrixRow;
-      const typeCode = params.colDef?.field || "";
-      const isSelected = item?.selected ?? false;
+  const cellRenderer = (params: ICellRendererParams<MatrixRow>) => {
+    const item = params.value as KeyManagementItem | undefined;
+    const row = params.data as MatrixRow;
+    const typeCode = params.colDef?.field || "";
+    const isSelected = item?.selected ?? false;
 
-      if (!item || !item.title?.trim()) {
-        return (
-          <div className="h-full flex items-center gap-2 px-2">
-            <span
-              className="text-gray-400 text-xs flex-1 cursor-pointer hover:text-gray-600"
-              onClick={() => {
-                const newItem = {
-                  id: item?.id ?? generateTempId(),
-                  type: item?.type ?? typeCode,
-                  title: "",
-                  displayOrder: row.displayOrder,
-                  selected: item?.selected ?? false,
-                  fileId: item?.fileId,
-                  methodFeature: item?.methodFeature,
-                  methodContent: item?.methodContent,
-                  methodDirection: item?.methodDirection,
-                };
-                setSelectedItem(newItem);
-                setShowDialog(true);
-              }}
-            >
-              클릭하여 입력
-            </span>
-            <Checkbox
-              disabled
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            />
-          </div>
-        );
-      }
-
+    if (!item || !item.title?.trim()) {
       return (
         <div className="h-full flex items-center gap-2 px-2">
           <span
-            className="truncate flex-1 cursor-pointer hover:text-blue-600"
+            className="text-gray-400 text-xs flex-1 cursor-pointer hover:text-gray-600"
             onClick={() => {
-              setSelectedItem(item);
+              const newItem = {
+                id: item?.id ?? generateTempId(),
+                type: item?.type ?? typeCode,
+                title: "",
+                displayOrder: row.displayOrder,
+                selected: item?.selected ?? false,
+                fileId: item?.fileId,
+                methodFeature: item?.methodFeature,
+                methodContent: item?.methodContent,
+                methodDirection: item?.methodDirection,
+              };
+              setSelectedItem(newItem);
               setShowDialog(true);
             }}
           >
-            {item.title}
+            클릭하여 입력
           </span>
-
           <Checkbox
-            checked={isSelected}
-            onCheckedChange={() => handleCheckboxClick(item)}
+            disabled
             onClick={(e) => {
               e.stopPropagation();
             }}
           />
         </div>
       );
-    },
-    [handleCheckboxClick]
-  );
+    }
 
-  const columnDefs = useMemo<ColDef<MatrixRow>[]>(() => {
-    return types.map((type) => ({
-      headerName: type.description,
-      field: type.code as string,
-      flex: 1,
-      editable: false,
-      cellRenderer,
-      valueFormatter: (params) => {
-        const item = params.value as KeyManagementItem | undefined;
-        return item?.title || "";
-      },
-      cellClass: "cursor-pointer",
-    }));
-  }, [types, cellRenderer]);
+    return (
+      <div className="h-full flex items-center gap-2 px-2">
+        <span
+          className="truncate flex-1 cursor-pointer hover:text-blue-600"
+          onClick={() => {
+            setSelectedItem(item);
+            setShowDialog(true);
+          }}
+        >
+          {item.title}
+        </span>
 
-  const defaultColDef = useMemo<ColDef>(
-    () => ({
-      sortable: false,
-      filter: false,
-      resizable: true,
-    }),
-    []
-  );
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => handleCheckboxClick(item)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        />
+      </div>
+    );
+  };
 
-  // 모달 닫기
-  const handleCloseModal = useCallback(() => {
-    setSelectedItem(null);
-    setShowDialog(false);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const columnDefs = useMemo(() => createColumnDefs(types, cellRenderer), [types]);
 
   // 모달 저장
-  const handleSave = useCallback(
-    async (formData: KeyManagementFormData, uploadedFileId: number | null) => {
-      if (!selectedItem) return;
+  const handleSave = async (formData: KeyManagementFormData, uploadedFileId: number | null) => {
+    if (!selectedItem) return;
 
-      try {
-        const isNewItem = selectedItem.id < 0;
-        const isEmpty = !formData.title.trim();
+    try {
+      const isNewItem = selectedItem.id < 0;
+      const isEmpty = !formData.title.trim();
 
-        if (isEmpty) {
-          if (isNewItem) {
-            handleCloseModal();
-            return;
-          } else {
-            setConfirmModal({
-              title: "항목 삭제",
-              description: "모든 내용이 비어있습니다. 이 항목을 삭제하시겠습니까?",
-              onConfirm: async () => {
-                handleCloseModal(); // 확인 즉시 입력 모달 닫기
-                try {
-                  await remove(selectedItem.id);
-                  await mutate();
-                  toast.success("항목이 삭제되었습니다.");
-                } catch (err) {
-                  console.error("Delete error:", err);
-                  toast.error("삭제에 실패했습니다.");
-                }
-              },
-            });
-            return;
-          }
-        }
-
+      if (isEmpty) {
         if (isNewItem) {
-          await create({
+          handleCloseModal();
+          return;
+        } else {
+          setConfirmModal({
+            title: "항목 삭제",
+            description: "모든 내용이 비어있습니다. 이 항목을 삭제하시겠습니까?",
+            onConfirm: async () => {
+              handleCloseModal(); // 확인 즉시 입력 모달 닫기
+              try {
+                await remove(selectedItem.id);
+                await mutate();
+                toast.success("항목이 삭제되었습니다.");
+              } catch (err) {
+                console.error("Delete error:", err);
+                toast.error("삭제에 실패했습니다.");
+              }
+            },
+          });
+          return;
+        }
+      }
+
+      if (isNewItem) {
+        await create({
+          type: selectedItem.type,
+          title: formData.title,
+          methodFeature: formData.methodFeature,
+          methodContent: formData.methodContent,
+          methodDirection: formData.methodDirection,
+          displayOrder: formData.displayOrder,
+          fileId: uploadedFileId !== null ? uploadedFileId : selectedItem.fileId || null,
+        });
+        toast.success("항목이 생성되었습니다.");
+      } else {
+        await update({
+          id: selectedItem.id,
+          data: {
             type: selectedItem.type,
             title: formData.title,
             methodFeature: formData.methodFeature,
@@ -326,35 +311,20 @@ export function KeyManagementPage() {
             methodDirection: formData.methodDirection,
             displayOrder: formData.displayOrder,
             fileId: uploadedFileId !== null ? uploadedFileId : selectedItem.fileId || null,
-          });
-          toast.success("항목이 생성되었습니다.");
-        } else {
-          await update({
-            id: selectedItem.id,
-            data: {
-              type: selectedItem.type,
-              title: formData.title,
-              methodFeature: formData.methodFeature,
-              methodContent: formData.methodContent,
-              methodDirection: formData.methodDirection,
-              displayOrder: formData.displayOrder,
-              fileId: uploadedFileId !== null ? uploadedFileId : selectedItem.fileId || null,
-            },
-          });
+          },
+        });
 
-          toast.success("항목이 수정되었습니다.");
-        }
-
-        await mutate();
-
-        handleCloseModal();
-      } catch (err) {
-        console.error("Save error:", err);
-        toast.error("저장에 실패했습니다.");
+        toast.success("항목이 수정되었습니다.");
       }
-    },
-    [selectedItem, create, update, remove, mutate, toast, handleCloseModal]
-  );
+
+      await mutate();
+
+      handleCloseModal();
+    } catch (err) {
+      console.error("Save error:", err);
+      toast.error("저장에 실패했습니다.");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -397,7 +367,7 @@ export function KeyManagementPage() {
             ref={gridRef}
             rowData={matrixData}
             columnDefs={columnDefs}
-            defaultColDef={defaultColDef}
+            defaultColDef={DEFAULT_COL_DEF}
             getRowId={(params) => String(params.data.rowIndex)}
             rowHeight={46}
             headerHeight={52}

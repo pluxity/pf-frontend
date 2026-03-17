@@ -1,22 +1,22 @@
 import { AgGridReact } from "ag-grid-react";
 import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import type {
-  ColDef,
   CellValueChangedEvent,
-  ICellRendererParams,
+  ColDef,
   GridApi,
   GridReadyEvent,
   RowClassParams,
 } from "ag-grid-community";
-import { useRef, useState, useMemo, useCallback, useEffect } from "react";
-import { Button, Progress, Spinner, Checkbox } from "@pf-dev/ui";
+import { useRef, useState, useMemo, useEffect } from "react";
+import { Button, Spinner } from "@pf-dev/ui";
 import type { GoalData, GoalBulkRequest } from "./types";
 import { useToastContext } from "../../contexts/ToastContext";
 import { useGoals, CalculateGoal } from "./hooks";
 import { validateGoal } from "./validation";
-import { AgGridPagination, AgGridComboBox, AgGridSearchFilter } from "../../components";
+import { createColumnDefs } from "./columns";
+import { AgGridPagination, AgGridSearchFilter } from "../../components";
 import type { SearchFilters } from "../../components";
-import { formatDateKST, highlightText } from "@/utils";
+import { formatDateKST } from "@/utils";
 
 export function GoalsPage() {
   const gridRef = useRef<AgGridReactType<GoalData>>(null);
@@ -83,7 +83,7 @@ export function GoalsPage() {
     allDataRef.current = allData;
   }, [allData]);
 
-  const handleIsActiveChange = useCallback((rowId: number, value: string) => {
+  const handleIsActiveChange = (rowId: number, value: string) => {
     setLocalEdits((prev) => {
       const newMap = new Map(prev);
 
@@ -107,7 +107,7 @@ export function GoalsPage() {
       newMap.set(rowId, { ...existing, isActive: value === "Y" });
       return newMap;
     });
-  }, []);
+  };
 
   // 검색 필터 상태
   const [searchFilters, setSearchFilters] = useState<SearchFilters | null>(null);
@@ -149,213 +149,41 @@ export function GoalsPage() {
   }, [localAdditions, localEdits, data]);
 
   // 변경된 행 스타일 적용
-  const getRowStyle = useCallback(
-    (params: RowClassParams<GoalData>) => {
-      if (params.data && editedRowIds.has(params.data.id)) {
-        return { backgroundColor: "#fef3c7" }; // amber-100
-      }
-      return undefined;
-    },
-    [editedRowIds]
-  );
+  const getRowStyle = (params: RowClassParams<GoalData>) => {
+    if (params.data && editedRowIds.has(params.data.id)) {
+      return { backgroundColor: "#fef3c7" }; // amber-100
+    }
+    return undefined;
+  };
 
   // 그리드 준비 완료 핸들러
-  const onGridReady = useCallback((event: GridReadyEvent) => {
+  const onGridReady = (event: GridReadyEvent) => {
     setGridApi(event.api);
-  }, []);
+  };
 
-  // 커스텀 셀 렌더러 (검색 하이라이트용)
-  const constructionSectionNameCellRenderer = useCallback(
-    (params: ICellRendererParams<GoalData>) => {
-      const value = params.data?.constructionSectionName ?? "";
-      if (activeSearchTerm) {
-        return <>{highlightText(value, activeSearchTerm)}</>;
-      }
-      return <>{value}</>;
-    },
-    [activeSearchTerm]
+  // useMemo 필요: AG-Grid 외부 라이브러리에 전달 + handleIsActiveChange가 ref를 참조
+  const columnDefs = useMemo(
+    () =>
+      createColumnDefs({
+        constructionSections,
+        addConstructionSection,
+        removeConstructionSection,
+        onToastSuccess: (msg: string) => toast.success(msg),
+        onToastDeleteSuccess: () => toast.success("시공구간이 삭제되었습니다."),
+        activeSearchTerm,
+        onIsActiveChange: handleIsActiveChange,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [constructionSections, activeSearchTerm]
   );
 
-  const columnDefs = useMemo<ColDef<GoalData>[]>(
-    () => [
-      {
-        headerName: "작업일",
-        field: "inputDate",
-        flex: 1.3,
-        cellEditor: "agDateStringCellEditor",
-        sortable: false,
-      },
-      {
-        headerName: "시공구간",
-        field: "constructionSectionId",
-        flex: 1,
-        cellClass: "bg-primary-200",
-        editable: true,
-        cellEditor: AgGridComboBox,
-        cellEditorParams: {
-          items: constructionSections,
-          onAdd: addConstructionSection,
-          onDelete: removeConstructionSection,
-          onAddSuccess: (name: string) => toast.success(`"${name}" 시공구간이 추가되었습니다.`),
-          onDeleteSuccess: () => toast.success("시공구간이 삭제되었습니다."),
-          placeholder: "새 시공구간",
-        },
-        cellEditorPopup: true,
-        valueFormatter: (params) => {
-          const section = constructionSections.find((s) => s.id === params.value);
-          return section?.name ?? "";
-        },
-        valueSetter: (params) => {
-          const section = constructionSections.find((s) => s.id === params.newValue);
-          if (section) {
-            params.data.constructionSectionId = section.id;
-            params.data.constructionSectionName = section.name;
-            return true;
-          }
-          return false;
-        },
-        cellRenderer: constructionSectionNameCellRenderer,
-      },
-      {
-        headerName: "진행률",
-        field: "progressRate",
-        headerTooltip: "누계량/전체량",
-        flex: 1.5,
-        editable: false,
-        cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
-          const value = params.value || 0;
-          return (
-            <div className="flex items-center gap-2">
-              <Progress value={value} />
-              <span className="font-semibold">{value}%</span>
-            </div>
-          );
-        },
-      },
-      {
-        headerName: "전체량",
-        field: "totalQuantity",
-        flex: 1,
-        cellClass: "bg-primary-200",
-        editable: true,
-        cellEditor: "agNumberCellEditor",
-      },
-      {
-        headerName: "누계량",
-        field: "cumulativeQuantity",
-        headerTooltip: "전일 누계량+금일 작업량",
-        flex: 1,
-        editable: false,
-      },
-      {
-        headerName: "목표량",
-        field: "targetQuantity",
-        headerTooltip: "전체량/(준공일-착공일)",
-        flex: 1,
-        editable: false,
-      },
-      {
-        headerName: "작업량",
-        field: "workQuantity",
-        flex: 1,
-        cellClass: "bg-primary-200",
-        editable: true,
-        cellEditor: "agNumberCellEditor",
-      },
-      {
-        headerName: "공정률",
-        field: "constructionRate",
-        headerTooltip: "작업량/목표량",
-        flex: 0.8,
-        editable: false,
-        cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
-          const value = params.value || 0;
-          return `${value}%`;
-        },
-      },
-      {
-        headerName: "착공일",
-        field: "startDate",
-        flex: 1,
-        editable: true,
-        cellClass: "bg-primary-200",
-        cellEditor: "agDateStringCellEditor",
-      },
-      {
-        headerName: "준공일",
-        field: "completionDate",
-        flex: 1,
-        editable: true,
-        cellClass: "bg-primary-200",
-        cellEditor: "agDateStringCellEditor",
-      },
-      {
-        headerName: "계획작업일",
-        field: "plannedWorkDays",
-        headerTooltip: "준공일-착공일",
-        flex: 1,
-        editable: false,
-      },
-      {
-        headerName: "지연일",
-        field: "delayDays",
-        headerTooltip: "(목표량*(일자-착공일)-누계량)/목표량",
-        flex: 1,
-        editable: false,
-        cellRenderer: (params: ICellRendererParams<GoalData, number>) => {
-          const value = params.value ?? 0;
-          return value >= 0 ? `+${value}` : value;
-        },
-      },
-      {
-        headerName: "화면노출",
-        field: "isActive",
-        flex: 0.8,
-        editable: false,
-        cellRenderer: (params: ICellRendererParams<GoalData, boolean>) => {
-          const rowId = params.data?.id;
+  const defaultColDef: ColDef = {
+    sortable: false,
+    resizable: true,
+  };
 
-          return (
-            <div className="flex h-full items-center">
-              <Checkbox
-                checked={!!params.value}
-                onCheckedChange={(checked) => {
-                  if (rowId === undefined) return;
-                  handleIsActiveChange(rowId, checked ? "Y" : "N");
-                }}
-              />
-            </div>
-          );
-        },
-      },
-    ],
-    [
-      constructionSections,
-      constructionSectionNameCellRenderer,
-      addConstructionSection,
-      removeConstructionSection,
-      toast,
-      handleIsActiveChange,
-    ]
-  );
-
-  const defaultColDef = useMemo<ColDef>(
-    () => ({
-      sortable: false,
-      resizable: true,
-    }),
-    []
-  );
-
-  // 검색 필터링
-  const handleSearch = useCallback((filters: SearchFilters) => {
-    setSearchFilters(filters);
-  }, []);
-
-  // 필터 초기화
-  const handleResetFilter = useCallback(() => {
-    setSearchFilters(null);
-  }, []);
+  const handleSearch = (filters: SearchFilters) => setSearchFilters(filters);
+  const handleResetFilter = () => setSearchFilters(null);
 
   const handleExport = () => {
     const fileName = `목표관리_${formatDateKST()}.csv`;

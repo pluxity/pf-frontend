@@ -1,9 +1,9 @@
 import { Widget, cn, Spinner } from "@pf-dev/ui";
-import type { SafetyEquipmentProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 import { useSafetyEquipment } from "@/hooks/useSafetyEquipment";
 import { RadarChart } from "@/components/RadarChart";
 
-export function SafetyEquipment({ id, className }: SafetyEquipmentProps) {
+export function SafetyEquipment({ id, className }: BaseWidgetProps) {
   const { equipments, isLoading, isError } = useSafetyEquipment();
 
   const chartData = equipments.map((eq) => ({

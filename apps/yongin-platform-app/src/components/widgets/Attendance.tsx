@@ -1,6 +1,5 @@
 import {
   Widget,
-  cn,
   Table,
   TableHeader,
   TableBody,
@@ -10,7 +9,7 @@ import {
   Spinner,
 } from "@pf-dev/ui";
 import { useAttendance } from "@/hooks";
-import { AttendanceProps } from "./types";
+import type { BaseWidgetProps } from "./types";
 
 const attendanceHeader = [
   { key: "deviceName", label: "구분" },
@@ -18,12 +17,12 @@ const attendanceHeader = [
   { key: "workContent", label: "금일 작업 내용" },
 ] as const;
 
-export function Attendance({ id, className }: AttendanceProps) {
+export function Attendance({ id, className }: BaseWidgetProps) {
   const { data, isLoading, isError, error } = useAttendance();
 
   if (isLoading) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <Spinner size="lg" />
@@ -36,7 +35,7 @@ export function Attendance({ id, className }: AttendanceProps) {
 
   if (isError) {
     return (
-      <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+      <Widget id={id} className={className} contentClassName="h-full">
         <div className="flex h-full items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="text-red-500">
@@ -59,7 +58,7 @@ export function Attendance({ id, className }: AttendanceProps) {
   }
 
   return (
-    <Widget id={id} className={cn(className, "")} contentClassName="h-full">
+    <Widget id={id} className={className} contentClassName="h-full">
       <div className="flex flex-col gap-2 h-full">
         <div className="font-bold">출역현황</div>
 

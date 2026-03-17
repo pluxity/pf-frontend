@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import type { Role, RoleFormData, Permission } from "../types";
 import { getRoles, createRole, updateRole, deleteRole, getPermissions } from "../services";
@@ -59,39 +59,34 @@ export function useRoles(): UseRolesReturn {
     revalidateOnFocus: false,
   });
 
-  const filteredRoles = useMemo(() => {
-    return roles.filter((role) => {
-      const matchesSearch =
-        role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (role.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-      return matchesSearch;
-    });
-  }, [roles, searchQuery]);
+  const filteredRoles = roles.filter(
+    (role) =>
+      role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (role.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+  );
 
   const totalPages = Math.max(1, Math.ceil(filteredRoles.length / ITEMS_PER_PAGE));
 
-  const paginatedRoles = useMemo(() => {
-    const effectivePage = Math.min(currentPage, totalPages);
-    const start = (effectivePage - 1) * ITEMS_PER_PAGE;
-    return filteredRoles.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredRoles, currentPage, totalPages]);
+  const effectivePage = Math.min(currentPage, totalPages);
+  const start = (effectivePage - 1) * ITEMS_PER_PAGE;
+  const paginatedRoles = filteredRoles.slice(start, start + ITEMS_PER_PAGE);
 
-  const handleCreate = useCallback(() => {
+  const handleCreate = () => {
     setEditingRole(null);
     setFormModalOpen(true);
-  }, []);
+  };
 
-  const handleEdit = useCallback((role: Role) => {
+  const handleEdit = (role: Role) => {
     setEditingRole(role);
     setFormModalOpen(true);
-  }, []);
+  };
 
-  const handleDelete = useCallback((role: Role) => {
+  const handleDelete = (role: Role) => {
     setDeletingRole(role);
     setDeleteConfirmOpen(true);
-  }, []);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingRole) return;
 
     setIsLoading(true);
@@ -108,49 +103,46 @@ export function useRoles(): UseRolesReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [deletingRole, roles, mutateRoles]);
+  };
 
-  const handleFormSubmit = useCallback(
-    async (data: RoleFormData) => {
-      setIsLoading(true);
-      try {
-        if (editingRole) {
-          await updateRole(editingRole.id, data);
-          const updatedRole: Role = {
-            ...editingRole,
-            name: data.name,
-            description: data.description,
-            permissions: availablePermissions.filter((p) => data.permissionIds.includes(p.id)),
-          };
-          await mutateRoles(
-            roles.map((r) => (r.id === editingRole.id ? updatedRole : r)),
-            false
-          );
-        } else {
-          const newId = await createRole(data);
-          const newRole: Role = {
-            id: newId,
-            name: data.name,
-            description: data.description,
-            permissions: availablePermissions.filter((p) => data.permissionIds.includes(p.id)),
-          };
-          await mutateRoles([newRole, ...roles], false);
-        }
-        setFormModalOpen(false);
-        setEditingRole(null);
-      } catch (error) {
-        console.error("Failed to save role:", error);
-      } finally {
-        setIsLoading(false);
+  const handleFormSubmit = async (data: RoleFormData) => {
+    setIsLoading(true);
+    try {
+      if (editingRole) {
+        await updateRole(editingRole.id, data);
+        const updatedRole: Role = {
+          ...editingRole,
+          name: data.name,
+          description: data.description,
+          permissions: availablePermissions.filter((p) => data.permissionIds.includes(p.id)),
+        };
+        await mutateRoles(
+          roles.map((r) => (r.id === editingRole.id ? updatedRole : r)),
+          false
+        );
+      } else {
+        const newId = await createRole(data);
+        const newRole: Role = {
+          id: newId,
+          name: data.name,
+          description: data.description,
+          permissions: availablePermissions.filter((p) => data.permissionIds.includes(p.id)),
+        };
+        await mutateRoles([newRole, ...roles], false);
       }
-    },
-    [editingRole, availablePermissions, roles, mutateRoles]
-  );
+      setFormModalOpen(false);
+      setEditingRole(null);
+    } catch (error) {
+      console.error("Failed to save role:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleSearch = useCallback((query: string) => {
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
-  }, []);
+  };
 
   return {
     roles,
