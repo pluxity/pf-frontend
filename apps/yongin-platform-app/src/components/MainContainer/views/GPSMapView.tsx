@@ -176,32 +176,40 @@ export function GPSMapView() {
               key={key}
               longitude={longitude}
               latitude={latitude}
+              anchor="bottom"
               onClick={(e) => handleMarkerClick(e, cluster)}
             >
-              <div className="flex flex-col items-center cursor-pointer">
-                <div
-                  className={cn(
-                    "relative flex flex-col items-center gap-1 px-3 py-2 rounded-sm shadow-lg",
-                    isSelected ? "bg-orange-500" : "bg-white border border-orange-400"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "text-lg font-bold leading-none",
-                      isSelected ? "text-white" : "text-orange-500"
-                    )}
-                  >
-                    {count > 5 ? "5+" : count}
-                  </span>
-                  <img
-                    src={isSelected ? workerActiveIcon : workerIcon}
-                    className="size-4 object-contain"
-                    alt="worker"
-                  />
+              <div
+                className={cn("cursor-pointer transition-transform", isSelected && "scale-110")}
+                style={{ filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.65))" }}
+              >
+                {/* 핀 형태: 사각 상단 + 아래 뾰족 삼각형 */}
+                <div className="relative flex flex-col items-center">
                   <div
                     className={cn(
-                      "absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-3 h-3 rotate-45",
-                      isSelected ? "bg-orange-500" : "bg-white border-r border-b border-orange-400"
+                      "w-9 rounded-[0.125rem] flex flex-col items-center pt-[0.125rem] pb-1 border border-[#F37021]",
+                      isSelected ? "bg-[#F37021]" : "bg-white"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "text-[0.6875rem] font-bold leading-tight",
+                        isSelected ? "text-white" : "text-[#F37021]"
+                      )}
+                    >
+                      {count > 5 ? "5+" : count}
+                    </span>
+                    <img
+                      src={isSelected ? workerActiveIcon : workerIcon}
+                      className="w-5 h-5 object-contain"
+                      alt="worker"
+                    />
+                  </div>
+                  {/* 아래 뾰족 — 테두리만 */}
+                  <div
+                    className={cn(
+                      "w-3 h-3 -mt-[0.375rem] rotate-45 border-r border-b border-[#F37021]",
+                      isSelected ? "bg-[#F37021]" : "bg-white"
                     )}
                   />
                 </div>
@@ -217,9 +225,9 @@ export function GPSMapView() {
             onClose={resetSelection}
             closeButton={false}
             anchor="top-left"
-            offset={[-30, 50]}
+            offset={[-25, 8]}
           >
-            <div className="bg-gray-900 rounded overflow-hidden min-w-[10rem] max-h-[15rem] overflow-y-auto">
+            <div className="bg-black px-1 rounded overflow-hidden min-w-[10rem] max-h-[15rem] overflow-y-auto">
               {popupInfo.ids.map((id) => {
                 return (
                   <div

@@ -35,7 +35,7 @@ export function HomePage() {
   if (isLoading) return <PageSkeleton />;
 
   return (
-    <div className="grid grid-cols-[20rem_1fr_20rem] gap-5 px-5 pt-5 pb-[0.9375rem] h-full">
+    <div className="grid grid-cols-[20rem_1fr_20rem] gap-5 px-5 pt-2 pb-[0.9375rem] h-full">
       <div className="relative min-h-0">
         <div
           className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}

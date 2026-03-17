@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Widget, cn } from "@pf-dev/ui";
+import { ChevronLeftSmall, ChevronRightSmall } from "@pf-dev/ui/atoms";
 import type { BaseWidgetProps } from "./types";
 import { useNotices } from "@/hooks/useNotices";
-import arrowPrevIcon from "@/assets/icons/arrow-prev.svg";
-import arrowNextIcon from "@/assets/icons/arrow-next.svg";
 
 const AUTO_ROLL_INTERVAL = 5000;
 
@@ -45,20 +44,20 @@ export function Announcement({ id, className }: BaseWidgetProps) {
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-[16px] text-[#333] tracking-[-0.16px]">공지사항</h3>
         {total > 1 && (
-          <div className="flex">
+          <div className="inline-flex">
             <button
               onClick={goPrev}
-              className="w-6 h-5 flex items-center justify-center rounded-l-[10px] rounded-r-none border border-[#BBBFCF] hover:bg-gray-100 transition-colors"
+              className="px-[0.3125rem] py-[0.375rem] rounded-tl-[0.625rem] rounded-bl-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors"
               aria-label="이전 공지"
             >
-              <img src={arrowPrevIcon} alt="" className="w-3.5 h-3.5" />
+              <ChevronLeftSmall size={10} className="text-[#9399B0]" />
             </button>
             <button
               onClick={goNext}
-              className="w-6 h-5 flex items-center justify-center rounded-r-[10px] rounded-l-none border border-l-0 border-[#BBBFCF] hover:bg-gray-100 transition-colors"
+              className="px-[0.3125rem] py-[0.375rem] rounded-tr-[0.625rem] rounded-br-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors"
               aria-label="다음 공지"
             >
-              <img src={arrowNextIcon} alt="" className="w-3.5 h-3.5" />
+              <ChevronRightSmall size={10} className="text-[#9399B0]" />
             </button>
           </div>
         )}
