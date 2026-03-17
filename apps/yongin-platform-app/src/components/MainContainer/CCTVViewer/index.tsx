@@ -12,60 +12,6 @@ interface CCTVViewerProps {
   onCardClick?: (cctvIndex: number) => void;
 }
 
-const TemplateIcons: Record<TemplateId, React.ReactNode> = {
-  "1x1": (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-    </svg>
-  ),
-  "2x2": (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="8" height="8" rx="1" />
-      <rect x="13" y="3" width="8" height="8" rx="1" />
-      <rect x="3" y="13" width="8" height="8" rx="1" />
-      <rect x="13" y="13" width="8" height="8" rx="1" />
-    </svg>
-  ),
-  "5x6": (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="18" height="18" rx="1" />
-      <line x1="6.6" y1="3" x2="6.6" y2="21" />
-      <line x1="10.2" y1="3" x2="10.2" y2="21" />
-      <line x1="13.8" y1="3" x2="13.8" y2="21" />
-      <line x1="17.4" y1="3" x2="17.4" y2="21" />
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="9" x2="21" y2="9" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="15" x2="21" y2="15" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  ),
-  "3x3": (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="3" y="3" width="5" height="5" rx="1" />
-      <rect x="10" y="3" width="5" height="5" rx="1" />
-      <rect x="17" y="3" width="5" height="5" rx="1" />
-      <rect x="3" y="10" width="5" height="5" rx="1" />
-      <rect x="10" y="10" width="5" height="5" rx="1" />
-      <rect x="17" y="10" width="5" height="5" rx="1" />
-      <rect x="3" y="17" width="5" height="5" rx="1" />
-      <rect x="10" y="17" width="5" height="5" rx="1" />
-      <rect x="17" y="17" width="5" height="5" rx="1" />
-    </svg>
-  ),
-  "4x4": (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <line x1="3" y1="8" x2="21" y2="8" />
-      <line x1="3" y1="13" x2="21" y2="13" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-      <line x1="8" y1="3" x2="8" y2="21" />
-      <line x1="13" y1="3" x2="13" y2="21" />
-      <line x1="18" y1="3" x2="18" y2="21" />
-      <rect x="3" y="3" width="18" height="18" rx="1" />
-    </svg>
-  ),
-};
-
 const TEMPLATE_ORDER: TemplateId[] = ["1x1", "2x2", "3x3", "4x4", "5x6"];
 
 export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps) {
@@ -109,34 +55,30 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2">
-        <div className="flex items-center gap-1">
-          {TEMPLATE_ORDER.map((id) => {
+      <div className="flex items-center px-4 pt-4">
+        <div className="flex items-center overflow-hidden rounded-md border border-[#CCCCCC]">
+          {TEMPLATE_ORDER.map((id, index) => {
             const tmpl = GRID_TEMPLATES[id];
             return (
               <button
                 key={id}
                 onClick={() => handleTemplateChange(id)}
                 className={cn(
-                  "flex items-center justify-center gap-1 w-[50px] h-[36px] text-[12px] transition-colors",
+                  "flex items-center justify-center w-[50px] h-[36px] text-[12px] transition-colors",
+                  index > 0 && "border-l border-[#CCCCCC]",
                   selectedTemplate === id
                     ? "bg-[#F37021] text-white font-bold"
-                    : "bg-white border border-[#CCCCCC] text-[#555]"
+                    : "bg-white text-[#555]"
                 )}
                 title={tmpl.name}
               >
-                {TemplateIcons[id]}
-                <span>{tmpl.name}</span>
+                {tmpl.name}
               </button>
             );
           })}
         </div>
 
-        <span className="text-[12px] text-[#9399B0]">
-          (Ctrl + 드래그로 cctv 위치를 변경할 수 있습니다.)
-        </span>
-
-        <div className="flex items-center gap-0">
+        <div className="ml-auto flex items-center">
           <button
             onClick={() => handlePageChange("prev")}
             disabled={currentPage === 0}
