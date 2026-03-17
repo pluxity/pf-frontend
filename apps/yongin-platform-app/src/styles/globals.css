@@ -64,6 +64,21 @@ html {
   --color-brand-active: #c25914;
 }
 
+/* Widget 내부 스크롤바 (Figma scroll-bar S) */
+[data-widget] ::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+[data-widget] ::-webkit-scrollbar-track {
+  background: #e5e6e8;
+  border-radius: 0.3125rem;
+}
+
+[data-widget] ::-webkit-scrollbar-thumb {
+  background: #c0c4ca;
+  border-radius: 1.25rem;
+}
+
 /* MapLibre 팝업 기본 스타일 초기화 */
 .maplibregl-popup-content {
   padding: 0 !important;

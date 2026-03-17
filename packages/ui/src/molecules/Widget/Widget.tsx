@@ -77,6 +77,7 @@ function Widget({
     <div
       ref={ref}
       id={id}
+      data-widget=""
       draggable={dragDropContext?.editable}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
