@@ -112,7 +112,7 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2">
-        <div className="flex items-center gap-1 bg-white/80 rounded-lg p-1">
+        <div className="flex items-center gap-1">
           {TEMPLATE_ORDER.map((id) => {
             const tmpl = GRID_TEMPLATES[id];
             return (
@@ -120,49 +120,60 @@ export function CCTVViewer({ cctvs, getStreamUrl, onCardClick }: CCTVViewerProps
                 key={id}
                 onClick={() => handleTemplateChange(id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors",
+                  "flex items-center justify-center gap-1 w-[50px] h-[36px] text-[12px] transition-colors",
                   selectedTemplate === id
-                    ? "bg-brand text-white shadow-sm"
-                    : "text-primary-700 hover:text-primary-900 hover:bg-primary-50"
+                    ? "bg-[#F37021] text-white font-bold"
+                    : "bg-white border border-[#CCCCCC] text-[#555]"
                 )}
                 title={tmpl.name}
               >
                 {TemplateIcons[id]}
-                <span className="hidden sm:inline">{tmpl.name}</span>
+                <span>{tmpl.name}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="flex items-center gap-3 text-primary-800">
+        <span className="text-[12px] text-[#9399B0]">
+          (Ctrl + 드래그로 cctv 위치를 변경할 수 있습니다.)
+        </span>
+
+        <div className="flex items-center gap-0">
           <button
             onClick={() => handlePageChange("prev")}
             disabled={currentPage === 0}
-            className="p-1.5 rounded-lg hover:bg-white/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-5 h-[25px] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="이전 페이지"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
               <path
+                d="M7 1L1 7l6 6"
+                stroke="#999"
+                strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
               />
             </svg>
           </button>
 
-          <span className="text-sm font-medium min-w-[60px] text-center">
-            {currentPage + 1} / {totalPages || 1}
+          <span className="text-[12px] text-[#999] min-w-[24px] text-center">
+            {currentPage + 1}/{totalPages || 1}
           </span>
 
           <button
             onClick={() => handlePageChange("next")}
             disabled={currentPage >= totalPages - 1}
-            className="p-1.5 rounded-lg hover:bg-white/60 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="w-5 h-[25px] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="다음 페이지"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+              <path
+                d="M1 1l6 6-6 6"
+                stroke="#999"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>

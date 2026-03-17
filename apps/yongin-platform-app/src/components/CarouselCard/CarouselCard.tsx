@@ -1,6 +1,6 @@
 import { cn } from "@pf-dev/ui/utils";
-import { Button, Badge } from "@pf-dev/ui/atoms";
-import { ChevronLeft, ChevronRight } from "@pf-dev/ui/atoms";
+import { Badge } from "@pf-dev/ui/atoms";
+import { ChevronLeftSmall, ChevronRightSmall } from "@pf-dev/ui/atoms";
 
 import type {
   CarouselCardProps,
@@ -31,23 +31,27 @@ CarouselCard.Header = function CarouselCardHeader({
     <div className={cn("flex items-center mb-3", className)}>
       <h2 className={cn("font-bold", titleClassName)}>{title}</h2>
       {showArrows && onPrev && onNext && (
-        <div className="flex ml-auto border rounded-xl border-gray-300">
-          <Button
-            variant="ghost"
+        <div className="inline-flex ml-auto">
+          <button
             onClick={onPrev}
             aria-label="prev"
-            className={cn("w-8 h-6 p-0 border-r rounded-none border-gray-300", prevClassName)}
+            className={cn(
+              "px-[0.3125rem] py-[0.375rem] rounded-tl-[0.625rem] rounded-bl-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
+              prevClassName
+            )}
           >
-            <ChevronLeft size="xs" className="text-gray-300" />
-          </Button>
-          <Button
-            variant="ghost"
+            <ChevronLeftSmall size={10} className="text-[#9399B0]" />
+          </button>
+          <button
             onClick={onNext}
             aria-label="next"
-            className={cn("w-8 h-6 p-0 rounded-none", nextClassName)}
+            className={cn(
+              "px-[0.3125rem] py-[0.375rem] rounded-tr-[0.625rem] rounded-br-[0.625rem] outline outline-1 outline-offset-[-1px] outline-[#bbbecf] flex items-center justify-center hover:bg-gray-100 transition-colors",
+              nextClassName
+            )}
           >
-            <ChevronRight size="xs" className="text-gray-300" />
-          </Button>
+            <ChevronRightSmall size={10} className="text-[#9399B0]" />
+          </button>
         </div>
       )}
     </div>

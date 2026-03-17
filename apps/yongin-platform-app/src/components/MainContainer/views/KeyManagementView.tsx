@@ -15,13 +15,12 @@ type SectionKey = keyof Pick<
 interface Section {
   key: SectionKey;
   label: string;
-  step: number;
 }
 
 const SECTIONS: Section[] = [
-  { key: "methodFeature", label: "특징", step: 1 },
-  { key: "methodContent", label: "내용", step: 2 },
-  { key: "methodDirection", label: "추진방향", step: 3 },
+  { key: "methodFeature", label: "특징" },
+  { key: "methodContent", label: "내용" },
+  { key: "methodDirection", label: "추진방향" },
 ];
 
 export function KeyManagementView() {
@@ -43,45 +42,30 @@ export function KeyManagementView() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-primary-50/30">
-      {/* Header: 타입 뱃지 + 제목 */}
-      {currentItem && (
-        <div className="px-4 pt-3 pb-2 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 text-[10px] rounded bg-brand/10 text-brand font-medium">
-              {getTypeDescription(currentItem.type)}
-            </span>
-            <h2 className="text-sm font-semibold text-gray-800 truncate">{currentItem.title}</h2>
-          </div>
-        </div>
-      )}
-
+    <div className="flex flex-col h-full bg-[#54565A]">
       {/* Content: 좌측 이미지 + 우측 텍스트 */}
       <div className="flex-1 min-h-0">
         {items.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-400">
+          <div className="flex items-center justify-center h-full text-gray-300">
             등록된 항목이 없습니다
           </div>
         ) : (
           <div className="flex h-full">
-            {/* 좌측: 이미지 캐러셀 */}
-            <div className="w-1/2 h-full">
+            {/* 좌측: 이미지 캐러셀 + 좌상단 오버레이 */}
+            <div className="relative w-1/2 h-full">
               <Carousel
                 transition="slide"
                 loop
                 autoPlay
                 autoPlayInterval={10000}
-                showArrows={items.length > 1}
+                showArrows={false}
                 showIndicators={items.length > 1}
                 activeIndex={activeIndex}
                 onChange={setActiveIndex}
                 className="h-full"
               >
                 {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-center h-full bg-white p-4"
-                  >
+                  <div key={item.id} className="flex items-center justify-center h-full p-4">
                     {item.file?.url ? (
                       <img
                         src={item.file.url}
@@ -89,7 +73,7 @@ export function KeyManagementView() {
                         className="max-w-full max-h-full object-contain"
                       />
                     ) : (
-                      <div className="flex flex-col items-center justify-center w-full h-full text-gray-300">
+                      <div className="flex flex-col items-center justify-center w-full h-full text-gray-500">
                         <svg
                           className="w-16 h-16 mb-2"
                           fill="none"
@@ -110,26 +94,32 @@ export function KeyManagementView() {
                   </div>
                 ))}
               </Carousel>
+
+              {/* 좌상단 타입 TAG + 타이틀 오버레이 */}
+              {currentItem && (
+                <div className="absolute top-3 left-3 flex items-center gap-2 z-10">
+                  <span className="bg-[#F37021] text-white text-[18px] font-bold px-[5px] py-[3px] leading-tight">
+                    {getTypeDescription(currentItem.type)}
+                  </span>
+                  <span className="text-[20px] font-bold text-[#F37021]">{currentItem.title}</span>
+                </div>
+              )}
             </div>
 
-            {/* 우측: 공법 상세 */}
-            <div className="w-1/2 h-full overflow-y-auto p-4 flex flex-col gap-3">
+            {/* 우측: 공법 상세 — 플랫 섹션 */}
+            <div className="w-1/2 h-full overflow-y-auto p-4 flex flex-col gap-3 key-management-scroll">
               {SECTIONS.map(
                 (section) =>
                   currentItem?.[section.key] && (
-                    <div
-                      key={section.key}
-                      className="rounded-lg bg-white border border-gray-200 p-3"
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-brand/20 text-brand text-[10px] font-bold shrink-0">
-                          {section.step}
-                        </span>
-                        <h4 className="text-xs font-semibold text-gray-700">{section.label}</h4>
+                    <div key={section.key}>
+                      <div className="bg-[#333] h-[35px] px-[10px] flex items-center rounded-md">
+                        <h4 className="text-[16px] font-bold text-white">{section.label}</h4>
                       </div>
-                      <p className="text-xs text-gray-500 whitespace-pre-wrap leading-relaxed pl-7">
-                        {currentItem[section.key]}
-                      </p>
+                      <div className="px-[10px] py-2 max-h-[200px] overflow-y-auto key-management-scroll">
+                        <p className="text-[14px] text-white whitespace-pre-wrap leading-relaxed">
+                          {currentItem[section.key]}
+                        </p>
+                      </div>
                     </div>
                   )
               )}
@@ -137,6 +127,20 @@ export function KeyManagementView() {
           </div>
         )}
       </div>
+
+      {/* 커스텀 스크롤바 스타일 */}
+      <style>{`
+        .key-management-scroll::-webkit-scrollbar {
+          width: 5px;
+        }
+        .key-management-scroll::-webkit-scrollbar-track {
+          background: #DFE4EB;
+        }
+        .key-management-scroll::-webkit-scrollbar-thumb {
+          background: #8B8B8B;
+          border-radius: 2.5px;
+        }
+      `}</style>
     </div>
   );
 }
