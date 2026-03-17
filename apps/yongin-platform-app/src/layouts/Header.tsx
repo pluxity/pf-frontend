@@ -72,7 +72,7 @@ export function Header() {
                 variant="ghost"
                 size="icon"
                 aria-label="관리자 페이지로 이동"
-                onClick={() => (window.location.href = ADMIN_URL)}
+                onClick={() => window.open(ADMIN_URL, "_blank", "noopener,noreferrer")}
                 className="bg-white/50 rounded-[0.9375rem] border border-[#999] w-10 h-10"
               >
                 <Settings size="lg" className="text-gray-600" />

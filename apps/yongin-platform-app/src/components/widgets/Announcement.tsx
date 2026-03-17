@@ -43,22 +43,22 @@ export function Announcement({ id, className }: BaseWidgetProps) {
     <Widget id={id} className={cn(className)} contentClassName="h-full flex flex-col p-4">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-bold text-lg">공지사항</h3>
+        <h3 className="font-bold text-[16px] text-[#333] tracking-[-0.16px]">공지사항</h3>
         {total > 1 && (
           <div className="flex">
             <button
               onClick={goPrev}
-              className="w-7 h-7 flex items-center justify-center rounded-l border border-gray-300 hover:bg-gray-100 transition-colors"
+              className="w-6 h-5 flex items-center justify-center rounded-l-[10px] rounded-r-none border border-[#BBBFCF] hover:bg-gray-100 transition-colors"
               aria-label="이전 공지"
             >
-              <img src={arrowPrevIcon} alt="" className="w-4 h-4" />
+              <img src={arrowPrevIcon} alt="" className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={goNext}
-              className="w-7 h-7 flex items-center justify-center rounded-r border border-l-0 border-gray-300 hover:bg-gray-100 transition-colors"
+              className="w-6 h-5 flex items-center justify-center rounded-r-[10px] rounded-l-none border border-l-0 border-[#BBBFCF] hover:bg-gray-100 transition-colors"
               aria-label="다음 공지"
             >
-              <img src={arrowNextIcon} alt="" className="w-4 h-4" />
+              <img src={arrowNextIcon} alt="" className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
@@ -68,7 +68,6 @@ export function Announcement({ id, className }: BaseWidgetProps) {
       {isLoading && (
         <div className="flex-1 space-y-2">
           <div className="h-5 w-28 bg-gray-200 rounded animate-pulse" />
-          <div className="h-px w-full bg-gray-200" />
           <div className="h-3 w-full bg-gray-200 rounded animate-pulse" />
           <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse" />
         </div>
@@ -88,12 +87,12 @@ export function Announcement({ id, className }: BaseWidgetProps) {
 
       {!isLoading && !isError && notice && (
         <div className="flex-1 min-h-0 flex flex-col">
-          <p className="font-bold text-sm text-gray-800 mb-1">{notice.title}</p>
-          <p className="text-xs text-gray-400 mb-2">{formatDate(notice.updatedAt)}</p>
-          <hr className="border-gray-200 mb-2" />
-          <div className="flex-1 min-h-0 overflow-y-auto text-sm text-gray-600 leading-relaxed">
+          <p className="font-bold text-[14px] text-[#030303] mb-[23px]">
+            {formatDate(notice.updatedAt)}
+          </p>
+          <div className="flex-1 min-h-0 overflow-y-auto text-[12px] text-[#555] leading-[20px] tracking-[-0.12px]">
             <p className="indent-[-0.75em] pl-3">
-              <span className="text-gray-400 mr-1">•</span>
+              <span className="text-[#555] mr-1">&bull;</span>
               {notice.content}
             </p>
           </div>
