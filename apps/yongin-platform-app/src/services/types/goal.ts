@@ -21,6 +21,7 @@ export interface GoalResponse {
   completionDate: string;
   plannedWorkDays: number;
   delayDays: number;
+  isActive: boolean;
 }
 
 // 앱에서 사용할 타입
@@ -40,4 +41,5 @@ export interface GoalData {
   plannedWorkDays: number;
   completionDate: string;
   delayDays: number;
+  isActive: boolean;
 }

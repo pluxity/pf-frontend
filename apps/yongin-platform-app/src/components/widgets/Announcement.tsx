@@ -90,10 +90,15 @@ export function Announcement({ id, className }: BaseWidgetProps) {
             {formatDate(notice.updatedAt)}
           </p>
           <div className="flex-1 min-h-0 overflow-y-auto text-[12px] text-[#555] leading-[20px] tracking-[-0.12px]">
-            <p className="indent-[-0.75em] pl-3">
-              <span className="text-[#555] mr-1">&bull;</span>
-              {notice.content}
-            </p>
+            {notice.content
+              .split("\n")
+              .filter(Boolean)
+              .map((line, i) => (
+                <p key={i} className="indent-[-0.75em] pl-3">
+                  <span className="text-[#555] mr-1">&bull;</span>
+                  {line}
+                </p>
+              ))}
           </div>
         </div>
       )}

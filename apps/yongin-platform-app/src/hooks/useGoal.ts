@@ -9,7 +9,7 @@ export function useGoal() {
   });
 
   return {
-    goals: data ?? [],
+    goals: (data ?? []).filter((g) => g.isActive),
     isLoading,
     isError: !!error,
     error,
