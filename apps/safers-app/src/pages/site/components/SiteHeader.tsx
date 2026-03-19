@@ -30,16 +30,16 @@ export function SiteHeader({
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => navigate("/")}
-          className="flex h-10 w-10 items-center justify-center rounded-[0.9375rem] text-[#55596C] transition-colors hover:bg-neutral-100"
-          aria-label="메뉴"
+          onClick={() => navigate(-1)}
+          className="flex h-10 w-10 items-center justify-center rounded-md text-[#55596C] transition-colors hover:bg-neutral-100"
+          aria-label="뒤로가기"
         >
-          <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
-              d="M1 1h16M1 7h16M1 13h16"
-              stroke="currentColor"
-              strokeWidth="2"
               strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
             />
           </svg>
         </button>

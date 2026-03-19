@@ -1,22 +1,36 @@
 import { useState, useRef } from "react";
 import { useIsLandscape } from "@/hooks/useIsMobile";
-import type { StompEventResponse, ConnectionStatus } from "@/services";
+import type { StompEventResponse } from "@/services";
 import { EventLogPanel } from "./EventLogPanel";
 
 interface MobileEventSheetProps {
   events: StompEventResponse[];
-  connectionStatus: ConnectionStatus;
   isLoading: boolean;
+  isSearching?: boolean;
+  query: string;
+  onQueryChange: (q: string) => void;
   selectedEventId: string | null;
   onSelectEvent: (event: StompEventResponse) => void;
+  pendingCount?: number;
+  onRefreshToLatest?: () => void;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
 }
 
 export function MobileEventSheet({
   events,
-  connectionStatus,
   isLoading,
+  isSearching,
+  query,
+  onQueryChange,
   selectedEventId,
   onSelectEvent,
+  pendingCount,
+  onRefreshToLatest,
+  hasMore,
+  isLoadingMore,
+  onLoadMore,
 }: MobileEventSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const isLandscape = useIsLandscape();
@@ -119,10 +133,17 @@ export function MobileEventSheet({
           <div className="min-h-0 flex-1 overflow-hidden pl-4">
             <EventLogPanel
               events={events}
-              connectionStatus={connectionStatus}
               isLoading={isLoading}
+              isSearching={isSearching}
+              query={query}
+              onQueryChange={onQueryChange}
               selectedEventId={selectedEventId}
               onSelectEvent={handleSelectEvent}
+              pendingCount={pendingCount}
+              onRefreshToLatest={onRefreshToLatest}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
+              onLoadMore={onLoadMore}
             />
           </div>
         </div>
@@ -181,10 +202,17 @@ export function MobileEventSheet({
         <div className="min-h-0 flex-1 overflow-hidden">
           <EventLogPanel
             events={events}
-            connectionStatus={connectionStatus}
             isLoading={isLoading}
+            isSearching={isSearching}
+            query={query}
+            onQueryChange={onQueryChange}
             selectedEventId={selectedEventId}
             onSelectEvent={handleSelectEvent}
+            pendingCount={pendingCount}
+            onRefreshToLatest={onRefreshToLatest}
+            hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={onLoadMore}
           />
         </div>
       </div>

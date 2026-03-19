@@ -37,7 +37,7 @@ export function PTZControl() {
       {open && (
         <div
           ref={panelRef}
-          className="absolute bottom-14 right-0 w-[280px] rounded-xl bg-[#1A1D27]/90 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
+          className="absolute bottom-[4.5rem] right-0 w-[280px] rounded-xl bg-[#1A1D27]/90 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
           style={{ border: "1px solid rgba(255,255,255,0.08)" }}
         >
           {/* 헤더 */}
@@ -183,21 +183,64 @@ export function PTZControl() {
         </div>
       )}
 
-      {/* FAB 버튼 — 조이스틱 */}
-      <button
-        ref={fabRef}
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${
-          open
-            ? "bg-brand text-white shadow-[0_0_12px_rgba(77,126,255,0.5)]"
-            : "bg-[#1A1D27]/80 text-white/60 backdrop-blur-sm hover:bg-[#252833] hover:text-white shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-        }`}
-        style={{ border: "1px solid rgba(255,255,255,0.1)" }}
-        title="카메라 제어"
-      >
-        <JoystickIcon size={20} />
-      </button>
+      {/* FAB 버튼 — PTZ 컨트롤 */}
+      <style>{`
+        @keyframes ptz-border-ripple {
+          0% { transform: scale(1); opacity: 0.6; }
+          100% { transform: scale(1.6); opacity: 0; }
+        }
+        @keyframes ptz-border-ripple2 {
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(1.9); opacity: 0; }
+        }
+        @keyframes ptz-glow-pulse {
+          0%, 100% { box-shadow: 0 0 6px rgba(255,117,0,0.5), 0 0 14px rgba(255,117,0,0.2); }
+          50% { box-shadow: 0 0 10px rgba(255,117,0,0.7), 0 0 20px rgba(255,117,0,0.3); }
+        }
+      `}</style>
+      <div className="group relative flex items-center">
+        {/* hover 시 좌측으로 튀어나오는 PTZ 북마크 탭 */}
+        <div className="absolute right-[calc(100%-1rem)] flex translate-x-4 items-center opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100">
+          <div className="flex items-center gap-1.5 rounded-l-full border border-r-0 border-white/30 bg-brand/20 py-1.5 pl-4 pr-6 backdrop-blur-sm">
+            <span className="text-xs font-bold tracking-widest text-brand">PTZ</span>
+          </div>
+        </div>
+
+        <button
+          ref={fabRef}
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          style={
+            open
+              ? undefined
+              : {
+                  animation: "ptz-glow-pulse 2s ease-in-out infinite",
+                }
+          }
+          className={`relative z-10 flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full transition-all duration-200 ${
+            open
+              ? "bg-brand text-white border border-brand shadow-[0_0_12px_rgba(255,117,0,0.6)]"
+              : "bg-brand text-white border border-white/40 backdrop-blur-sm"
+          }`}
+          title="카메라 PTZ 제어"
+        >
+          {!open && (
+            <>
+              <span
+                className="absolute inset-0 rounded-full border border-white/60"
+                style={{ animation: "ptz-border-ripple 2s ease-out infinite" }}
+              />
+              <span
+                className="absolute inset-0 rounded-full border border-white/30"
+                style={{ animation: "ptz-border-ripple2 2s ease-out infinite 0.8s" }}
+              />
+            </>
+          )}
+          <span className="relative z-10">
+            <JoystickIcon size={24} />
+          </span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCCTVAIEvents } from "@/hooks/useCCTVAIEvents";
+import { useCCTVStreams } from "@/hooks/useCCTVStreams";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import type { StompEventResponse } from "@/services";
 import { VideoPanel } from "./components/VideoPanel";
@@ -14,7 +15,20 @@ export function CCTVAIPage() {
   const isMobile = useIsMobile();
   const [selectedStream, setSelectedStream] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<StompEventResponse | null>(null);
-  const { events, connectionStatus, isLoading } = useCCTVAIEvents();
+  const [query, setQuery] = useState("");
+  const {
+    events,
+    connectionStatus,
+    isLoading,
+    isSearching,
+    pendingCount,
+    refreshToLatest,
+    hasMore,
+    isLoadingMore,
+    loadMore,
+  } = useCCTVAIEvents(query);
+  const { items, isLoading: streamsLoading, isError, error } = useCCTVStreams(Number(siteId));
+  const siteName = items[0]?.siteName;
 
   // 이벤트 선택 시 — 좌측 패널을 이벤트 영상 모드로 전환
   function handleSelectEvent(event: StompEventResponse) {
@@ -52,6 +66,14 @@ export function CCTVAIPage() {
           <h1 className="flex items-center gap-2 text-lg font-bold text-white md:text-2xl">
             <img src={biLogo} alt="Safers" className="h-5 md:h-6" />
             <span className="text-brand mb-[-0.25rem]">AI CCTV</span>
+            {siteName && (
+              <>
+                <span className="text-white/40 mx-0.5">|</span>
+                <span className="text-white/80 truncate max-w-[8rem] md:max-w-none text-sm md:text-base font-medium mb-[-0.25rem]">
+                  {siteName}
+                </span>
+              </>
+            )}
           </h1>
         </div>
 
@@ -76,7 +98,10 @@ export function CCTVAIPage() {
         {/* 영상 패널 */}
         <section className="flex flex-1 flex-col p-2 md:flex-[3] md:border-r md:border-[#2A2D3A] md:p-4">
           <VideoPanel
-            siteId={Number(siteId)}
+            items={items}
+            isLoading={streamsLoading}
+            isError={isError}
+            error={error}
             selectedStream={selectedStream}
             onStreamChange={setSelectedStream}
             selectedEvent={activeSelectedEvent}
@@ -89,19 +114,39 @@ export function CCTVAIPage() {
         {isMobile ? (
           <MobileEventSheet
             events={events}
-            connectionStatus={connectionStatus}
             isLoading={isLoading}
+            isSearching={isSearching}
+            query={query}
+            onQueryChange={setQuery}
             selectedEventId={activeSelectedEvent?.eventId ?? null}
             onSelectEvent={handleSelectEvent}
+            pendingCount={pendingCount}
+            onRefreshToLatest={() => {
+              setQuery("");
+              refreshToLatest();
+            }}
+            hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={loadMore}
           />
         ) : (
-          <section className="flex w-[25rem] shrink-0 flex-col">
+          <section className="flex w-[30rem] shrink-0 flex-col border-l-2 border-brand/30 bg-[#0F1117]">
             <EventLogPanel
               events={events}
-              connectionStatus={connectionStatus}
               isLoading={isLoading}
+              isSearching={isSearching}
+              query={query}
+              onQueryChange={setQuery}
               selectedEventId={activeSelectedEvent?.eventId ?? null}
               onSelectEvent={handleSelectEvent}
+              pendingCount={pendingCount}
+              onRefreshToLatest={() => {
+                setQuery("");
+                refreshToLatest();
+              }}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
+              onLoadMore={loadMore}
             />
           </section>
         )}

@@ -23,7 +23,7 @@ function CCTVCard({ streamUrl, name }: { streamUrl: string; name: string }) {
 
       {status === "failed" && <StreamErrorOverlay onReconnect={() => connect()} />}
 
-      <StreamStatusBadge label="WHEP" name={name} />
+      <StreamStatusBadge label="WHEP" name={name} compact />
     </div>
   );
 }

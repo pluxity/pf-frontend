@@ -3,7 +3,7 @@ import { useWHEPStream } from "@pf-dev/cctv";
 import { GridLayout } from "@pf-dev/ui/organisms";
 import { Widget } from "@pf-dev/ui/molecules";
 import type { GridTemplate } from "@pf-dev/ui";
-import { useCCTVStreams, type CCTVStreamItem } from "@/hooks/useCCTVStreams";
+import type { CCTVStreamItem } from "@/hooks/useCCTVStreams";
 import { StreamLoadingOverlay, StreamErrorOverlay, StreamStatusBadge } from "@/components/cctv";
 import { PTZControl } from "./PTZControl";
 import type { StompEventResponse } from "@/services";
@@ -112,7 +112,14 @@ function LiveStreamPlayer({
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-lg bg-black">
-      <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-contain" />
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        controls
+        className="h-full w-full object-contain"
+      />
 
       {status === "connecting" && <StreamLoadingOverlay compact={compact} />}
       {status === "failed" && (
@@ -258,7 +265,10 @@ function LiveGrid({
 // ─── VideoPanel ───
 
 interface VideoPanelProps {
-  siteId: number;
+  items: CCTVStreamItem[];
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
   selectedStream: string;
   onStreamChange: (streamName: string) => void;
   selectedEvent: StompEventResponse | null;
@@ -267,14 +277,16 @@ interface VideoPanelProps {
 }
 
 export function VideoPanel({
-  siteId,
+  items,
+  isLoading,
+  isError,
+  error,
   selectedStream,
   onStreamChange,
   selectedEvent,
   onClearEvent,
   isMobile,
 }: VideoPanelProps) {
-  const { items, isLoading, isError, error } = useCCTVStreams(siteId);
   const [gridMode, setGridMode] = useState<GridMode>("1x1");
   const [page, setPage] = useState(0);
 
@@ -400,7 +412,7 @@ export function VideoPanel({
             <LiveStreamPlayer streamUrl={activeItem.whepUrl} name={activeItem.displayName} />
             {/* PTZ: 모바일 숨김 (관제 기능 제외) */}
             {!isMobile && (
-              <div className="absolute bottom-3 right-3 z-10">
+              <div className="absolute bottom-16 right-3 z-10">
                 <PTZControl />
               </div>
             )}
