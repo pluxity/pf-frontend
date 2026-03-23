@@ -49,3 +49,17 @@ export type {
   FeatureStoreState,
   FeatureActions,
 } from "./feature";
+
+// GeoJSON
+export type {
+  GeoJsonFeature,
+  GeoJsonFeatureCollection,
+  GeoJsonPolygonGeometry,
+  GeoJsonMultiPolygonGeometry,
+  GeoJsonGeometry,
+  GeoJsonLayerStyle,
+  GeoJsonLayerProps,
+  GeoJsonScaleByDistance,
+  GeoJsonMarkerStyle,
+  GeoJsonMarkersProps,
+} from "./geojson";
