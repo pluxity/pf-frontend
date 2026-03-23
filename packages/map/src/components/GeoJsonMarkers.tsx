@@ -3,7 +3,6 @@ import {
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
   NearFarScalar,
-  ConstantProperty,
   DistanceDisplayCondition,
   defined,
   type Cartesian2,
@@ -53,6 +52,13 @@ export function GeoJsonMarkers({ layerName, style, show = true, onClick }: GeoJs
   useEffect(() => {
     if (!viewer || viewer.isDestroyed() || !layer?.data) return;
 
+    // 기존 마커 정리 (React Strict Mode 대응)
+    if (markerIdsRef.current.length > 0) {
+      useFeatureStore.getState().removeFeatures(markerIdsRef.current);
+      markerIdsRef.current = [];
+      featurePropsRef.current.clear();
+    }
+
     const features = layer.data.features;
     const markerLayerName = `${MARKER_LAYER_PREFIX}${layerName}`;
     const ids: string[] = [];
@@ -81,8 +87,9 @@ export function GeoJsonMarkers({ layerName, style, show = true, onClick }: GeoJs
             disableDepthTestDistance: style.disableDepthTestDistance,
             distanceDisplayCondition: style.distanceDisplayCondition,
           },
+          // default DataSource에 추가 (removeFeatures 호환성)
           meta: {
-            layerName: markerLayerName,
+            tags: [markerLayerName],
           },
         };
       })
@@ -97,22 +104,25 @@ export function GeoJsonMarkers({ layerName, style, show = true, onClick }: GeoJs
         if (entity.billboard) {
           if (style.scaleByDistance) {
             const sbd = style.scaleByDistance;
-            entity.billboard.scaleByDistance = new ConstantProperty(
-              new NearFarScalar(sbd.near, sbd.nearScale, sbd.far, sbd.farScale)
-            );
+            entity.billboard.scaleByDistance = new NearFarScalar(
+              sbd.near,
+              sbd.nearScale,
+              sbd.far,
+              sbd.farScale
+            ) as unknown as import("cesium").Property;
           }
 
           if (style.distanceDisplayCondition) {
             const ddc = style.distanceDisplayCondition;
-            entity.billboard.distanceDisplayCondition = new ConstantProperty(
-              new DistanceDisplayCondition(ddc.near ?? 0, ddc.far ?? Number.MAX_VALUE)
-            );
+            entity.billboard.distanceDisplayCondition = new DistanceDisplayCondition(
+              ddc.near ?? 0,
+              ddc.far ?? Number.MAX_VALUE
+            ) as unknown as import("cesium").Property;
           }
 
           if (style.disableDepthTestDistance !== undefined) {
-            entity.billboard.disableDepthTestDistance = new ConstantProperty(
-              style.disableDepthTestDistance
-            );
+            entity.billboard.disableDepthTestDistance =
+              style.disableDepthTestDistance as unknown as import("cesium").Property;
           }
         }
       }
@@ -227,9 +237,15 @@ function getFeatureCenter(feature: GeoJsonFeature): { longitude: number; latitud
     case "Polygon":
       return calculatePolygonCenter(feature.geometry.coordinates);
     case "MultiPolygon": {
-      const firstPolygon = feature.geometry.coordinates[0];
-      if (!firstPolygon) return null;
-      return calculatePolygonCenter(firstPolygon);
+      const polygons = feature.geometry.coordinates;
+      if (!polygons || polygons.length === 0) return null;
+
+      // 꼭짓점 수가 가장 많은 폴리곤을 대표로 사용
+      const mainPolygon = polygons.reduce((a, b) =>
+        (a[0]?.length ?? 0) > (b[0]?.length ?? 0) ? a : b
+      );
+
+      return calculatePolygonCenter(mainPolygon);
     }
     default:
       return null;

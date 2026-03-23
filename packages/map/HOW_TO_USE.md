@@ -909,8 +909,8 @@ const [showLayer, setShowLayer] = useState(true);
   data="/data/districts.json"
   layerName="districts"
   style={{ fillColor: Color.BLUE, fillOpacity: 0.3 }}
-  onReady={(dataSource) => {
-    console.log("GeoJSON 로드 완료:", dataSource.entities.values.length, "개 엔티티");
+  onReady={(entityCount) => {
+    console.log("GeoJSON 로드 완료:", entityCount, "개 엔티티");
   }}
   onError={(error) => {
     console.error("GeoJSON 로드 실패:", error);
@@ -1108,7 +1108,7 @@ import { simplifyGeoJSON } from "@pf-dev/map";
 
 // tolerance가 클수록 더 많이 단순화됨
 const simplified = simplifyGeoJSON(featureCollection, 0.001);
-console.log("원본 좌표:", original.features[0].geometry.coordinates[0].length);
+console.log("원본 좌표:", featureCollection.features[0].geometry.coordinates[0].length);
 console.log("단순화 좌표:", simplified.features[0].geometry.coordinates[0].length);
 ```
 
