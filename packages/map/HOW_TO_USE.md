@@ -805,6 +805,369 @@ export type {
 export { isLookAtFeature, isZoomToCoordinates, isZoomToFeatures, isZoomToBoundary } from "./types";
 ```
 
+## GeoJSON 기능
+
+GeoJSON 데이터를 지도 위에 폴리곤으로 렌더링하고, 각 폴리곤 중심에 인터랙티브 마커를 표시할 수 있습니다.
+
+### GeoJsonLayer 컴포넌트
+
+GeoJSON 데이터를 폴리곤/라인/포인트로 렌더링합니다.
+
+#### 기본 사용법
+
+```tsx
+import { GeoJsonLayer } from "@pf-dev/map";
+import { Color } from "cesium";
+
+// URL로 데이터 로드
+<GeoJsonLayer
+  data="/data/districts.json"
+  layerName="districts"
+  style={{
+    fillColor: Color.BLUE,
+    fillOpacity: 0.3,
+    outline: true,
+    outlineColor: Color.WHITE,
+  }}
+/>
+
+// 객체로 직접 전달
+<GeoJsonLayer
+  data={geoJsonObject}
+  layerName="zones"
+  style={{
+    fillColor: Color.GREEN,
+    fillOpacity: 0.2,
+    extrudedHeight: 50,
+  }}
+/>
+```
+
+#### 스타일 커스터마이징
+
+```tsx
+<GeoJsonLayer
+  data="/data/regions.json"
+  layerName="regions"
+  style={{
+    fillColor: Color.CYAN, // 채우기 색상
+    fillOpacity: 0.4, // 채우기 투명도 (0~1)
+    outline: true, // 외곽선 표시
+    outlineColor: Color.WHITE, // 외곽선 색상
+    extrudedHeight: 100, // 돌출 높이 (m)
+  }}
+/>
+```
+
+#### Feature별 개별 스타일 (styleResolver)
+
+각 Feature의 속성에 따라 개별 스타일을 적용할 수 있습니다.
+
+```tsx
+<GeoJsonLayer
+  data="/data/districts.json"
+  layerName="districts"
+  style={{
+    fillColor: Color.GRAY,
+    fillOpacity: 0.3,
+  }}
+  styleResolver={(properties) => {
+    // properties는 GeoJSON Feature의 properties 객체
+    const population = properties.population as number;
+    if (population > 500000) {
+      return { fillColor: Color.RED, fillOpacity: 0.5 };
+    }
+    if (population > 200000) {
+      return { fillColor: Color.ORANGE, fillOpacity: 0.4 };
+    }
+    return {}; // 기본 스타일 사용
+  }}
+/>
+```
+
+#### 표시/숨기기
+
+```tsx
+const [showLayer, setShowLayer] = useState(true);
+
+<GeoJsonLayer
+  data="/data/districts.json"
+  layerName="districts"
+  show={showLayer}
+  style={{ fillColor: Color.BLUE, fillOpacity: 0.3 }}
+/>
+
+<button onClick={() => setShowLayer((prev) => !prev)}>
+  레이어 토글
+</button>
+```
+
+#### 이벤트 콜백
+
+```tsx
+<GeoJsonLayer
+  data="/data/districts.json"
+  layerName="districts"
+  style={{ fillColor: Color.BLUE, fillOpacity: 0.3 }}
+  onReady={(dataSource) => {
+    console.log("GeoJSON 로드 완료:", dataSource.entities.values.length, "개 엔티티");
+  }}
+  onError={(error) => {
+    console.error("GeoJSON 로드 실패:", error);
+  }}
+/>
+```
+
+---
+
+### GeoJsonMarkers 컴포넌트
+
+GeoJsonLayer에서 로드한 폴리곤의 중심점에 마커를 표시합니다. `layerName`으로 연결합니다.
+
+#### 기본 사용법
+
+```tsx
+import { GeoJsonLayer, GeoJsonMarkers } from "@pf-dev/map";
+
+<MapViewer>
+  <Imagery provider="osm" />
+
+  <GeoJsonLayer
+    data="/data/districts.json"
+    layerName="districts"
+    style={{ fillColor: Color.BLUE, fillOpacity: 0.3 }}
+  />
+
+  <GeoJsonMarkers
+    layerName="districts"
+    style={{
+      image: "/icons/pin.png",
+      selectedImage: "/icons/pin-active.png",
+      width: 32,
+      height: 32,
+    }}
+  />
+</MapViewer>;
+```
+
+#### 마커 스타일
+
+```tsx
+<GeoJsonMarkers
+  layerName="districts"
+  style={{
+    image: "/icons/marker.png", // 기본 마커 이미지
+    selectedImage: "/icons/marker-on.png", // 선택 시 이미지
+    width: 28, // 마커 너비 (px)
+    height: 28, // 마커 높이 (px)
+  }}
+/>
+```
+
+#### 거리 기반 스케일링 (scaleByDistance)
+
+카메라 거리에 따라 마커 크기를 자동 조절합니다.
+
+```tsx
+<GeoJsonMarkers
+  layerName="districts"
+  style={{
+    image: "/icons/pin.png",
+    width: 32,
+    height: 32,
+  }}
+  scaleByDistance={{
+    near: 1000, // 가까운 거리 (m)
+    nearValue: 1.5, // 가까울 때 스케일
+    far: 50000, // 먼 거리 (m)
+    farValue: 0.5, // 멀 때 스케일
+  }}
+/>
+```
+
+#### 클릭 이벤트
+
+```tsx
+<GeoJsonMarkers
+  layerName="districts"
+  style={{
+    image: "/icons/pin.png",
+    selectedImage: "/icons/pin-active.png",
+    width: 32,
+    height: 32,
+  }}
+  onClick={(featureId, properties) => {
+    console.log("클릭된 Feature:", featureId);
+    console.log("속성:", properties);
+    // { name: "강남구", population: 550000, ... }
+  }}
+/>
+```
+
+#### 선택 상태 관리
+
+```tsx
+import { useGeoJsonStore } from "@pf-dev/map";
+
+function DistrictInfo() {
+  const { selectFeature } = useGeoJsonStore();
+
+  // 프로그래밍 방식으로 선택
+  const handleSelect = (id: string) => {
+    selectFeature("districts", id);
+  };
+
+  return <button onClick={() => handleSelect("gangnam")}>강남구 선택</button>;
+}
+```
+
+---
+
+### useGeoJsonStore
+
+GeoJSON 레이어의 상태를 관리하는 Zustand Store입니다.
+
+```tsx
+import { useGeoJsonStore } from "@pf-dev/map";
+
+function GeoJsonManager() {
+  const {
+    addLayer,
+    removeLayer,
+    getLayer,
+    updateLayerStyle,
+    setLayerVisibility,
+    selectFeature,
+    clearAll,
+    getLayerNames,
+  } = useGeoJsonStore();
+
+  // ...
+}
+```
+
+#### API 참조
+
+| 메서드               | 시그니처                                                    | 설명                 |
+| -------------------- | ----------------------------------------------------------- | -------------------- |
+| `addLayer`           | `(layerName: string, data: GeoJsonLayerData) => void`       | 레이어 등록          |
+| `removeLayer`        | `(layerName: string) => void`                               | 레이어 제거          |
+| `getLayer`           | `(layerName: string) => GeoJsonLayerData \| undefined`      | 레이어 조회          |
+| `updateLayerStyle`   | `(layerName: string, style: Partial<GeoJsonStyle>) => void` | 스타일 업데이트      |
+| `setLayerVisibility` | `(layerName: string, visible: boolean) => void`             | 가시성 토글          |
+| `selectFeature`      | `(layerName: string, featureId: string \| null) => void`    | Feature 선택/해제    |
+| `clearAll`           | `() => void`                                                | 모든 레이어 제거     |
+| `getLayerNames`      | `() => string[]`                                            | 등록된 레이어명 목록 |
+
+#### Store 직접 접근 (컴포넌트 외부)
+
+```tsx
+import { geoJsonStore } from "@pf-dev/map";
+
+// 레이어 가시성 토글
+geoJsonStore.getState().setLayerVisibility("districts", false);
+
+// 특정 Feature 선택
+geoJsonStore.getState().selectFeature("districts", "gangnam");
+
+// 선택 해제
+geoJsonStore.getState().selectFeature("districts", null);
+```
+
+---
+
+### 유틸리티 함수
+
+GeoJSON 데이터 전처리를 위한 유틸리티 함수들입니다.
+
+#### calculatePolygonCenter
+
+폴리곤의 중심점(centroid)을 계산합니다.
+
+```tsx
+import { calculatePolygonCenter } from "@pf-dev/map";
+
+const coordinates = [
+  [127.0, 37.5],
+  [127.1, 37.5],
+  [127.1, 37.6],
+  [127.0, 37.6],
+  [127.0, 37.5], // 닫힌 폴리곤
+];
+
+const center = calculatePolygonCenter(coordinates);
+// { longitude: 127.05, latitude: 37.55 }
+```
+
+#### simplifyGeoJSON
+
+좌표 수를 줄여 렌더링 성능을 개선합니다. Douglas-Peucker 알고리즘을 사용합니다.
+
+```tsx
+import { simplifyGeoJSON } from "@pf-dev/map";
+
+// tolerance가 클수록 더 많이 단순화됨
+const simplified = simplifyGeoJSON(featureCollection, 0.001);
+console.log("원본 좌표:", original.features[0].geometry.coordinates[0].length);
+console.log("단순화 좌표:", simplified.features[0].geometry.coordinates[0].length);
+```
+
+#### removeSmallIslands
+
+면적이 작은 폴리곤(섬, 작은 영역)을 필터링합니다.
+
+```tsx
+import { removeSmallIslands } from "@pf-dev/map";
+
+// minArea 이하의 면적을 가진 폴리곤 제거
+const filtered = removeSmallIslands(featureCollection, 0.0001);
+console.log("필터링 전:", featureCollection.features.length);
+console.log("필터링 후:", filtered.features.length);
+```
+
+#### 전처리 파이프라인 예시
+
+```tsx
+import { simplifyGeoJSON, removeSmallIslands } from "@pf-dev/map";
+
+async function loadAndPreprocess(url: string) {
+  const response = await fetch(url);
+  const raw = await response.json();
+
+  // 1. 작은 섬 제거
+  const noIslands = removeSmallIslands(raw, 0.0001);
+
+  // 2. 좌표 단순화
+  const simplified = simplifyGeoJSON(noIslands, 0.001);
+
+  return simplified;
+}
+
+// 컴포넌트에서 사용
+function Map() {
+  const [geoData, setGeoData] = useState(null);
+
+  useEffect(() => {
+    loadAndPreprocess("/data/districts.json").then(setGeoData);
+  }, []);
+
+  if (!geoData) return null;
+
+  return (
+    <MapViewer>
+      <Imagery provider="osm" />
+      <GeoJsonLayer
+        data={geoData}
+        layerName="districts"
+        style={{ fillColor: Color.BLUE, fillOpacity: 0.3 }}
+      />
+    </MapViewer>
+  );
+}
+```
+
+---
+
 ## License
 
 MIT
