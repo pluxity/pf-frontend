@@ -69,7 +69,7 @@ export function CCTVAIPage() {
             {siteName && (
               <>
                 <span className="text-white/40 mx-0.5">|</span>
-                <span className="text-white/80 truncate max-w-[8rem] md:max-w-none text-sm md:text-base font-medium mb-[-0.25rem]">
+                <span className="text-white/80 truncate max-w-[8rem] md:max-w-none text-xl md:text-2xl font-bold mb-[-0.25rem]">
                   {siteName}
                 </span>
               </>
