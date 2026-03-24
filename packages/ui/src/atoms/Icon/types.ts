@@ -7,10 +7,10 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
   ref?: Ref<SVGSVGElement>;
 }
 
-export const iconSizes: Record<IconSize, number> = {
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 20,
-  xl: 24,
+export const iconSizes: Record<IconSize, string> = {
+  xs: "0.75rem",
+  sm: "0.875rem",
+  md: "1rem",
+  lg: "1.25rem",
+  xl: "1.5rem",
 };

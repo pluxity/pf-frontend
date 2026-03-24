@@ -20,7 +20,17 @@ const meta: Meta<typeof Toast> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "info", "success", "warning", "error"],
+      options: [
+        "default",
+        "info",
+        "success",
+        "warning",
+        "error",
+        "severity-normal",
+        "severity-caution",
+        "severity-warning",
+        "severity-danger",
+      ],
       description: "Toast 스타일 변형",
     },
   },
@@ -96,6 +106,56 @@ export const AllVariants: Story = {
           <div className="grid gap-1">
             <ToastTitle>Error</ToastTitle>
             <ToastDescription>오류가 발생했습니다.</ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative" />
+      </ToastProvider>
+    </div>
+  ),
+};
+
+export const AllSeverityVariants: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 p-8">
+      <ToastProvider>
+        <Toast open variant="severity-normal" className="relative">
+          <div className="grid gap-1">
+            <ToastTitle>정상</ToastTitle>
+            <ToastDescription>모든 시스템이 정상 작동 중입니다.</ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative" />
+      </ToastProvider>
+
+      <ToastProvider>
+        <Toast open variant="severity-caution" className="relative">
+          <div className="grid gap-1">
+            <ToastTitle>주의</ToastTitle>
+            <ToastDescription>센서 수치가 기준치에 근접합니다.</ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative" />
+      </ToastProvider>
+
+      <ToastProvider>
+        <Toast open variant="severity-warning" className="relative">
+          <div className="grid gap-1">
+            <ToastTitle>경고</ToastTitle>
+            <ToastDescription>온도가 기준치를 초과했습니다.</ToastDescription>
+          </div>
+          <ToastClose />
+        </Toast>
+        <ToastViewport className="relative" />
+      </ToastProvider>
+
+      <ToastProvider>
+        <Toast open variant="severity-danger" className="relative">
+          <div className="grid gap-1">
+            <ToastTitle>위험</ToastTitle>
+            <ToastDescription>즉시 대피가 필요합니다.</ToastDescription>
           </div>
           <ToastClose />
         </Toast>

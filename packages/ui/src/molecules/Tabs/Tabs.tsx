@@ -19,7 +19,7 @@ function TabsList({ className, ref, variant = "underline", ...props }: TabsListP
       className={cn(
         "inline-flex items-center",
         variant === "underline" && "h-11 gap-0",
-        variant === "filled" && "h-10 border border-gray-200",
+        variant === "filled" && "h-10 border border-border-default dark:border-dark-border-default",
         className
       )}
       {...props}
@@ -45,16 +45,15 @@ function TabsTrigger({ className, ref, variant = "underline", ...props }: TabsTr
         variant === "underline" && [
           "h-10 gap-1.5 px-2.5 text-base font-bold",
           "border-b-2 border-transparent -mb-px",
-          "text-gray-600",
-          "hover:text-gray-700 hover:border-gray-400",
+          "text-secondary dark:text-dark-text-secondary",
+          "hover:text-primary hover:border-neutral-400 dark:hover:text-dark-text-primary dark:hover:border-neutral-500",
           "data-[state=active]:text-brand data-[state=active]:border-brand",
         ],
         variant === "filled" && [
-          "h-full gap-1.5 px-2.5 text-xs border",
-          "bg-white text-gray-600",
-          "hover:bg-gray-50",
-          "data-[state=active]:bg-brand data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:border-brand",
-          "data-[state=inactive]:font-normal",
+          "h-full gap-1.5 px-2.5 text-xs font-bold border border-transparent",
+          "data-[state=inactive]:bg-[#fff] text-secondary dark:data-[state=inactive]:bg-dark-bg-secondary dark:text-dark-text-secondary",
+          "hover:bg-neutral-50",
+          "data-[state=active]:bg-brand data-[state=active]:text-white data-[state=active]:border-brand",
         ],
         className
       )}

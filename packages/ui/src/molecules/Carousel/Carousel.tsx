@@ -230,7 +230,7 @@ function Carousel({
                   "w-2 h-2 rounded-full",
                   "motion-safe:transition-all motion-reduce:transition-none",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
-                  index === activeIndex ? "bg-brand w-6" : "bg-gray-300 hover:bg-gray-400"
+                  index === activeIndex ? "bg-brand w-6" : "bg-white/60 hover:bg-white/80"
                 )}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={index === activeIndex ? "true" : undefined}

@@ -23,8 +23,8 @@ function ListboxTrigger({ className, children, ref, ...props }: ListboxTriggerPr
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex h-10 w-full cursor-pointer items-center justify-between rounded-lg border border-gray-300 bg-white px-3 text-sm",
-        "placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+        "flex h-10 w-full cursor-pointer items-center justify-between rounded-lg border border-border-default bg-white px-3 text-sm dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-primary",
+        "placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-border-focus dark:placeholder:text-dark-text-placeholder dark:focus:ring-primary-500/20 dark:focus:border-dark-border-focus",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "[&>span]:line-clamp-1",
         className
@@ -39,7 +39,11 @@ function ListboxTrigger({ className, children, ref, ...props }: ListboxTriggerPr
 function ListboxIcon({ className, ref, ...props }: ListboxIconProps) {
   return (
     <SelectPrimitive.Icon asChild>
-      <span ref={ref} className={cn("ml-2 text-gray-500", className)} {...props}>
+      <span
+        ref={ref}
+        className={cn("ml-2 text-placeholder dark:text-dark-text-placeholder", className)}
+        {...props}
+      >
         <ChevronDownSmall />
       </span>
     </SelectPrimitive.Icon>
@@ -58,7 +62,7 @@ function ListboxContent({
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg",
+          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-lg border border-border-default bg-white shadow-lg dark:border-dark-border-default dark:bg-dark-bg-card dark:text-dark-text-primary",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -91,7 +95,7 @@ function ListboxItem({ className, children, ref, ...props }: ListboxItemProps) {
       ref={ref}
       className={cn(
         "relative flex w-full cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none",
-        "focus:bg-gray-50 focus:text-gray-900",
+        "focus:bg-neutral-50 focus:text-primary dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
         "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
         className
       )}
@@ -111,21 +115,33 @@ function ListboxItemText({ className, ref, ...props }: ListboxItemTextProps) {
   return (
     <span
       ref={ref as React.Ref<HTMLSpanElement>}
-      className={cn("block truncate text-sm font-medium text-gray-900", className)}
+      className={cn(
+        "block truncate text-sm font-medium text-primary dark:text-dark-text-primary",
+        className
+      )}
       {...props}
     />
   );
 }
 
 function ListboxItemDescription({ className, ref, ...props }: ListboxItemDescriptionProps) {
-  return <p ref={ref} className={cn("text-xs text-gray-500", className)} {...props} />;
+  return (
+    <p
+      ref={ref}
+      className={cn("text-xs text-secondary dark:text-dark-text-secondary", className)}
+      {...props}
+    />
+  );
 }
 
 function ListboxLabel({ className, ref, ...props }: ListboxLabelProps) {
   return (
     <SelectPrimitive.Label
       ref={ref}
-      className={cn("px-2 py-1.5 text-xs font-semibold text-gray-500", className)}
+      className={cn(
+        "px-2 py-1.5 text-xs font-semibold text-secondary dark:text-dark-text-secondary",
+        className
+      )}
       {...props}
     />
   );
@@ -135,7 +151,7 @@ function ListboxSeparator({ className, ref, ...props }: ListboxSeparatorProps) {
   return (
     <SelectPrimitive.Separator
       ref={ref}
-      className={cn("-mx-1 my-1 h-px bg-gray-200", className)}
+      className={cn("-mx-1 my-1 h-px bg-border-default dark:bg-dark-border-default", className)}
       {...props}
     />
   );

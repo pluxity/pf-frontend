@@ -16,7 +16,15 @@ export interface TimelineItemProps extends Omit<React.HTMLAttributes<HTMLDivElem
   /** Icon element */
   icon?: React.ReactNode;
   /** Item variant */
-  variant?: "default" | "success" | "warning" | "error";
+  variant?:
+    | "default"
+    | "success"
+    | "warning"
+    | "error"
+    | "severity-normal"
+    | "severity-caution"
+    | "severity-warning"
+    | "severity-danger";
 }
 
 export interface TimelineCustomProps {
@@ -30,6 +38,10 @@ const variantStyles = {
   success: "bg-success-brand",
   warning: "bg-warning-brand",
   error: "bg-error-brand",
+  "severity-normal": "bg-severity-normal-500",
+  "severity-caution": "bg-severity-caution-500",
+  "severity-warning": "bg-severity-warning-500",
+  "severity-danger": "bg-severity-danger-500",
 };
 
 function TimelineItem({
@@ -52,16 +64,24 @@ function TimelineItem({
         {icon ? (
           <span className="text-white">{icon}</span>
         ) : (
-          <div className="h-2 w-2 rounded-full bg-white" />
+          <div className="h-2 w-2 rounded-full bg-[#fff]" />
         )}
       </div>
 
       <div className="flex-1 pt-0.5">
         <div className="flex items-start justify-between gap-2">
-          <h4 className="text-sm font-bold text-secondary">{title}</h4>
-          {time && <span className="flex-shrink-0 text-xs text-muted">{time}</span>}
+          <h4 className="text-sm font-bold text-secondary dark:text-dark-text-secondary">
+            {title}
+          </h4>
+          {time && (
+            <span className="flex-shrink-0 text-xs text-muted dark:text-dark-text-muted">
+              {time}
+            </span>
+          )}
         </div>
-        {description && <p className="mt-1 text-sm text-muted">{description}</p>}
+        {description && (
+          <p className="mt-1 text-sm text-muted dark:text-dark-text-muted">{description}</p>
+        )}
       </div>
     </div>
   );
@@ -76,7 +96,7 @@ function Timeline({ children, className, ...props }: TimelineProps) {
 
   return (
     <div className={cn("relative space-y-0", className)} {...props}>
-      <div className="absolute left-[0.6875rem] top-6 h-[calc(100%-3rem)] w-0.5 bg-neutral-100" />
+      <div className="absolute left-[0.6875rem] top-6 h-[calc(100%-3rem)] w-0.5 bg-neutral-100 dark:bg-neutral-700" />
       {childrenArray}
     </div>
   );

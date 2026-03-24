@@ -50,8 +50,8 @@ function FilterChip({
         selected
           ? "bg-brand font-bold text-white"
           : disabled
-            ? "cursor-not-allowed bg-neutral-50 text-neutral-300"
-            : "border border-border-default bg-white text-secondary hover:border-neutral-300 hover:bg-neutral-50",
+            ? "cursor-not-allowed bg-neutral-50 text-neutral-300 dark:bg-neutral-800 dark:text-neutral-600"
+            : "border border-border-default bg-[#fff] text-secondary hover:border-neutral-300 hover:bg-neutral-50 dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-secondary dark:hover:border-neutral-600 dark:hover:bg-dark-bg-hover",
         className
       )}
       {...props}
@@ -60,7 +60,9 @@ function FilterChip({
 
       {category ? (
         <span className="flex items-center gap-1">
-          <span className={cn(selected ? "text-white/70" : "text-muted")}>{category}:</span>
+          <span className={cn(selected ? "text-white/70" : "text-muted dark:text-dark-text-muted")}>
+            {category}:
+          </span>
           <span>{children}</span>
         </span>
       ) : (

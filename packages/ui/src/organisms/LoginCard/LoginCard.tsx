@@ -69,6 +69,7 @@ function LoginCard({
       ref={ref}
       className={cn(
         "w-full max-w-md rounded-2xl border border-neutral-100 bg-white p-8 shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.10)]",
+        "dark:border-dark-border-default dark:bg-dark-bg-card dark:shadow-[0_0.5rem_1.5rem_rgba(0,0,0,0.30)]",
         className
       )}
       {...props}
@@ -76,14 +77,19 @@ function LoginCard({
       {logo && <div className="mb-6 flex justify-center">{logo}</div>}
 
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-primary">{title}</h1>
-        {subtitle && <p className="mt-2 text-sm text-muted">{subtitle}</p>}
+        <h1 className="text-2xl font-bold text-primary dark:text-dark-text-primary">{title}</h1>
+        {subtitle && (
+          <p className="mt-2 text-sm text-muted dark:text-dark-text-muted">{subtitle}</p>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="username" className="text-sm font-medium text-secondary">
+            <label
+              htmlFor="username"
+              className="text-sm font-medium text-secondary dark:text-dark-text-secondary"
+            >
               {usernameLabel}
             </label>
             <Input
@@ -97,7 +103,10 @@ function LoginCard({
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-secondary">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-secondary dark:text-dark-text-secondary"
+            >
               {passwordLabel}
             </label>
             <Input
@@ -120,7 +129,7 @@ function LoginCard({
                   disabled={loading}
                   defaultChecked={defaultRemember}
                 />
-                <label htmlFor="remember" className="text-sm text-muted">
+                <label htmlFor="remember" className="text-sm text-muted dark:text-dark-text-muted">
                   {rememberMeLabel}
                 </label>
               </div>
@@ -139,7 +148,7 @@ function LoginCard({
       </form>
 
       {signUpHref && (
-        <p className="mt-6 text-center text-sm text-muted">
+        <p className="mt-6 text-center text-sm text-muted dark:text-dark-text-muted">
           {signUpPrompt}{" "}
           <a href={signUpHref} className="font-medium text-brand hover:underline">
             {signUpLabel}

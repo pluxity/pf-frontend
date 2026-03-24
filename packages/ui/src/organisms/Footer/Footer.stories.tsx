@@ -200,9 +200,13 @@ export const WithCustomContent: Story = {
       </Footer.Column>
 
       <Footer.Custom className="lg:col-span-2">
-        <div className="rounded-lg border border-neutral-100 p-4">
-          <h4 className="mb-2 text-sm font-bold text-gray-800">Newsletter</h4>
-          <p className="mb-3 text-sm text-gray-600">Stay updated with our latest news</p>
+        <div className="rounded-lg border border-neutral-100 p-4 dark:border-dark-border-default">
+          <h4 className="mb-2 text-sm font-bold text-secondary dark:text-dark-text-secondary">
+            Newsletter
+          </h4>
+          <p className="mb-3 text-sm text-muted dark:text-dark-text-muted">
+            Stay updated with our latest news
+          </p>
           <div className="flex gap-2">
             <input
               type="email"

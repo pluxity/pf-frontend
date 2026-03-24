@@ -53,23 +53,33 @@ function FileItem({
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-3 rounded-lg border bg-neutral-50 p-3",
-        isError ? "border-error-brand bg-red-50" : "border-neutral-100",
+        "flex items-center gap-3 rounded-lg border p-3",
+        "bg-neutral-50 dark:bg-dark-bg-secondary",
+        isError
+          ? "border-error-brand bg-error-50 dark:bg-error-900/20"
+          : "border-neutral-100 dark:border-dark-border-default",
         className
       )}
       {...props}
     >
-      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-[#fff] dark:bg-dark-bg-card">
         <FileIconComponent
           type={file.type}
-          className={isError ? "text-error-brand" : "text-muted"}
+          className={isError ? "text-error-brand" : "text-muted dark:text-dark-text-muted"}
         />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-secondary">{file.name}</p>
+        <p className="truncate text-sm font-medium text-secondary dark:text-dark-text-secondary">
+          {file.name}
+        </p>
         <div className="flex items-center gap-2">
-          <span className={cn("text-xs", isError ? "text-error-brand" : "text-muted")}>
+          <span
+            className={cn(
+              "text-xs",
+              isError ? "text-error-brand" : "text-muted dark:text-dark-text-muted"
+            )}
+          >
             {file.error || formatFileSize(file.size)}
           </span>
           {isUploading && file.progress !== undefined && (
@@ -78,7 +88,7 @@ function FileItem({
         </div>
 
         {showProgress && isUploading && file.progress !== undefined && (
-          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-neutral-100">
+          <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
             <div
               className="h-full bg-brand transition-all duration-300"
               style={{ width: `${file.progress}%` }}
@@ -95,7 +105,7 @@ function FileItem({
           variant="ghost"
           size="sm"
           onClick={() => onRemove(file.id)}
-          className="h-8 w-8 flex-shrink-0 p-0 text-muted hover:bg-neutral-100 hover:text-error-brand"
+          className="h-8 w-8 flex-shrink-0 p-0 text-muted hover:bg-neutral-100 hover:text-error-brand dark:text-dark-text-muted dark:hover:bg-dark-bg-hover"
         >
           <X size="sm" />
         </Button>

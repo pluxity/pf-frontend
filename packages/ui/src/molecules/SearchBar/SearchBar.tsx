@@ -59,9 +59,9 @@ function SearchBar({
   return (
     <div className={cn(searchBarVariants({ size }), className)}>
       {loading ? (
-        <Loader size={iconSize} className="text-gray-400" />
+        <Loader size={iconSize} className="text-placeholder dark:text-dark-text-placeholder" />
       ) : (
-        <Search size={iconSize} className="text-gray-400" />
+        <Search size={iconSize} className="text-placeholder dark:text-dark-text-placeholder" />
       )}
       <input
         ref={ref}
@@ -70,14 +70,14 @@ function SearchBar({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="flex-1 bg-transparent outline-none placeholder:text-gray-400"
+        className="flex-1 bg-transparent outline-none placeholder:text-placeholder dark:text-dark-text-primary dark:placeholder:text-dark-text-placeholder"
         {...props}
       />
       {currentValue && (
         <button
           type="button"
           onClick={handleClear}
-          className="rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          className="rounded p-0.5 text-placeholder hover:bg-neutral-100 hover:text-secondary dark:text-dark-text-placeholder dark:hover:bg-neutral-700 dark:hover:text-dark-text-secondary"
           aria-label={ariaLabelClear}
         >
           <X size={iconSize} />

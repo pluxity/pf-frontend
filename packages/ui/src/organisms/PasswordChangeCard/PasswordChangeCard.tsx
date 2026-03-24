@@ -46,19 +46,28 @@ function PasswordChangeCard({
   return (
     <div
       ref={ref}
-      className={cn("w-full max-w-md rounded-xl bg-white p-6 shadow-lg", className)}
+      className={cn(
+        "w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-dark-bg-secondary",
+        className
+      )}
       {...props}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text-secondary">{title}</h1>
-          <p className="text-sm text-gray-500">{subtitle}</p>
+          <h1 className="text-xl font-bold text-primary dark:text-dark-text-primary">{title}</h1>
+          <p className="text-sm text-secondary dark:text-dark-text-secondary">{subtitle}</p>
         </div>
 
-        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+        {error && (
+          <div className="rounded-lg bg-error-50 p-3 text-sm text-error-600 dark:bg-error-900/20 dark:text-error-400">
+            {error}
+          </div>
+        )}
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">{newPasswordLabel}</label>
+          <label className="text-sm font-bold text-primary dark:text-dark-text-primary">
+            {newPasswordLabel}
+          </label>
           <div className="relative">
             <input
               type="password"
@@ -66,17 +75,22 @@ function PasswordChangeCard({
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder={newPasswordPlaceholder}
               className={cn(
-                "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
-                "placeholder:text-gray-400",
+                "h-11 w-full rounded-lg border border-border-default bg-white px-4 pr-10 text-sm text-primary dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-primary",
+                "placeholder:text-placeholder dark:placeholder:text-dark-text-placeholder",
                 "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
               )}
             />
-            <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Lock
+              size="sm"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder dark:text-dark-text-placeholder"
+            />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">{confirmPasswordLabel}</label>
+          <label className="text-sm font-bold text-primary dark:text-dark-text-primary">
+            {confirmPasswordLabel}
+          </label>
           <div className="relative">
             <input
               type="password"
@@ -84,12 +98,15 @@ function PasswordChangeCard({
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder={confirmPasswordPlaceholder}
               className={cn(
-                "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-10 text-sm",
-                "placeholder:text-gray-400",
+                "h-11 w-full rounded-lg border border-border-default bg-white px-4 pr-10 text-sm text-primary dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-primary",
+                "placeholder:text-placeholder dark:placeholder:text-dark-text-placeholder",
                 "focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
               )}
             />
-            <Lock size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Lock
+              size="sm"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder dark:text-dark-text-placeholder"
+            />
           </div>
         </div>
 

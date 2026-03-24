@@ -28,7 +28,7 @@ function AvatarFallback({ className, ref, ...props }: AvatarFallbackProps) {
     <AvatarPrimitive.Fallback
       ref={ref}
       className={cn(
-        "flex h-full w-full items-center justify-center bg-gray-200 font-medium text-gray-600",
+        "flex h-full w-full items-center justify-center bg-neutral-200 font-medium text-secondary dark:bg-neutral-700 dark:text-dark-text-secondary",
         className
       )}
       {...props}

@@ -59,10 +59,18 @@ function EmptyState({
       className={cn("flex flex-col items-center justify-center px-4 py-16 text-center", className)}
       {...props}
     >
-      {displayIcon && <div className="mb-4 text-neutral-300">{displayIcon}</div>}
-      {displayTitle && <h3 className="mb-2 text-lg font-bold text-secondary">{displayTitle}</h3>}
+      {displayIcon && (
+        <div className="mb-4 text-neutral-300 dark:text-neutral-600">{displayIcon}</div>
+      )}
+      {displayTitle && (
+        <h3 className="mb-2 text-lg font-bold text-secondary dark:text-dark-text-secondary">
+          {displayTitle}
+        </h3>
+      )}
       {displayDescription && (
-        <p className="mb-6 max-w-sm text-sm text-muted">{displayDescription}</p>
+        <p className="mb-6 max-w-sm text-sm text-muted dark:text-dark-text-muted">
+          {displayDescription}
+        </p>
       )}
       {action && <Button onClick={action.onClick}>{action.label}</Button>}
     </div>

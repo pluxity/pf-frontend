@@ -69,8 +69,10 @@ const Pagination = ({
   const isBordered = variant === "bordered";
 
   const navButtonClass = cn(
-    "inline-flex h-8 w-8 items-center justify-center rounded text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
-    isBordered ? "border border-gray-200 bg-white hover:bg-gray-50" : "hover:bg-gray-100"
+    "inline-flex h-8 w-8 items-center justify-center rounded text-secondary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:text-dark-text-secondary dark:hover:text-dark-text-primary",
+    isBordered
+      ? "border border-border-default bg-[#fff] hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:hover:bg-dark-bg-hover"
+      : "hover:bg-neutral-100 dark:hover:bg-dark-bg-hover"
   );
 
   const getPageButtonClass = (isActive: boolean) => {
@@ -79,12 +81,14 @@ const Pagination = ({
         "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors border",
         isActive
           ? "border-brand bg-brand text-white"
-          : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+          : "border-border-default bg-[#fff] text-secondary hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
       );
     }
     return cn(
       "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors",
-      isActive ? "bg-blue-50 text-brand" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      isActive
+        ? "bg-primary-50 text-brand dark:bg-primary-800 dark:text-primary-300"
+        : "text-secondary hover:text-primary hover:bg-neutral-100 dark:text-dark-text-secondary dark:hover:text-dark-text-primary dark:hover:bg-dark-bg-hover"
     );
   };
 
@@ -104,7 +108,7 @@ const Pagination = ({
           return (
             <span
               key={`dots-${index}`}
-              className="inline-flex h-8 w-8 items-center justify-center text-gray-500"
+              className="inline-flex h-8 w-8 items-center justify-center text-secondary dark:text-dark-text-secondary"
             >
               &#8230;
             </span>

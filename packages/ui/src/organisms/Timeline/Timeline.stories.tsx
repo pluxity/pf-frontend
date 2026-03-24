@@ -79,6 +79,37 @@ export const WithVariants: Story = {
   ),
 };
 
+export const SeverityVariants: Story = {
+  render: () => (
+    <Timeline>
+      <Timeline.Item
+        title="정상"
+        description="모든 센서가 정상 범위 내에 있습니다"
+        time="09:00"
+        variant="severity-normal"
+      />
+      <Timeline.Item
+        title="주의"
+        description="B구역 온도 센서 수치가 기준치에 근접합니다"
+        time="10:30"
+        variant="severity-caution"
+      />
+      <Timeline.Item
+        title="경고"
+        description="A구역 가스 농도가 기준치를 초과했습니다"
+        time="11:15"
+        variant="severity-warning"
+      />
+      <Timeline.Item
+        title="위험"
+        description="C구역 화재 감지. 즉시 대피하세요"
+        time="11:45"
+        variant="severity-danger"
+      />
+    </Timeline>
+  ),
+};
+
 export const WithIcons: Story = {
   render: () => (
     <Timeline>
