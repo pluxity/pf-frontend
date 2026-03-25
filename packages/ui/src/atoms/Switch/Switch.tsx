@@ -19,7 +19,7 @@ function Switch({ className, ref, ...props }: SwitchProps) {
     >
       <SwitchPrimitive.Thumb
         className={cn(
-          "pointer-events-none block h-5 w-5 rounded-full bg-[#fff] shadow-lg ring-0",
+          "pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0",
           "motion-safe:transition-transform motion-reduce:transition-none",
           "data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
         )}

@@ -124,8 +124,8 @@ function StepWithContext(props: StepperStepProps) {
             isCompleted
               ? "bg-brand text-white"
               : isCurrent
-                ? "border-2 border-brand bg-[#fff] text-brand dark:border-primary-500 dark:bg-dark-bg-card dark:text-primary-400"
-                : "border-2 border-neutral-100 bg-[#fff] text-muted dark:border-neutral-600 dark:bg-dark-bg-card dark:text-dark-text-muted"
+                ? "border-2 border-brand bg-white text-brand dark:border-primary-500 dark:bg-dark-bg-card dark:text-primary-400"
+                : "border-2 border-neutral-100 bg-white text-muted dark:border-neutral-600 dark:bg-dark-bg-card dark:text-dark-text-muted"
           )}
         >
           {isCompleted ? <Check size="md" /> : stepIndex + 1}

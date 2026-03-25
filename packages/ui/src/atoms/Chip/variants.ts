@@ -38,7 +38,8 @@ export const chipRemoveButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "hover:bg-neutral-200 text-secondary",
+        default:
+          "hover:bg-neutral-200 text-secondary dark:text-dark-text-secondary dark:hover:bg-neutral-700",
         primary: "hover:bg-white/20 text-white",
         success: "hover:bg-white/20 text-white",
         warning: "hover:bg-white/20 text-white",

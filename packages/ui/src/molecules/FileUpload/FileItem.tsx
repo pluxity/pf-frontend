@@ -62,7 +62,7 @@ function FileItem({
       )}
       {...props}
     >
-      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-[#fff] dark:bg-dark-bg-card">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white dark:bg-dark-bg-card">
         <FileIconComponent
           type={file.type}
           className={isError ? "text-error-brand" : "text-muted dark:text-dark-text-muted"}

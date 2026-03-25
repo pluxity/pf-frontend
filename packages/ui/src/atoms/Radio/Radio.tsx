@@ -22,7 +22,7 @@ function RadioGroupItem({ className, ref, ...props }: RadioGroupItemProps) {
       {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
-        <span className="h-2 w-2 rounded-full bg-[#fff]" />
+        <span className="h-2 w-2 rounded-full bg-white" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );

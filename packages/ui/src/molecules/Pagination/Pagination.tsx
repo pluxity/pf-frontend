@@ -71,7 +71,7 @@ const Pagination = ({
   const navButtonClass = cn(
     "inline-flex h-8 w-8 items-center justify-center rounded text-secondary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:text-dark-text-secondary dark:hover:text-dark-text-primary",
     isBordered
-      ? "border border-border-default bg-[#fff] hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:hover:bg-dark-bg-hover"
+      ? "border border-border-default bg-white hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:hover:bg-dark-bg-hover"
       : "hover:bg-neutral-100 dark:hover:bg-dark-bg-hover"
   );
 
@@ -81,7 +81,7 @@ const Pagination = ({
         "inline-flex h-8 w-8 items-center justify-center rounded text-sm font-medium transition-colors border",
         isActive
           ? "border-brand bg-brand text-white"
-          : "border-border-default bg-[#fff] text-secondary hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
+          : "border-border-default bg-white text-secondary hover:bg-neutral-50 dark:bg-dark-bg-secondary dark:border-dark-border-default dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
       );
     }
     return cn(

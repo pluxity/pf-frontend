@@ -64,7 +64,7 @@ function TimelineItem({
         {icon ? (
           <span className="text-white">{icon}</span>
         ) : (
-          <div className="h-2 w-2 rounded-full bg-[#fff]" />
+          <div className="h-2 w-2 rounded-full bg-white" />
         )}
       </div>
 

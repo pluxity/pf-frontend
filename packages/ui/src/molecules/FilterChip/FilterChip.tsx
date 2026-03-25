@@ -51,7 +51,7 @@ function FilterChip({
           ? "bg-brand font-bold text-white"
           : disabled
             ? "cursor-not-allowed bg-neutral-50 text-neutral-300 dark:bg-neutral-800 dark:text-neutral-600"
-            : "border border-border-default bg-[#fff] text-secondary hover:border-neutral-300 hover:bg-neutral-50 dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-secondary dark:hover:border-neutral-600 dark:hover:bg-dark-bg-hover",
+            : "border border-border-default bg-white text-secondary hover:border-neutral-300 hover:bg-neutral-50 dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-secondary dark:hover:border-neutral-600 dark:hover:bg-dark-bg-hover",
         className
       )}
       {...props}

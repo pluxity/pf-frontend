@@ -1,5 +1,5 @@
 ---
-"@pf-dev/ui": patch
+"@pf-dev/ui": minor
 ---
 
 - rem 단위 변환 (Icon sizes, 컴포넌트 스타일)

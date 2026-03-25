@@ -51,7 +51,7 @@ function TabsTrigger({ className, ref, variant = "underline", ...props }: TabsTr
         ],
         variant === "filled" && [
           "h-full gap-1.5 px-2.5 text-xs font-bold border border-transparent",
-          "data-[state=inactive]:bg-[#fff] text-secondary dark:data-[state=inactive]:bg-dark-bg-secondary dark:text-dark-text-secondary",
+          "data-[state=inactive]:bg-white text-secondary dark:data-[state=inactive]:bg-dark-bg-secondary dark:text-dark-text-secondary",
           "hover:bg-neutral-50",
           "data-[state=active]:bg-brand data-[state=active]:text-white data-[state=active]:border-brand",
         ],
