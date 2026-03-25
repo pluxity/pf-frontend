@@ -160,7 +160,9 @@ export const Default: Story = {
           key: "email",
           header: "Email",
           sortable: true,
-          render: (row) => <span className="text-gray-500">{row.email}</span>,
+          render: (row) => (
+            <span className="text-muted dark:text-dark-text-muted">{row.email}</span>
+          ),
         },
         {
           key: "department",

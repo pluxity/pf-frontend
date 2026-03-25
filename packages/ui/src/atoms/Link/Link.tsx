@@ -13,11 +13,18 @@ const linkVariants = cva(
         lg: "text-base",
       },
       variant: {
-        default: ["text-brand", "hover:text-blue-700 hover:underline", "visited:text-purple-600"],
-        muted: ["text-gray-500", "hover:text-gray-700 hover:underline"],
+        default: [
+          "text-brand dark:text-primary-400",
+          "hover:text-primary-700 hover:underline dark:hover:text-primary-300",
+          "visited:text-primary-700 dark:visited:text-primary-300",
+        ],
+        muted: [
+          "text-secondary dark:text-dark-text-secondary",
+          "hover:text-primary hover:underline dark:hover:text-dark-text-primary",
+        ],
       },
       disabled: {
-        true: "text-gray-400 pointer-events-none cursor-not-allowed",
+        true: "text-placeholder pointer-events-none cursor-not-allowed dark:text-dark-text-placeholder",
         false: "",
       },
     },

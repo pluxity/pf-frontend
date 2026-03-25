@@ -84,8 +84,8 @@ function Widget({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={cn(
-        "rounded-xl bg-white shadow-card",
-        border && "border border-border-light",
+        "rounded-xl bg-white shadow-card dark:bg-dark-bg-card dark:shadow-none",
+        border && "border border-border-light dark:border-dark-border-light",
         isDragging && "opacity-50",
         isDropTarget && "ring-2 ring-primary",
         dragDropContext?.editable && "cursor-move",
@@ -109,8 +109,8 @@ function WidgetHeader({ className, children, ref, ...props }: WidgetHeaderPropsW
     <div
       ref={ref}
       className={cn(
-        "px-4 py-3 border-b border-border-light",
-        "text-sm font-semibold text-text-primary",
+        "px-4 py-3 border-b border-border-light dark:border-dark-border-light",
+        "text-sm font-semibold text-primary dark:text-dark-text-primary",
         className
       )}
       {...props}

@@ -7,7 +7,7 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 
 function Table({ className, ref, ...props }: TableProps) {
   return (
-    <div className="w-full overflow-auto border-y border-t-2 border-neutral-300">
+    <div className="w-full overflow-auto border-y border-t-2 border-neutral-300 dark:border-neutral-600">
       <table ref={ref} className={cn("w-full caption-bottom text-xs", className)} {...props} />
     </div>
   );
@@ -19,7 +19,11 @@ interface TableHeaderProps extends React.HTMLAttributes<HTMLTableSectionElement>
 
 function TableHeader({ className, ref, ...props }: TableHeaderProps) {
   return (
-    <thead ref={ref} className={cn("bg-neutral-200/90 [&_tr]:border-b", className)} {...props} />
+    <thead
+      ref={ref}
+      className={cn("bg-neutral-200/90 dark:bg-neutral-800 [&_tr]:border-b", className)}
+      {...props}
+    />
   );
 }
 
@@ -40,7 +44,7 @@ function TableFooter({ className, ref, ...props }: TableFooterProps) {
     <tfoot
       ref={ref}
       className={cn(
-        "border-t border-neutral-300 text-xs font-bold [&>tr]:last:border-b-0",
+        "border-t border-neutral-300 dark:border-neutral-600 text-xs font-bold [&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -57,7 +61,7 @@ function TableRow({ className, ref, ...props }: TableRowProps) {
     <tr
       ref={ref}
       className={cn(
-        "h-9 border-b border-neutral-300 transition-colors data-[state=selected]:bg-blue-50",
+        "h-9 border-b border-neutral-300 dark:border-neutral-600 transition-colors data-[state=selected]:bg-primary-50 dark:data-[state=selected]:bg-primary-900/30",
         className
       )}
       {...props}
@@ -74,7 +78,7 @@ function TableHead({ className, ref, ...props }: TableHeadProps) {
     <th
       ref={ref}
       className={cn(
-        "h-9 px-4 text-center align-middle text-xs font-bold text-muted border-r border-neutral-300 last:border-r-0 [&:has([role=checkbox])]:pr-0",
+        "h-9 px-4 text-center align-middle text-xs font-bold text-muted dark:text-dark-text-muted border-r border-neutral-300 dark:border-neutral-600 last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -91,7 +95,7 @@ function TableCell({ className, ref, ...props }: TableCellProps) {
     <td
       ref={ref}
       className={cn(
-        "px-4 py-3 align-middle text-center text-xs text-secondary border-r border-neutral-300 last:border-r-0 [&:has([role=checkbox])]:pr-0",
+        "px-4 py-3 align-middle text-center text-xs text-secondary dark:text-dark-text-secondary border-r border-neutral-300 dark:border-neutral-600 last:border-r-0 [&:has([role=checkbox])]:pr-0",
         className
       )}
       {...props}
@@ -104,19 +108,40 @@ interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement
 }
 
 function TableCaption({ className, ref, ...props }: TableCaptionProps) {
-  return <caption ref={ref} className={cn("mt-4 text-xs text-secondary", className)} {...props} />;
+  return (
+    <caption
+      ref={ref}
+      className={cn("mt-4 text-xs text-muted dark:text-dark-text-muted", className)}
+      {...props}
+    />
+  );
 }
 
 interface TableStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: "active" | "inactive" | "pending";
+  status:
+    | "active"
+    | "inactive"
+    | "pending"
+    | "severity-normal"
+    | "severity-caution"
+    | "severity-warning"
+    | "severity-danger";
   ref?: Ref<HTMLSpanElement>;
 }
 
 function TableStatusBadge({ status, className, children, ref, ...props }: TableStatusBadgeProps) {
   const statusClasses = {
     active: "bg-success-brand text-white",
-    inactive: "bg-neutral-50 text-text-secondary",
+    inactive: "bg-neutral-50 text-secondary dark:bg-neutral-700 dark:text-dark-text-secondary",
     pending: "bg-warning-brand text-white",
+    "severity-normal":
+      "bg-severity-normal-100 text-severity-normal-700 dark:bg-severity-normal-900 dark:text-severity-normal-300",
+    "severity-caution":
+      "bg-severity-caution-100 text-severity-caution-700 dark:bg-severity-caution-900 dark:text-severity-caution-300",
+    "severity-warning":
+      "bg-severity-warning-100 text-severity-warning-700 dark:bg-severity-warning-900 dark:text-severity-warning-300",
+    "severity-danger":
+      "bg-severity-danger-100 text-severity-danger-700 dark:bg-severity-danger-900 dark:text-severity-danger-300",
   };
 
   return (

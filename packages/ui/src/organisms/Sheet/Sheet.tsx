@@ -29,16 +29,16 @@ function SheetOverlay({ className, ref, ...props }: ComponentProps<typeof SheetP
 }
 
 const sheetVariants = cva(
-  "fixed z-50 bg-white shadow-xl transition ease-in-out motion-safe:data-[state=open]:animate-in motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:duration-300 motion-safe:data-[state=open]:duration-500 motion-reduce:transition-none",
+  "fixed z-50 flex flex-col bg-white shadow-xl transition ease-in-out dark:bg-dark-bg-card motion-safe:data-[state=open]:animate-in motion-safe:data-[state=closed]:animate-out motion-safe:data-[state=closed]:duration-300 motion-safe:data-[state=open]:duration-500 motion-reduce:transition-none",
   {
     variants: {
       side: {
-        top: "inset-x-0 top-0 border-b border-neutral-100 motion-safe:data-[state=closed]:slide-out-to-top motion-safe:data-[state=open]:slide-in-from-top",
+        top: "inset-x-0 top-0 border-b border-neutral-100 dark:border-dark-border-default motion-safe:data-[state=closed]:slide-out-to-top motion-safe:data-[state=open]:slide-in-from-top",
         bottom:
-          "inset-x-0 bottom-0 border-t border-neutral-100 motion-safe:data-[state=closed]:slide-out-to-bottom motion-safe:data-[state=open]:slide-in-from-bottom",
-        left: "inset-y-0 left-0 h-full w-96 border-r border-neutral-100 motion-safe:data-[state=closed]:slide-out-to-left motion-safe:data-[state=open]:slide-in-from-left",
+          "inset-x-0 bottom-0 border-t border-neutral-100 dark:border-dark-border-default motion-safe:data-[state=closed]:slide-out-to-bottom motion-safe:data-[state=open]:slide-in-from-bottom",
+        left: "inset-y-0 left-0 h-full w-96 border-r border-neutral-100 dark:border-dark-border-default motion-safe:data-[state=closed]:slide-out-to-left motion-safe:data-[state=open]:slide-in-from-left",
         right:
-          "inset-y-0 right-0 h-full w-96 border-l border-neutral-100 motion-safe:data-[state=closed]:slide-out-to-right motion-safe:data-[state=open]:slide-in-from-right",
+          "inset-y-0 right-0 h-full w-96 border-l border-neutral-100 dark:border-dark-border-default motion-safe:data-[state=closed]:slide-out-to-right motion-safe:data-[state=open]:slide-in-from-right",
       },
     },
     defaultVariants: {
@@ -70,7 +70,7 @@ function SheetContent({
       >
         {children}
         {showClose && (
-          <SheetPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md border border-neutral-100 text-muted transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+          <SheetPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md border border-neutral-100 dark:border-dark-border-default text-muted transition-colors hover:bg-neutral-50 hover:text-primary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
             <X size="sm" />
             <span className="sr-only">닫기</span>
           </SheetPrimitive.Close>
@@ -92,7 +92,7 @@ function SheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-3 border-t border-neutral-100 px-8 py-4",
+        "flex items-center justify-end gap-3 border-t border-neutral-100 dark:border-dark-border-default px-8 py-4",
         className
       )}
       {...props}
@@ -104,7 +104,7 @@ function SheetTitle({ className, ref, ...props }: ComponentProps<typeof SheetPri
   return (
     <SheetPrimitive.Title
       ref={ref}
-      className={cn("text-2xl font-bold text-primary", className)}
+      className={cn("text-2xl font-bold text-primary dark:text-dark-text-primary", className)}
       {...props}
     />
   );
@@ -118,7 +118,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       ref={ref}
-      className={cn("mt-2 text-sm text-muted", className)}
+      className={cn("mt-2 text-sm text-muted dark:text-dark-text-muted", className)}
       {...props}
     />
   );
@@ -131,8 +131,15 @@ function SheetSection({
   ...props
 }: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & { title?: ReactNode }) {
   return (
-    <div className={cn("border-t border-neutral-100 py-6", className)} {...props}>
-      {title && <h3 className="mb-4 text-base font-bold text-secondary">{title}</h3>}
+    <div
+      className={cn("border-t border-neutral-100 dark:border-dark-border-default py-6", className)}
+      {...props}
+    >
+      {title && (
+        <h3 className="mb-4 text-base font-bold text-secondary dark:text-dark-text-secondary">
+          {title}
+        </h3>
+      )}
       {children}
     </div>
   );

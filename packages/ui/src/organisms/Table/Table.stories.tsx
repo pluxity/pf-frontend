@@ -91,6 +91,52 @@ export const Default: Story = {
   ),
 };
 
+const sensors = [
+  { id: "S-001", name: "온도 센서 A", location: "A구역", level: "severity-normal" as const },
+  { id: "S-002", name: "가스 센서 B", location: "B구역", level: "severity-caution" as const },
+  { id: "S-003", name: "진동 센서 C", location: "C구역", level: "severity-warning" as const },
+  { id: "S-004", name: "화재 감지 D", location: "D구역", level: "severity-danger" as const },
+];
+
+const severityLabel = {
+  "severity-normal": "정상",
+  "severity-caution": "주의",
+  "severity-warning": "경고",
+  "severity-danger": "위험",
+};
+
+export const SeverityTable: Story = {
+  render: () => (
+    <div className="p-4">
+      <h2 className="mb-4 text-xl font-bold">센서 모니터링</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>센서명</TableHead>
+            <TableHead>위치</TableHead>
+            <TableHead>상태</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sensors.map((sensor) => (
+            <TableRow key={sensor.id}>
+              <TableCell>{sensor.id}</TableCell>
+              <TableCell>{sensor.name}</TableCell>
+              <TableCell>{sensor.location}</TableCell>
+              <TableCell>
+                <TableStatusBadge status={sensor.level}>
+                  {severityLabel[sensor.level]}
+                </TableStatusBadge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  ),
+};
+
 export const SimpleTable: Story = {
   render: () => (
     <Table>

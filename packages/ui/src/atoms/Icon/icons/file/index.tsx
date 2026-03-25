@@ -3,12 +3,11 @@ import type { IconProps } from "../../types";
 import { iconSizes } from "../../types";
 
 export function Upload({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -34,12 +33,11 @@ export function Upload({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function File({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -58,12 +56,11 @@ export function File({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function FileText({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -84,12 +81,11 @@ export function FileText({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Folder({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -107,12 +103,11 @@ export function Folder({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Image({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -133,12 +128,11 @@ export function Image({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Music({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -159,12 +153,11 @@ export function Music({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Video({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -184,12 +177,11 @@ export function Video({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Code({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

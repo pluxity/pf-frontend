@@ -3,12 +3,11 @@ import type { IconProps } from "../../types";
 import { iconSizes } from "../../types";
 
 export function ChevronLeft({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +23,11 @@ export function ChevronLeft({ size = "md", className, ref, ...props }: IconProps
 }
 
 export function ChevronRight({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -45,12 +43,11 @@ export function ChevronRight({ size = "md", className, ref, ...props }: IconProp
 }
 
 export function ChevronUp({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -66,12 +63,11 @@ export function ChevronUp({ size = "md", className, ref, ...props }: IconProps) 
 }
 
 export function ChevronDown({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -87,12 +83,11 @@ export function ChevronDown({ size = "md", className, ref, ...props }: IconProps
 }
 
 export function ChevronLeftDouble({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -112,12 +107,11 @@ export function ChevronLeftDouble({ size = "md", className, ref, ...props }: Ico
 }
 
 export function ChevronRightDouble({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -137,12 +131,11 @@ export function ChevronRightDouble({ size = "md", className, ref, ...props }: Ic
 }
 
 export function X({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -162,12 +155,11 @@ export function X({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function ChevronLeftSmall({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 10 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -183,12 +175,11 @@ export function ChevronLeftSmall({ size = "md", className, ref, ...props }: Icon
 }
 
 export function ChevronRightSmall({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 10 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -204,12 +195,11 @@ export function ChevronRightSmall({ size = "md", className, ref, ...props }: Ico
 }
 
 export function ChevronUpSmall({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 10 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -225,12 +215,11 @@ export function ChevronUpSmall({ size = "md", className, ref, ...props }: IconPr
 }
 
 export function ChevronDownSmall({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 10 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -246,12 +235,11 @@ export function ChevronDownSmall({ size = "md", className, ref, ...props }: Icon
 }
 
 export function ChevronUpDownSmall({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 8 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -265,12 +253,11 @@ export function ChevronUpDownSmall({ size = "md", className, ref, ...props }: Ic
 }
 
 export function Home({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -283,12 +270,11 @@ export function Home({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function ExternalLink({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -3,12 +3,11 @@ import type { IconProps } from "../../types";
 import { iconSizes } from "../../types";
 
 export function Sunny({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -49,12 +48,11 @@ export function Sunny({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function Cloudy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -109,12 +107,11 @@ export function Cloudy({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function PartlyCloudy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -196,12 +193,11 @@ export function PartlyCloudy({ size = "xl", className, ref, ...props }: IconProp
 }
 
 export function Rainy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -392,12 +388,11 @@ export function Rainy({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function Stormy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -511,12 +506,11 @@ export function Stormy({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function Snowy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -688,12 +682,11 @@ export function Snowy({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function Foggy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -767,12 +760,11 @@ export function Foggy({ size = "xl", className, ref, ...props }: IconProps) {
 }
 
 export function Windy({ size = "xl", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

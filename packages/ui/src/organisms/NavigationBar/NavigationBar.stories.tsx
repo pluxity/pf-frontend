@@ -74,7 +74,9 @@ export const WithLogoComponent: Story = {
       <NavigationBar.Logo>
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500" />
-          <span className="text-lg font-bold text-gray-900">Acme Inc</span>
+          <span className="text-lg font-bold text-secondary dark:text-dark-text-primary">
+            Acme Inc
+          </span>
         </div>
       </NavigationBar.Logo>
       <NavigationBar.Item href="#" active>
@@ -116,8 +118,10 @@ export const FullyComposed: Story = {
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600" />
           <div>
-            <div className="text-base font-bold text-gray-900">My App</div>
-            <div className="text-xs text-gray-500">v2.0</div>
+            <div className="text-base font-bold text-secondary dark:text-dark-text-primary">
+              My App
+            </div>
+            <div className="text-xs text-muted dark:text-dark-text-muted">v2.0</div>
           </div>
         </div>
       </NavigationBar.Logo>

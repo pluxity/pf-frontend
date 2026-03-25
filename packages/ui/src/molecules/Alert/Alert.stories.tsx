@@ -11,7 +11,17 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "info", "success", "warning", "error"],
+      options: [
+        "default",
+        "info",
+        "success",
+        "warning",
+        "error",
+        "severity-normal",
+        "severity-caution",
+        "severity-warning",
+        "severity-danger",
+      ],
     },
     icon: {
       control: "boolean",
@@ -98,6 +108,29 @@ export const AllVariants: Story = {
       <Alert variant="error">
         <AlertTitle>오류</AlertTitle>
         <AlertDescription>오류 알림 메시지</AlertDescription>
+      </Alert>
+    </div>
+  ),
+};
+
+export const AllSeverityVariants: Story = {
+  render: () => (
+    <div className="flex w-96 flex-col gap-4">
+      <Alert variant="severity-normal">
+        <AlertTitle>정상</AlertTitle>
+        <AlertDescription>모든 시스템이 정상 작동 중입니다.</AlertDescription>
+      </Alert>
+      <Alert variant="severity-caution">
+        <AlertTitle>주의</AlertTitle>
+        <AlertDescription>일부 센서 수치가 기준치에 근접합니다.</AlertDescription>
+      </Alert>
+      <Alert variant="severity-warning">
+        <AlertTitle>경고</AlertTitle>
+        <AlertDescription>온도가 기준치를 초과했습니다. 확인이 필요합니다.</AlertDescription>
+      </Alert>
+      <Alert variant="severity-danger">
+        <AlertTitle>위험</AlertTitle>
+        <AlertDescription>위험 구역에 접근하지 마세요. 즉시 대피하세요.</AlertDescription>
       </Alert>
     </div>
   ),

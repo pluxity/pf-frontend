@@ -27,6 +27,7 @@ function PopoverContent({
         sideOffset={sideOffset}
         className={cn(
           "z-50 w-72 rounded-lg border border-neutral-100 bg-white p-4 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)] outline-none",
+          "dark:border-dark-border-default dark:bg-dark-bg-card dark:shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.30)]",
           "motion-safe:data-[state=open]:animate-in motion-safe:data-[state=closed]:animate-out",
           "motion-safe:data-[state=closed]:fade-out-0 motion-safe:data-[state=open]:fade-in-0",
           "motion-safe:data-[state=closed]:zoom-out-95 motion-safe:data-[state=open]:zoom-in-95",
@@ -40,7 +41,9 @@ function PopoverContent({
         {...props}
       >
         {children}
-        {showArrow && <PopoverPrimitive.Arrow className="fill-white stroke-neutral-100 stroke-2" />}
+        {showArrow && (
+          <PopoverPrimitive.Arrow className="fill-white stroke-neutral-100 stroke-2 dark:fill-dark-bg-card dark:stroke-dark-border-default" />
+        )}
       </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   );
@@ -53,11 +56,16 @@ function PopoverHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElem
 }
 
 function PopoverTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h4 className={cn("text-sm font-bold text-secondary", className)} {...props} />;
+  return (
+    <h4
+      className={cn("text-sm font-bold text-secondary dark:text-dark-text-secondary", className)}
+      {...props}
+    />
+  );
 }
 
 function PopoverDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("text-sm text-muted", className)} {...props} />;
+  return <p className={cn("text-sm text-muted dark:text-dark-text-muted", className)} {...props} />;
 }
 
 export {

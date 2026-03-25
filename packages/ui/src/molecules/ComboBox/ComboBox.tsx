@@ -79,7 +79,7 @@ function ComboBoxTrigger({ className, children, ref, ...props }: ComboBoxTrigger
       ref={ref}
       disabled={disabled}
       className={cn(
-        "flex h-10 w-full cursor-pointer items-center justify-between rounded-lg border border-gray-300 bg-white px-3 text-sm",
+        "flex h-10 w-full cursor-pointer items-center justify-between rounded-lg border border-border-default bg-white px-3 text-sm dark:border-dark-border-default dark:bg-dark-bg-secondary dark:text-dark-text-primary",
         "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "[&>span]:line-clamp-1",
@@ -116,7 +116,9 @@ function ComboBoxValue({
       ref={ref}
       className={cn(
         "flex-1 truncate text-left",
-        hasValue ? "text-gray-900" : "text-gray-500",
+        hasValue
+          ? "text-primary dark:text-dark-text-primary"
+          : "text-placeholder dark:text-dark-text-placeholder",
         className
       )}
       {...props}
@@ -128,7 +130,12 @@ function ComboBoxValue({
 
 function ComboBoxIcon({ className, ref, ...props }: ComboBoxIconProps) {
   return (
-    <span ref={ref} className={cn("ml-2 text-gray-500", className)} aria-hidden {...props}>
+    <span
+      ref={ref}
+      className={cn("ml-2 text-placeholder dark:text-dark-text-placeholder", className)}
+      aria-hidden
+      {...props}
+    >
       <ChevronDownSmall />
     </span>
   );
@@ -147,7 +154,7 @@ function ComboBoxContent({
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg",
+          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-default bg-white shadow-lg dark:border-dark-border-default dark:bg-dark-bg-card dark:text-dark-text-primary",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -173,14 +180,14 @@ function ComboBoxInput({
   const { search, onSearchChange } = useComboBox();
 
   return (
-    <div className="flex items-center border-b border-gray-200 px-3">
-      <Search size="sm" className="text-gray-400" />
+    <div className="flex items-center border-b border-border-default px-3 dark:border-dark-border-default">
+      <Search size="sm" className="text-placeholder dark:text-dark-text-placeholder" />
       <input
         ref={ref}
         type="text"
         className={cn(
           "flex-1 bg-transparent py-2.5 pl-2 text-sm outline-none",
-          "placeholder:text-gray-500",
+          "placeholder:text-placeholder dark:text-dark-text-primary dark:placeholder:text-dark-text-placeholder",
           className
         )}
         placeholder={placeholder}
@@ -214,7 +221,10 @@ function ComboBoxEmpty({
   return (
     <div
       ref={ref}
-      className={cn("px-3 py-6 text-center text-sm text-gray-500", className)}
+      className={cn(
+        "px-3 py-6 text-center text-sm text-secondary dark:text-dark-text-secondary",
+        className
+      )}
       {...props}
     >
       {children}
@@ -234,7 +244,10 @@ function ComboBoxLabel({ className, children, ref, ...props }: ComboBoxLabelProp
   return (
     <div
       ref={ref}
-      className={cn("px-2 py-1.5 text-xs font-semibold text-gray-500", className)}
+      className={cn(
+        "px-2 py-1.5 text-xs font-semibold text-secondary dark:text-dark-text-secondary",
+        className
+      )}
       {...props}
     >
       {children}
@@ -280,7 +293,7 @@ function ComboBoxItemComponent<TValue>({
       data-selected={isSelected ? "" : undefined}
       className={cn(
         "relative flex w-full cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none",
-        "hover:bg-gray-50 focus:bg-gray-50",
+        "hover:bg-neutral-50 focus:bg-neutral-50 dark:hover:bg-dark-bg-hover dark:focus:bg-dark-bg-hover",
         isSelected && "bg-primary-50 text-primary-600",
         disabled && "cursor-not-allowed opacity-50",
         className
@@ -307,7 +320,7 @@ function ComboBoxSeparator({ className, ref, ...props }: ComboBoxSeparatorProps)
   return (
     <div
       ref={ref}
-      className={cn("-mx-1 my-1 h-px bg-gray-200", className)}
+      className={cn("-mx-1 my-1 h-px bg-border-default dark:bg-dark-border-default", className)}
       role="separator"
       {...props}
     />

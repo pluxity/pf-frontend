@@ -29,12 +29,11 @@ function BaseSentimentIcon({
   children,
   ...props
 }: BaseSentimentIconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 80 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -48,10 +47,11 @@ function BaseSentimentIcon({
 }
 
 /**
- * 위험도 낮음 상태 아이콘 (파란색, 웃는 얼굴)
+ * 위험도 낮음 (정상) 상태 아이콘 (웃는 얼굴)
+ * severity-normal 토큰 사용
  */
 export function SentimentLow(props: IconProps) {
-  const color = "#0057FF";
+  const color = "var(--color-severity-normal-brand)";
   return (
     <BaseSentimentIcon {...props} color={color}>
       <path d={`${MOUTH_SMILE_PATH} ${EYES_PATH}`} fill={color} />
@@ -60,10 +60,11 @@ export function SentimentLow(props: IconProps) {
 }
 
 /**
- * 위험도 보통 상태 아이콘 (초록색, 보통 표정)
+ * 위험도 보통 (주의) 상태 아이콘 (보통 표정)
+ * severity-caution 토큰 사용
  */
 export function SentimentNormal(props: IconProps) {
-  const color = "#2DC000";
+  const color = "var(--color-severity-caution-brand)";
   return (
     <BaseSentimentIcon {...props} color={color}>
       <path d={EYES_PATH} fill={color} />
@@ -73,10 +74,11 @@ export function SentimentNormal(props: IconProps) {
 }
 
 /**
- * 위험도 높음 상태 아이콘 (주황색, 보통 표정)
+ * 위험도 높음 (경고) 상태 아이콘 (보통 표정)
+ * severity-warning 토큰 사용
  */
 export function SentimentHigh(props: IconProps) {
-  const color = "#FF8901";
+  const color = "var(--color-severity-warning-brand)";
   return (
     <BaseSentimentIcon {...props} color={color}>
       <path d={EYES_PATH} fill={color} />
@@ -86,10 +88,11 @@ export function SentimentHigh(props: IconProps) {
 }
 
 /**
- * 위험 상태 아이콘 (빨간색, 찡그린 얼굴)
+ * 위험 상태 아이콘 (찡그린 얼굴)
+ * severity-danger 토큰 사용
  */
 export function SentimentDanger(props: IconProps) {
-  const color = "#BF0000";
+  const color = "var(--color-severity-danger-brand)";
   return (
     <BaseSentimentIcon {...props} color={color}>
       <path d={`${MOUTH_FROWN_PATH} ${EYES_PATH}`} fill={color} />

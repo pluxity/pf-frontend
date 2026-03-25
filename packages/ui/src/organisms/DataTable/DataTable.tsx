@@ -67,7 +67,7 @@ function DataTableBulkActionBar({
             size="sm"
             variant="secondary"
             onClick={onExport}
-            className="h-8 rounded-md bg-white text-brand hover:bg-gray-50"
+            className="h-8 rounded-md bg-white text-brand hover:bg-neutral-50"
           >
             📤 Export
           </Button>
@@ -115,7 +115,7 @@ function DataTablePagination({
           {totalItems.toLocaleString()}
         </span>
         <span>건</span>
-        <span className="text-neutral-300">
+        <span className="text-neutral-400 dark:text-neutral-400">
           ({startItem.toLocaleString()} - {endItem.toLocaleString()})
         </span>
       </div>
@@ -252,12 +252,12 @@ function DataTableComponent<T>({
         }}
       />
 
-      <div className="w-full overflow-auto border-y border-t-2 border-neutral-300 dark:border-dark-border-default">
+      <div className="w-full overflow-auto border-y border-t-2 border-neutral-300 dark:border-neutral-600">
         <table className="w-full caption-bottom text-xs">
-          <thead className="bg-neutral-200/90 dark:bg-dark-bg-tertiary">
-            <tr className="border-b border-neutral-300 dark:border-dark-border-default">
+          <thead className="bg-neutral-200/90 dark:bg-neutral-800">
+            <tr className="border-b border-neutral-300 dark:border-neutral-600">
               {selectable && (
-                <th className="h-9 w-12 px-4 border-r border-neutral-300 dark:border-dark-border-default">
+                <th className="h-9 w-12 px-4 border-r border-neutral-300 dark:border-neutral-600">
                   <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                 </th>
               )}
@@ -266,7 +266,7 @@ function DataTableComponent<T>({
                   key={String(column.key)}
                   className={cn(
                     "h-9 px-4 text-center text-xs font-bold text-muted border-r border-neutral-300 last:border-r-0",
-                    "dark:text-dark-text-muted dark:border-dark-border-default",
+                    "dark:text-dark-text-muted dark:border-neutral-600",
                     column.sortable && "cursor-pointer select-none",
                     column.className
                   )}
@@ -296,12 +296,12 @@ function DataTableComponent<T>({
                   key={actualIndex}
                   className={cn(
                     "h-9 border-b border-neutral-300 transition-colors",
-                    "dark:border-dark-border-default",
-                    selectedRows.has(actualIndex) && "bg-blue-50 dark:bg-primary-900/30"
+                    "dark:border-neutral-600",
+                    selectedRows.has(actualIndex) && "bg-primary-50 dark:bg-primary-900/30"
                   )}
                 >
                   {selectable && (
-                    <td className="w-12 px-4 text-center align-middle border-r border-neutral-300 dark:border-dark-border-default">
+                    <td className="w-12 px-4 text-center align-middle border-r border-neutral-300 dark:border-neutral-600">
                       <Checkbox
                         checked={selectedRows.has(actualIndex)}
                         onCheckedChange={(checked) =>
@@ -320,7 +320,7 @@ function DataTableComponent<T>({
                         key={String(key)}
                         className={cn(
                           "px-4 py-3 text-center align-middle text-xs text-secondary border-r border-neutral-300 last:border-r-0",
-                          "dark:text-dark-text-muted dark:border-dark-border-default",
+                          "dark:text-dark-text-secondary dark:border-neutral-600",
                           className
                         )}
                       >

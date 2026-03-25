@@ -96,7 +96,9 @@ function FooterBrand({
       <div className="mb-4 flex items-center gap-2">
         {logo || <span className="text-xl font-bold text-brand">{logoText}</span>}
       </div>
-      {tagline && <p className="mb-4 max-w-xs text-sm text-muted">{tagline}</p>}
+      {tagline && (
+        <p className="mb-4 max-w-xs text-sm text-muted dark:text-dark-text-muted">{tagline}</p>
+      )}
       {children}
     </div>
   );
@@ -105,7 +107,9 @@ function FooterBrand({
 function FooterColumn({ title, children, className }: FooterColumnProps) {
   return (
     <div className={className}>
-      <h4 className="mb-4 text-sm font-bold text-secondary">{title}</h4>
+      <h4 className="mb-4 text-sm font-bold text-secondary dark:text-dark-text-secondary">
+        {title}
+      </h4>
       <ul className="space-y-3">{children}</ul>
     </div>
   );
@@ -116,7 +120,10 @@ function FooterLink({ children, href, className, ...props }: FooterLinkProps) {
     <li>
       <a
         href={href}
-        className={cn("text-sm text-muted transition-colors hover:text-brand", className)}
+        className={cn(
+          "text-sm text-muted transition-colors hover:text-brand dark:text-dark-text-muted dark:hover:text-primary-400",
+          className
+        )}
         {...props}
       >
         {children}
@@ -134,7 +141,10 @@ function FooterSocialLink({ platform, href, className }: FooterSocialLinkProps) 
   return (
     <a
       href={href}
-      className={cn("text-muted transition-colors hover:text-brand", className)}
+      className={cn(
+        "text-muted transition-colors hover:text-brand dark:text-dark-text-muted dark:hover:text-primary-400",
+        className
+      )}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -145,8 +155,13 @@ function FooterSocialLink({ platform, href, className }: FooterSocialLinkProps) 
 
 function FooterCopyright({ children, className }: FooterCopyrightProps) {
   return (
-    <div className={cn("mt-12 border-t border-neutral-100 pt-8", className)}>
-      <p className="text-center text-sm text-muted">{children}</p>
+    <div
+      className={cn(
+        "col-span-full mt-12 border-t border-neutral-100 pt-8 dark:border-dark-border-default",
+        className
+      )}
+    >
+      <p className="text-center text-sm text-muted dark:text-dark-text-muted">{children}</p>
     </div>
   );
 }
@@ -157,7 +172,13 @@ function FooterCustom({ children, className }: FooterCustomProps) {
 
 function Footer({ className, children, ...props }: FooterProps) {
   return (
-    <footer className={cn("border-t border-neutral-100 bg-white", className)} {...props}>
+    <footer
+      className={cn(
+        "border-t border-neutral-100 bg-white dark:border-dark-border-default dark:bg-dark-bg-secondary",
+        className
+      )}
+      {...props}
+    >
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">{children}</div>
       </div>

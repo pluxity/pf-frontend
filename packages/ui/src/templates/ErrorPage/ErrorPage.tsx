@@ -63,7 +63,7 @@ function ErrorPage({
     <div
       ref={ref}
       className={cn(
-        "flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4",
+        "flex min-h-screen flex-col items-center justify-center bg-neutral-100 px-4 dark:bg-dark-bg-primary",
         className
       )}
       {...props}
@@ -73,13 +73,21 @@ function ErrorPage({
           <div className="mb-8">{illustration}</div>
         ) : (
           <div className="mb-8">
-            <span className="text-8xl font-black text-gray-200">{displayCode}</span>
+            <span className="text-8xl font-black text-neutral-200 dark:text-neutral-700">
+              {displayCode}
+            </span>
           </div>
         )}
 
-        {displayTitle && <h1 className="mb-4 text-2xl font-bold text-gray-900">{displayTitle}</h1>}
+        {displayTitle && (
+          <h1 className="mb-4 text-2xl font-bold text-primary dark:text-dark-text-primary">
+            {displayTitle}
+          </h1>
+        )}
 
-        {displayDescription && <p className="mb-8 text-gray-500">{displayDescription}</p>}
+        {displayDescription && (
+          <p className="mb-8 text-secondary dark:text-dark-text-secondary">{displayDescription}</p>
+        )}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
           {primaryAction && <Button onClick={primaryAction.onClick}>{primaryAction.label}</Button>}

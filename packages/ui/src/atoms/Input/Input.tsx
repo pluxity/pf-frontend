@@ -8,7 +8,8 @@ function Input({ className, type, error, inputSize, ref, ...props }: InputProps)
       type={type}
       className={cn(
         inputVariants({ inputSize }),
-        error && "border-error-brand focus:border-error-brand focus:ring-error-brand/20",
+        error &&
+          "border-error-brand focus:border-error-brand focus:ring-error-brand/20 dark:border-error-500 dark:focus:border-error-500 dark:focus:ring-error-500/20",
         className
       )}
       ref={ref}
