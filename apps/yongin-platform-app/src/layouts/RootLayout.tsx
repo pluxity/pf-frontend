@@ -10,7 +10,7 @@ export function RootLayout() {
 
   return (
     <div
-      className="h-screen flex flex-col"
+      className="h-dvh flex flex-col"
       style={{
         background: "linear-gradient(180deg, #D4D6D7 0%, #EFF1F8 45%)",
       }}

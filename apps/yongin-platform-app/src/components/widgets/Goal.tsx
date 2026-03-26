@@ -67,12 +67,12 @@ export function Goal({ id, className }: BaseWidgetProps) {
         <div className="flex-1 overflow-hidden">
           <div className="w-full h-full overflow-y-auto [&>div]:!border-0 [&_table]:!border-0 [&_tr]:!border-0 [&_td]:!border-0 [&_th]:!border-r-0">
             <Table className="min-w-full overflow-hidden">
-              <TableHeader className="!border-y !border-neutral-300">
+              <TableHeader>
                 <TableRow>
                   {goalHeader.map((header) => (
                     <TableHead
                       key={header.key}
-                      className="bg-[#DAE4F4] text-[#55596C] whitespace-nowrap tracking-tighter px-1"
+                      className="bg-[#E7E7E7] text-[#55596C] whitespace-nowrap tracking-tighter px-1"
                     >
                       {header.label}
                     </TableHead>
@@ -91,8 +91,10 @@ export function Goal({ id, className }: BaseWidgetProps) {
                   </TableRow>
                 ) : (
                   goals.map((goal) => (
-                    <TableRow key={goal.id}>
-                      <TableCell className="px-1">{goal.constructionSectionName}</TableCell>
+                    <TableRow key={goal.id} className="text-[#55596C]">
+                      <TableCell className="px-1 text-[#333]">
+                        {goal.constructionSectionName}
+                      </TableCell>
                       <TableCell className="px-1">{goal.progressRate}%</TableCell>
                       <TableCell className="px-1">{goal.targetQuantity.toLocaleString()}</TableCell>
                       <TableCell className="px-1">{goal.workQuantity.toLocaleString()}</TableCell>

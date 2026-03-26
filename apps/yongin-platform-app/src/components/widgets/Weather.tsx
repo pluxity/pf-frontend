@@ -114,8 +114,8 @@ export function Weather({ id, className }: BaseWidgetProps) {
               {Math.round(weather.pm25)}
               <span className="text-xs font-normal">µg/m³</span>
             </span>
-            <span className="text-xs text-gray-600 leading-tight text-center">초미세먼지</span>
-            <span className="text-xs text-gray-500 leading-tight">(PM2.5)</span>
+            <span className="text-xs text-[#55596C] leading-tight text-center">초미세먼지</span>
+            <span className="text-xs text-[#55596C] leading-tight">(PM2.5)</span>
           </div>
 
           {/* PM10 */}
@@ -129,8 +129,8 @@ export function Weather({ id, className }: BaseWidgetProps) {
               {Math.round(weather.pm10)}
               <span className="text-xs font-normal">µg/m³</span>
             </span>
-            <span className="text-xs text-gray-600 leading-tight text-center">미세먼지</span>
-            <span className="text-xs text-gray-500 leading-tight">(PM10)</span>
+            <span className="text-xs text-[#55596C] leading-tight text-center">미세먼지</span>
+            <span className="text-xs text-[#55596C] leading-tight">(PM10)</span>
           </div>
         </div>
 
@@ -138,11 +138,11 @@ export function Weather({ id, className }: BaseWidgetProps) {
         <div className="flex flex-1 flex-col gap-1 min-h-0 py-2">
           {weatherData.map((data) => (
             <div key={data.label} className="flex items-stretch text-xs px-2">
-              <span className="flex items-center justify-center gap-1 bg-[#DAE4F4] rounded-sm p-2 min-w-[4.5rem]">
+              <span className="flex items-center justify-center gap-1 bg-[#E7E7E7] text-[#333333] rounded-sm p-2 min-w-[4.5rem]">
                 <img src={data.icon} alt={data.label} className="w-3.5 h-3.5" />
                 {data.label}
               </span>
-              <div className="flex flex-1 items-center min-w-0">
+              <div className="flex flex-1 items-center min-w-0 text-[#55596C]">
                 <span className="flex-1 text-center">{data.value}</span>
                 <span className="w-px bg-[#BBBFCF] h-3.5" />
                 <span className="flex-1 text-center">{data.status}</span>

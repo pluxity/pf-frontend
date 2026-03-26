@@ -33,17 +33,17 @@ export function HomePage() {
   if (isLoading) return <PageSkeleton />;
 
   return (
-    <div className="grid grid-cols-[20rem_1fr_20rem] gap-5 px-5 pt-2 pb-[0.9375rem] h-full">
+    <div className="grid grid-cols-[23.3em_1fr_23.3rem] gap-4 px-5 pt-2 pb-[0.9375rem] h-full">
       <div className="relative min-h-0">
         <div
-          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-3 gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <Weather id="weather" />
           <Attendance id="attendance" />
           <ProcessStatus id="processStatus" />
         </div>
         <div
-          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity  ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-3 gap-5 transition-opacity  ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <BookmarkCctv id="bookmarkCctv" />
           <SafetyManagement id="safetyManagement" />
@@ -55,14 +55,14 @@ export function HomePage() {
 
       <div className="relative min-h-0">
         <div
-          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-3 gap-5 transition-opacity ${page === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <KeyManagement id="keyManagement" />
           <Goal id="goal" />
           <Announcement id="announcement" />
         </div>
         <div
-          className={`absolute inset-0 grid grid-rows-[repeat(3,18.75rem)] content-center gap-5 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`absolute inset-0 grid grid-rows-3 gap-5 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
           <IoTWidget id="iot1" />
           <IoTWidget id="iot2" />

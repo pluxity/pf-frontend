@@ -65,10 +65,10 @@ export function Attendance({ id, className }: BaseWidgetProps) {
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto [&>div]:!border-0 [&_table]:!border-0 [&_tr]:!border-0 [&_td]:!border-0 [&_th]:!border-r-0">
             <Table>
-              <TableHeader className="!border-y !border-neutral-300">
+              <TableHeader>
                 <TableRow>
                   {attendanceHeader.map((header) => (
-                    <TableHead key={header.key} className="bg-[#DAE4F4] text-[#55596C]">
+                    <TableHead key={header.key} className="bg-[#E7E7E7] text-[#55596C]">
                       {header.label}
                     </TableHead>
                   ))}
@@ -86,8 +86,8 @@ export function Attendance({ id, className }: BaseWidgetProps) {
                   </TableRow>
                 ) : (
                   data.map((attendance) => (
-                    <TableRow key={attendance.id}>
-                      <TableCell>{attendance.deviceName}</TableCell>
+                    <TableRow key={attendance.id} className="text-[#55596C]">
+                      <TableCell className="text-[#333]">{attendance.deviceName}</TableCell>
                       <TableCell>{attendance.attendanceCount}</TableCell>
                       <TableCell>{attendance.workContent}</TableCell>
                     </TableRow>

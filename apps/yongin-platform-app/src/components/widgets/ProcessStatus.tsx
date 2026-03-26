@@ -8,56 +8,40 @@ function OverallSection({ plannedRate, actualRate }: { plannedRate: number; actu
       {/* 목표 바 */}
       <div className="flex items-center gap-2">
         <span className="w-[30px] shrink-0 text-[14px] font-bold text-[#55596C]">목표</span>
-        <div className="relative h-[16px] flex-1 rounded-[8px] bg-[#E7E7E7]">
+        <div className="relative h-[16px] flex-1 rounded-[8px]">
           <div
-            className="h-full rounded-[8px]"
+            className="flex items-center justify-end h-full rounded-[8px] px-1 min-w-fit"
             style={{
               width: `${Math.min(plannedRate, 100)}%`,
               background: "linear-gradient(to right, #CACACA, #646464)",
             }}
-          />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-white">
-            {plannedRate}%
-          </span>
+          >
+            <span className="text-[10px] text-white leading-none">{plannedRate}%</span>
+          </div>
         </div>
       </div>
       {/* 실적 바 */}
       <div className="flex items-center gap-2">
         <span className="w-[30px] shrink-0 text-[14px] font-bold text-[#55596C]">실적</span>
-        <div className="relative h-[16px] flex-1 rounded-[8px] bg-[#E7E7E7]">
+        <div className="relative h-[16px] flex-1 rounded-[8px]">
           <div
-            className="h-full rounded-[8px]"
+            className="flex items-center justify-end h-full rounded-[8px] px-1 min-w-fit"
             style={{
               width: `${Math.min(actualRate, 100)}%`,
               background: "linear-gradient(to right, #FFB033, #F37021)",
             }}
-          />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-white">
-            {actualRate}%
-          </span>
+          >
+            <span className="text-[10px] text-white leading-none">{actualRate}%</span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function ProgressBar({
-  label,
-  actualRate,
-  isLast,
-}: {
-  label: string;
-  actualRate: number;
-  isLast: boolean;
-}) {
+function ProgressBar({ label, actualRate }: { label: string; actualRate: number }) {
   return (
-    <div
-      className={
-        isLast
-          ? "flex items-center gap-2 pb-[6px]"
-          : "flex items-center gap-2 pb-[6px] border-b border-[#E7E7E7]"
-      }
-    >
+    <div className="flex items-center gap-2 pb-[6px]">
       <span className="w-[60px] shrink-0 truncate text-[12px] text-[#333]" title={label}>
         {label}
       </span>
@@ -109,13 +93,8 @@ export function ProcessStatus({ id, className }: BaseWidgetProps) {
 
         {workStatuses.length > 0 && (
           <div className="flex flex-col gap-[6px] min-h-0 flex-1 overflow-y-auto mt-3 pt-2">
-            {workStatuses.map((ws, index) => (
-              <ProgressBar
-                key={ws.id}
-                label={ws.workTypeName}
-                actualRate={ws.actualRate}
-                isLast={index === workStatuses.length - 1}
-              />
+            {workStatuses.map((ws) => (
+              <ProgressBar key={ws.id} label={ws.workTypeName} actualRate={ws.actualRate} />
             ))}
           </div>
         )}

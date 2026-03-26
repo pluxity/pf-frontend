@@ -92,7 +92,7 @@ export function MainContainer({ className, defaultTab = "birds-eye" }: MainConta
       className={cn("flex flex-col h-full", className)}
     >
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 min-h-0 overflow-hidden rounded-[0.9375rem] rounded-bl-none border border-[#9499B1]">
+      <div className="flex-1 min-h-0 overflow-hidden rounded-[0.9375rem] rounded-bl-none border border-[#9499B1] bg-white">
         <TabsContent value="birds-eye" className="h-full mt-0">
           <Suspense fallback={<LoadingFallback />}>
             <BirdsEyeView />

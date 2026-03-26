@@ -98,6 +98,6 @@ CarouselInfo.Description = function CarouselInfoDescription({
   className,
 }: CarouselInfoDescriptionProps) {
   return (
-    <p className={cn("text-sm text-gray-800 overflow-y-auto max-h-20", className)}>{children}</p>
+    <p className={cn("text-sm text-[#555] overflow-y-auto max-h-20", className)}>{children}</p>
   );
 };
