@@ -42,7 +42,7 @@ export function Announcement({ id, className }: BaseWidgetProps) {
     <Widget id={id} className={cn(className)} contentClassName="h-full flex flex-col p-4">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-bold text-[16px] text-[#333] tracking-[-0.16px]">공지사항</h3>
+        <h3 className="font-bold text-base text-[#333]">공지사항</h3>
         {total > 1 && (
           <div className="inline-flex">
             <button
@@ -86,10 +86,8 @@ export function Announcement({ id, className }: BaseWidgetProps) {
 
       {!isLoading && !isError && notice && (
         <div className="flex-1 min-h-0 flex flex-col">
-          <p className="font-bold text-[14px] text-[#030303] mb-[23px]">
-            {formatDate(notice.updatedAt)}
-          </p>
-          <div className="flex-1 min-h-0 overflow-y-auto text-[12px] text-[#555] leading-[20px] tracking-[-0.12px]">
+          <p className="font-bold text-sm text-[#030303] mb-5">{formatDate(notice.updatedAt)}</p>
+          <div className="flex-1 min-h-0 overflow-y-auto text-xs text-[#555] leading-5">
             {notice.content
               .split("\n")
               .filter(Boolean)

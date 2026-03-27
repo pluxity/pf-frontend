@@ -4,34 +4,34 @@ import { useProcessStatus } from "@/hooks/useProcessStatus";
 
 function OverallSection({ plannedRate, actualRate }: { plannedRate: number; actualRate: number }) {
   return (
-    <div className="flex flex-col gap-[10px]">
+    <div className="flex flex-col gap-2.5">
       {/* 목표 바 */}
       <div className="flex items-center gap-2">
-        <span className="w-[30px] shrink-0 text-[14px] font-bold text-[#55596C]">목표</span>
-        <div className="relative h-[16px] flex-1 rounded-[8px]">
+        <span className="w-[1.875rem] shrink-0 text-sm font-bold text-[#55596C]">목표</span>
+        <div className="relative h-4 flex-1 rounded-lg">
           <div
-            className="flex items-center justify-end h-full rounded-[8px] px-1 min-w-fit"
+            className="flex items-center justify-end h-full rounded-lg px-1 min-w-fit"
             style={{
               width: `${Math.min(plannedRate, 100)}%`,
               background: "linear-gradient(to right, #CACACA, #646464)",
             }}
           >
-            <span className="text-[10px] text-white leading-none">{plannedRate}%</span>
+            <span className="text-[0.625rem] text-white leading-none">{plannedRate}%</span>
           </div>
         </div>
       </div>
       {/* 실적 바 */}
       <div className="flex items-center gap-2">
-        <span className="w-[30px] shrink-0 text-[14px] font-bold text-[#55596C]">실적</span>
-        <div className="relative h-[16px] flex-1 rounded-[8px]">
+        <span className="w-[1.875rem] shrink-0 text-sm font-bold text-[#55596C]">실적</span>
+        <div className="relative h-4 flex-1 rounded-lg">
           <div
-            className="flex items-center justify-end h-full rounded-[8px] px-1 min-w-fit"
+            className="flex items-center justify-end h-full rounded-lg px-1 min-w-fit"
             style={{
               width: `${Math.min(actualRate, 100)}%`,
               background: "linear-gradient(to right, #FFB033, #F37021)",
             }}
           >
-            <span className="text-[10px] text-white leading-none">{actualRate}%</span>
+            <span className="text-[0.625rem] text-white leading-none">{actualRate}%</span>
           </div>
         </div>
       </div>
@@ -41,17 +41,17 @@ function OverallSection({ plannedRate, actualRate }: { plannedRate: number; actu
 
 function ProgressBar({ label, actualRate }: { label: string; actualRate: number }) {
   return (
-    <div className="flex items-center gap-2 pb-[6px]">
-      <span className="w-[60px] shrink-0 truncate text-[12px] text-[#333]" title={label}>
+    <div className="flex items-center gap-2 pb-1.5">
+      <span className="w-[3.75rem] shrink-0 truncate text-xs text-[#333]" title={label}>
         {label}
       </span>
-      <div className="relative h-[3px] flex-1 rounded-full bg-[#CCC]">
+      <div className="relative h-[0.1875rem] flex-1 rounded-full bg-[#CCC]">
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-[#333]"
           style={{ width: `${Math.min(actualRate, 100)}%` }}
         />
       </div>
-      <span className="w-[32px] shrink-0 text-right text-[12px] text-[#55596C]">{actualRate}%</span>
+      <span className="w-[2rem] shrink-0 text-right text-xs text-[#55596C]">{actualRate}%</span>
     </div>
   );
 }
@@ -86,13 +86,13 @@ export function ProcessStatus({ id, className }: BaseWidgetProps) {
   return (
     <Widget id={id} className={className} contentClassName="h-full">
       <div className="flex flex-col h-full">
-        <div className="flex flex-col gap-[10px] shrink-0">
-          <div className="font-bold text-[16px] text-[#333] tracking-[-0.16px]">공정현황</div>
+        <div className="flex flex-col gap-2.5 shrink-0">
+          <div className="font-bold text-base text-[#333]">공정현황</div>
           <OverallSection plannedRate={overall.plannedRate} actualRate={overall.actualRate} />
         </div>
 
         {workStatuses.length > 0 && (
-          <div className="flex flex-col gap-[6px] min-h-0 flex-1 overflow-y-auto mt-3 pt-2">
+          <div className="flex flex-col gap-1.5 min-h-0 flex-1 overflow-y-auto mt-3 pt-2">
             {workStatuses.map((ws) => (
               <ProgressBar key={ws.id} label={ws.workTypeName} actualRate={ws.actualRate} />
             ))}

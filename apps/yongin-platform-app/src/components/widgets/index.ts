@@ -8,6 +8,8 @@ export { Announcement } from "./Announcement";
 export { BookmarkCctv } from "./BookmarkCctv";
 export { SafetyEquipment } from "./SafetyEquipment";
 export { SafetyManagement } from "./SafetyManagement";
-export { IoTWidget } from "./IoTWidget";
+export { HazardousGas } from "./HazardousGas";
+export { TemporaryStructure } from "./TemporaryStructure";
+export { ConcreteHydration } from "./ConcreteHydration";
 
 export * from "./types";

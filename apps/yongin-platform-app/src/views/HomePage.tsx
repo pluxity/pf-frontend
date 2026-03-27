@@ -10,7 +10,9 @@ import {
   BookmarkCctv,
   SafetyManagement,
   SafetyEquipment,
-  IoTWidget,
+  HazardousGas,
+  TemporaryStructure,
+  ConcreteHydration,
 } from "@/components/widgets";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { useDashboardStore, selectPage, selectIsPlaying } from "@/stores/dashboard.store";
@@ -64,9 +66,9 @@ export function HomePage() {
         <div
           className={`absolute inset-0 grid grid-rows-3 gap-5 transition-opacity ${page === 1 ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          <IoTWidget id="iot1" />
-          <IoTWidget id="iot2" />
-          <IoTWidget id="iot3" />
+          <HazardousGas id="hazardousGas" />
+          <TemporaryStructure id="temporaryStructure" />
+          <ConcreteHydration id="concreteHydration" />
         </div>
       </div>
     </div>

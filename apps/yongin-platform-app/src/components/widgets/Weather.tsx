@@ -135,7 +135,7 @@ export function Weather({ id, className }: BaseWidgetProps) {
         </div>
 
         {/* 하단: 데이터 행 */}
-        <div className="flex flex-1 flex-col gap-1 min-h-0 py-2">
+        <div className="flex flex-1 flex-col gap-1 min-h-0 pt-1 overflow-auto">
           {weatherData.map((data) => (
             <div key={data.label} className="flex items-stretch text-xs px-2">
               <span className="flex items-center justify-center gap-1 bg-[#E7E7E7] text-[#333333] rounded-sm p-2 min-w-[4.5rem]">
