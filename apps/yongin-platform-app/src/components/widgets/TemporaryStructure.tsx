@@ -13,7 +13,7 @@ export function TemporaryStructure({ id, className }: BaseWidgetProps) {
         </div>
         <div className="flex-1 overflow-auto min-h-0">
           {/* TODO: URL 확정 후 새탭 이동(target="_blank") 연결 */}
-          <a href="#" className="block w-full h-full">
+          <a href="#!" className="block w-full h-full">
             <img src={temporaryStructureImg} alt="가시설 변위 모니터링" className="w-full" />
           </a>
         </div>

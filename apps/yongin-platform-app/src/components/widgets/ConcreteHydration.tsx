@@ -1,7 +1,7 @@
 import { Widget } from "@pf-dev/ui";
 import type { BaseWidgetProps } from "./types";
 import linkIcon from "@/assets/icons/link.svg";
-import concreteHydrationImg from "@/assets/images/concrete-hydratioin.svg";
+import concreteHydrationImg from "@/assets/images/concrete-hydration.svg";
 
 export function ConcreteHydration({ id, className }: BaseWidgetProps) {
   return (
@@ -13,7 +13,7 @@ export function ConcreteHydration({ id, className }: BaseWidgetProps) {
         </div>
         <div className="flex-1 overflow-auto min-h-0">
           {/* TODO: URL 확정 후 새탭 이동(target="_blank") 연결 */}
-          <a href="#" className="block w-full h-full">
+          <a href="#!" className="block w-full h-full">
             <img src={concreteHydrationImg} alt="콘크리트 수화열 모니터링" className="w-full" />
           </a>
         </div>
