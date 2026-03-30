@@ -11,6 +11,7 @@ CesiumJS를 React 컴포넌트로 쉽게 사용할 수 있는 패키지입니다
 - 📍 **Entity 관리**: Feature 추가/삭제/수정/검색 (레이어 지원)
 - 🎨 **상태별 효과**: Silhouette, Ripple, Glow, Outline
 - 💾 **상태 관리**: Zustand 기반 Map/Camera/Feature Store
+- 🗺️ **GeoJSON**: GeoJsonLayer, GeoJsonMarkers (대량 폴리곤 렌더링 + 인터랙티브 마커)
 - 🌏 **다양한 Provider**: OSM, VWorld, Cesium Ion, Bing, ArcGIS
 
 ## 📦 설치
@@ -80,6 +81,42 @@ function Map() {
 }
 ```
 
+### GeoJSON 폴리곤
+
+```tsx
+import { MapViewer, Imagery, GeoJsonLayer, GeoJsonMarkers } from "@pf-dev/map";
+import { Color } from "cesium";
+
+function App() {
+  return (
+    <MapViewer className="w-full h-screen">
+      <Imagery provider="osm" />
+      <GeoJsonLayer
+        data="/data/districts.json"
+        layerName="districts"
+        style={{
+          fillColor: Color.BLUE,
+          fillOpacity: 0.3,
+          outline: true,
+          outlineColor: Color.WHITE,
+          extrudedHeight: 100,
+        }}
+      />
+      <GeoJsonMarkers
+        layerName="districts"
+        style={{
+          image: "/icons/pin.png",
+          selectedImage: "/icons/pin-active.png",
+          width: 32,
+          height: 32,
+        }}
+        onClick={(id, props) => console.log("Clicked:", id, props)}
+      />
+    </MapViewer>
+  );
+}
+```
+
 ## 📖 상세 사용법
 
 전체 API 문서와 사용 예시는 **[HOW_TO_USE.md](./HOW_TO_USE.md)**를 참고하세요.
@@ -89,6 +126,7 @@ function Map() {
 - [Entity 관리 API](./HOW_TO_USE.md#entity-관리-usefeaturestore)
 - [Feature 상태 효과](./HOW_TO_USE.md#featurestateeffects-상태별-시각-효과)
 - [타입 정의 및 Exports](./HOW_TO_USE.md#타입-정의)
+- [GeoJSON 기능](./HOW_TO_USE.md#geojson-기능)
 
 ## 🔧 개발
 
