@@ -1,5 +1,13 @@
 // Components
-export { MapViewer, Imagery, Terrain, Tiles3D, FeatureStateEffects } from "./components/index";
+export {
+  MapViewer,
+  Imagery,
+  Terrain,
+  Tiles3D,
+  FeatureStateEffects,
+  GeoJsonLayer,
+  GeoJsonMarkers,
+} from "./components/index";
 
 // Store
 export {
@@ -9,7 +17,13 @@ export {
   cameraStore,
   useFeatureStore,
   featureStore,
+  useGeoJsonStore,
+  geoJsonStore,
 } from "./store/index";
+export type { GeoJsonLayerEntry } from "./store/index";
+
+// Utils
+export { calculatePolygonCenter, simplifyGeoJSON, removeSmallIslands } from "./utils/index";
 
 // Types
 export type {
@@ -55,6 +69,17 @@ export type {
   FeatureSelectorType,
   FeatureStoreState,
   FeatureActions,
+  // GeoJSON
+  GeoJsonFeature,
+  GeoJsonFeatureCollection,
+  GeoJsonPolygonGeometry,
+  GeoJsonMultiPolygonGeometry,
+  GeoJsonGeometry,
+  GeoJsonLayerStyle,
+  GeoJsonLayerProps,
+  GeoJsonScaleByDistance,
+  GeoJsonMarkerStyle,
+  GeoJsonMarkersProps,
 } from "./types/index";
 
 // Type Guards

@@ -34,7 +34,7 @@ function DropdownMenuSubTrigger({
       ref={ref}
       className={cn(
         "flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none",
-        "focus:bg-gray-50 data-[state=open]:bg-gray-50",
+        "focus:bg-neutral-50 data-[state=open]:bg-neutral-50",
         "dark:focus:bg-dark-bg-hover dark:data-[state=open]:bg-dark-bg-hover",
         "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         inset && "pl-8",
@@ -59,7 +59,7 @@ function DropdownMenuSubContent({ className, ref, ...props }: DropdownMenuSubCon
     <DropdownMenuPrimitive.SubContent
       ref={ref}
       className={cn(
-        "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-text-primary shadow-lg",
+        "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-primary shadow-lg",
         "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -91,7 +91,7 @@ function DropdownMenuContent({
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-text-primary shadow-md",
+          "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-1 text-primary shadow-md",
           "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -119,7 +119,7 @@ function DropdownMenuItem({ className, inset, ref, ...props }: DropdownMenuItemP
       ref={ref}
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md px-2 py-1.5 text-sm outline-none transition-colors",
-        "focus:bg-gray-50 focus:text-text-primary",
+        "focus:bg-neutral-50 focus:text-primary",
         "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
         "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -149,7 +149,7 @@ function DropdownMenuCheckboxItem({
       ref={ref}
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
-        "focus:bg-gray-50 focus:text-text-primary",
+        "focus:bg-neutral-50 focus:text-primary",
         "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
         "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -180,7 +180,7 @@ function DropdownMenuRadioItem({ className, children, ref, ...props }: DropdownM
       ref={ref}
       className={cn(
         "relative flex cursor-default select-none items-center rounded-md py-1.5 pl-8 pr-2 text-sm outline-none transition-colors",
-        "focus:bg-gray-50 focus:text-text-primary",
+        "focus:bg-neutral-50 focus:text-primary",
         "dark:focus:bg-dark-bg-hover dark:focus:text-dark-text-primary",
         "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
@@ -210,7 +210,7 @@ function DropdownMenuLabel({ className, inset, ref, ...props }: DropdownMenuLabe
     <DropdownMenuPrimitive.Label
       ref={ref}
       className={cn(
-        "px-2 py-1.5 text-sm font-semibold text-text-primary",
+        "px-2 py-1.5 text-sm font-semibold text-primary",
         "dark:text-dark-text-primary",
         inset && "pl-8",
         className
@@ -240,7 +240,7 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
   return (
     <span
       className={cn(
-        "ml-auto text-xs tracking-widest text-text-muted dark:text-dark-text-muted",
+        "ml-auto text-xs tracking-widest text-muted dark:text-dark-text-muted",
         className
       )}
       {...props}

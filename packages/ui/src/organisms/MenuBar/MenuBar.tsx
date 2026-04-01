@@ -17,7 +17,7 @@ function Menubar({ className, ref, ...props }: MenubarProps) {
   return (
     <MenubarPrimitive.Root
       ref={ref}
-      className={cn("flex h-10 items-center bg-white px-1", className)}
+      className={cn("flex h-10 items-center bg-white dark:bg-dark-bg-secondary px-1", className)}
       {...props}
     />
   );
@@ -32,9 +32,10 @@ function MenubarTrigger({ className, ref, ...props }: MenubarTriggerProps) {
     <MenubarPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm font-normal text-gray-700 outline-none",
-        "focus:bg-gray-50 data-[state=open]:bg-brand data-[state=open]:text-white",
-        "hover:bg-gray-50",
+        "flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm font-normal text-primary outline-none dark:text-dark-text-primary",
+        "data-[state=closed]:focus:bg-neutral-50 dark:data-[state=closed]:focus:bg-dark-bg-hover",
+        "data-[state=closed]:hover:bg-neutral-50 dark:data-[state=closed]:hover:bg-dark-bg-hover",
+        "data-[state=open]:bg-brand data-[state=open]:text-white",
         className
       )}
       {...props}
@@ -54,8 +55,8 @@ function MenubarSubTrigger({ className, inset, children, ref, ...props }: Menuba
     <MenubarPrimitive.SubTrigger
       ref={ref}
       className={cn(
-        "flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm text-text-primary outline-none",
-        "focus:bg-gray-50 data-[state=open]:bg-gray-50",
+        "flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm text-primary dark:text-dark-text-primary outline-none",
+        "focus:bg-neutral-50 dark:focus:bg-dark-bg-hover data-[state=open]:bg-neutral-50 dark:data-[state=open]:bg-dark-bg-hover",
         inset && "pl-8",
         className
       )}
@@ -78,7 +79,8 @@ function MenubarSubContent({ className, ref, ...props }: MenubarSubContentProps)
     <MenubarPrimitive.SubContent
       ref={ref}
       className={cn(
-        "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-2 text-text-primary shadow-lg",
+        "z-50 min-w-[8rem] overflow-hidden rounded-lg border border-border-light bg-white p-2 text-primary shadow-lg",
+        "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -111,7 +113,8 @@ function MenubarContent({
         alignOffset={alignOffset}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-[12rem] overflow-hidden rounded-lg border border-border-light bg-white p-2 text-text-primary shadow-lg",
+          "z-50 min-w-[12rem] overflow-hidden rounded-lg border border-border-light bg-white p-2 text-primary shadow-lg",
+          "dark:border-dark-border-light dark:bg-dark-bg-card dark:text-dark-text-primary",
           "data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
@@ -135,9 +138,9 @@ function MenubarItem({ className, inset, shortcut, children, ref, ...props }: Me
     <MenubarPrimitive.Item
       ref={ref}
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm text-text-primary outline-none",
-        "focus:bg-gray-50",
-        "data-[disabled]:pointer-events-none data-[disabled]:text-text-muted",
+        "relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-sm text-primary dark:text-dark-text-primary outline-none",
+        "focus:bg-neutral-50 dark:focus:bg-dark-bg-hover",
+        "data-[disabled]:pointer-events-none data-[disabled]:text-muted dark:data-[disabled]:text-dark-text-muted",
         inset && "pl-8",
         className
       )}
@@ -145,7 +148,9 @@ function MenubarItem({ className, inset, shortcut, children, ref, ...props }: Me
     >
       {children}
       {shortcut && (
-        <span className="ml-auto text-xs tracking-widest text-text-muted">{shortcut}</span>
+        <span className="ml-auto text-xs tracking-widest text-muted dark:text-dark-text-muted">
+          {shortcut}
+        </span>
       )}
     </MenubarPrimitive.Item>
   );
@@ -168,9 +173,9 @@ function MenubarCheckboxItem({
     <MenubarPrimitive.CheckboxItem
       ref={ref}
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-3 text-sm text-text-primary outline-none",
-        "focus:bg-gray-50",
-        "data-[disabled]:pointer-events-none data-[disabled]:text-text-muted",
+        "relative flex cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-3 text-sm text-primary dark:text-dark-text-primary outline-none",
+        "focus:bg-neutral-50 dark:focus:bg-dark-bg-hover",
+        "data-[disabled]:pointer-events-none data-[disabled]:text-muted dark:data-[disabled]:text-dark-text-muted",
         className
       )}
       checked={checked}
@@ -197,9 +202,9 @@ function MenubarRadioItem({ className, children, ref, ...props }: MenubarRadioIt
     <MenubarPrimitive.RadioItem
       ref={ref}
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-3 text-sm text-text-primary outline-none",
-        "focus:bg-gray-50",
-        "data-[disabled]:pointer-events-none data-[disabled]:text-text-muted",
+        "relative flex cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-3 text-sm text-primary dark:text-dark-text-primary outline-none",
+        "focus:bg-neutral-50 dark:focus:bg-dark-bg-hover",
+        "data-[disabled]:pointer-events-none data-[disabled]:text-muted dark:data-[disabled]:text-dark-text-muted",
         className
       )}
       {...props}
@@ -223,7 +228,11 @@ function MenubarLabel({ className, inset, ref, ...props }: MenubarLabelProps) {
   return (
     <MenubarPrimitive.Label
       ref={ref}
-      className={cn("px-3 py-2 text-xs font-semibold text-text-muted", inset && "pl-8", className)}
+      className={cn(
+        "px-3 py-2 text-xs font-semibold text-muted dark:text-dark-text-muted",
+        inset && "pl-8",
+        className
+      )}
       {...props}
     />
   );
@@ -239,7 +248,7 @@ function MenubarSeparator({ className, ref, ...props }: MenubarSeparatorProps) {
   return (
     <MenubarPrimitive.Separator
       ref={ref}
-      className={cn("mx-1 my-1 h-px bg-border-light", className)}
+      className={cn("mx-1 my-1 h-px bg-border-light dark:bg-dark-border-light", className)}
       {...props}
     />
   );
@@ -247,7 +256,13 @@ function MenubarSeparator({ className, ref, ...props }: MenubarSeparatorProps) {
 
 function MenubarShortcut({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
+    <span
+      className={cn(
+        "ml-auto text-xs tracking-widest text-muted dark:text-dark-text-muted",
+        className
+      )}
+      {...props}
+    />
   );
 }
 

@@ -124,7 +124,7 @@ export const WithForm: Story = {
           <SheetDescription>Fill in the details to create a new user</SheetDescription>
         </SheetHeader>
         <SheetBody>
-          <div className="space-y-4 pt-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <Input id="name" placeholder="John Doe" />

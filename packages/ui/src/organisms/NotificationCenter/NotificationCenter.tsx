@@ -80,9 +80,16 @@ export interface NotificationCenterCustomProps {
 
 function NotificationCenterHeader({ children, className }: NotificationCenterHeaderProps) {
   return (
-    <div className={cn("flex items-center justify-between px-5 py-4", className)}>
+    <div
+      className={cn(
+        "flex items-center justify-between px-5 py-4 dark:border-dark-border-default",
+        className
+      )}
+    >
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-bold text-primary">Notifications</h3>
+        <h3 className="text-base font-bold text-primary dark:text-dark-text-primary">
+          Notifications
+        </h3>
         {children}
       </div>
     </div>
@@ -148,8 +155,8 @@ function NotificationCenterItem({
         }
       }}
       className={cn(
-        "relative cursor-pointer px-5 py-4 transition-colors hover:bg-neutral-50",
-        !read && "bg-neutral-50",
+        "relative cursor-pointer px-5 py-4 transition-colors hover:bg-neutral-100 dark:hover:bg-dark-bg-hover",
+        !read && "bg-neutral-50 dark:bg-dark-bg-tertiary",
         className
       )}
       {...props}
@@ -164,9 +171,13 @@ function NotificationCenterItem({
         )}
 
         <div className={cn("flex-1", icon && "pl-0")}>
-          <h4 className="text-sm font-bold text-primary">{title}</h4>
-          {description && <p className="mt-1 text-xs text-muted">{description}</p>}
-          <span className="mt-1 block text-xs text-placeholder">{timestamp}</span>
+          <h4 className="text-sm font-bold text-primary dark:text-dark-text-primary">{title}</h4>
+          {description && (
+            <p className="mt-1 text-xs text-muted dark:text-dark-text-muted">{description}</p>
+          )}
+          <span className="mt-1 block text-xs text-placeholder dark:text-dark-text-placeholder">
+            {timestamp}
+          </span>
         </div>
       </div>
     </div>
@@ -178,7 +189,12 @@ function NotificationCenterEmpty({
   className,
 }: NotificationCenterEmptyProps) {
   return (
-    <div className={cn("flex h-32 items-center justify-center text-sm text-muted", className)}>
+    <div
+      className={cn(
+        "flex h-32 items-center justify-center text-sm text-muted dark:text-dark-text-muted",
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -203,7 +219,7 @@ function NotificationCenter({
     <NotificationCenterContext.Provider value={contextValue}>
       <div
         className={cn(
-          "w-96 overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]",
+          "w-96 overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)] dark:border-dark-border-default dark:bg-dark-bg-card",
           className
         )}
         {...props}

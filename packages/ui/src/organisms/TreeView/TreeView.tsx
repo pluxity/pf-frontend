@@ -95,9 +95,9 @@ const TreeNodeItem = ({
     if (!showIcons || defaultIcon === "none") return null;
 
     if (hasChildren || defaultIcon === "folder") {
-      return <Folder size="sm" className="text-muted" />;
+      return <Folder size="sm" className="text-muted dark:text-dark-text-muted" />;
     }
-    return <File size="sm" className="text-muted" />;
+    return <File size="sm" className="text-muted dark:text-dark-text-muted" />;
   };
 
   return (
@@ -121,7 +121,9 @@ const TreeNodeItem = ({
         }}
         className={cn(
           "flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-sm transition-colors",
-          isSelected ? "bg-primary-50 text-brand" : "text-secondary hover:bg-gray-50",
+          isSelected
+            ? "bg-primary-50 text-brand dark:bg-primary-900 dark:text-primary-400"
+            : "text-secondary dark:text-dark-text-secondary hover:bg-neutral-50 dark:hover:bg-dark-bg-hover",
           node.disabled && "cursor-not-allowed opacity-50"
         )}
         style={{ paddingLeft: `${level * indentSize + 8}px` }}
@@ -137,9 +139,9 @@ const TreeNodeItem = ({
         >
           {hasChildren &&
             (isExpanded ? (
-              <ChevronDown size="sm" className="text-muted" />
+              <ChevronDown size="sm" className="text-muted dark:text-dark-text-muted" />
             ) : (
-              <ChevronRight size="sm" className="text-muted" />
+              <ChevronRight size="sm" className="text-muted dark:text-dark-text-muted" />
             ))}
         </button>
 
@@ -153,7 +155,7 @@ const TreeNodeItem = ({
                 ? "border-brand bg-brand text-white"
                 : checkState === "indeterminate"
                   ? "border-brand bg-brand text-white"
-                  : "border-border-default bg-white"
+                  : "border-border-default bg-white dark:border-dark-border-default dark:bg-dark-bg-card"
             )}
             tabIndex={-1}
           >
@@ -311,7 +313,10 @@ function TreeView({
     <div
       ref={ref}
       role="tree"
-      className={cn("w-full overflow-auto rounded-md border border-border-default p-2", className)}
+      className={cn(
+        "w-full overflow-auto rounded-md border border-border-default dark:border-dark-border-default p-2",
+        className
+      )}
       style={{ height, ...style }}
       {...props}
     >

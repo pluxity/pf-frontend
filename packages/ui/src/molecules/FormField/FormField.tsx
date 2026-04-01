@@ -19,7 +19,11 @@ function FormFieldLabel({
   ...props
 }: FormFieldLabelPropsWithRef) {
   return (
-    <label ref={ref} className={cn("text-sm font-medium text-gray-700", className)} {...props}>
+    <label
+      ref={ref}
+      className={cn("text-sm font-medium text-primary dark:text-dark-text-primary", className)}
+      {...props}
+    >
       {children}
       {required && <span className="ml-1 text-error-500">*</span>}
     </label>
@@ -31,7 +35,13 @@ interface FormFieldDescriptionPropsWithRef extends FormFieldDescriptionProps {
 }
 
 function FormFieldDescription({ className, ref, ...props }: FormFieldDescriptionPropsWithRef) {
-  return <p ref={ref} className={cn("text-sm text-gray-500", className)} {...props} />;
+  return (
+    <p
+      ref={ref}
+      className={cn("text-sm text-secondary dark:text-dark-text-secondary", className)}
+      {...props}
+    />
+  );
 }
 
 interface FormFieldErrorPropsWithRef extends FormFieldErrorProps {

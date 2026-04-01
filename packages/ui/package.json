@@ -9,6 +9,7 @@
     "./molecules": "./src/molecules/index.ts",
     "./organisms": "./src/organisms/index.ts",
     "./templates": "./src/templates/index.ts",
+    "./types": "./src/types/index.ts",
     "./utils": "./src/utils/index.ts",
     "./globals.css": "./src/globals.css"
   },

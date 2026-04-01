@@ -224,7 +224,7 @@ function SidebarSection({ label, children, className }: SidebarSectionProps) {
       {label && (
         <div
           className={cn(
-            "py-2 text-xs font-bold uppercase tracking-wider text-muted transition-all duration-200",
+            "py-2 text-xs font-bold uppercase tracking-wider text-muted dark:text-dark-text-muted transition-all duration-200",
             collapsed ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100 delay-150"
           )}
         >
@@ -299,7 +299,7 @@ function SidebarHeader({ title, logo, children, className, ...props }: SidebarHe
               )}
             </div>
             {title && (
-              <h2 className="text-lg font-bold text-secondary whitespace-nowrap transition-opacity duration-200 delay-150">
+              <h2 className="text-lg font-bold text-secondary dark:text-dark-text-secondary whitespace-nowrap transition-opacity duration-200 delay-150">
                 {title}
               </h2>
             )}
@@ -364,7 +364,7 @@ function SidebarCollapseButton({
         type="button"
         onClick={handleToggleCollapse}
         className={cn(
-          "flex h-8 w-8 items-center justify-center text-muted transition-colors hover:text-secondary",
+          "flex h-8 w-8 items-center justify-center text-muted dark:text-dark-text-muted transition-colors hover:text-secondary dark:hover:text-dark-text-secondary",
           "focus-visible:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
           className
         )}
@@ -382,7 +382,7 @@ function SidebarCollapseButton({
       type="button"
       onClick={handleToggleCollapse}
       className={cn(
-        "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted transition-colors hover:bg-neutral-50 hover:text-secondary",
+        "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted dark:text-dark-text-muted transition-colors hover:bg-neutral-50 dark:hover:bg-dark-bg-hover hover:text-secondary dark:hover:text-dark-text-secondary",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
         collapsed ? "w-10 justify-center px-0" : "w-full",
         className

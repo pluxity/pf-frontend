@@ -3,12 +3,11 @@ import type { IconProps } from "../../types";
 import { iconSizes } from "../../types";
 
 export function Twitter({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +23,11 @@ export function Twitter({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Github({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -47,12 +45,11 @@ export function Github({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Linkedin({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -68,12 +65,11 @@ export function Linkedin({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Youtube({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -89,12 +85,11 @@ export function Youtube({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Facebook({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -110,12 +105,11 @@ export function Facebook({ size = "md", className, ref, ...props }: IconProps) {
 }
 
 export function Instagram({ size = "md", className, ref, ...props }: IconProps) {
-  const sizeValue = typeof size === "number" ? size : iconSizes[size];
+  const sizeValue = typeof size === "number" ? `${size}px` : iconSizes[size];
   return (
     <svg
       ref={ref}
-      width={sizeValue}
-      height={sizeValue}
+      style={{ width: sizeValue, height: sizeValue }}
       viewBox="0 0 14 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

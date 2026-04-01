@@ -6,7 +6,10 @@ function Progress({ className, value, ref, ...props }: ProgressProps) {
   return (
     <ProgressPrimitive.Root
       ref={ref}
-      className={cn("relative h-2 w-full overflow-hidden rounded-full bg-gray-100", className)}
+      className={cn(
+        "relative h-2 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800",
+        className
+      )}
       {...props}
     >
       <ProgressPrimitive.Indicator

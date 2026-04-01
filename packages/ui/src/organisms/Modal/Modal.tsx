@@ -61,7 +61,7 @@ function ModalContent({
       >
         {children}
         {showClose && (
-          <DialogPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md border border-neutral-100 text-muted transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:border-dark-border-default dark:text-dark-text-muted dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary">
+          <DialogPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md border border-neutral-100 text-muted transition-colors hover:bg-neutral-50 hover:text-primary focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 dark:border-dark-border-default dark:text-dark-text-muted dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary">
             <X size="sm" />
             <span className="sr-only">닫기</span>
           </DialogPrimitive.Close>
