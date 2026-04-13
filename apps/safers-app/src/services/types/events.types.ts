@@ -1,7 +1,98 @@
-import type { FileResponse } from "./common.types";
+import type { DataResponseBody, PageResponse, FileResponse } from "./common.types";
 import type { SiteRegion } from "./sites.types";
 
-// 이벤트 탭 표시용 지역명 매핑 (SiteRegion → 한글)
+// ─── Event API 타입 ───
+
+export type EventCategory = "DETECTION" | "ROI";
+
+export type EventType =
+  | "NO_HELMET"
+  | "HELMET"
+  | "FALLEN_PERSON"
+  | "INTRUSION"
+  | "EXIT"
+  | "LINE_CROSSING";
+
+/** API 응답의 이벤트 내 현장 정보 */
+export interface EventSite {
+  id: number;
+  name: string;
+  region: SiteRegion;
+}
+
+/** GET /events 응답 아이템 */
+export interface Event {
+  id: number;
+  eventId: string;
+  timestamp: string;
+  category: EventCategory;
+  type: EventType;
+  trackId: number;
+  name: string;
+  confidence: number;
+  path: string;
+  site: EventSite;
+  snapshot?: FileResponse;
+  video?: FileResponse;
+}
+
+// ─── API 응답/요청 ───
+
+export type EventsResponse = DataResponseBody<PageResponse<Event>>;
+export type EventDetailResponse = DataResponseBody<Event>;
+
+export interface GetEventsParams {
+  page?: number;
+  size?: number;
+  query?: string;
+}
+
+// ─── 이벤트 카테고리 조회 ───
+
+export interface EventTypeInfo {
+  name: EventType;
+  displayName: string;
+}
+
+export interface EventCategoryInfo {
+  name: EventCategory;
+  displayName: string;
+  types: EventTypeInfo[];
+}
+
+export type EventCategoriesResponse = DataResponseBody<EventCategoryInfo[]>;
+
+// ─── 표시용 매핑 ───
+
+/** 이벤트 타입 → 한글 표시명 */
+export const EVENT_TYPE_DISPLAY: Record<EventType, string> = {
+  NO_HELMET: "헬멧 미착용",
+  HELMET: "헬멧 착용",
+  FALLEN_PERSON: "쓰러진 사람",
+  INTRUSION: "영역 침입",
+  EXIT: "영역 이탈",
+  LINE_CROSSING: "경계선 통과",
+};
+
+/** 이벤트 타입 → 위험 등급 */
+export const EVENT_TYPE_SEVERITY: Record<EventType, "danger" | "warning" | "info"> = {
+  NO_HELMET: "danger",
+  FALLEN_PERSON: "danger",
+  INTRUSION: "warning",
+  EXIT: "warning",
+  LINE_CROSSING: "warning",
+  HELMET: "info",
+};
+
+/** 위험 등급별 스타일 */
+export const EVENT_SEVERITY_STYLES = {
+  danger: { bg: "bg-red-100", text: "text-red-700", label: "위험" },
+  warning: { bg: "bg-amber-100", text: "text-amber-700", label: "주의" },
+  info: { bg: "bg-blue-100", text: "text-blue-700", label: "정보" },
+} as const;
+
+// ─── 탭용 지역 매핑 ───
+
 export const EVENT_REGION_MAP: Record<SiteRegion, string> = {
   SEOUL: "서울",
   GYEONGGI_INCHEON: "경기",
@@ -12,96 +103,13 @@ export const EVENT_REGION_MAP: Record<SiteRegion, string> = {
   JEJU: "제주",
 };
 
-// 이벤트 탭 목록 ("전체" 포함)
 export const EVENT_REGIONS = ["전체", ...Object.values(EVENT_REGION_MAP)] as const;
 export type EventRegionTab = (typeof EVENT_REGIONS)[number];
 
-// 이벤트 레벨
-export type EventLevel = "warning" | "alert" | "danger";
+// ─── STOMP WebSocket 이벤트 타입 (기존 호환) ───
 
-// 이벤트 레벨별 스타일
-export interface EventLevelStyle {
-  bg: string;
-  text: string;
-  label: string;
-}
-
-// 이벤트 레벨 스타일 맵
-export const EVENT_LEVEL_STYLES: Record<EventLevel, EventLevelStyle> = {
-  warning: {
-    bg: "bg-amber-100",
-    text: "text-amber-700",
-    label: "주의",
-  },
-  alert: {
-    bg: "bg-orange-100",
-    text: "text-orange-700",
-    label: "경고",
-  },
-  danger: {
-    bg: "bg-red-100",
-    text: "text-red-700",
-    label: "위험",
-  },
-};
-
-// 이벤트에 포함되는 현장 정보
-export interface EventSite {
-  id: number;
-  name: string;
-  region: SiteRegion;
-}
-
-// 이벤트
-export interface Event {
-  id: string;
-  level: EventLevel;
-  code: string;
-  message: string;
-  site: EventSite;
-  createdAt: string;
-}
-
-// API 응답
-export interface EventsResponse {
-  data: Event[];
-}
-
-export interface EventResponse {
-  data: Event;
-}
-
-// API 요청 파라미터
-export interface GetEventsParams {
-  region?: SiteRegion;
-  level?: EventLevel;
-  siteId?: number;
-  limit?: number;
-}
-
-// 현장 비상 이벤트 (danger 레벨일 때 워커 데이터 포함)
-export interface SiteEmergencyPayload {
-  workerId: string;
-  position: { lng: number; lat: number; altitude: number };
-  vitals: { temperature: number; heartRate: number };
-}
-
-// WS로 수신되는 현장 이벤트
-export interface SiteEvent extends Event {
-  emergency?: SiteEmergencyPayload; // danger일 때만 포함
-}
-
-// --- STOMP WebSocket 이벤트 타입 ---
-
-export type StompEventType =
-  | "NO_HELMET"
-  | "HELMET"
-  | "FALLEN_PERSON"
-  | "INTRUSION"
-  | "EXIT"
-  | "LINE_CROSSING";
-
-export type StompEventCategory = "DETECTION" | "ROI";
+export type StompEventType = EventType;
+export type StompEventCategory = EventCategory;
 
 export interface StompEventResponse {
   eventId: string;
@@ -115,4 +123,16 @@ export interface StompEventResponse {
   path: string;
   snapshot?: FileResponse;
   video?: FileResponse;
+}
+
+// ─── 현장 상태 (이벤트 기반) ───
+
+export interface SiteEmergencyPayload {
+  workerId: string;
+  position: { lng: number; lat: number; altitude: number };
+  vitals: { temperature: number; heartRate: number };
+}
+
+export interface SiteEvent extends Event {
+  emergency?: SiteEmergencyPayload;
 }

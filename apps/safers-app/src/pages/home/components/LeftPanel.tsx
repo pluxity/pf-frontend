@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Spinner } from "@pf-dev/ui";
 import { SiteStatistics } from "./SiteStatistics";
 import { RegionSiteTree } from "./RegionSiteTree";
 import { RealtimeEvents } from "./RealtimeEvents";
+import { EventDetailModal } from "./EventDetailModal";
 import {
   eventsService,
   sitesService,
@@ -15,6 +16,8 @@ import {
 import { useSitesStore, selectSelectedSiteId, selectSelectSiteAction } from "@/stores";
 import { buildSiteStatusMap, countSiteStatuses } from "../utils";
 
+const PAGE_SIZE = 20;
+
 /** 대시보드 좌측 패널 - 현황, 지역 목록, 실시간 이벤트 표시 */
 export function LeftPanel() {
   const [totalSites, setTotalSites] = useState(0);
@@ -24,19 +27,27 @@ export function LeftPanel() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 무한스크롤 상태
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const pageRef = useRef(1);
+  const totalElementsRef = useRef(0);
+
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
   const selectSiteAction = useSitesStore(selectSelectSiteAction);
 
   async function fetchData() {
     setIsLoading(true);
     setError(null);
+    pageRef.current = 1;
 
     try {
-      // 각 API를 독립적으로 호출 — 하나가 실패해도 나머지는 동작
       const [sitesResult, regionsResult, eventsResult] = await Promise.allSettled([
         sitesService.getSites({ size: 1000 }),
         sitesService.getRegions(),
-        eventsService.getEvents(),
+        eventsService.getEvents({ page: 1, size: PAGE_SIZE }),
       ]);
 
       const allFailed =
@@ -55,14 +66,12 @@ export function LeftPanel() {
         sitesResult.status === "fulfilled" ? sitesResult.value.data.totalElements : 0;
       setTotalSites(totalElements);
 
-      // 최초 로드 시 "김포 풍무" 현장 자동 선택 (없으면 첫 번째 사이트)
       const currentSelected = useSitesStore.getState().selectedSiteId;
       if (currentSelected == null && sites.length > 0) {
         const gimpo = sites.find((s) => s.name.includes("김포 풍무"));
         useSitesStore.getState().selectSite(gimpo?.id ?? sites[0]!.id);
       }
 
-      // 지역 목록으로 사이트 그룹핑
       if (regionsResult.status === "fulfilled") {
         const regions = regionsResult.value.data;
         const groups: RegionGroup[] = regions.map((r) => ({
@@ -73,18 +82,41 @@ export function LeftPanel() {
         setRegionGroups(groups);
       }
 
-      const allEvents = eventsResult.status === "fulfilled" ? eventsResult.value.data : [];
-      setEvents(allEvents);
+      if (eventsResult.status === "fulfilled") {
+        const eventPage = eventsResult.value.data;
+        setEvents(eventPage.content);
+        totalElementsRef.current = eventPage.totalElements;
+        setHasMore(!eventPage.last);
 
-      // 이벤트 기반 현장 상태 집계
-      const siteStatusMap = buildSiteStatusMap(allEvents);
-      setSiteStatusCounts(countSiteStatuses(sites, siteStatusMap));
+        // 현장 상태 집계 (첫 페이지 기반)
+        const siteStatusMap = buildSiteStatusMap(eventPage.content);
+        setSiteStatusCounts(countSiteStatuses(sites, siteStatusMap));
+      }
     } catch {
       setError("데이터를 불러오는 중 오류가 발생했습니다");
     } finally {
       setIsLoading(false);
     }
   }
+
+  const loadMoreEvents = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    const nextPage = pageRef.current + 1;
+
+    try {
+      const result = await eventsService.getEvents({ page: nextPage, size: PAGE_SIZE });
+      const eventPage = result.data;
+      setEvents((prev) => [...prev, ...eventPage.content]);
+      pageRef.current = nextPage;
+      setHasMore(!eventPage.last);
+    } catch {
+      // 추가 로딩 실패 시 무시 — 다음 스크롤에서 재시도
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, hasMore]);
 
   useEffect(() => {
     fetchData();
@@ -94,8 +126,12 @@ export function LeftPanel() {
     selectSiteAction(site.id);
   };
 
-  const handleEventClick = (_eventId: string) => {
-    // TODO: 이벤트 클릭 시 상세 페이지 이동 구현
+  const handleEventClick = (eventId: number) => {
+    const event = events.find((e) => e.id === eventId);
+    if (event) {
+      setSelectedEvent(event);
+      setModalOpen(true);
+    }
   };
 
   if (isLoading) {
@@ -140,8 +176,16 @@ export function LeftPanel() {
       </div>
 
       <div className="h-[20rem] w-[25rem]">
-        <RealtimeEvents events={events} onEventClick={handleEventClick} />
+        <RealtimeEvents
+          events={events}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
+          onLoadMore={loadMoreEvents}
+          onEventClick={handleEventClick}
+        />
       </div>
+
+      <EventDetailModal event={selectedEvent} open={modalOpen} onOpenChange={setModalOpen} />
     </aside>
   );
 }

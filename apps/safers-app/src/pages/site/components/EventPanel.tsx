@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { DraggablePanel } from "./DraggablePanel";
-import type { SiteEvent, EventLevel } from "@/services";
+import type { SiteEvent, EventType } from "@/services";
+import { EVENT_TYPE_DISPLAY, EVENT_TYPE_SEVERITY } from "@/services";
 import { STATUS_COLORS } from "@/styles/tokens";
 
 // ─── Figma 디자인 토큰 ───
 
-const LEVEL_COLORS: Record<
-  EventLevel,
+type Severity = "danger" | "warning" | "info";
+
+const SEVERITY_COLORS: Record<
+  Severity,
   { border: string; icon: string; text: string; cardBg: string; cardShadow: string }
 > = {
   danger: {
@@ -16,13 +19,6 @@ const LEVEL_COLORS: Record<
     cardBg: "#FFE7E7",
     cardShadow: "0px 4px 4px rgba(255, 49, 36, 0.1)",
   },
-  alert: {
-    border: "#F86700",
-    icon: "#F86700",
-    text: "#F86700",
-    cardBg: "#FFF1E7",
-    cardShadow: "0px 4px 4px rgba(255, 141, 36, 0.1)",
-  },
   warning: {
     border: STATUS_COLORS.warningAlt,
     icon: STATUS_COLORS.warningAlt,
@@ -30,17 +26,23 @@ const LEVEL_COLORS: Record<
     cardBg: "#FFFCEE",
     cardShadow: "0px 4px 4px rgba(255, 207, 36, 0.1)",
   },
+  info: {
+    border: "#4D7EFF",
+    icon: "#4D7EFF",
+    text: "#4D7EFF",
+    cardBg: "#EBF1FF",
+    cardShadow: "0px 4px 4px rgba(77, 126, 255, 0.1)",
+  },
 };
 
-const LEVEL_LABELS: Record<EventLevel, { ko: string; en: string }> = {
+const SEVERITY_LABELS: Record<Severity, { ko: string; en: string }> = {
   danger: { ko: "위험", en: "Critical" },
-  alert: { ko: "경고", en: "Major" },
   warning: { ko: "주의", en: "Minor" },
+  info: { ko: "정보", en: "Info" },
 };
 
 type SortMode = "latest" | "grade";
 
-// 상대 시간 포맷
 function relativeTime(isoStr: string): string {
   const diff = Date.now() - new Date(isoStr).getTime();
   const minutes = Math.floor(diff / 60_000);
@@ -51,14 +53,17 @@ function relativeTime(isoStr: string): string {
   return `${Math.floor(hours / 24)}일전`;
 }
 
-// 등급 정렬 우선순위
-const LEVEL_PRIORITY: Record<EventLevel, number> = { danger: 0, alert: 1, warning: 2 };
+const SEVERITY_PRIORITY: Record<Severity, number> = { danger: 0, warning: 1, info: 2 };
+
+function getSeverity(type: EventType): Severity {
+  return EVENT_TYPE_SEVERITY[type];
+}
 
 // ─── 서브 컴포넌트 ───
 
-function SummaryCard({ level, count }: { level: EventLevel; count: number }) {
-  const colors = LEVEL_COLORS[level];
-  const label = LEVEL_LABELS[level];
+function SummaryCard({ severity, count }: { severity: Severity; count: number }) {
+  const colors = SEVERITY_COLORS[severity];
+  const label = SEVERITY_LABELS[severity];
 
   return (
     <div
@@ -69,7 +74,6 @@ function SummaryCard({ level, count }: { level: EventLevel; count: number }) {
         boxShadow: colors.cardShadow,
       }}
     >
-      {/* 삼각형 경고 아이콘 */}
       <svg width="16" height="15" viewBox="0 0 21 20" fill="none">
         <path d="M10.5 2L19.5 18H1.5L10.5 2Z" fill={colors.icon} />
         <text x="10.5" y="16" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">
@@ -98,14 +102,16 @@ function EventRow({ event }: { event: SiteEvent }) {
     const timer = setTimeout(() => setIsNew(false), 60_000);
     return () => clearTimeout(timer);
   }, []);
-  const colors = LEVEL_COLORS[event.level];
+
+  const severity = getSeverity(event.type);
+  const colors = SEVERITY_COLORS[severity];
+  const displayName = EVENT_TYPE_DISPLAY[event.type];
 
   return (
     <div
       className="flex items-start gap-[11px] py-[12px] pl-[15px] pr-2"
       style={{ borderLeft: `5px solid ${colors.border}` }}
     >
-      {/* 아이콘 */}
       <div
         className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[5px]"
         style={{ backgroundColor: colors.icon }}
@@ -118,23 +124,22 @@ function EventRow({ event }: { event: SiteEvent }) {
         </svg>
       </div>
 
-      {/* 내용 */}
       <div className="min-w-0 flex-1">
         <p
           className="text-[0.8125rem] leading-[1.2]"
           style={{ color: colors.text, letterSpacing: "-0.24px" }}
         >
-          {event.message}
+          {displayName}
         </p>
         <p
           className="mt-0.5 text-[0.8125rem] leading-[1.2]"
           style={{ color: "#333", letterSpacing: "-0.24px" }}
         >
-          [{event.code} 구역]
+          {event.name}
         </p>
         <div className="mt-[8px] flex items-center gap-[5px]">
           <span className="text-[0.75rem]" style={{ color: "#555B6C", letterSpacing: "-0.18px" }}>
-            {relativeTime(event.createdAt)}
+            {relativeTime(event.timestamp)}
           </span>
           {isNew && (
             <span
@@ -161,35 +166,34 @@ export function EventPanel({ events, className }: EventPanelProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const [sortMode, setSortMode] = useState<SortMode>("latest");
 
-  // 새 이벤트 추가 시 스크롤 맨 위로
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = 0;
     }
   }, [events.length]);
 
-  // 레벨별 카운트
-  const counts: Record<EventLevel, number> = { danger: 0, alert: 0, warning: 0 };
+  // 등급별 카운트
+  const counts: Record<Severity, number> = { danger: 0, warning: 0, info: 0 };
   for (const e of events) {
-    counts[e.level]++;
+    counts[getSeverity(e.type)]++;
   }
 
   // 정렬
   const sorted = [...events].sort((a, b) => {
     if (sortMode === "grade") {
-      const diff = LEVEL_PRIORITY[a.level] - LEVEL_PRIORITY[b.level];
+      const diff = SEVERITY_PRIORITY[getSeverity(a.type)] - SEVERITY_PRIORITY[getSeverity(b.type)];
       if (diff !== 0) return diff;
     }
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
   });
 
   return (
     <DraggablePanel title="이벤트 현황" className={className}>
       {/* 요약 카드 */}
       <div className="mt-2 flex gap-2">
-        <SummaryCard level="danger" count={counts.danger} />
-        <SummaryCard level="alert" count={counts.alert} />
-        <SummaryCard level="warning" count={counts.warning} />
+        <SummaryCard severity="danger" count={counts.danger} />
+        <SummaryCard severity="warning" count={counts.warning} />
+        <SummaryCard severity="info" count={counts.info} />
       </div>
 
       {/* 정렬 토글 */}
@@ -218,10 +222,8 @@ export function EventPanel({ events, className }: EventPanelProps) {
         </button>
       </div>
 
-      {/* 구분선 */}
       <div className="mt-2 h-px w-full" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
 
-      {/* 이벤트 리스트 */}
       {sorted.length === 0 ? (
         <p className="py-6 text-center text-xs text-[#999]">이벤트 데이터 없음</p>
       ) : (

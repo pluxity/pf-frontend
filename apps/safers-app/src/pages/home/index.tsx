@@ -85,7 +85,7 @@ export function DashboardPage() {
       ]);
 
       const sites = sitesResult.status === "fulfilled" ? sitesResult.value.data.content : [];
-      const events = eventsResult.status === "fulfilled" ? eventsResult.value.data : [];
+      const events = eventsResult.status === "fulfilled" ? eventsResult.value.data.content : [];
 
       const siteStatusMap = buildSiteStatusMap(events);
       const sitePOIs = sites

@@ -137,6 +137,7 @@ export function SitePage() {
       }
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, navigate]);
 
   if (isLoading || !site) {
@@ -186,7 +187,7 @@ export function SitePage() {
         currentWeather={currentWeather}
         className="absolute right-4 top-[4.75rem] z-40 w-[15rem]"
       />
-      <SafetyScorePanel className="absolute right-4 top-[22rem] z-[45] w-[15rem]" />
+      <SafetyScorePanel siteId={siteId} className="absolute right-4 top-[22rem] z-[45] w-[15rem]" />
       <MapToolbar
         selectionMode={selectionMode}
         onToggleSelection={() => setSelectionMode((prev) => !prev)}

@@ -21,6 +21,24 @@ interface UseScenarioTriggerOptions {
   mapViewerRef: React.RefObject<MapboxViewerHandle | null>;
 }
 
+/** 시나리오용 SiteEvent 생성 헬퍼 */
+function createScenarioEvent(
+  overrides: Partial<SiteEvent> & Pick<SiteEvent, "type" | "name" | "site">
+): SiteEvent {
+  const { type, ...rest } = overrides;
+  return {
+    id: nextEventId(),
+    eventId: `scenario-${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    category: "DETECTION",
+    type,
+    trackId: 0,
+    confidence: 1,
+    path: "",
+    ...rest,
+  };
+}
+
 export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerOptions) {
   const [scenarioActive, setScenarioActive] = useState(false);
   const [selectedWorkerId, setSelectedWorkerId] = useState<string | null>(null);
@@ -28,29 +46,17 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
   const [events, setEvents] = useState<SiteEvent[]>([]);
 
   function initializeEvents(siteName: string, region: SiteRegion) {
-    const d = new Date();
-    const todayAt = (hour: number, minute: number) => {
-      d.setHours(hour, minute, 0, 0);
-      return d.toISOString();
-    };
-
     setEvents([
-      {
-        id: "init-1",
-        level: "alert",
-        code: "ENV-02",
-        message: "미세먼지(PM10) 나쁨 단계",
+      createScenarioEvent({
+        type: "NO_HELMET",
+        name: "미세먼지(PM10) 나쁨 단계",
         site: { id: siteId, name: siteName, region },
-        createdAt: todayAt(8, 12),
-      },
-      {
-        id: "init-2",
-        level: "warning",
-        code: "ENV-01",
-        message: "소음 기준치 초과 (88dB)",
+      }),
+      createScenarioEvent({
+        type: "INTRUSION",
+        name: "소음 기준치 초과 (88dB)",
         site: { id: siteId, name: siteName, region },
-        createdAt: todayAt(9, 5),
-      },
+      }),
     ]);
   }
 
@@ -68,15 +74,12 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
           SCENARIO3.dangerZoneEntry,
           SCENARIO3.moveDurationMs,
           () => {
-            const dangerEvent: SiteEvent = {
-              id: nextEventId(),
-              level: "danger",
-              code: "F-2",
-              message: "작업자 위험구역 진입",
+            const dangerEvent = createScenarioEvent({
+              type: "INTRUSION",
+              name: "작업자 위험구역 진입",
               site: { id: siteId, name: "개봉5구역", region: "SEOUL" },
-              createdAt: new Date().toISOString(),
               emergency: SCENARIO3.emergency,
-            };
+            });
             setEvents((prev) => [...prev, dangerEvent]);
 
             const { workerId } = SCENARIO3.emergency;
@@ -107,15 +110,12 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
 
     const emergency = SCENARIO_EMERGENCIES[scenario];
 
-    const dangerEvent: SiteEvent = {
-      id: nextEventId(),
-      level: "danger",
-      code: `E-${scenario}`,
-      message: "작업자 이상징후 감지",
+    const dangerEvent = createScenarioEvent({
+      type: "FALLEN_PERSON",
+      name: "작업자 이상징후 감지",
       site: { id: siteId, name: "개봉5구역", region: "SEOUL" },
-      createdAt: new Date().toISOString(),
       emergency,
-    };
+    });
     setEvents((prev) => [...prev, dangerEvent]);
 
     const { workerId, vitals } = emergency;

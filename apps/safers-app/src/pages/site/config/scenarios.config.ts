@@ -55,7 +55,7 @@ export const SCENARIO3 = {
   } satisfies SiteEmergencyPayload,
 };
 
-let eventCounter = 0;
-export function nextEventId(): string {
-  return `evt-${++eventCounter}`;
+let eventCounter = -1;
+export function nextEventId(): number {
+  return eventCounter--;
 }

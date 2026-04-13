@@ -1,13 +1,33 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent, Badge } from "@pf-dev/ui";
-import { EVENT_LEVEL_STYLES, EVENT_REGION_MAP, EVENT_REGIONS, type Event } from "@/services";
+import { useEffect, useRef, useCallback } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent, Badge, Spinner } from "@pf-dev/ui";
+import {
+  EVENT_TYPE_DISPLAY,
+  EVENT_TYPE_SEVERITY,
+  EVENT_SEVERITY_STYLES,
+  EVENT_REGION_MAP,
+  EVENT_REGIONS,
+  type Event,
+} from "@/services";
 
 interface RealtimeEventsProps {
   events: Event[];
-  onEventClick?: (eventId: string) => void;
+  hasMore: boolean;
+  isLoadingMore: boolean;
+  onLoadMore: () => void;
+  onEventClick?: (eventId: number) => void;
+}
+
+function formatTimestamp(timestamp: string): string {
+  const date = new Date(timestamp);
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
-  const style = EVENT_LEVEL_STYLES[event.level];
+  const severity = EVENT_TYPE_SEVERITY[event.type];
+  const style = EVENT_SEVERITY_STYLES[severity];
+  const displayName = EVENT_TYPE_DISPLAY[event.type];
 
   return (
     <button
@@ -19,7 +39,10 @@ function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
         {style.label}
       </Badge>
       <span className="truncate text-sm text-neutral-700">
-        <span className="text-neutral-400">[{event.code}]</span> {event.message}
+        <span className="text-neutral-400">[{event.site.name}]</span> {displayName}
+      </span>
+      <span className="ml-auto shrink-0 text-xs text-neutral-400">
+        {formatTimestamp(event.timestamp)}
       </span>
     </button>
   );
@@ -27,12 +50,41 @@ function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
 
 function EventList({
   events,
+  hasMore,
+  isLoadingMore,
+  onLoadMore,
   onEventClick,
 }: {
   events: Event[];
-  onEventClick?: (eventId: string) => void;
+  hasMore: boolean;
+  isLoadingMore: boolean;
+  onLoadMore: () => void;
+  onEventClick?: (eventId: number) => void;
 }) {
-  if (events.length === 0) {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const handleIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const entry = entries[0];
+      if (entry?.isIntersecting && hasMore && !isLoadingMore) {
+        onLoadMore();
+      }
+    },
+    [hasMore, isLoadingMore, onLoadMore]
+  );
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(handleIntersect, {
+      rootMargin: "100px",
+    });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [handleIntersect]);
+
+  if (events.length === 0 && !isLoadingMore) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-neutral-400">
         이벤트가 없습니다
@@ -45,6 +97,13 @@ function EventList({
       {events.map((event) => (
         <EventRow key={event.id} event={event} onClick={() => onEventClick?.(event.id)} />
       ))}
+      {/* 무한스크롤 감지 sentinel */}
+      <div ref={sentinelRef} className="h-1" />
+      {isLoadingMore && (
+        <div className="flex justify-center py-3">
+          <Spinner size="sm" />
+        </div>
+      )}
     </div>
   );
 }
@@ -64,7 +123,13 @@ function groupEventsByRegion(events: Event[]): Record<string, Event[]> {
   return grouped;
 }
 
-export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
+export function RealtimeEvents({
+  events,
+  hasMore,
+  isLoadingMore,
+  onLoadMore,
+  onEventClick,
+}: RealtimeEventsProps) {
   const eventsByTab = groupEventsByRegion(events);
 
   return (
@@ -89,7 +154,13 @@ export function RealtimeEvents({ events, onEventClick }: RealtimeEventsProps) {
 
         {EVENT_REGIONS.map((region) => (
           <TabsContent key={region} value={region} className="mt-0 min-h-0 flex-1 overflow-hidden">
-            <EventList events={eventsByTab[region] ?? []} onEventClick={onEventClick} />
+            <EventList
+              events={eventsByTab[region] ?? []}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
+              onLoadMore={onLoadMore}
+              onEventClick={onEventClick}
+            />
           </TabsContent>
         ))}
       </Tabs>

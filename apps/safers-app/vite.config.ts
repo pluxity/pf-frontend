@@ -5,7 +5,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import { resolve } from "path";
 
 /** 현장별 WHEP 포트 목록 (cctv.service.ts의 SITE_WHEP_PORT와 동기화) */
-const WHEP_PORTS = [8811, 8812, 8813, 8814, 8815, 8816, 8817, 8818, 8819];
+const WHEP_PORTS = [8811, 8812, 8813, 8814, 8815, 8816, 8817, 8818, 8819, 8921];
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");

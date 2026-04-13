@@ -1,13 +1,15 @@
 import type { Event, Site } from "@/services";
+import { EVENT_TYPE_SEVERITY } from "@/services";
 
 /** 이벤트 목록에서 현장별 최고 위험 수준을 집계 */
 export function buildSiteStatusMap(events: Event[]): Map<number, "warning" | "danger"> {
   const statusMap = new Map<number, "warning" | "danger">();
   for (const evt of events) {
+    const severity = EVENT_TYPE_SEVERITY[evt.type];
     const current = statusMap.get(evt.site.id);
-    if (evt.level === "danger") {
+    if (severity === "danger") {
       statusMap.set(evt.site.id, "danger");
-    } else if ((evt.level === "alert" || evt.level === "warning") && current !== "danger") {
+    } else if (severity === "warning" && current !== "danger") {
       statusMap.set(evt.site.id, "warning");
     }
   }
