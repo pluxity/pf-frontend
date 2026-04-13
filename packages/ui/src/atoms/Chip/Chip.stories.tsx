@@ -11,7 +11,18 @@ const meta = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "primary", "success", "warning", "error"],
+      options: [
+        "default",
+        "primary",
+        "success",
+        "warning",
+        "error",
+        "severity-normal",
+        "severity-caution",
+        "severity-warning",
+        "severity-danger",
+        "custom",
+      ],
       description: "칩의 색상 변형",
     },
     size: {
@@ -77,6 +88,14 @@ export const Removable: Story = {
   },
 };
 
+export const Custom: Story = {
+  args: {
+    children: "Custom",
+    variant: "custom",
+    className: "bg-purple-500 dark:bg-purple-700 text-white",
+  },
+};
+
 export const AllVariants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
@@ -85,6 +104,20 @@ export const AllVariants: Story = {
       <Chip variant="success">Success</Chip>
       <Chip variant="warning">Warning</Chip>
       <Chip variant="error">Error</Chip>
+      <Chip variant="custom" className="bg-purple-500 dark:bg-purple-700 text-white">
+        Custom
+      </Chip>
+    </div>
+  ),
+};
+
+export const AllSeverityVariants: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-2">
+      <Chip variant="severity-normal">정상</Chip>
+      <Chip variant="severity-caution">주의</Chip>
+      <Chip variant="severity-warning">경고</Chip>
+      <Chip variant="severity-danger">위험</Chip>
     </div>
   ),
 };

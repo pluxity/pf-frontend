@@ -10,6 +10,10 @@ const iconMap = {
   success: CheckCircle,
   warning: AlertTriangle,
   error: AlertCircle,
+  "severity-normal": CheckCircle,
+  "severity-caution": AlertTriangle,
+  "severity-warning": AlertTriangle,
+  "severity-danger": AlertCircle,
 };
 
 interface AlertPropsWithRef extends AlertProps {
@@ -57,7 +61,13 @@ interface AlertDescriptionPropsWithRef extends AlertDescriptionProps {
 }
 
 function AlertDescription({ className, ref, ...props }: AlertDescriptionPropsWithRef) {
-  return <div ref={ref} className={cn("text-sm text-gray-700", className)} {...props} />;
+  return (
+    <div
+      ref={ref}
+      className={cn("text-sm text-secondary dark:text-dark-text-secondary", className)}
+      {...props}
+    />
+  );
 }
 
 export { Alert, AlertTitle, AlertDescription };

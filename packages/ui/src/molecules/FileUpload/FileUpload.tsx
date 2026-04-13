@@ -113,7 +113,7 @@ function FileUpload({
       )}
 
       {value.length > 0 && (
-        <p className="text-xs text-muted">
+        <p className="text-xs text-muted dark:text-dark-text-muted">
           {value.length} / {maxFiles} 파일
         </p>
       )}

@@ -43,7 +43,7 @@ function CardTitle({ className, ref, ...props }: CardTitlePropsWithRef) {
     <h3
       ref={ref}
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-text-primary dark:text-dark-text-primary",
+        "text-lg font-semibold leading-none tracking-tight text-primary dark:text-dark-text-primary",
         className
       )}
       {...props}
@@ -59,7 +59,7 @@ function CardDescription({ className, ref, ...props }: CardDescriptionPropsWithR
   return (
     <p
       ref={ref}
-      className={cn("text-sm text-text-muted dark:text-dark-text-muted", className)}
+      className={cn("text-sm text-muted dark:text-dark-text-muted", className)}
       {...props}
     />
   );

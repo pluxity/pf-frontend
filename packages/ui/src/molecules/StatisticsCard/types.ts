@@ -9,6 +9,15 @@ export interface StatisticsCardProps {
     value: number;
     isPositive: boolean;
   };
-  variant?: "default" | "primary" | "success" | "warning" | "error";
+  variant?:
+    | "default"
+    | "primary"
+    | "success"
+    | "warning"
+    | "error"
+    | "severity-normal"
+    | "severity-caution"
+    | "severity-warning"
+    | "severity-danger";
   className?: string;
 }

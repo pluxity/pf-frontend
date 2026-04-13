@@ -52,6 +52,10 @@ const iconMap = {
   success: CheckCircle,
   warning: AlertTriangle,
   error: AlertCircle,
+  "severity-normal": CheckCircle,
+  "severity-caution": AlertTriangle,
+  "severity-warning": AlertTriangle,
+  "severity-danger": AlertCircle,
 };
 
 export interface ToastProps
@@ -126,7 +130,7 @@ function ToastClose({ className, ref, ...props }: ToastCloseProps) {
       ref={ref}
       className={cn(
         "absolute right-2 top-2 rounded-md p-1 opacity-70 transition-opacity",
-        "hover:opacity-100 hover:bg-black/5",
+        "hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10",
         "focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         className
       )}
@@ -150,7 +154,7 @@ function ToastAction({ className, ref, ...props }: ToastActionProps) {
         "inline-flex shrink-0 items-center justify-center rounded-md px-3 py-1.5",
         "text-sm font-medium transition-colors",
         "bg-transparent border border-current",
-        "hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
+        "hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         className
       )}

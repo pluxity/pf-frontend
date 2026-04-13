@@ -1,6 +1,7 @@
 import { HeaderTitle } from "./components/HeaderTitle";
 import { HeaderClock } from "./components/HeaderClock";
 import { HeaderUserInfo } from "./components/HeaderUserInfo";
+import { AIPlaygroundLink } from "./components/AIPlaygroundLink";
 
 interface DashboardLayoutProps {
   leftPanel: React.ReactNode;
@@ -20,7 +21,11 @@ export function DashboardLayout({ leftPanel, rightPanel, children }: DashboardLa
 
         {/* 좌우 요소 */}
         <div className="flex h-full items-center justify-between px-4">
-          <HeaderClock />
+          <div className="flex items-center gap-3">
+            <HeaderClock />
+            <span className="w-px h-4 bg-neutral-300" aria-hidden="true" />
+            <AIPlaygroundLink />
+          </div>
           <HeaderUserInfo />
         </div>
       </header>

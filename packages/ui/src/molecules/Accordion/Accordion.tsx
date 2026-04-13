@@ -13,7 +13,7 @@ function AccordionItem({ className, ref, ...props }: AccordionItemProps) {
   return (
     <AccordionPrimitive.Item
       ref={ref}
-      className={cn("border-b border-gray-200", className)}
+      className={cn("border-b border-border-default dark:border-dark-border-default", className)}
       {...props}
     />
   );

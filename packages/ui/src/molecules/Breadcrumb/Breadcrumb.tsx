@@ -26,7 +26,7 @@ function BreadcrumbList({ className, ref, ...props }: BreadcrumbListPropsWithRef
     <ol
       ref={ref}
       className={cn(
-        "flex h-10 flex-wrap items-center gap-2 break-words text-sm text-gray-500",
+        "flex h-10 flex-wrap items-center gap-2 break-words text-sm text-secondary dark:text-dark-text-secondary",
         className
       )}
       {...props}
@@ -50,7 +50,10 @@ function BreadcrumbLink({ className, ref, ...props }: BreadcrumbLinkPropsWithRef
   return (
     <a
       ref={ref}
-      className={cn("transition-colors hover:text-gray-900 hover:underline", className)}
+      className={cn(
+        "transition-colors hover:text-primary hover:underline dark:hover:text-dark-text-primary",
+        className
+      )}
       {...props}
     />
   );
@@ -71,7 +74,7 @@ function BreadcrumbSeparator({
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cn("text-gray-400", className)}
+      className={cn("text-placeholder dark:text-dark-text-placeholder", className)}
       {...props}
     >
       {children ?? "/"}
@@ -90,7 +93,7 @@ function BreadcrumbPage({ className, ref, ...props }: BreadcrumbPagePropsWithRef
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn("font-bold text-gray-700", className)}
+      className={cn("font-bold text-primary dark:text-dark-text-primary", className)}
       {...props}
     />
   );

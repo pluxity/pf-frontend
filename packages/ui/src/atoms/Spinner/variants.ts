@@ -11,8 +11,8 @@ export const spinnerVariants = cva(
         xl: "h-12 w-12",
       },
       color: {
-        primary: "text-brand",
-        gray: "text-gray-500",
+        primary: "text-brand dark:text-primary-400",
+        gray: "text-neutral-500 dark:text-neutral-400",
         white: "text-white",
       },
     },

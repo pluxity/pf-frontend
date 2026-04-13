@@ -40,16 +40,16 @@ export const UnderlineStyle: Story = {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
-        <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">전체장비 목록입니다.</p>
       </TabsContent>
       <TabsContent value="progress">
-        <p className="text-sm text-gray-600 p-4">진행중인 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">진행중인 항목입니다.</p>
       </TabsContent>
       <TabsContent value="complete">
-        <p className="text-sm text-gray-600 p-4">완료된 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">완료된 항목입니다.</p>
       </TabsContent>
       <TabsContent value="error">
-        <p className="text-sm text-gray-600 p-4">에러 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">에러 항목입니다.</p>
       </TabsContent>
     </Tabs>
   ),
@@ -78,16 +78,16 @@ export const UnderlineWithIcons: Story = {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
-        <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">전체장비 목록입니다.</p>
       </TabsContent>
       <TabsContent value="progress">
-        <p className="text-sm text-gray-600 p-4">진행중인 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">진행중인 항목입니다.</p>
       </TabsContent>
       <TabsContent value="complete">
-        <p className="text-sm text-gray-600 p-4">완료된 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">완료된 항목입니다.</p>
       </TabsContent>
       <TabsContent value="error">
-        <p className="text-sm text-gray-600 p-4">에러 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">에러 항목입니다.</p>
       </TabsContent>
     </Tabs>
   ),
@@ -112,16 +112,16 @@ export const FilledStyle: Story = {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
-        <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">전체장비 목록입니다.</p>
       </TabsContent>
       <TabsContent value="progress">
-        <p className="text-sm text-gray-600 p-4">진행중인 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">진행중인 항목입니다.</p>
       </TabsContent>
       <TabsContent value="complete">
-        <p className="text-sm text-gray-600 p-4">완료된 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">완료된 항목입니다.</p>
       </TabsContent>
       <TabsContent value="error">
-        <p className="text-sm text-gray-600 p-4">에러 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">에러 항목입니다.</p>
       </TabsContent>
     </Tabs>
   ),
@@ -150,16 +150,16 @@ export const FilledWithIcons: Story = {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
-        <p className="text-sm text-gray-600 p-4">전체장비 목록입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">전체장비 목록입니다.</p>
       </TabsContent>
       <TabsContent value="progress">
-        <p className="text-sm text-gray-600 p-4">진행중인 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">진행중인 항목입니다.</p>
       </TabsContent>
       <TabsContent value="complete">
-        <p className="text-sm text-gray-600 p-4">완료된 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">완료된 항목입니다.</p>
       </TabsContent>
       <TabsContent value="error">
-        <p className="text-sm text-gray-600 p-4">에러 항목입니다.</p>
+        <p className="text-sm text-muted dark:text-dark-text-muted p-4">에러 항목입니다.</p>
       </TabsContent>
     </Tabs>
   ),
@@ -170,7 +170,9 @@ export const AllVariants: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-bold mb-4">기본스타일 (Underline)</h3>
+        <h3 className="text-lg font-bold mb-4 text-secondary dark:text-dark-text-primary">
+          기본스타일 (Underline)
+        </h3>
         <Tabs defaultValue="tab1" className="w-[18.75rem]">
           <TabsList variant="underline">
             <TabsTrigger variant="underline" value="tab1">
@@ -186,7 +188,9 @@ export const AllVariants: Story = {
         </Tabs>
       </div>
       <div>
-        <h3 className="text-lg font-bold mb-4">볼드스타일 (Filled)</h3>
+        <h3 className="text-lg font-bold mb-4 text-secondary dark:text-dark-text-primary">
+          볼드스타일 (Filled)
+        </h3>
         <Tabs defaultValue="tab1" className="w-60">
           <TabsList variant="filled">
             <TabsTrigger variant="filled" value="tab1">

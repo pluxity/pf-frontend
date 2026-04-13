@@ -119,6 +119,62 @@
   --color-alert-warning-bg: #fdf0d8;
   --color-alert-error-bg: #fbdddb;
 
+  /* ===== Severity Colors ===== */
+  /* 안전 모니터링 플랫폼 위험도 등급 색상 */
+  /* 기존 success/warning/error/info와 별도 — 도메인 특화 토큰 */
+
+  /* Normal (정상) - Green */
+  --color-severity-normal-50: #f0fdf4;
+  --color-severity-normal-100: #dcfce7;
+  --color-severity-normal-200: #bbf7d0;
+  --color-severity-normal-300: #86efac;
+  --color-severity-normal-400: #4ade80;
+  --color-severity-normal-500: #22c55e;
+  --color-severity-normal-600: #16a34a;
+  --color-severity-normal-700: #15803d;
+  --color-severity-normal-800: #166534;
+  --color-severity-normal-900: #14532d;
+  --color-severity-normal-brand: #22c55e;
+
+  /* Caution (주의) - Yellow/Amber */
+  --color-severity-caution-50: #fefce8;
+  --color-severity-caution-100: #fef9c3;
+  --color-severity-caution-200: #fef08a;
+  --color-severity-caution-300: #fde047;
+  --color-severity-caution-400: #facc15;
+  --color-severity-caution-500: #eab308;
+  --color-severity-caution-600: #ca8a04;
+  --color-severity-caution-700: #a16207;
+  --color-severity-caution-800: #854d0e;
+  --color-severity-caution-900: #713f12;
+  --color-severity-caution-brand: #eab308;
+
+  /* Warning (경고) - Orange */
+  --color-severity-warning-50: #fff7ed;
+  --color-severity-warning-100: #ffedd5;
+  --color-severity-warning-200: #fed7aa;
+  --color-severity-warning-300: #fdba74;
+  --color-severity-warning-400: #fb923c;
+  --color-severity-warning-500: #f97316;
+  --color-severity-warning-600: #ea580c;
+  --color-severity-warning-700: #c2410c;
+  --color-severity-warning-800: #9a3412;
+  --color-severity-warning-900: #7c2d12;
+  --color-severity-warning-brand: #f97316;
+
+  /* Danger (위험) - Red */
+  --color-severity-danger-50: #fef2f2;
+  --color-severity-danger-100: #fee2e2;
+  --color-severity-danger-200: #fecaca;
+  --color-severity-danger-300: #fca5a5;
+  --color-severity-danger-400: #f87171;
+  --color-severity-danger-500: #ef4444;
+  --color-severity-danger-600: #dc2626;
+  --color-severity-danger-700: #b91c1c;
+  --color-severity-danger-800: #991b1b;
+  --color-severity-danger-900: #7f1d1d;
+  --color-severity-danger-brand: #ef4444;
+
   /* ===== Border Radius from Figma ===== */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -316,9 +372,6 @@
 
   /* ===== Dark Mode Utilities ===== */
   /* Custom dark mode colors */
-  .dark .bg-white {
-    background-color: var(--color-dark-bg-card);
-  }
   .dark .dark\:bg-dark-bg-primary {
     background-color: var(--color-dark-bg-primary);
   }
@@ -383,5 +436,24 @@
   }
   .dark .dark\:text-gray-100 {
     color: var(--color-gray-100);
+  }
+}
+
+/* ===== Light Mode Text Utilities ===== */
+@layer utilities {
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+  .text-placeholder {
+    color: var(--color-text-placeholder);
+  }
+  .text-disabled {
+    color: var(--color-text-disabled);
   }
 }

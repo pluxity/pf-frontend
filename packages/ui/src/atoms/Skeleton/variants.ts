@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-export const skeletonVariants = cva("animate-pulse bg-gray-100", {
+export const skeletonVariants = cva("animate-pulse bg-neutral-100 dark:bg-neutral-700", {
   variants: {
     variant: {
       text: "h-4 w-full rounded",

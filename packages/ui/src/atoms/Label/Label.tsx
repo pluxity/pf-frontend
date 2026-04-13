@@ -7,7 +7,7 @@ function Label({ className, required, children, ref, ...props }: LabelProps) {
     <LabelPrimitive.Root
       ref={ref}
       className={cn(
-        "text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        "text-sm font-medium leading-none text-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-50 dark:text-dark-text-primary",
         className
       )}
       {...props}

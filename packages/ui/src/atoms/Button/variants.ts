@@ -1,18 +1,18 @@
 import { cva } from "class-variance-authority";
 
 export const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-primary-400 dark:focus-visible:ring-offset-dark-bg-primary [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
           "bg-brand text-white hover:bg-brand-hover active:bg-brand-active dark:bg-primary-600 dark:hover:bg-primary-700 dark:active:bg-primary-800",
         secondary:
-          "bg-neutral-50 text-text-secondary hover:bg-gray-100 active:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600",
+          "bg-neutral-50 text-secondary hover:bg-neutral-100 active:bg-neutral-200 dark:bg-neutral-800 dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover dark:active:bg-dark-bg-tertiary",
         outline:
-          "border border-border-default bg-white text-brand hover:bg-gray-50 active:bg-gray-100 dark:border-dark-border-default dark:bg-dark-bg-primary dark:text-primary-400 dark:hover:bg-dark-bg-hover dark:active:bg-dark-bg-tertiary",
+          "border border-border-default bg-transparent text-brand hover:bg-neutral-50 active:bg-neutral-100 dark:border-dark-border-default dark:text-primary-400 dark:hover:bg-dark-bg-hover dark:active:bg-dark-bg-tertiary",
         ghost:
-          "text-brand hover:bg-gray-50 active:bg-gray-100 dark:text-primary-400 dark:hover:bg-gray-800 dark:active:bg-gray-700",
+          "text-brand hover:bg-neutral-50 active:bg-neutral-100 dark:text-primary-400 dark:hover:bg-dark-bg-hover dark:active:bg-dark-bg-tertiary",
         link: "text-brand underline-offset-4 hover:underline dark:text-primary-400",
         success:
           "bg-success-brand text-white hover:opacity-90 active:opacity-80 dark:bg-success-600 dark:hover:opacity-90",

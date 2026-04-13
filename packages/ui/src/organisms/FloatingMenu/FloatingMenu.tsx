@@ -102,8 +102,8 @@ function FloatingMenuItem({
     "flex h-10 w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-sm transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
     active
-      ? "bg-blue-200 font-bold text-brand dark:bg-primary-900/30 dark:text-primary-400"
-      : "text-secondary hover:bg-gray-50 dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover",
+      ? "bg-primary-200 font-bold text-brand dark:bg-primary-900/30 dark:text-primary-400"
+      : "text-secondary hover:bg-neutral-50 dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover",
     className
   );
 

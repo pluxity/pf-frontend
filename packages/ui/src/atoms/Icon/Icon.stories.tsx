@@ -86,7 +86,7 @@ const IconGrid = ({
       {icons.map(({ name, Icon }) => (
         <div
           key={name}
-          className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-gray-50"
+          className="flex flex-col items-center gap-2 p-4 border rounded-lg hover:bg-gray-50 dark:border-neutral-600 dark:hover:bg-neutral-800"
         >
           <Icon size="lg" />
           <span className="text-xs text-gray-500">{name}</span>

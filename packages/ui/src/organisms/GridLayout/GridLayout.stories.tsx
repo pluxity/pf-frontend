@@ -57,21 +57,25 @@ export const Default: Story = {
 export const Dashboard: Story = {
   name: "대시보드",
   render: () => (
-    <div className="h-[37.5rem] p-4 bg-gray-100">
+    <div className="h-[37.5rem] p-4 bg-neutral-100 dark:bg-dark-bg-secondary">
       <GridLayout columns={12} gap={16} className="p-1">
         <Widget title="매출 현황" border colSpan={6} rowSpan={2}>
-          <div className="h-full flex items-center justify-center bg-blue-50">차트 영역</div>
+          <div className="h-full flex items-center justify-center bg-blue-50 dark:bg-blue-900/20">
+            차트 영역
+          </div>
         </Widget>
         <Widget title="방문자 통계" border colSpan={3}>
           <div className="p-4 text-center">
-            <div className="text-3xl font-bold">1,234</div>
-            <div className="text-gray-500">오늘 방문자</div>
+            <div className="text-3xl font-bold text-secondary dark:text-dark-text-primary">
+              1,234
+            </div>
+            <div className="text-muted dark:text-dark-text-muted">오늘 방문자</div>
           </div>
         </Widget>
         <Widget title="신규 가입" border colSpan={3}>
           <div className="p-4 text-center">
-            <div className="text-3xl font-bold">56</div>
-            <div className="text-gray-500">오늘 가입자</div>
+            <div className="text-3xl font-bold text-secondary dark:text-dark-text-primary">56</div>
+            <div className="text-muted dark:text-dark-text-muted">오늘 가입자</div>
           </div>
         </Widget>
         <Widget title="알림" border colSpan={6}>
@@ -139,10 +143,12 @@ const dashboardTemplate: GridTemplate = {
 export const TemplateMode: Story = {
   name: "템플릿 모드",
   render: () => (
-    <div className="h-[37.5rem] p-4 bg-gray-100">
+    <div className="h-[37.5rem] p-4 bg-neutral-100 dark:bg-dark-bg-secondary">
       <GridLayout template={dashboardTemplate} gap={16} className="p-1">
         <Widget id="widget-1" title="메인 차트" border>
-          <div className="h-full flex items-center justify-center bg-blue-50">메인 차트 영역</div>
+          <div className="h-full flex items-center justify-center bg-blue-50 dark:bg-blue-900/20">
+            메인 차트 영역
+          </div>
         </Widget>
         <Widget id="widget-2" title="통계 1" border>
           <div className="p-4 text-center">통계 1</div>
@@ -164,10 +170,10 @@ export const TemplateMode: Story = {
 export const TemplateModeEditable: Story = {
   name: "템플릿 모드 (편집 가능)",
   render: () => (
-    <div className="h-[37.5rem] p-4 bg-gray-100">
+    <div className="h-[37.5rem] p-4 bg-neutral-100 dark:bg-dark-bg-secondary">
       <GridLayout template={dashboardTemplate} gap={16} editable className="p-1">
         <Widget id="widget-1" title="메인 차트" border>
-          <div className="h-full flex items-center justify-center bg-blue-50">
+          <div className="h-full flex items-center justify-center bg-blue-50 dark:bg-blue-900/20">
             드래그하여 위치 변경
           </div>
         </Widget>
@@ -193,8 +199,10 @@ export const DifferentGaps: Story = {
   render: () => (
     <div className="space-y-8 p-4">
       <div>
-        <h3 className="text-lg font-bold mb-2">gap: 8px</h3>
-        <div className="h-48 bg-gray-100 p-1">
+        <h3 className="text-lg font-bold mb-2 text-secondary dark:text-dark-text-primary">
+          gap: 8px
+        </h3>
+        <div className="h-48 bg-neutral-100 dark:bg-dark-bg-secondary p-1">
           <GridLayout columns={4} gap={8} className="p-1">
             {Array.from({ length: 8 }, (_, i) => (
               <Widget key={i} border>
@@ -205,8 +213,10 @@ export const DifferentGaps: Story = {
         </div>
       </div>
       <div>
-        <h3 className="text-lg font-bold mb-2">gap: 16px</h3>
-        <div className="h-48 bg-gray-100 p-1">
+        <h3 className="text-lg font-bold mb-2 text-secondary dark:text-dark-text-primary">
+          gap: 16px
+        </h3>
+        <div className="h-48 bg-neutral-100 dark:bg-dark-bg-secondary p-1">
           <GridLayout columns={4} gap={16} className="p-1">
             {Array.from({ length: 8 }, (_, i) => (
               <Widget key={i} border>
@@ -217,8 +227,10 @@ export const DifferentGaps: Story = {
         </div>
       </div>
       <div>
-        <h3 className="text-lg font-bold mb-2">gap: 24px</h3>
-        <div className="h-48 bg-gray-100 p-1">
+        <h3 className="text-lg font-bold mb-2 text-secondary dark:text-dark-text-primary">
+          gap: 24px
+        </h3>
+        <div className="h-48 bg-neutral-100 dark:bg-dark-bg-secondary p-1">
           <GridLayout columns={4} gap={24} className="p-1">
             {Array.from({ length: 8 }, (_, i) => (
               <Widget key={i} border>

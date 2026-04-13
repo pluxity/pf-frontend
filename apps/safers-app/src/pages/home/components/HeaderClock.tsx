@@ -25,5 +25,5 @@ export function HeaderClock() {
     return () => clearInterval(timer);
   }, []);
 
-  return <div className="text-sm font-medium text-neutral-600">{time}</div>;
+  return <div className="text-sm font-medium text-neutral-600 tabular-nums">{time}</div>;
 }

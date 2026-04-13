@@ -32,7 +32,11 @@ const CheckboxGroup = ({
 
   return (
     <div className={cn("space-y-2", className)}>
-      {label && <label className="text-sm font-medium text-gray-900">{label}</label>}
+      {label && (
+        <label className="text-sm font-medium text-primary dark:text-dark-text-primary">
+          {label}
+        </label>
+      )}
       <div
         className={cn("flex gap-3", orientation === "vertical" ? "flex-col" : "flex-row flex-wrap")}
       >
@@ -47,7 +51,7 @@ const CheckboxGroup = ({
             <label
               htmlFor={option.value}
               className={cn(
-                "text-sm font-medium leading-none text-gray-700",
+                "text-sm font-medium leading-none text-primary dark:text-dark-text-primary",
                 (disabled || option.disabled) && "cursor-not-allowed opacity-70"
               )}
             >

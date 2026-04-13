@@ -113,16 +113,19 @@ function DatePicker({
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className="cursor-pointer pr-10"
         />
-        <Calendar size="sm" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted" />
+        <Calendar
+          size="sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted dark:text-dark-text-muted"
+        />
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-1 w-72 rounded-lg border border-neutral-100 bg-white p-4 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)]">
+        <div className="absolute left-0 top-full z-50 mt-1 w-72 rounded-lg border border-neutral-100 bg-white p-4 shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.10)] dark:border-dark-border-default dark:bg-dark-bg-card">
           <div className="mb-4 flex items-center justify-between">
             <Button variant="ghost" size="sm" onClick={handlePrevMonth} className="h-8 w-8 p-0">
               <ChevronLeft size="sm" />
             </Button>
-            <span className="text-sm font-bold text-secondary">
+            <span className="text-sm font-bold text-secondary dark:text-dark-text-secondary">
               {MONTHS[viewDate.getMonth()]} {viewDate.getFullYear()}
             </span>
             <Button variant="ghost" size="sm" onClick={handleNextMonth} className="h-8 w-8 p-0">
@@ -134,7 +137,7 @@ function DatePicker({
             {DAYS.map((day) => (
               <div
                 key={day}
-                className="flex h-8 items-center justify-center text-xs font-medium text-muted"
+                className="flex h-8 items-center justify-center text-xs font-medium text-muted dark:text-dark-text-muted"
               >
                 {day}
               </div>
@@ -155,7 +158,7 @@ function DatePicker({
                         ? "bg-brand font-bold text-white"
                         : isToday(date)
                           ? "border border-brand text-brand"
-                          : "text-secondary hover:bg-neutral-50",
+                          : "text-secondary hover:bg-neutral-50 dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover",
                       isDateDisabled(date) && "cursor-not-allowed opacity-50"
                     )}
                   >
