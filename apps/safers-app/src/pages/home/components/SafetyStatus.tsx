@@ -84,9 +84,14 @@ function useSafetyData(siteId: number | null | undefined) {
     if (siteId == null) return;
 
     let stale = false;
-    safetyService.getSafetyData(siteId).then((data) => {
-      if (!stale) setState({ data, loading: false });
-    });
+    safetyService
+      .getSafetyData(siteId)
+      .then((data) => {
+        if (!stale) setState({ data, loading: false });
+      })
+      .catch(() => {
+        if (!stale) setState({ data: DEFAULT_ITEMS, loading: false });
+      });
     return () => {
       stale = true;
     };
@@ -100,8 +105,6 @@ export function SafetyStatus({ siteId }: SafetyStatusProps) {
 
   return (
     <div className="flex flex-col h-full">
-      {/* shimmer keyframes */}
-      <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       <div className="text-neutral-300 font-semibold text-sm mb-3 shrink-0">안전 모니터링</div>
       <div className="flex items-stretch justify-evenly flex-1 min-h-0">
         {isLoading

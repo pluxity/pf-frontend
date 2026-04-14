@@ -87,6 +87,53 @@ body {
   }
 }
 
+/* 안전 모니터링 shimmer 로딩 애니메이션 */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* PTZ 컨트롤 리플 애니메이션 */
+@keyframes ptz-border-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes ptz-border-ripple2 {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes ptz-glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 6px rgba(255, 117, 0, 0.5),
+      0 0 14px rgba(255, 117, 0, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 10px rgba(255, 117, 0, 0.7),
+      0 0 20px rgba(255, 117, 0, 0.3);
+  }
+}
+
 /* Mapbox 로고 & 카피라이트 숨기기 */
 .mapboxgl-ctrl-logo,
 .mapboxgl-ctrl-attrib {

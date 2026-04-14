@@ -59,6 +59,7 @@ export function useCCTVAIEvents(query = "") {
   const queryRef = useRef(query);
   const nextPageRef = useRef(2);
   const isPaginatedRef = useRef(false);
+  const refetchControllerRef = useRef<AbortController | null>(null);
 
   // REST 이벤트 페칭
   async function fetchEvents(q: string, page: number, signal: AbortSignal) {
@@ -132,34 +133,38 @@ export function useCCTVAIEvents(query = "") {
           unsubEventRef.current = stompService.subscribe(TOPIC_EVENTS, (message) => {
             try {
               const event: StompEventResponse = JSON.parse(message.body);
-              setEvents((prev) => {
-                const isNew = !prev.some((e) => e.eventId === event.eventId);
-                if (isNew) {
-                  stompBufferRef.current = [event, ...stompBufferRef.current].slice(0, MAX_EVENTS);
 
-                  if (queryRef.current !== "" || isPaginatedRef.current) {
-                    // 검색 중 OR 페이지네이션 상태: pill 표시만
-                    setPendingCount((c) => c + 1);
-                  } else {
-                    // page 1만 로드된 상태: REST 재조회 + 버퍼 얹기
-                    const controller = new AbortController();
-                    fetchEvents("", 1, controller.signal)
-                      .then(({ content, last }) => {
-                        setEvents(() => {
-                          const restIds = new Set(content.map((e) => e.eventId));
-                          const onlyNew = stompBufferRef.current.filter(
-                            (e) => !restIds.has(e.eventId)
-                          );
-                          stompBufferRef.current = [];
-                          return [...onlyNew, ...content].slice(0, MAX_EVENTS);
-                        });
-                        setHasMore(!last);
-                      })
-                      .catch(() => {});
+              // 즉시 상태 업데이트 (낙관적)
+              setEvents((prev) => upsertEvent(prev, event));
+
+              // 새 이벤트인지 확인 후 후속 처리
+              const isNew = !stompBufferRef.current.some((e) => e.eventId === event.eventId);
+              if (isNew) {
+                stompBufferRef.current = [event, ...stompBufferRef.current].slice(0, MAX_EVENTS);
+
+                if (queryRef.current !== "" || isPaginatedRef.current) {
+                  setPendingCount((c) => c + 1);
+                } else {
+                  // 이전 요청 취소 후 REST 재조회
+                  if (refetchControllerRef.current) {
+                    refetchControllerRef.current.abort();
                   }
+                  const controller = new AbortController();
+                  refetchControllerRef.current = controller;
+
+                  fetchEvents("", 1, controller.signal)
+                    .then(({ content, last }) => {
+                      if (controller.signal.aborted) return;
+                      const restIds = new Set(content.map((e) => e.eventId));
+                      const onlyNew = stompBufferRef.current.filter((e) => !restIds.has(e.eventId));
+                      stompBufferRef.current = [];
+                      setEvents([...onlyNew, ...content].slice(0, MAX_EVENTS));
+                      setHasMore(!last);
+                      refetchControllerRef.current = null;
+                    })
+                    .catch(() => {});
                 }
-                return upsertEvent(prev, event);
-              });
+              }
             } catch {
               // STOMP 이벤트 파싱 실패 — 무시
             }

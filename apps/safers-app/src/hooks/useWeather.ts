@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { weatherService } from "../services/weather.service";
-import { useWeatherStore } from "../stores";
 import type { ParsedWeather, HourlyWeather } from "../services/types";
 
 interface UseWeatherOptions {
@@ -44,8 +43,6 @@ export function useWeather({ siteId }: UseWeatherOptions): UseWeatherReturn {
 
         setCurrentWeather(current);
         setHourlyWeather(hourly);
-
-        useWeatherStore.getState().setWeatherData(siteId, groups, current, hourly);
       } catch (err) {
         setError(err instanceof Error ? err : new Error("날씨 데이터를 가져오는데 실패했습니다"));
       } finally {

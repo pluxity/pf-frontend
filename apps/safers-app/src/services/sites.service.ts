@@ -3,7 +3,7 @@ import type {
   SiteResponse,
   RegionsResponse,
   GetSitesParams,
-  Site,
+  SiteRegion,
 } from "./types/sites.types";
 import { mockSites } from "./mocks/sites.mock";
 import { API_BASE_URL } from "./config";
@@ -62,7 +62,7 @@ async function getSite(id: number): Promise<SiteResponse> {
   } catch {
     const site = mockSites.find((s) => s.id === id);
     return {
-      data: site ?? ({ id, name: `현장 ${id}` } as Site),
+      data: site ?? { id, name: `현장 ${id}`, region: "SEOUL" as SiteRegion },
       status: 200,
       timestamp: new Date().toISOString(),
     };

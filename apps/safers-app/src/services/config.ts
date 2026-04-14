@@ -8,11 +8,7 @@ export const API_BASE_URL = "/api";
  * - false: 실제 API 호출 (실패 시 fallback은 각 서비스에서 처리)
  */
 export const MOCK_CONFIG = {
-  events: false,
   siteDetail: true,
-  sites: false,
-  weather: false,
-  cctv: false,
 } as const;
 
 /** 이벤트 버퍼 최대 크기 */

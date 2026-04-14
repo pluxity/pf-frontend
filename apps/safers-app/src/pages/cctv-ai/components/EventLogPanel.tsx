@@ -66,6 +66,7 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
     <button
       type="button"
       onClick={() => onSelect(event)}
+      aria-label={`${config.label} - ${date} ${time}`}
       className={`flex w-full gap-3 border-b border-[#2A2D3A] px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-[#1E2130] ${
         isSelected ? "bg-[#1E2130] ring-1 ring-inset ring-brand/50" : ""
       }`}
@@ -200,8 +201,6 @@ export function EventLogPanel({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (query === "") setInputValue("");
   }, [query]);
-
-  const filtered = events;
 
   // 자동 스크롤
   useEffect(() => {
@@ -345,12 +344,12 @@ export function EventLogPanel({
           <div className="flex h-32 items-center justify-center">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white" />
           </div>
-        ) : filtered.length === 0 ? (
+        ) : events.length === 0 ? (
           <div className="flex h-32 items-center justify-center text-sm text-white/30">
             {query ? "검색 결과가 없습니다" : "이벤트 대기 중..."}
           </div>
         ) : (
-          filtered.map((event) => (
+          events.map((event) => (
             <EventRow
               key={event.eventId}
               event={event}

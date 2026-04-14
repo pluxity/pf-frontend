@@ -38,7 +38,7 @@ export function MobileEventSheet({
   const dragStart = useRef<number | null>(null);
   const dragCurrent = useRef<number>(0);
 
-  const unreadCount = events.length;
+  const eventCount = events.length;
 
   function handleTouchStart(e: React.TouchEvent) {
     const touch = e.touches[0]!;
@@ -100,9 +100,9 @@ export function MobileEventSheet({
             />
           </svg>
 
-          {unreadCount > 0 && (
+          {eventCount > 0 && (
             <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CA0014] px-1 text-[10px] font-bold text-white">
-              {unreadCount > 99 ? "99+" : unreadCount}
+              {eventCount > 99 ? "99+" : eventCount}
             </span>
           )}
         </button>
@@ -168,9 +168,9 @@ export function MobileEventSheet({
           />
         </svg>
 
-        {unreadCount > 0 && (
+        {eventCount > 0 && (
           <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#CA0014] px-1 text-[10px] font-bold text-white">
-            {unreadCount > 99 ? "99+" : unreadCount}
+            {eventCount > 99 ? "99+" : eventCount}
           </span>
         )}
       </button>

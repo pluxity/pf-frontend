@@ -117,6 +117,7 @@ export function CCTVPlaybackPage() {
         <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={() => navigate("/")}
+            aria-label="홈으로 돌아가기"
             className="flex items-center justify-center rounded-md p-1.5 text-white/60 transition-colors hover:bg-[#1A1D27] hover:text-white"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

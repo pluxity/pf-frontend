@@ -8,38 +8,12 @@ import { KoreaMap, type POI } from "./components/KoreaMap";
 import { MobileHome } from "./components/MobileHome";
 import { sitesService, eventsService, type Site } from "@/services";
 import { STATUS_COLORS } from "@/styles/tokens";
+import { parseWKTPolygonCentroid } from "@/utils/geo";
 import { buildSiteStatusMap } from "./utils";
 
 const DEFAULT_POI_COLOR = STATUS_COLORS.brand;
 const WARNING_POI_COLOR = STATUS_COLORS.warning;
 const DANGER_POI_COLOR = STATUS_COLORS.danger;
-
-function parseWKTPolygonCentroid(wkt: string): { lng: number; lat: number } | null {
-  const match = wkt.match(/POLYGON\s*\(\((.+)\)\)/i);
-  if (!match?.[1]) return null;
-
-  const coords = match[1].split(",").map((pair) => {
-    const [lng, lat] = pair.trim().split(/\s+/).map(Number);
-    return { lng: lng!, lat: lat! };
-  });
-
-  if (coords.length === 0) return null;
-
-  const ring =
-    coords.length > 1 &&
-    coords[0]!.lng === coords[coords.length - 1]!.lng &&
-    coords[0]!.lat === coords[coords.length - 1]!.lat
-      ? coords.slice(0, -1)
-      : coords;
-
-  if (ring.length === 0) return null;
-
-  const sum = ring.reduce((acc, c) => ({ lng: acc.lng + c.lng, lat: acc.lat + c.lat }), {
-    lng: 0,
-    lat: 0,
-  });
-  return { lng: sum.lng / ring.length, lat: sum.lat / ring.length };
-}
 
 function siteToPOI(site: Site, siteStatusMap: Map<number, "warning" | "danger">): POI | null {
   let lng = site.longitude;

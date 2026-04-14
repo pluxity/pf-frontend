@@ -33,6 +33,7 @@ function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
     <button
       type="button"
       onClick={onClick}
+      aria-label={`${displayName} - ${event.site.name}`}
       className="flex w-full items-center gap-2 border-b border-neutral-100 px-1 py-3 text-left last:border-b-0 hover:bg-primary-500/5"
     >
       <Badge variant={null} className={`shrink-0 rounded ${style.bg} ${style.text}`}>

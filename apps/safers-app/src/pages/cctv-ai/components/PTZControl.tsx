@@ -184,20 +184,6 @@ export function PTZControl() {
       )}
 
       {/* FAB 버튼 — PTZ 컨트롤 */}
-      <style>{`
-        @keyframes ptz-border-ripple {
-          0% { transform: scale(1); opacity: 0.6; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
-        @keyframes ptz-border-ripple2 {
-          0% { transform: scale(1); opacity: 0.4; }
-          100% { transform: scale(1.9); opacity: 0; }
-        }
-        @keyframes ptz-glow-pulse {
-          0%, 100% { box-shadow: 0 0 6px rgba(255,117,0,0.5), 0 0 14px rgba(255,117,0,0.2); }
-          50% { box-shadow: 0 0 10px rgba(255,117,0,0.7), 0 0 20px rgba(255,117,0,0.3); }
-        }
-      `}</style>
       <div className="group relative flex items-center">
         {/* hover 시 좌측으로 튀어나오는 PTZ 북마크 탭 */}
         <div className="absolute right-[calc(100%-1rem)] flex translate-x-4 items-center opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100">
