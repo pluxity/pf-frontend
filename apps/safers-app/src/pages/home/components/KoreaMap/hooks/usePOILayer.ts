@@ -2,14 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { select } from "d3-selection";
 import "d3-transition";
 import type { GeoProjection } from "d3-geo";
-import type { SVGSelection, SVGGroupSelection, POI, POICoords } from "../types";
-import { MAP_COLORS, POI_MARKER } from "../constants";
+import type { SVGSelection, SVGGroupSelection, POI, POICoords, ProjectedPOI } from "../types";
+import { MAP_COLORS, POI_MARKER, CLUSTER_CONFIG } from "../constants";
 import {
   projectCoords,
   createClickRipple,
   createPulseRipple,
   showPOIInfo,
   clearPOIInfo,
+  clusterPOIs,
+  renderClusterMarker,
+  showClusterDropdown,
+  clearClusterDropdown,
 } from "../utils";
 import { useSitesStore } from "@/stores";
 
@@ -58,7 +62,7 @@ export function usePOILayer({
     onSelectSiteRef.current = onSelectSite;
   }, [onPOIClick, onPOIHover, onSelectSite]);
 
-  // POI 마커 렌더링
+  // POI 마커 렌더링 (project → cluster → render)
   useEffect(() => {
     const svg = svgRef.current;
     const mainProjection = mainProjectionRef.current;
@@ -68,37 +72,91 @@ export function usePOILayer({
 
     const poiLayer = svg.select<SVGGElement>(".poi-layer");
     const rippleLayer = svg.select<SVGGElement>(".ripple-layer");
+    const poiInfoLayer = svg.select<SVGGElement>(".poi-info-layer");
     if (poiLayer.empty() || rippleLayer.empty()) return;
 
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const selectedSiteId = useSitesStore.getState().selectedSiteId;
+    const selectedIdStr = selectedSiteId != null ? String(selectedSiteId) : null;
 
     poiLayer.selectAll("*").remove();
     rippleLayer.selectAll("*").remove();
 
-    const pulsePOIs: { x: number; y: number; color: string }[] = [];
+    // Pass 1: 모든 POI 투영 + 선택된 POI 분리
+    const projected: ProjectedPOI[] = [];
+    let selectedProjected: ProjectedPOI | null = null;
 
     pois.forEach((poi) => {
       const coords = projectCoords(poi.longitude, poi.latitude, mainProjection, jejuProjection);
       if (!coords) return;
 
-      const poiCoords = calculatePOICoords(poi, coords, rootFontSize);
-      renderPOIMarker(poiLayer, poi, poiCoords);
-      bindPOIEvents(poiLayer, poi, poiCoords, rootFontSize, {
+      const item: ProjectedPOI = { poi, x: coords[0], y: coords[1] };
+      if (poi.id === selectedIdStr) {
+        selectedProjected = item;
+      } else {
+        projected.push(item);
+      }
+    });
+
+    // Pass 2: 클러스터링
+    const clusters = clusterPOIs(projected, (CLUSTER_CONFIG.distancePx * rootFontSize) / 16);
+
+    // Pass 3: 렌더링
+    const pulsePOIs: { x: number; y: number; color: string }[] = [];
+
+    clusters.forEach((cluster) => {
+      if (cluster.isSingle) {
+        // 단독 POI → 기존 렌더링
+        const p = cluster.pois[0]!;
+        const poiCoords = calculatePOICoords(p.poi, [p.x, p.y], rootFontSize);
+        renderPOIMarker(poiLayer, p.poi, poiCoords);
+        bindPOIEvents(poiLayer, p.poi, poiCoords, rootFontSize, {
+          onHover: onPOIHoverRef,
+          onClick: onPOIClickRef,
+          onSelectSite: onSelectSiteRef,
+          rippleLayer,
+        });
+
+        if (p.poi.label) {
+          renderPOILabel(poiLayer, p.poi.label, poiCoords.x, poiCoords.y, rootFontSize);
+        }
+
+        const status = p.poi.data?.status as string | undefined;
+        if (status === "warning" || status === "danger") {
+          pulsePOIs.push({ x: poiCoords.x, y: poiCoords.y, color: poiCoords.color });
+        }
+      } else {
+        // 클러스터 마커
+        renderClusterMarker(poiLayer, cluster, rootFontSize);
+        bindClusterEvents(poiLayer, poiInfoLayer, cluster, rootFontSize, {
+          onSelectSite: onSelectSiteRef,
+          rippleLayer,
+        });
+
+        if (cluster.worstStatus) {
+          const color = cluster.worstStatus === "danger" ? "#DE4545" : "#FFA26B";
+          pulsePOIs.push({ x: cluster.cx, y: cluster.cy, color });
+        }
+      }
+    });
+
+    // 선택된 POI는 최상단에 렌더 (기존 동작 유지)
+    const selected = selectedProjected as ProjectedPOI | null;
+    if (selected) {
+      const poiCoords = calculatePOICoords(selected.poi, [selected.x, selected.y], rootFontSize);
+      renderPOIMarker(poiLayer, selected.poi, poiCoords);
+      bindPOIEvents(poiLayer, selected.poi, poiCoords, rootFontSize, {
         onHover: onPOIHoverRef,
         onClick: onPOIClickRef,
         onSelectSite: onSelectSiteRef,
         rippleLayer,
       });
 
-      const status = poi.data?.status as string | undefined;
-      if (status === "warning" || status === "danger") {
+      const selectedStatus = selected.poi.data?.status as string | undefined;
+      if (selectedStatus === "warning" || selectedStatus === "danger") {
         pulsePOIs.push({ x: poiCoords.x, y: poiCoords.y, color: poiCoords.color });
       }
-
-      if (poi.label) {
-        renderPOILabel(poiLayer, poi.label, poiCoords.x, poiCoords.y, rootFontSize);
-      }
-    });
+    }
 
     pulsePOIsRef.current = pulsePOIs;
   }, [pois, svgRef, mainProjectionRef, jejuProjectionRef]);
@@ -176,6 +234,7 @@ export function useSelectedPOI({
 
     if (!selectedSiteId) {
       clearPOIInfo(poiInfoLayer);
+      clearClusterDropdown(poiInfoLayer);
       prevSelectedSiteIdRef.current = null;
       return;
     }
@@ -202,6 +261,7 @@ export function useSelectedPOI({
     // 같은 siteId에 대해 팝오버가 이미 있으면 재생성하지 않음 (pois 변경 시 깜빡임 방지)
     if (selectedSiteId !== prevId) {
       clearPOIInfo(poiInfoLayer);
+      clearClusterDropdown(poiInfoLayer);
       const siteName = (poiData.data?.name as string) ?? poiData.id;
       showPOIInfo(poiInfoLayer, poiCoords.x, poiCoords.y, siteName, rootFontSize, {
         onSiteClick: () => onPOISiteClickRef.current?.(poiData),
@@ -262,7 +322,7 @@ function bindPOIEvents(
   layer: SVGGroupSelection,
   poi: POI,
   coords: POICoords,
-  rootFontSize: number,
+  _rootFontSize: number,
   handlers: POIEventHandlers
 ): void {
   const { x, y, scale, offsetX, offsetY } = coords;
@@ -297,9 +357,52 @@ function bindPOIEvents(
 
       const currentSelected = useSitesStore.getState().selectedSiteId;
       handlers.onSelectSite.current(String(currentSelected) === poi.id ? null : poi.id);
-
-      createClickRipple(handlers.rippleLayer, x, y, MAP_COLORS.brand, rootFontSize);
       handlers.onClick.current?.(poi);
+    });
+}
+
+interface ClusterEventHandlers {
+  onSelectSite: React.MutableRefObject<(siteId: string | null) => void>;
+  rippleLayer: SVGGroupSelection;
+}
+
+/** 클러스터 이벤트 바인딩 */
+function bindClusterEvents(
+  layer: SVGGroupSelection,
+  poiInfoLayer: SVGGroupSelection,
+  cluster: import("../types").POICluster,
+  rootFontSize: number,
+  handlers: ClusterEventHandlers
+): void {
+  const group = layer.select(`[data-cluster-id="${cluster.id}"]`);
+
+  group
+    .on("mouseenter", function () {
+      select(this)
+        .transition()
+        .duration(150)
+        .attr("transform", `translate(${cluster.cx}, ${cluster.cy}) scale(1.1)`);
+    })
+    .on("mouseleave", function () {
+      select(this)
+        .transition()
+        .duration(150)
+        .attr("transform", `translate(${cluster.cx}, ${cluster.cy}) scale(1)`);
+    })
+    .on("click", (event: MouseEvent) => {
+      event.stopPropagation();
+      clearPOIInfo(poiInfoLayer);
+      clearClusterDropdown(poiInfoLayer);
+      createClickRipple(
+        handlers.rippleLayer,
+        cluster.cx,
+        cluster.cy,
+        MAP_COLORS.brand,
+        rootFontSize
+      );
+      showClusterDropdown(poiInfoLayer, cluster, rootFontSize, {
+        onSelectSite: (poiId) => handlers.onSelectSite.current(poiId),
+      });
     });
 }
 

@@ -64,12 +64,12 @@ export function RightPanel() {
       </div>
 
       {/* 안전 모니터링 */}
-      <div className="rounded-lg bg-white h-[19rem] p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
+      <div className="rounded-lg bg-white flex-1 min-h-0 p-4 shadow-[0_0_0.0625rem_#0000000A,0_0.125rem_0.375rem_#0000000A]">
         <SafetyStatus siteId={selectedSiteId} />
       </div>
 
-      {/* CCTV — grid row를 명시적으로 1fr 지정하여 flex-1 높이를 채움 */}
-      <div className="grid grid-cols-3 gap-4 flex-1 [grid-template-rows:1fr]">
+      {/* CCTV */}
+      <div className="grid grid-cols-3 gap-4 h-[9rem] [grid-template-rows:1fr]">
         <CCTVViewer siteId={selectedSiteId} />
       </div>
     </aside>

@@ -66,3 +66,20 @@ export interface POICoords {
   offsetY: number;
   color: string;
 }
+
+/** 좌표 투영된 POI */
+export interface ProjectedPOI {
+  poi: POI;
+  x: number;
+  y: number;
+}
+
+/** POI 클러스터 */
+export interface POICluster {
+  id: string;
+  pois: ProjectedPOI[];
+  cx: number;
+  cy: number;
+  isSingle: boolean;
+  worstStatus: "danger" | "warning" | null;
+}

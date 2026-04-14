@@ -24,9 +24,12 @@ function getBarColor(item: SafetyItem): string {
 
 function SafetyChartSkeleton({ name }: { name: string }) {
   return (
-    <div className="relative flex flex-col items-center gap-2">
-      <div className="relative w-8 h-50 rounded-full overflow-hidden" style={shimmerStyle} />
-      <div className="text-xs text-gray-400 text-center font-bold leading-tight max-w-[4.5rem]">
+    <div className="relative flex flex-col items-center gap-2 min-h-0 flex-1">
+      <div
+        className="relative w-8 flex-1 min-h-0 rounded-full overflow-hidden"
+        style={shimmerStyle}
+      />
+      <div className="text-xs text-gray-400 text-center font-bold leading-tight max-w-[4.5rem] shrink-0">
         {name}
       </div>
     </div>
@@ -40,8 +43,8 @@ function SafetyChart({ data }: { data: SafetyItem }) {
   const barColor = getBarColor(data);
 
   return (
-    <div className="relative flex flex-col items-center gap-2">
-      <div className="relative w-8 h-50 rounded-full overflow-hidden bg-[#E8EAF0]">
+    <div className="relative flex flex-col items-center gap-2 min-h-0 flex-1">
+      <div className="relative w-8 flex-1 min-h-0 rounded-full overflow-hidden bg-[#E8EAF0]">
         <div
           className={`absolute top-3 left-1/2 -translate-x-1/2 text-xs z-10 font-semibold ${
             percentage >= 80 ? "text-white" : "text-gray-600"
@@ -62,7 +65,7 @@ function SafetyChart({ data }: { data: SafetyItem }) {
           aria-valuemax={maxCount}
         />
       </div>
-      <div className="text-xs text-gray-700 text-center font-bold leading-tight max-w-[4.5rem]">
+      <div className="text-xs text-gray-700 text-center font-bold leading-tight max-w-[4.5rem] shrink-0">
         {data.name}
       </div>
     </div>
@@ -96,15 +99,15 @@ export function SafetyStatus({ siteId }: SafetyStatusProps) {
   const { data: safetyData, loading: isLoading } = useSafetyData(siteId);
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       {/* shimmer keyframes */}
       <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-      <div className="text-neutral-300 font-semibold text-sm mb-5">안전 모니터링</div>
-      <div className="flex items-start justify-evenly">
+      <div className="text-neutral-300 font-semibold text-sm mb-3 shrink-0">안전 모니터링</div>
+      <div className="flex items-stretch justify-evenly flex-1 min-h-0">
         {isLoading
           ? DEFAULT_ITEMS.map((item) => <SafetyChartSkeleton key={item.key} name={item.name} />)
           : safetyData.map((item) => <SafetyChart key={item.key} data={item} />)}
       </div>
-    </>
+    </div>
   );
 }

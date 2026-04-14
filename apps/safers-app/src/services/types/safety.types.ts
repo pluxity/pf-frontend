@@ -22,7 +22,7 @@ export const SAFETY_MONITORING_ITEMS: { key: SafetyMonitoringKey; name: string }
   { key: "INTRUSION", name: "위험구역진입" },
   { key: "FALLEN_PERSON", name: "쓰러짐감지" },
   { key: "SOS_EMERGENCY", name: "SOS 긴급호출" },
-  { key: "WORKER_ANOMALY", name: "근로자 이상징후 감지" },
+  { key: "WORKER_ANOMALY", name: "이상징후 감지" },
   { key: "WORKER_ATTENDANCE", name: "근로자 출근" },
 ];
 

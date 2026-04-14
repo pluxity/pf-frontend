@@ -68,8 +68,8 @@ export function LeftPanel() {
 
       const currentSelected = useSitesStore.getState().selectedSiteId;
       if (currentSelected == null && sites.length > 0) {
-        const gimpo = sites.find((s) => s.name.includes("김포 풍무"));
-        useSitesStore.getState().selectSite(gimpo?.id ?? sites[0]!.id);
+        const daegu = sites.find((s) => s.name.includes("대구 황금동"));
+        useSitesStore.getState().selectSite(daegu?.id ?? sites[0]!.id);
       }
 
       if (regionsResult.status === "fulfilled") {

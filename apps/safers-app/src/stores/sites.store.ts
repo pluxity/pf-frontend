@@ -15,7 +15,7 @@ type SitesStore = SitesState & SitesActions;
 
 /** 사이트 선택/호버 상태를 관리하는 스토어 */
 export const useSitesStore = create<SitesStore>()((set) => ({
-  selectedSiteId: null,
+  selectedSiteId: 18,
   hoveredSiteId: null,
   selectSite: (siteId) => set({ selectedSiteId: siteId }),
   hoverSite: (siteId) => set({ hoveredSiteId: siteId }),

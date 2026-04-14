@@ -49,6 +49,12 @@ export const JEJU_BOUNDS = {
   maxLongitude: 127.5,
 } as const;
 
+/** 클러스터 설정 */
+export const CLUSTER_CONFIG = {
+  distancePx: 40,
+  radius: 1.2,
+} as const;
+
 /** SVG 필터 정의 */
 export const SVG_FILTERS = `
   <filter id="region-shadow" x="-20%" y="-20%" width="140%" height="140%">

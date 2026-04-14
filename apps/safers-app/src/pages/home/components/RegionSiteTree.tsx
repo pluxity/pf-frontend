@@ -14,8 +14,13 @@ export function RegionSiteTree({
   onSiteSelect,
   selectedSiteId,
 }: RegionSiteTreeProps) {
-  const firstRegion = regionGroups[0]?.region ?? "";
-  const [openRegionId, setOpenRegionId] = useState<string>(firstRegion);
+  const initialRegion =
+    (selectedSiteId != null
+      ? regionGroups.find((g) => g.sites.some((s) => s.id === selectedSiteId))?.region
+      : undefined) ??
+    regionGroups[0]?.region ??
+    "";
+  const [openRegionId, setOpenRegionId] = useState<string>(initialRegion);
   const [prevSelectedSiteId, setPrevSelectedSiteId] = useState<number | undefined>(selectedSiteId);
 
   if (selectedSiteId !== prevSelectedSiteId) {

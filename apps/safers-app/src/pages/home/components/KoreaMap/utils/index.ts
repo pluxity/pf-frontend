@@ -7,3 +7,9 @@ export {
   getProjectionForCoords,
   projectCoords,
 } from "./projection";
+export {
+  clusterPOIs,
+  renderClusterMarker,
+  showClusterDropdown,
+  clearClusterDropdown,
+} from "./clustering";

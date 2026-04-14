@@ -12,14 +12,15 @@ export function createMainProjection(config: ProjectionConfig): GeoProjection {
   const { width, height, rootFontSize } = config;
   const settings = MAP_PROJECTION_SETTINGS.main;
 
-  const baseScale = settings.referenceHeight * settings.scaleFactor * rootFontSize;
+  const heightRatio = height / (settings.referenceHeight * (rootFontSize / 16));
+  const baseScale = settings.referenceHeight * settings.scaleFactor * rootFontSize * heightRatio;
 
   return geoMercator()
     .center([settings.centerLng, settings.centerLat])
     .scale(baseScale)
     .translate([
       width / 2 + settings.translateXOffset * rootFontSize,
-      height / 2 + settings.translateYOffset * rootFontSize,
+      height / 2 + settings.translateYOffset * rootFontSize * heightRatio,
     ]);
 }
 
