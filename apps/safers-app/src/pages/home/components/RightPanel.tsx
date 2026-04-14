@@ -6,9 +6,11 @@ import { generateEnvironments } from "../../../services/mocks/environments.mock"
 import { SafetyStatus } from "./SafetyStatus";
 import { CCTVViewer } from "./CCTVViewer";
 import { sitesService, type Site } from "@/services";
+import { useNavigate } from "react-router-dom";
 import { useSitesStore, selectSelectedSiteId } from "@/stores";
 
 export function RightPanel() {
+  const navigate = useNavigate();
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
   const [displayData, setDisplayData] = useState<Site | null>(null);
   const [progressDays, setProgressDays] = useState<number | null>(null);
@@ -47,11 +49,17 @@ export function RightPanel() {
         <span className="font-semibold">{displayData?.name || "--"}</span>
         <span className="h-4 bg-white w-0.5"></span>
         <span>진행 {progressDays ?? "--"} Days</span>
-        <img
-          src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/external-link.svg`}
-          alt="external link"
-          className="w-4 h-4"
-        />
+        <button
+          type="button"
+          onClick={() => navigate("/site/15")}
+          className="cursor-pointer hover:opacity-70 transition-opacity"
+        >
+          <img
+            src={`${import.meta.env.VITE_CONTEXT_PATH}/assets/icons/external-link.svg`}
+            alt="현장 상세 보기"
+            className="w-4 h-4"
+          />
+        </button>
       </div>
       {/* 현장 정보 + 날씨 */}
       <div className="rounded-lg border border-white/80 p-4 h-[12rem] shadow-[0_0.25rem_0.625rem_0_rgba(0,0,0,0.08)]">

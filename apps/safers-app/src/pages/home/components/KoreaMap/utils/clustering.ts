@@ -68,7 +68,8 @@ function getClusterColor(cluster: POICluster): string {
 export function renderClusterMarker(
   layer: SVGGroupSelection,
   cluster: POICluster,
-  rootFontSize: number
+  rootFontSize: number,
+  animate = false
 ): void {
   const r = CLUSTER_CONFIG.radius * rootFontSize;
   const color = getClusterColor(cluster);
@@ -77,8 +78,22 @@ export function renderClusterMarker(
     .append("g")
     .attr("class", "poi-cluster")
     .attr("data-cluster-id", cluster.id)
-    .attr("transform", `translate(${cluster.cx}, ${cluster.cy})`)
-    .style("cursor", "pointer");
+    .attr(
+      "transform",
+      animate
+        ? `translate(${cluster.cx}, ${cluster.cy}) scale(0.3)`
+        : `translate(${cluster.cx}, ${cluster.cy})`
+    )
+    .style("cursor", "pointer")
+    .style("opacity", animate ? 0 : 1);
+
+  if (animate) {
+    group
+      .transition()
+      .duration(600)
+      .attr("transform", `translate(${cluster.cx}, ${cluster.cy}) scale(1)`)
+      .style("opacity", 1);
+  }
 
   // 외곽 원 (그림자)
   group

@@ -2,11 +2,12 @@ export {
   useSitesStore,
   selectSelectedSiteId,
   selectHoveredSiteId,
+  selectStatusFilter,
   selectSelectSiteAction,
   selectHoverSiteAction,
 } from "./sites.store";
 
-export type { SitesState, SitesActions, SitesStore } from "./sites.store";
+export type { SitesState, SitesActions, SitesStore, StatusFilter } from "./sites.store";
 
 export {
   useWeatherStore,
