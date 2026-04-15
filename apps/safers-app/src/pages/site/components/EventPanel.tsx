@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DraggablePanel } from "./DraggablePanel";
 import type { SiteEvent, EventType } from "@/services";
-import { EVENT_TYPE_DISPLAY, EVENT_TYPE_SEVERITY } from "@/services";
+import { EVENT_TYPE_SEVERITY } from "@/services";
 import { STATUS_COLORS } from "@/styles/tokens";
 
 // ─── Figma 디자인 토큰 ───
@@ -105,7 +105,6 @@ function EventRow({ event }: { event: SiteEvent }) {
 
   const severity = getSeverity(event.type);
   const colors = SEVERITY_COLORS[severity];
-  const displayName = EVENT_TYPE_DISPLAY[event.type];
 
   return (
     <div
@@ -128,12 +127,6 @@ function EventRow({ event }: { event: SiteEvent }) {
         <p
           className="text-[0.8125rem] leading-[1.2]"
           style={{ color: colors.text, letterSpacing: "-0.24px" }}
-        >
-          {displayName}
-        </p>
-        <p
-          className="mt-0.5 text-[0.8125rem] leading-[1.2]"
-          style={{ color: "#333", letterSpacing: "-0.24px" }}
         >
           {event.name}
         </p>

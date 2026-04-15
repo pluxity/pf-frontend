@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Spinner } from "@pf-dev/ui";
 import { SiteStatistics } from "./SiteStatistics";
 import { RegionSiteTree } from "./RegionSiteTree";
@@ -12,6 +12,9 @@ import {
   type Site,
   REGION_DISPLAY_NAMES,
   type SiteRegion,
+  type EventRegionTab,
+  EVENT_REGION_LABEL_TO_KEY,
+  EVENT_REGIONS,
 } from "@/services";
 import { useSitesStore, selectSelectedSiteId, selectSelectSiteAction } from "@/stores";
 import { buildSiteStatusMap, countSiteStatuses } from "../utils";
@@ -21,19 +24,18 @@ const PAGE_SIZE = 20;
 /** 대시보드 좌측 패널 - 현황, 지역 목록, 실시간 이벤트 표시 */
 export function LeftPanel() {
   const [totalSites, setTotalSites] = useState(0);
-  const [siteStatusCounts, setSiteStatusCounts] = useState({ normal: 0, warning: 0, danger: 0 });
+  const [allSites, setAllSites] = useState<Site[]>([]);
   const [regionGroups, setRegionGroups] = useState<RegionGroup[]>([]);
-  const [events, setEvents] = useState<Event[]>([]);
+  // 백엔드는 오늘자 전체 이벤트만 제공 → 한 번 fetch 후 클라이언트에서 region 필터링/페이지네이션
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 무한스크롤 상태
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const pageRef = useRef(1);
-  const totalElementsRef = useRef(0);
+  const [activeRegion, setActiveRegion] = useState<EventRegionTab>(EVENT_REGIONS[0]);
+  // 클라이언트 사이드 페이지네이션
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const selectedSiteId = useSitesStore(selectSelectedSiteId);
   const selectSiteAction = useSitesStore(selectSelectSiteAction);
@@ -41,19 +43,15 @@ export function LeftPanel() {
   async function fetchData() {
     setIsLoading(true);
     setError(null);
-    pageRef.current = 1;
 
     try {
       const [sitesResult, regionsResult, eventsResult] = await Promise.allSettled([
         sitesService.getSites({ size: 1000 }),
         sitesService.getRegions(),
-        eventsService.getEvents({ page: 1, size: PAGE_SIZE }),
+        eventsService.getEvents({ page: 1, size: 1000 }),
       ]);
 
-      const allFailed =
-        sitesResult.status === "rejected" &&
-        regionsResult.status === "rejected" &&
-        eventsResult.status === "rejected";
+      const allFailed = sitesResult.status === "rejected" && regionsResult.status === "rejected";
 
       if (allFailed) {
         setError("데이터를 불러오지 못했습니다");
@@ -65,6 +63,7 @@ export function LeftPanel() {
       const totalElements =
         sitesResult.status === "fulfilled" ? sitesResult.value.data.totalElements : 0;
       setTotalSites(totalElements);
+      setAllSites(sites);
 
       const currentSelected = useSitesStore.getState().selectedSiteId;
       if (currentSelected == null && sites.length > 0) {
@@ -83,14 +82,7 @@ export function LeftPanel() {
       }
 
       if (eventsResult.status === "fulfilled") {
-        const eventPage = eventsResult.value.data;
-        setEvents(eventPage.content);
-        totalElementsRef.current = eventPage.totalElements;
-        setHasMore(!eventPage.last);
-
-        // 현장 상태 집계 (첫 페이지 기반)
-        const siteStatusMap = buildSiteStatusMap(eventPage.content);
-        setSiteStatusCounts(countSiteStatuses(sites, siteStatusMap));
+        setAllEvents(eventsResult.value.data.content);
       }
     } catch {
       setError("데이터를 불러오는 중 오류가 발생했습니다");
@@ -99,35 +91,45 @@ export function LeftPanel() {
     }
   }
 
-  const loadMoreEvents = useCallback(async () => {
-    if (isLoadingMore || !hasMore) return;
-
-    setIsLoadingMore(true);
-    const nextPage = pageRef.current + 1;
-
-    try {
-      const result = await eventsService.getEvents({ page: nextPage, size: PAGE_SIZE });
-      const eventPage = result.data;
-      setEvents((prev) => [...prev, ...eventPage.content]);
-      pageRef.current = nextPage;
-      setHasMore(!eventPage.last);
-    } catch {
-      // 추가 로딩 실패 시 무시 — 다음 스크롤에서 재시도
-    } finally {
-      setIsLoadingMore(false);
-    }
-  }, [isLoadingMore, hasMore]);
-
   useEffect(() => {
     fetchData();
   }, []);
+
+  // 지역 변경 시 페이지 초기화
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [activeRegion]);
+
+  // 활성 region으로 필터링된 전체 이벤트
+  const filteredEvents = useMemo(() => {
+    if (activeRegion === "전체") return allEvents;
+    const regionKey = EVENT_REGION_LABEL_TO_KEY[activeRegion];
+    return allEvents.filter((e) => e.site.region === regionKey);
+  }, [allEvents, activeRegion]);
+
+  // 화면에 보여줄 이벤트 (클라이언트 페이지네이션)
+  const visibleEvents = useMemo(
+    () => filteredEvents.slice(0, visibleCount),
+    [filteredEvents, visibleCount]
+  );
+  const hasMore = visibleCount < filteredEvents.length;
+
+  const loadMoreEvents = useCallback(() => {
+    setVisibleCount((prev) => prev + PAGE_SIZE);
+  }, []);
+
+  // KPI 집계 (danger > warning > normal)
+  const siteStatusCounts = useMemo(
+    () => countSiteStatuses(allSites, buildSiteStatusMap(allEvents)),
+    [allSites, allEvents]
+  );
 
   const handleSiteSelect = (site: Site) => {
     selectSiteAction(site.id);
   };
 
   const handleEventClick = (eventId: number) => {
-    const event = events.find((e) => e.id === eventId);
+    const event = allEvents.find((e) => e.id === eventId);
     if (event) {
       setSelectedEvent(event);
       setModalOpen(true);
@@ -175,13 +177,15 @@ export function LeftPanel() {
         />
       </div>
 
-      <div className="h-[20rem] w-[25rem]">
+      <div className="h-[20rem] min-h-0 w-[25rem] overflow-hidden">
         <RealtimeEvents
-          events={events}
+          events={visibleEvents}
           hasMore={hasMore}
-          isLoadingMore={isLoadingMore}
+          isLoadingMore={false}
           onLoadMore={loadMoreEvents}
           onEventClick={handleEventClick}
+          activeRegion={activeRegion}
+          onRegionChange={setActiveRegion}
         />
       </div>
 

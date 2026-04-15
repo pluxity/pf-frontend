@@ -14,7 +14,7 @@ const variantStyles = {
     bg: "bg-white",
     activeBg: "bg-blue-50",
     label: "text-neutral-700",
-    ring: "ring-2 ring-brand",
+    ring: "ring-2 ring-primary-500",
   },
   normal: {
     bg: "bg-white",

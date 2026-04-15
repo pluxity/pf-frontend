@@ -64,16 +64,6 @@ export type EventCategoriesResponse = DataResponseBody<EventCategoryInfo[]>;
 
 // ─── 표시용 매핑 ───
 
-/** 이벤트 타입 → 한글 표시명 */
-export const EVENT_TYPE_DISPLAY: Record<EventType, string> = {
-  NO_HELMET: "헬멧 미착용",
-  HELMET: "헬멧 착용",
-  FALLEN_PERSON: "쓰러진 사람",
-  INTRUSION: "영역 침입",
-  EXIT: "영역 이탈",
-  LINE_CROSSING: "경계선 통과",
-};
-
 /** 이벤트 타입 → 위험 등급 */
 export const EVENT_TYPE_SEVERITY: Record<EventType, "danger" | "warning" | "info"> = {
   NO_HELMET: "danger",
@@ -105,6 +95,11 @@ export const EVENT_REGION_MAP: Record<SiteRegion, string> = {
 
 export const EVENT_REGIONS = ["전체", ...Object.values(EVENT_REGION_MAP)] as const;
 export type EventRegionTab = (typeof EVENT_REGIONS)[number];
+
+/** 한글 지역 라벨 → SiteRegion key */
+export const EVENT_REGION_LABEL_TO_KEY: Record<string, SiteRegion> = Object.fromEntries(
+  Object.entries(EVENT_REGION_MAP).map(([key, label]) => [label, key as SiteRegion])
+);
 
 // ─── STOMP WebSocket 이벤트 타입 (기존 호환) ───
 

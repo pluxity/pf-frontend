@@ -1,12 +1,11 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent, Badge, Spinner } from "@pf-dev/ui";
 import {
-  EVENT_TYPE_DISPLAY,
   EVENT_TYPE_SEVERITY,
   EVENT_SEVERITY_STYLES,
-  EVENT_REGION_MAP,
   EVENT_REGIONS,
   type Event,
+  type EventRegionTab,
 } from "@/services";
 
 interface RealtimeEventsProps {
@@ -15,6 +14,8 @@ interface RealtimeEventsProps {
   isLoadingMore: boolean;
   onLoadMore: () => void;
   onEventClick?: (eventId: number) => void;
+  activeRegion: EventRegionTab;
+  onRegionChange: (region: EventRegionTab) => void;
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -27,20 +28,19 @@ function formatTimestamp(timestamp: string): string {
 function EventRow({ event, onClick }: { event: Event; onClick?: () => void }) {
   const severity = EVENT_TYPE_SEVERITY[event.type];
   const style = EVENT_SEVERITY_STYLES[severity];
-  const displayName = EVENT_TYPE_DISPLAY[event.type];
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`${displayName} - ${event.site.name}`}
+      aria-label={`${event.name} - ${event.site.name}`}
       className="flex w-full items-center gap-2 border-b border-neutral-100 px-1 py-3 text-left last:border-b-0 hover:bg-primary-500/5"
     >
       <Badge variant={null} className={`shrink-0 rounded ${style.bg} ${style.text}`}>
         {style.label}
       </Badge>
       <span className="truncate text-sm text-neutral-700">
-        <span className="text-neutral-400">[{event.site.name}]</span> {displayName}
+        <span className="text-neutral-400">[{event.site.name}]</span> {event.name}
       </span>
       <span className="ml-auto shrink-0 text-xs text-neutral-400">
         {formatTimestamp(event.timestamp)}
@@ -109,37 +109,26 @@ function EventList({
   );
 }
 
-function groupEventsByRegion(events: Event[]): Record<string, Event[]> {
-  const grouped: Record<string, Event[]> = {};
-  for (const tab of EVENT_REGIONS) {
-    grouped[tab] = [];
-  }
-  grouped["전체"] = [...events];
-  for (const event of events) {
-    const tab = EVENT_REGION_MAP[event.site.region];
-    if (tab) {
-      grouped[tab]?.push(event);
-    }
-  }
-  return grouped;
-}
-
 export function RealtimeEvents({
   events,
   hasMore,
   isLoadingMore,
   onLoadMore,
   onEventClick,
+  activeRegion,
+  onRegionChange,
 }: RealtimeEventsProps) {
-  const eventsByTab = groupEventsByRegion(events);
-
   return (
     <div className="flex h-full flex-col rounded-lg border border-primary-500/80 bg-white px-4 py-2 shadow-[0_0_24px_rgba(30,74,184,0.5)]">
       <div className="pt-2">
         <h3 className="text-lg font-bold text-primary-600">전국 실시간 이벤트</h3>
       </div>
 
-      <Tabs defaultValue={EVENT_REGIONS[0]} className="flex w-full min-h-0 flex-1 flex-col">
+      <Tabs
+        value={activeRegion}
+        onValueChange={(v) => onRegionChange(v as EventRegionTab)}
+        className="flex w-full min-h-0 flex-1 flex-col"
+      >
         <TabsList variant="filled" className="w-full shrink-0 flex-wrap gap-y-1 border-none py-2">
           {EVENT_REGIONS.map((region) => (
             <TabsTrigger
@@ -153,17 +142,15 @@ export function RealtimeEvents({
           ))}
         </TabsList>
 
-        {EVENT_REGIONS.map((region) => (
-          <TabsContent key={region} value={region} className="mt-0 min-h-0 flex-1 overflow-hidden">
-            <EventList
-              events={eventsByTab[region] ?? []}
-              hasMore={hasMore}
-              isLoadingMore={isLoadingMore}
-              onLoadMore={onLoadMore}
-              onEventClick={onEventClick}
-            />
-          </TabsContent>
-        ))}
+        <TabsContent value={activeRegion} className="mt-0 min-h-0 flex-1 overflow-hidden">
+          <EventList
+            events={events}
+            hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={onLoadMore}
+            onEventClick={onEventClick}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );

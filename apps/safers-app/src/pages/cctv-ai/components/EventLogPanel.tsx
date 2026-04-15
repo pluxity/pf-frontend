@@ -1,24 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import type { StompEventResponse, StompEventType } from "@/services";
+import { EVENT_TYPE_SEVERITY, type StompEventResponse } from "@/services";
 import aiCircleIcon from "@/assets/icons/ai-circle.svg";
 
 // ─── 이벤트 타입 → 표시 정보 ───
 
 type DisplayLevel = "danger" | "warning" | "info";
-
-interface EventTypeConfig {
-  label: string;
-  level: DisplayLevel;
-}
-
-const EVENT_TYPE_CONFIG: Record<StompEventType, EventTypeConfig> = {
-  NO_HELMET: { label: "안전모 미착용", level: "danger" },
-  FALLEN_PERSON: { label: "쓰러짐 감지", level: "danger" },
-  INTRUSION: { label: "위험지역 접근", level: "warning" },
-  LINE_CROSSING: { label: "라인 크로싱", level: "warning" },
-  EXIT: { label: "퇴장 감지", level: "warning" },
-  HELMET: { label: "안전모 착용", level: "info" },
-};
 
 const LEVEL_STYLE: Record<DisplayLevel, { badge: string }> = {
   danger: { badge: "bg-[#CA0014]/20 text-[#FF6B6B]" },
@@ -56,8 +42,9 @@ interface EventRowProps {
 }
 
 function EventRow({ event, isSelected, onSelect }: EventRowProps) {
-  const config = EVENT_TYPE_CONFIG[event.type];
-  const style = LEVEL_STYLE[config.level];
+  const label = event.name;
+  const level = EVENT_TYPE_SEVERITY[event.type];
+  const style = LEVEL_STYLE[level];
   const hasVideo = !!event.video?.url;
   const hasSnapshot = !!event.snapshot?.url;
   const { date, time } = formatDateTime(event.timestamp);
@@ -66,7 +53,7 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
     <button
       type="button"
       onClick={() => onSelect(event)}
-      aria-label={`${config.label} - ${date} ${time}`}
+      aria-label={`${label} - ${date} ${time}`}
       className={`flex w-full gap-3 border-b border-[#2A2D3A] px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-[#1E2130] ${
         isSelected ? "bg-[#1E2130] ring-1 ring-inset ring-brand/50" : ""
       }`}
@@ -74,11 +61,7 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
       {/* 썸네일 */}
       <div className="relative h-[4.5rem] w-[6.5rem] shrink-0 overflow-hidden rounded-md bg-[#252833]">
         {hasSnapshot ? (
-          <img
-            src={event.snapshot!.url}
-            alt={config.label}
-            className="h-full w-full object-cover"
-          />
+          <img src={event.snapshot!.url} alt={label} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <svg
@@ -135,7 +118,7 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
             <span
               className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-xs font-bold ${style.badge}`}
             >
-              {LEVEL_LABEL[config.level]}
+              {LEVEL_LABEL[level]}
             </span>
             {event.confidence != null && (
               <span className="ml-auto shrink-0 text-xs text-white/30">
@@ -144,13 +127,10 @@ function EventRow({ event, isSelected, onSelect }: EventRowProps) {
             )}
           </div>
           {/* 이벤트 타입 */}
-          <span className="text-sm font-medium text-white/90">{config.label}</span>
+          <span className="text-sm font-medium text-white/90">{label}</span>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 카메라 이름 */}
-          <span className="truncate text-xs text-white/50">{event.name}</span>
-          <span className="shrink-0 text-xs text-white/20">|</span>
           {/* 날짜 + 시간 */}
           <span className="shrink-0 font-mono text-xs text-white/40">
             {date} {time}
@@ -223,7 +203,7 @@ export function EventLogPanel({
   // 레벨별 카운트
   const counts: Record<DisplayLevel, number> = { danger: 0, warning: 0, info: 0 };
   for (const e of events) {
-    counts[EVENT_TYPE_CONFIG[e.type].level]++;
+    counts[EVENT_TYPE_SEVERITY[e.type]]++;
   }
 
   return (

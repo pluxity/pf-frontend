@@ -1,11 +1,6 @@
 import { Badge } from "@pf-dev/ui";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalTitle } from "@pf-dev/ui/organisms";
-import {
-  EVENT_TYPE_DISPLAY,
-  EVENT_TYPE_SEVERITY,
-  EVENT_SEVERITY_STYLES,
-  type Event,
-} from "@/services";
+import { EVENT_TYPE_SEVERITY, EVENT_SEVERITY_STYLES, type Event } from "@/services";
 
 interface EventDetailModalProps {
   event: Event | null;
@@ -45,7 +40,7 @@ function MediaSection({ event }: { event: Event }) {
       <div className="overflow-hidden rounded-lg bg-neutral-100">
         <img
           src={event.snapshot.url}
-          alt={`${EVENT_TYPE_DISPLAY[event.type]} 스냅샷`}
+          alt={`${event.name} 스냅샷`}
           className="w-full max-h-[20rem] object-contain"
         />
       </div>
@@ -73,7 +68,6 @@ export function EventDetailModal({ event, open, onOpenChange }: EventDetailModal
 
   const severity = EVENT_TYPE_SEVERITY[event.type];
   const severityStyle = EVENT_SEVERITY_STYLES[severity];
-  const displayName = EVENT_TYPE_DISPLAY[event.type];
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -83,7 +77,7 @@ export function EventDetailModal({ event, open, onOpenChange }: EventDetailModal
             <Badge variant={null} className={`rounded ${severityStyle.bg} ${severityStyle.text}`}>
               {severityStyle.label}
             </Badge>
-            <ModalTitle className="text-lg">{displayName}</ModalTitle>
+            <ModalTitle className="text-lg">{event.name}</ModalTitle>
           </div>
           <p className="mt-1 text-xs text-neutral-400">{formatDateTime(event.timestamp)}</p>
         </ModalHeader>
@@ -99,7 +93,6 @@ export function EventDetailModal({ event, open, onOpenChange }: EventDetailModal
             />
             <InfoRow label="신뢰도" value={`${Math.round(event.confidence * 100)}%`} />
             {event.path && <InfoRow label="CCTV" value={event.path} />}
-            {event.name && <InfoRow label="이벤트명" value={event.name} />}
           </div>
         </ModalBody>
       </ModalContent>
