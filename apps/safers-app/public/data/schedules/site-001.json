@@ -1,0 +1,6745 @@
+{
+  "project": {
+    "id": "site-001",
+    "name": "김포 봉우BS",
+    "startDate": "2024-01-03",
+    "endDate": "2026-10-31"
+  },
+  "structures": [
+    {
+      "id": "Ground",
+      "name": "기초",
+      "type": "FOUNDATION"
+    },
+    {
+      "id": "BDG_MXD",
+      "name": "주상복합동",
+      "type": "BUILDING",
+      "children": [
+        {
+          "id": "BDG_MXD_BF1",
+          "name": "지하 1층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_MXD_BF1_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_MXD_BF1_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_MXD_F01",
+          "name": "1층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_MXD_F01_SHORE",
+              "name": "동바리",
+              "type": "SHORE"
+            },
+            {
+              "id": "BDG_MXD_F01_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_MXD_F01_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_MXD_F02",
+          "name": "2층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_MXD_F02_SHORE",
+              "name": "동바리",
+              "type": "SHORE"
+            },
+            {
+              "id": "BDG_MXD_F02_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_MXD_F02_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_MXD_F03",
+          "name": "3층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_MXD_F03_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_MXD_F03_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BDG_101",
+      "name": "101동",
+      "type": "BUILDING",
+      "children": [
+        {
+          "id": "BDG_101_F01",
+          "name": "1층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F01_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F02",
+          "name": "2층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F02_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F02_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F03",
+          "name": "3층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F03_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F03_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F03_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F04",
+          "name": "4층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F04_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F04_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F05",
+          "name": "5층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F05_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F05_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F05_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F06",
+          "name": "6층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F06_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F06_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F07",
+          "name": "7층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F07_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F07_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F07_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F08",
+          "name": "8층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F08_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F08_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F09",
+          "name": "9층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F09_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F09_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F09_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F10",
+          "name": "10층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F10_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F10_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F11",
+          "name": "11층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F11_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F11_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F11_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F12",
+          "name": "12층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F12_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F12_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F13",
+          "name": "13층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F13_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F13_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F13_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F14",
+          "name": "14층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F14_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F14_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F15",
+          "name": "15층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F15_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F15_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F15_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F16",
+          "name": "16층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F16_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F16_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F17",
+          "name": "17층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F17_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F17_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F17_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F18",
+          "name": "18층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F18_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F18_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F19",
+          "name": "19층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F19_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F19_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F19_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F20",
+          "name": "20층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F20_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F20_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F21",
+          "name": "21층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F21_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_101_F21_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_101_F21_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F21_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F22",
+          "name": "22층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F22_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_101_F22_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F22_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F23",
+          "name": "23층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F23_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_101_F23_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F23_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_F24",
+          "name": "24층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_F24_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_101_F24_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_F24_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_PH1",
+          "name": "펜트하우스 1",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_PH1_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_101_PH1_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_PH1_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_101_PH2",
+          "name": "펜트하우스 2",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_101_PH2_ROOF",
+              "name": "지붕",
+              "type": "ROOF"
+            },
+            {
+              "id": "BDG_101_PH2_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_101_PH2_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BDG_102",
+      "name": "102동",
+      "type": "BUILDING",
+      "children": [
+        {
+          "id": "BDG_102_F01",
+          "name": "1층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F01_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F02",
+          "name": "2층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F02_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F02_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F03",
+          "name": "3층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F03_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F03_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F03_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F04",
+          "name": "4층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F04_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F04_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F05",
+          "name": "5층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F05_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F05_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F05_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F06",
+          "name": "6층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F06_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F06_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F07",
+          "name": "7층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F07_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F07_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F07_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F08",
+          "name": "8층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F08_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F08_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F09",
+          "name": "9층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F09_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F09_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F09_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F10",
+          "name": "10층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F10_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F10_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F11",
+          "name": "11층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F11_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F11_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F11_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F12",
+          "name": "12층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F12_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F12_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F13",
+          "name": "13층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F13_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F13_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F13_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F14",
+          "name": "14층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F14_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F14_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F15",
+          "name": "15층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F15_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F15_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F15_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F16",
+          "name": "16층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F16_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F16_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F17",
+          "name": "17층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F17_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F17_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F17_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F18",
+          "name": "18층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F18_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F18_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F19",
+          "name": "19층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F19_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F19_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F19_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F20",
+          "name": "20층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F20_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F20_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F21",
+          "name": "21층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F21_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_102_F21_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_102_F21_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F21_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F22",
+          "name": "22층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F22_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_102_F22_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F22_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_F23",
+          "name": "23층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_F23_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_102_F23_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_F23_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_PH1",
+          "name": "펜트하우스 1",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_PH1_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_102_PH1_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_PH1_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_102_PH2",
+          "name": "펜트하우스 2",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_102_PH2_ROOF",
+              "name": "지붕",
+              "type": "ROOF"
+            },
+            {
+              "id": "BDG_102_PH2_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_102_PH2_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BDG_103",
+      "name": "103동",
+      "type": "BUILDING",
+      "children": [
+        {
+          "id": "BDG_103_F01",
+          "name": "1층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F01_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F02",
+          "name": "2층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F02_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F02_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F03",
+          "name": "3층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F03_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F03_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F03_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F04",
+          "name": "4층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F04_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F04_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F05",
+          "name": "5층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F05_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F05_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F05_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F06",
+          "name": "6층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F06_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F06_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F07",
+          "name": "7층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F07_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F07_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F07_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F08",
+          "name": "8층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F08_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F08_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F09",
+          "name": "9층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F09_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F09_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F09_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F10",
+          "name": "10층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F10_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F10_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F11",
+          "name": "11층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F11_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F11_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F11_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F12",
+          "name": "12층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F12_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F12_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F13",
+          "name": "13층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F13_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F13_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F13_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F14",
+          "name": "14층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F14_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F14_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F15",
+          "name": "15층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F15_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F15_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F15_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F16",
+          "name": "16층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F16_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F16_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F17",
+          "name": "17층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F17_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F17_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F17_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F18",
+          "name": "18층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F18_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F18_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F19",
+          "name": "19층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F19_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F19_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F19_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F20",
+          "name": "20층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F20_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F20_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F21",
+          "name": "21층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F21_SAFETY_NET",
+              "name": "안전망",
+              "type": "SAFETY_NET"
+            },
+            {
+              "id": "BDG_103_F21_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_103_F21_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F21_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F22",
+          "name": "22층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F22_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_103_F22_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F22_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_F23",
+          "name": "23층",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_F23_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_103_F23_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_F23_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_PH1",
+          "name": "펜트하우스 1",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_PH1_GANGFORM",
+              "name": "갱폼",
+              "type": "GANGFORM"
+            },
+            {
+              "id": "BDG_103_PH1_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_PH1_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        },
+        {
+          "id": "BDG_103_PH2",
+          "name": "펜트하우스 2",
+          "type": "STOREY",
+          "children": [
+            {
+              "id": "BDG_103_PH2_ROOF",
+              "name": "지붕",
+              "type": "ROOF"
+            },
+            {
+              "id": "BDG_103_PH2_SLAB",
+              "name": "슬래브",
+              "type": "SLAB"
+            },
+            {
+              "id": "BDG_103_PH2_WALL",
+              "name": "벽체",
+              "type": "WALL"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "periods": [
+    {
+      "week": 6,
+      "startDate": "2024-02-07",
+      "endDate": "2024-02-13",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "startDate": "2024-02-14",
+      "endDate": "2024-02-20",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "startDate": "2024-02-21",
+      "endDate": "2024-02-27",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "startDate": "2024-02-28",
+      "endDate": "2024-03-05",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "startDate": "2024-03-06",
+      "endDate": "2024-03-12",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_WALL",
+          "phase": "curing"
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "startDate": "2024-03-13",
+      "endDate": "2024-03-19",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_BF1/BDG_MXD_BF1_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SHORE",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "startDate": "2024-03-20",
+      "endDate": "2024-03-26",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SHORE",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F01/BDG_101_F01_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "startDate": "2024-03-27",
+      "endDate": "2024-04-02",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SHORE",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F01/BDG_101_F01_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "startDate": "2024-04-03",
+      "endDate": "2024-04-09",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SHORE",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F01/BDG_101_F01_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "startDate": "2024-04-10",
+      "endDate": "2024-04-16",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SHORE",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F01/BDG_101_F01_WALL",
+          "phase": "curing"
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "startDate": "2024-04-17",
+      "endDate": "2024-04-23",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SHORE",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F01/BDG_101_F01_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "startDate": "2024-04-24",
+      "endDate": "2024-04-30",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F01/BDG_MXD_F01_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SHORE",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-07",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SHORE",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "startDate": "2024-05-08",
+      "endDate": "2024-05-14",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SHORE",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 20,
+      "startDate": "2024-05-15",
+      "endDate": "2024-05-21",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SHORE",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 21,
+      "startDate": "2024-05-22",
+      "endDate": "2024-05-28",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F02/BDG_101_F02_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 22,
+      "startDate": "2024-05-29",
+      "endDate": "2024-06-04",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F02/BDG_MXD_F02_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 23,
+      "startDate": "2024-06-05",
+      "endDate": "2024-06-11",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 24,
+      "startDate": "2024-06-12",
+      "endDate": "2024-06-18",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 25,
+      "startDate": "2024-06-19",
+      "endDate": "2024-06-25",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 26,
+      "startDate": "2024-06-26",
+      "endDate": "2024-07-02",
+      "tasks": [
+        {
+          "structureId": "BDG_MXD/BDG_MXD_F03/BDG_MXD_F03_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F03/BDG_101_F03_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 27,
+      "startDate": "2024-07-03",
+      "endDate": "2024-07-09",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 28,
+      "startDate": "2024-07-10",
+      "endDate": "2024-07-16",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 29,
+      "startDate": "2024-07-17",
+      "endDate": "2024-07-23",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F04/BDG_101_F04_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 30,
+      "startDate": "2024-07-24",
+      "endDate": "2024-07-30",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F01/BDG_102_F01_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 31,
+      "startDate": "2024-07-31",
+      "endDate": "2024-08-06",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F01/BDG_102_F01_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 32,
+      "startDate": "2024-08-07",
+      "endDate": "2024-08-13",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F01/BDG_102_F01_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 33,
+      "startDate": "2024-08-14",
+      "endDate": "2024-08-20",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F01/BDG_102_F01_WALL",
+          "phase": "curing"
+        }
+      ]
+    },
+    {
+      "week": 34,
+      "startDate": "2024-08-21",
+      "endDate": "2024-08-27",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F05/BDG_101_F05_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F01/BDG_102_F01_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 35,
+      "startDate": "2024-08-28",
+      "endDate": "2024-09-03",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 36,
+      "startDate": "2024-09-04",
+      "endDate": "2024-09-10",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 37,
+      "startDate": "2024-09-11",
+      "endDate": "2024-09-17",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F06/BDG_101_F06_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 38,
+      "startDate": "2024-09-18",
+      "endDate": "2024-09-24",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 39,
+      "startDate": "2024-09-25",
+      "endDate": "2024-10-01",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F02/BDG_102_F02_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 40,
+      "startDate": "2024-10-02",
+      "endDate": "2024-10-08",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 41,
+      "startDate": "2024-10-09",
+      "endDate": "2024-10-15",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 42,
+      "startDate": "2024-10-16",
+      "endDate": "2024-10-22",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F07/BDG_101_F07_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 43,
+      "startDate": "2024-10-23",
+      "endDate": "2024-10-29",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 44,
+      "startDate": "2024-10-30",
+      "endDate": "2024-11-05",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F03/BDG_102_F03_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 45,
+      "startDate": "2024-11-06",
+      "endDate": "2024-11-12",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F08/BDG_101_F08_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 46,
+      "startDate": "2024-11-13",
+      "endDate": "2024-11-19",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 47,
+      "startDate": "2024-11-20",
+      "endDate": "2024-11-26",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F04/BDG_102_F04_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 48,
+      "startDate": "2024-11-27",
+      "endDate": "2024-12-03",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F01/BDG_103_F01_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 49,
+      "startDate": "2024-12-04",
+      "endDate": "2024-12-10",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F01/BDG_103_F01_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 50,
+      "startDate": "2024-12-11",
+      "endDate": "2024-12-17",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F09/BDG_101_F09_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F01/BDG_103_F01_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 51,
+      "startDate": "2024-12-18",
+      "endDate": "2024-12-24",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F01/BDG_103_F01_WALL",
+          "phase": "curing"
+        }
+      ]
+    },
+    {
+      "week": 52,
+      "startDate": "2024-12-25",
+      "endDate": "2024-12-31",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F05/BDG_102_F05_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F01/BDG_103_F01_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 53,
+      "startDate": "2025-01-01",
+      "endDate": "2025-01-07",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F10/BDG_101_F10_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 54,
+      "startDate": "2025-01-08",
+      "endDate": "2025-01-14",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 55,
+      "startDate": "2025-01-15",
+      "endDate": "2025-01-21",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F06/BDG_102_F06_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 56,
+      "startDate": "2025-01-22",
+      "endDate": "2025-01-28",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 57,
+      "startDate": "2025-01-29",
+      "endDate": "2025-02-04",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F02/BDG_103_F02_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 58,
+      "startDate": "2025-02-05",
+      "endDate": "2025-02-11",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F11/BDG_101_F11_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 59,
+      "startDate": "2025-02-12",
+      "endDate": "2025-02-18",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 60,
+      "startDate": "2025-02-19",
+      "endDate": "2025-02-25",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F07/BDG_102_F07_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 61,
+      "startDate": "2025-02-26",
+      "endDate": "2025-03-04",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F12/BDG_101_F12_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 62,
+      "startDate": "2025-03-05",
+      "endDate": "2025-03-11",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F03/BDG_103_F03_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 63,
+      "startDate": "2025-03-12",
+      "endDate": "2025-03-18",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F08/BDG_102_F08_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 64,
+      "startDate": "2025-03-19",
+      "endDate": "2025-03-25",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 65,
+      "startDate": "2025-03-26",
+      "endDate": "2025-04-01",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F04/BDG_103_F04_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 66,
+      "startDate": "2025-04-02",
+      "endDate": "2025-04-08",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F13/BDG_101_F13_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 67,
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-15",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 68,
+      "startDate": "2025-04-16",
+      "endDate": "2025-04-22",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F09/BDG_102_F09_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 69,
+      "startDate": "2025-04-23",
+      "endDate": "2025-04-29",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F14/BDG_101_F14_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 70,
+      "startDate": "2025-04-30",
+      "endDate": "2025-05-06",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F05/BDG_103_F05_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 71,
+      "startDate": "2025-05-07",
+      "endDate": "2025-05-13",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F10/BDG_102_F10_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 72,
+      "startDate": "2025-05-14",
+      "endDate": "2025-05-20",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 73,
+      "startDate": "2025-05-21",
+      "endDate": "2025-05-27",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F06/BDG_103_F06_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 74,
+      "startDate": "2025-05-28",
+      "endDate": "2025-06-03",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F15/BDG_101_F15_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 75,
+      "startDate": "2025-06-04",
+      "endDate": "2025-06-10",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 76,
+      "startDate": "2025-06-11",
+      "endDate": "2025-06-17",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F11/BDG_102_F11_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 77,
+      "startDate": "2025-06-18",
+      "endDate": "2025-06-24",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F16/BDG_101_F16_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 78,
+      "startDate": "2025-06-25",
+      "endDate": "2025-07-01",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F07/BDG_103_F07_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 79,
+      "startDate": "2025-07-02",
+      "endDate": "2025-07-08",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F12/BDG_102_F12_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 80,
+      "startDate": "2025-07-09",
+      "endDate": "2025-07-15",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 81,
+      "startDate": "2025-07-16",
+      "endDate": "2025-07-22",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F08/BDG_103_F08_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 82,
+      "startDate": "2025-07-23",
+      "endDate": "2025-07-29",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F17/BDG_101_F17_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 83,
+      "startDate": "2025-07-30",
+      "endDate": "2025-08-05",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 84,
+      "startDate": "2025-08-06",
+      "endDate": "2025-08-12",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F13/BDG_102_F13_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 85,
+      "startDate": "2025-08-13",
+      "endDate": "2025-08-19",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F18/BDG_101_F18_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 86,
+      "startDate": "2025-08-20",
+      "endDate": "2025-08-26",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F09/BDG_103_F09_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 87,
+      "startDate": "2025-08-27",
+      "endDate": "2025-09-02",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F14/BDG_102_F14_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 88,
+      "startDate": "2025-09-03",
+      "endDate": "2025-09-09",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 89,
+      "startDate": "2025-09-10",
+      "endDate": "2025-09-16",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F10/BDG_103_F10_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 90,
+      "startDate": "2025-09-17",
+      "endDate": "2025-09-23",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F19/BDG_101_F19_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 91,
+      "startDate": "2025-09-24",
+      "endDate": "2025-09-30",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 92,
+      "startDate": "2025-10-01",
+      "endDate": "2025-10-07",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F15/BDG_102_F15_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 93,
+      "startDate": "2025-10-08",
+      "endDate": "2025-10-14",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F20/BDG_101_F20_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 94,
+      "startDate": "2025-10-15",
+      "endDate": "2025-10-21",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F11/BDG_103_F11_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 95,
+      "startDate": "2025-10-22",
+      "endDate": "2025-10-28",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F16/BDG_102_F16_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 96,
+      "startDate": "2025-10-29",
+      "endDate": "2025-11-04",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 97,
+      "startDate": "2025-11-05",
+      "endDate": "2025-11-11",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F12/BDG_103_F12_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 98,
+      "startDate": "2025-11-12",
+      "endDate": "2025-11-18",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 99,
+      "startDate": "2025-11-19",
+      "endDate": "2025-11-25",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F21/BDG_101_F21_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 100,
+      "startDate": "2025-11-26",
+      "endDate": "2025-12-02",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F17/BDG_102_F17_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 101,
+      "startDate": "2025-12-03",
+      "endDate": "2025-12-09",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 102,
+      "startDate": "2025-12-10",
+      "endDate": "2025-12-16",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F22/BDG_101_F22_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F13/BDG_103_F13_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 103,
+      "startDate": "2025-12-17",
+      "endDate": "2025-12-23",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F18/BDG_102_F18_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 104,
+      "startDate": "2025-12-24",
+      "endDate": "2025-12-30",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 105,
+      "startDate": "2025-12-31",
+      "endDate": "2026-01-06",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F14/BDG_103_F14_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 106,
+      "startDate": "2026-01-07",
+      "endDate": "2026-01-13",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F23/BDG_101_F23_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 107,
+      "startDate": "2026-01-14",
+      "endDate": "2026-01-20",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 108,
+      "startDate": "2026-01-21",
+      "endDate": "2026-01-27",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F19/BDG_102_F19_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 109,
+      "startDate": "2026-01-28",
+      "endDate": "2026-02-03",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 110,
+      "startDate": "2026-02-04",
+      "endDate": "2026-02-10",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_F24/BDG_101_F24_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SAFETY_NET",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F15/BDG_103_F15_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 111,
+      "startDate": "2026-02-11",
+      "endDate": "2026-02-17",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F20/BDG_102_F20_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 112,
+      "startDate": "2026-02-18",
+      "endDate": "2026-02-24",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_ROOF",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 113,
+      "startDate": "2026-02-25",
+      "endDate": "2026-03-03",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_ROOF",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F16/BDG_103_F16_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 114,
+      "startDate": "2026-03-04",
+      "endDate": "2026-03-10",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH1/BDG_101_PH1_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_ROOF",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 115,
+      "startDate": "2026-03-11",
+      "endDate": "2026-03-17",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_ROOF",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 116,
+      "startDate": "2026-03-18",
+      "endDate": "2026-03-24",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_ROOF",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 117,
+      "startDate": "2026-03-25",
+      "endDate": "2026-03-31",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F21/BDG_102_F21_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 118,
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-07",
+      "tasks": [
+        {
+          "structureId": "BDG_101/BDG_101_PH2/BDG_101_PH2_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F17/BDG_103_F17_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 119,
+      "startDate": "2026-04-08",
+      "endDate": "2026-04-14",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 120,
+      "startDate": "2026-04-15",
+      "endDate": "2026-04-21",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F22/BDG_102_F22_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 121,
+      "startDate": "2026-04-22",
+      "endDate": "2026-04-28",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F18/BDG_103_F18_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 122,
+      "startDate": "2026-04-29",
+      "endDate": "2026-05-05",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_GANGFORM",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 123,
+      "startDate": "2026-05-06",
+      "endDate": "2026-05-12",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 124,
+      "startDate": "2026-05-13",
+      "endDate": "2026-05-19",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_F23/BDG_102_F23_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 125,
+      "startDate": "2026-05-20",
+      "endDate": "2026-05-26",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 126,
+      "startDate": "2026-05-27",
+      "endDate": "2026-06-02",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_ROOF",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F19/BDG_103_F19_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 127,
+      "startDate": "2026-06-03",
+      "endDate": "2026-06-09",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_ROOF",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_SLAB",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 128,
+      "startDate": "2026-06-10",
+      "endDate": "2026-06-16",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH1/BDG_102_PH1_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_ROOF",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_WALL",
+          "phase": "formwork"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SAFETY_NET",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 129,
+      "startDate": "2026-06-17",
+      "endDate": "2026-06-23",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_ROOF",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F20/BDG_103_F20_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SAFETY_NET",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_GANGFORM",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 130,
+      "startDate": "2026-06-24",
+      "endDate": "2026-06-30",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_ROOF",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SAFETY_NET",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 131,
+      "startDate": "2026-07-01",
+      "endDate": "2026-07-07",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SAFETY_NET",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 132,
+      "startDate": "2026-07-08",
+      "endDate": "2026-07-14",
+      "tasks": [
+        {
+          "structureId": "BDG_102/BDG_102_PH2/BDG_102_PH2_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SAFETY_NET",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_WALL",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_GANGFORM",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 133,
+      "startDate": "2026-07-15",
+      "endDate": "2026-07-21",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 134,
+      "startDate": "2026-07-22",
+      "endDate": "2026-07-28",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 135,
+      "startDate": "2026-07-29",
+      "endDate": "2026-08-04",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F21/BDG_103_F21_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 136,
+      "startDate": "2026-08-05",
+      "endDate": "2026-08-11",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_GANGFORM",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 137,
+      "startDate": "2026-08-12",
+      "endDate": "2026-08-18",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 138,
+      "startDate": "2026-08-19",
+      "endDate": "2026-08-25",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F22/BDG_103_F22_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 139,
+      "startDate": "2026-08-26",
+      "endDate": "2026-09-01",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 140,
+      "startDate": "2026-09-02",
+      "endDate": "2026-09-08",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_GANGFORM",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 141,
+      "startDate": "2026-09-09",
+      "endDate": "2026-09-15",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_GANGFORM",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 142,
+      "startDate": "2026-09-16",
+      "endDate": "2026-09-22",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_F23/BDG_103_F23_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_GANGFORM",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 143,
+      "startDate": "2026-09-23",
+      "endDate": "2026-09-29",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_GANGFORM",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 144,
+      "startDate": "2026-09-30",
+      "endDate": "2026-10-06",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_GANGFORM",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_WALL",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_ROOF",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 145,
+      "startDate": "2026-10-07",
+      "endDate": "2026-10-13",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_WALL",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_ROOF",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_SLAB",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 146,
+      "startDate": "2026-10-14",
+      "endDate": "2026-10-20",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH1/BDG_103_PH1_WALL",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_ROOF",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_SLAB",
+          "phase": "rebar"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_WALL",
+          "phase": "formwork"
+        }
+      ]
+    },
+    {
+      "week": 147,
+      "startDate": "2026-10-21",
+      "endDate": "2026-10-27",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_ROOF",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_SLAB",
+          "phase": "concrete_pouring"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_WALL",
+          "phase": "rebar"
+        }
+      ]
+    },
+    {
+      "week": 148,
+      "startDate": "2026-10-28",
+      "endDate": "2026-11-03",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_ROOF",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_SLAB",
+          "phase": "curing"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_WALL",
+          "phase": "concrete_pouring"
+        }
+      ]
+    },
+    {
+      "week": 149,
+      "startDate": "2026-11-04",
+      "endDate": "2026-11-10",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_SLAB",
+          "phase": "completed"
+        },
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_WALL",
+          "phase": "curing"
+        }
+      ]
+    },
+    {
+      "week": 150,
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-17",
+      "tasks": [
+        {
+          "structureId": "BDG_103/BDG_103_PH2/BDG_103_PH2_WALL",
+          "phase": "completed"
+        }
+      ]
+    }
+  ]
+}
