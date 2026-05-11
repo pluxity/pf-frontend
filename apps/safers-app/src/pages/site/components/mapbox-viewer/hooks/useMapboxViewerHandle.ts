@@ -137,6 +137,17 @@ export function useMapboxViewerHandle(options: UseMapboxViewerHandleOptions) {
         essential: true,
       });
     },
+    getCameraState() {
+      const map = mapRef.current;
+      if (!map) return null;
+      const c = map.getCenter();
+      return {
+        center: [c.lng, c.lat],
+        zoom: map.getZoom(),
+        pitch: map.getPitch(),
+        bearing: map.getBearing(),
+      };
+    },
     swapFeatureAsset(featureId: string, assetId: string) {
       overlayRef.current?.swapFeatureAsset(featureId, assetId);
     },

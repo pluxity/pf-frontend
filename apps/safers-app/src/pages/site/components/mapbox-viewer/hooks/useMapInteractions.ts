@@ -10,6 +10,8 @@ interface UseMapInteractionsOptions {
   coordRef?: React.RefObject<HTMLDivElement | null>;
   pathEditingRef?: React.RefObject<boolean>;
   addPathPointRef?: React.RefObject<((p: FeaturePosition) => void) | null>;
+  /** Ctrl/Cmd+클릭으로 좌표를 캡처할 때 호출 */
+  onPickPointRef?: React.RefObject<((p: FeaturePosition, hitMesh: boolean) => void) | null>;
   onFeatureSelect: (feature: SelectedFeatureData | null) => void;
   onWorkerSelect: (workerId: string | null) => void;
 }
@@ -22,6 +24,7 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
     coordRef,
     pathEditingRef,
     addPathPointRef,
+    onPickPointRef,
     onFeatureSelect,
     onWorkerSelect,
   } = opts;
@@ -107,8 +110,35 @@ export function useMapInteractions(opts: UseMapInteractionsOptions): void {
     const handleClick = (e: {
       point: { x: number; y: number };
       lngLat: { lng: number; lat: number };
+      originalEvent?: { ctrlKey?: boolean; metaKey?: boolean };
     }) => {
       const hit = doRaycast(e.point);
+
+      // Ctrl/Cmd+클릭: 좌표 캡처 (feature 선택과 분리)
+      if (onPickPointRef?.current && (e.originalEvent?.ctrlKey || e.originalEvent?.metaKey)) {
+        let lng: number;
+        let lat: number;
+        let altitude: number;
+        let hitMesh: boolean;
+        if (hit) {
+          lng = hit.lng;
+          lat = hit.lat;
+          altitude = hit.altitude;
+          hitMesh = true;
+        } else {
+          lng = e.lngLat.lng;
+          lat = e.lngLat.lat;
+          altitude = overlayRef.current?.probeAltitude(lng, lat) ?? 0;
+          hitMesh = false;
+        }
+        const point: FeaturePosition = {
+          lng: Math.round(lng * 1e6) / 1e6,
+          lat: Math.round(lat * 1e6) / 1e6,
+          altitude: Math.round(altitude * 100) / 100,
+        };
+        onPickPointRef.current(point, hitMesh);
+        return;
+      }
 
       if (pathEditingRef?.current) {
         const point: FeaturePosition = hit

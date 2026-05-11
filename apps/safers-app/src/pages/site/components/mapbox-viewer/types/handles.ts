@@ -94,6 +94,13 @@ export interface MapboxViewerHandle {
     bearing: number;
     duration?: number;
   }) => void;
+  /** 현재 카메라 상태 읽기 (zoom/pitch/bearing 유지하고 center만 옮기는 등에 사용) */
+  getCameraState: () => {
+    center: [number, number];
+    zoom: number;
+    pitch: number;
+    bearing: number;
+  } | null;
   swapFeatureAsset: (featureId: string, assetId: string) => void;
   pushLivePosition: (featureId: string, position: FeaturePosition, lerpMs?: number) => void;
   areaSelect: (rect: { x: number; y: number; width: number; height: number }) => string[];

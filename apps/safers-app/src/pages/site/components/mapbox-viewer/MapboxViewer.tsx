@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { ThreeOverlayHandle, DangerZone, MapboxViewerHandle } from "./types";
+import type { ThreeOverlayHandle, DangerZone, MapboxViewerHandle, FeaturePosition } from "./types";
 import type { MapStyleKey } from "./constants";
 import { MODEL_TRANSFORM } from "./config/site.config";
 import { ThreeOverlay } from "./three/ThreeOverlay";
@@ -9,6 +9,7 @@ import { EmergencyBanner } from "./overlays/EmergencyBanner";
 import { AreaSelectionOverlay, type SelectionRect } from "./overlays/AreaSelectionOverlay";
 import { CCTVPopupGrid } from "./overlays/CCTVPopupGrid";
 import { FeatureLabelOverlay } from "./overlays/FeatureLabelOverlay";
+import { CoordinatePickerPanel, type PickedPoint } from "./overlays/CoordinatePickerPanel";
 import { useMapboxSetup } from "./hooks/useMapboxSetup";
 import { useMapInteractions } from "./hooks/useMapInteractions";
 import { useEmergencyState } from "./hooks/useEmergencyState";
@@ -62,6 +63,25 @@ export function MapboxViewer({
   const [showCCTVLabels, setShowCCTVLabels] = useState(false);
   const [showWorkerLabels, setShowWorkerLabels] = useState(false);
   const [searchHitIds, setSearchHitIds] = useState<Set<string>>(new Set());
+  const [pickedPoints, setPickedPoints] = useState<PickedPoint[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const onPickPointRef = useRef<((p: FeaturePosition, hitMesh: boolean) => void) | null>(null);
+
+  useEffect(() => {
+    onPickPointRef.current = (point, hitMesh) => {
+      setPickerOpen(true);
+      setPickedPoints((prev) => [
+        ...prev,
+        {
+          id: `pp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          lng: point.lng,
+          lat: point.lat,
+          altitude: point.altitude,
+          hitMesh,
+        },
+      ]);
+    };
+  }, []);
 
   const onWorkerSelectRef = useRef(onWorkerSelect);
   useEffect(() => {
@@ -162,6 +182,7 @@ export function MapboxViewer({
     overlayRef,
     selectedIdRef,
     coordRef,
+    onPickPointRef,
     onFeatureSelect: setSelectedFeature,
     onWorkerSelect: (workerId) => onWorkerSelectRef.current?.(workerId),
   });
@@ -323,6 +344,18 @@ export function MapboxViewer({
         />
       )}
 
+      {pickerOpen && (
+        <CoordinatePickerPanel
+          points={pickedPoints}
+          onRemove={(id) => setPickedPoints((prev) => prev.filter((p) => p.id !== id))}
+          onClear={() => setPickedPoints([])}
+          onClose={() => {
+            setPickerOpen(false);
+            setPickedPoints([]);
+          }}
+        />
+      )}
+
       {!sceneLoaded && (
         <div className="absolute inset-0 z-[10] flex items-center justify-center bg-white/20 backdrop-blur-xl">
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/40 bg-white/30 px-10 py-8 shadow-lg backdrop-blur-md">
@@ -332,14 +365,13 @@ export function MapboxViewer({
         </div>
       )}
 
+      <CameraDebugPanel mapRef={mapRef} />
+
       {import.meta.env.DEV && (
-        <>
-          <div
-            ref={coordRef}
-            className="pointer-events-none absolute bottom-2 left-2 z-[5] rounded bg-black/60 px-2 py-1 font-mono text-xs text-white"
-          />
-          <CameraDebugPanel mapRef={mapRef} />
-        </>
+        <div
+          ref={coordRef}
+          className="pointer-events-none absolute bottom-2 left-2 z-[5] rounded bg-black/60 px-2 py-1 font-mono text-xs text-white"
+        />
       )}
     </div>
   );

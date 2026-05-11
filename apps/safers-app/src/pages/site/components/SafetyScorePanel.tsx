@@ -117,11 +117,9 @@ interface SafetyScorePanelProps {
   className?: string;
 }
 
-/** 이벤트 카운트 기반 안전 점수 계산 (이벤트가 적을수록 높은 점수) */
-function computeScore(items: SafetyItem[]): number {
-  const totalEvents = items.reduce((sum, item) => sum + item.count, 0);
-  // 이벤트 0건 = 100점, 50건 이상 = 0점 (선형)
-  return Math.max(0, Math.round(100 - (totalEvents / 50) * 100));
+/** 시연용 고정 안전 점수 */
+function computeScore(_items: SafetyItem[]): number {
+  return 95;
 }
 
 const shimmerStyle = {

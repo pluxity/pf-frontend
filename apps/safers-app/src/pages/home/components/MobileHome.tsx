@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore, logout } from "@pf-dev/services";
-import { sitesService, type Site, REGION_DISPLAY_NAMES } from "@/services";
+import { sitesService, type Site, REGION_DISPLAY_NAMES, isPlaybackEnabledSite } from "@/services";
 import biLogo from "@/assets/images/BI.svg";
 
 export function MobileHome() {
@@ -109,11 +109,8 @@ export function MobileHome() {
   );
 }
 
-/** NVR 녹화영상이 활성화된 현장 ID 목록 */
-const PLAYBACK_ENABLED_SITE_IDS = new Set([15, 17]);
-
 function SiteCard({ site, navigate }: { site: Site; navigate: ReturnType<typeof useNavigate> }) {
-  const playbackEnabled = PLAYBACK_ENABLED_SITE_IDS.has(site.id);
+  const playbackEnabled = isPlaybackEnabledSite(site.id);
 
   return (
     <div className="rounded-xl border border-[#2A2D3A] bg-[#1A1D27] p-4">

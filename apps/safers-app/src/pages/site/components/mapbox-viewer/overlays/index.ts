@@ -3,3 +3,4 @@ export { CCTVPopupCard } from "./CCTVPopupCard";
 export { CCTVPopupGrid } from "./CCTVPopupGrid";
 export { FeaturePopup } from "./FeaturePopup";
 export { AreaSelectionOverlay, type SelectionRect } from "./AreaSelectionOverlay";
+export { CoordinatePickerPanel, type PickedPoint } from "./CoordinatePickerPanel";

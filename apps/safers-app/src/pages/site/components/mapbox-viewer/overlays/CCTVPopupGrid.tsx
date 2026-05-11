@@ -4,7 +4,7 @@ import type { ThreeOverlayHandle } from "../types";
 import type { CCTVPopupEntry } from "@/stores";
 import { CCTVPopupCard } from "./CCTVPopupCard";
 
-const CARD_W_RATIO = 0.2;
+const CARD_W_RATIO = 0.28;
 const CARD_ASPECT = 16 / 9;
 const SLOT_INSET = 0.02;
 const SLOT_TOP_RATIO = 0.08;

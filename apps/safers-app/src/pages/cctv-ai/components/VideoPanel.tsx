@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useWHEPStream } from "@pf-dev/cctv";
 import { GridLayout } from "@pf-dev/ui/organisms";
 import { Widget } from "@pf-dev/ui/molecules";
@@ -6,7 +7,7 @@ import type { GridTemplate } from "@pf-dev/ui";
 import type { CCTVStreamItem } from "@/hooks/useCCTVStreams";
 import { StreamLoadingOverlay, StreamErrorOverlay, StreamStatusBadge } from "@/components/cctv";
 import { PTZControl } from "./PTZControl";
-import type { StompEventResponse } from "@/services";
+import { isPlaybackEnabledSite, type StompEventResponse } from "@/services";
 
 // ─── CCTV 선택 드롭다운 ───
 
@@ -262,9 +263,42 @@ function LiveGrid({
   );
 }
 
+// ─── PLAY BACK 버튼 (녹화영상 페이지 이동) ───
+
+function PlaybackButton({ siteId }: { siteId: string | undefined }) {
+  const navigate = useNavigate();
+  const enabled = isPlaybackEnabledSite(siteId);
+
+  return (
+    <button
+      type="button"
+      onClick={enabled ? () => navigate(`/cctv-playback/${siteId}`) : undefined}
+      disabled={!enabled}
+      aria-label="녹화영상 페이지로 이동"
+      title={enabled ? "녹화영상 보기" : "이 현장은 녹화영상이 제공되지 않습니다"}
+      className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors ${
+        enabled
+          ? "border-brand/40 bg-brand/10 text-brand hover:bg-brand/20"
+          : "cursor-not-allowed border-[#2A2D3A] bg-[#1A1D27] text-white/20"
+      }`}
+    >
+      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      PLAY BACK
+    </button>
+  );
+}
+
 // ─── VideoPanel ───
 
 interface VideoPanelProps {
+  siteId?: string;
   items: CCTVStreamItem[];
   isLoading: boolean;
   isError: boolean;
@@ -277,6 +311,7 @@ interface VideoPanelProps {
 }
 
 export function VideoPanel({
+  siteId,
   items,
   isLoading,
   isError,
@@ -402,6 +437,7 @@ export function VideoPanel({
               }}
             />
           )}
+          <PlaybackButton siteId={siteId} />
         </div>
       </div>
 

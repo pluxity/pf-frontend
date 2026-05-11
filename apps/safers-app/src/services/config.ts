@@ -16,3 +16,14 @@ export const MAX_EVENTS = 200;
 
 /** mock 지연 시뮬레이션 */
 export const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/** NVR 녹화영상(playback)이 활성화된 현장 ID 목록 */
+export const PLAYBACK_ENABLED_SITE_IDS = new Set<number>([15, 17, 18]);
+
+/** 현장 ID가 녹화영상 활성 대상인지 확인 */
+export function isPlaybackEnabledSite(siteId: number | string | undefined | null): boolean {
+  if (siteId == null) return false;
+  const id = typeof siteId === "string" ? Number(siteId) : siteId;
+  if (!Number.isFinite(id)) return false;
+  return PLAYBACK_ENABLED_SITE_IDS.has(id);
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { MapboxViewerHandle } from "../components";
 import type { SiteEvent, SiteRegion } from "@/services";
+import { useCCTVPopupStore } from "@/stores";
 import {
   INITIAL_WORKERS,
   SCENARIO_EMERGENCIES,
@@ -102,6 +103,32 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
             });
 
             mapViewerRef.current?.selectFeature(SCENARIO3.cctvId, COLOR_DANGER);
+
+            // dz-1 감시 후 dz-2로 이동 — 동일 시나리오의 연속 단계 (이벤트 추가 생성 X)
+            setTimeout(() => {
+              // 첫번째 CCTV(dz-1) 즉시 종료 — popup도 같이 닫아야 FOV 자동 동기화가 풀림
+              useCCTVPopupStore.getState().closePopup(SCENARIO3.cctvId);
+              mapViewerRef.current?.showCCTVFOV(SCENARIO3.cctvId, false);
+              mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_SUCCESS);
+
+              // 사전 지정된 dz-2 카메라 각도로 이동
+              mapViewerRef.current?.flyTo({
+                ...SCENARIO3.dz2Camera,
+                duration: SCENARIO3.dz2MoveDurationMs,
+              });
+
+              mapViewerRef.current?.moveFeatureAlongPath(
+                SCENARIO3.workerId,
+                [...SCENARIO3.dz2Path],
+                SCENARIO3.dz2MoveDurationMs,
+                () => {
+                  // dz-2 도착 = 두번째 CCTV 가동
+                  mapViewerRef.current?.showCCTVFOV(SCENARIO3.dz2CctvId, true);
+                  mapViewerRef.current?.setFOVColor(SCENARIO3.dz2CctvId, COLOR_DANGER);
+                  mapViewerRef.current?.selectFeature(SCENARIO3.dz2CctvId, COLOR_DANGER);
+                }
+              );
+            }, SCENARIO3.dz2WaitMs);
           }
         );
       }, DEFAULT_FLY_DURATION);
@@ -144,6 +171,7 @@ export function useScenarioTrigger({ siteId, mapViewerRef }: UseScenarioTriggerO
     setWorkers(INITIAL_WORKERS);
     setSelectedWorkerId(null);
     mapViewerRef.current?.setFOVColor(SCENARIO3.cctvId, COLOR_SUCCESS);
+    mapViewerRef.current?.setFOVColor(SCENARIO3.dz2CctvId, COLOR_SUCCESS);
     mapViewerRef.current?.swapFeatureAsset("worker-1", "worker-walk");
     mapViewerRef.current?.startPatrol("worker-1", WORKER1_PATROL_PATH, WORKER1_PATROL_DURATION);
   }

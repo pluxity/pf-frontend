@@ -99,6 +99,7 @@ export function CCTVAIPage() {
         {/* 영상 패널 */}
         <section className="flex flex-1 flex-col p-2 md:flex-[3] md:border-r md:border-[#2A2D3A] md:p-4">
           <VideoPanel
+            siteId={siteId}
             items={items}
             isLoading={streamsLoading}
             isError={isError}
